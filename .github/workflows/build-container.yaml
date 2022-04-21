@@ -32,11 +32,10 @@ jobs:
       fail-fast: false
       matrix:
 
-        # Note: these pairs must match to
-        # https://rse-ops.github.io/docker-images/r/ghcr.io-rse-ops-gcc-ubuntu-22.04/
-        ubuntu: ["22.04"]
-        gcc: ["10.3.0"]
-
+        # Dockerfiles to build, container names to use, and to tag as libabigail:latest?
+        container: [["Dockerfile.fedora", "ghcr.io/woodard/libabigail-fedora", true],
+                    ["Dockerfile.ubuntu", "ghcr.io/woodard/libabigail-ubuntu-22.04", false]]
+ 
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -48,17 +47,28 @@ jobs:
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /opt/ghc
 
+       # It's easier to reference named variables than indexes of the matrix
+      - name: Set Environment
+        env:
+          dockerfile: ${{ matrix.container[0] }}
+          uri: ${{ matrix.container[1] }}
+          isLatest: ${{ matrix.container[2] }}
+        run: |
+          echo "dockerfile=$dockerfile" >> $GITHUB_ENV
+          echo "uri=$uri" >> $GITHUB_ENV
+          echo "isLatest=$isLatest" >> $GITHUB_ENV
+        
       - name: Pull previous layers for cache
-        run: docker pull ghcr.io/woodard/libabigail:latest || echo "No container to pull"
+        run: docker pull ${uri}:latest || echo "No container to pull"
 
       - name: Build Container
         run: |
-           container=ghcr.io/woodard/libabigail-ubuntu-${{ matrix.ubuntu }}:latest
-           docker build --build-arg ubuntu_version=${{ matrix.ubuntu }} \
-                        --build-arg gcc_version=${{ matrix.gcc }} \
-                        -t ${container} .
-           docker tag ${container} ghcr.io/woodard/libabigail-ubuntu-${{ matrix.ubuntu }}:gcc-${{ matrix.gcc }}
-           docker tag ${container} ghcr.io/woodard/libabigail:latest
+           container=$uri:latest
+           docker build -f docker/${dockerfile} -t ${container} .
+           if [[ "${isLatest}" == "true" ]]; then          
+               docker tag ${container} ghcr.io/woodard/libabigail:latest
+           fi
+           echo "container=$container" >> $GITHUB_ENV
 
       - name: GHCR Login
         if: (github.event_name != 'pull_request')
@@ -71,14 +81,19 @@ jobs:
       - name: Deploy
         if: (github.event_name != 'pull_request')
         run: |
-            docker push ghcr.io/woodard/libabigail:latest
-            docker push ghcr.io/woodard/libabigail-ubuntu-${{ matrix.ubuntu }}:latest
-            docker push ghcr.io/woodard/libabigail-ubuntu-${{ matrix.ubuntu }}:gcc-${{ matrix.gcc }}
+            docker push ${container}
+            if [[ "${isLatest}" == "true" ]]; then          
+                docker push ghcr.io/woodard/libabigail:latest
+            fi
             
       - name: Tag and Push Release
         if: (github.event_name == 'release')
         run: |
             tag=${GITHUB_REF#refs/tags/}
-            echo "Tagging and releasing ghcr.io/woodard/libabigail:${tag}"
-            docker tag ghcr.io/woodard/libabigail:latest ghcr.io/woodard/libabigail:${tag}
-            docker push ghcr.io/woodard/libabigail:${tag}
+            echo "Tagging and releasing ${uri}:${tag}"
+            docker tag ${uri}:latest ${uri}:${tag}
+            docker push ${uri}:${tag}
+            if [[ "${isLatest}" == "true" ]]; then          
+                docker tag ${uri}:latest ghcr.io/woodard/libabigail:${tag}
+                docker push ghcr.io/woodard/libabigail:${tag}
+            fi

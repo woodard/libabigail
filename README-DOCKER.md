@@ -1,42 +1,45 @@
 # Libabigail Docker
 
-The [Dockerfile](Dockerfile) provided alongside the code provides a base container
-to build libabigail. We will build and deploy a container on:
+Libabigail comes with two Dockerfile in [docker](docker) to build each of:
 
- - releases
- - pushes to the main (master) branch
+ - a Fedora base image (recommended)
+ - an Ubuntu base image.
+ 
+These containers are built and deployed on merges to the main branch and releases.
 
 ### Usage
 
-Here is how to build the container. Note that we build so it belongs to the same
+Here is how to build the containers. Note that we build so it belongs to the same
 namespace as the repository here. "ghcr.io" means "GitHub Container Registry" and
 is the [GitHub packages](https://github.com/features/packages) registry that supports
  Docker images and other OCI artifacts.
 
 ```bash
-$ docker build -t ghcr.io/woodard/libabigail .
+$ docker build -f docker/Dockerfile.fedora -t ghcr.io/woodard/libabigail-fedora .
+```
+```bash
+$ docker build -f docker/Dockerfile.ubuntu -t ghcr.io/woodard/libabigail-ubuntu-22.04 .
 ```
 
-Note that we use `ghcr.io/rse-ops/gcc-ubuntu-22.04:gcc-10.3.0` as the base image. If it's
-ever desired to build libabigail with different compilers or OS (across a matrix) we can do that too :)
+Note that currently the fedora image is deployed to `ghcr.io/woodard/libabigail:latest`.
 
 ### Shell
 
-To shell into the container:
+To shell into a container (here is an example with ubuntu):
 
 ```bash
-$ docker run -it ghcr.io/woodard/libabigail bash
+$ docker run -it ghcr.io/woodard/libabigail-ubuntu-22.04 bash
 ```
 
 Off the bat, you can find the abi executables:
-
 
 ```bash
 # which abidiff
 /opt/abigail-env/.spack-env/view/bin/abidiff
 ```
 
-That also means you can go to the environment in `/opt/abigail-env` and (given you
+Since the ubuntu base uses spack, you can interact with spack.
+You can go to the environment in `/opt/abigail-env` and (given you
 have the source code bound to `/src`) build and test again.
 
 ```bash
@@ -50,4 +53,5 @@ We will also use the "production" containers to grab libraries in:
 $ ls /opt/abigail-env/.spack-env/view/
 bin  include  lib  share
 ```
-To run the libabigail action on (yes, very meta!)
+
+Note that the fedora container does not come with spack.
