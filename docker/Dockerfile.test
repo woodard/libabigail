@@ -1,6 +1,6 @@
-FROM ghcr.io/woodard/libabigail-fedora-base as builder
+FROM ghcr.io/woodard/libabigail-fedora-base
 
-# docker build -f docker/Dockerfile.fedora -t ghcr.io/woodard/libabigail-fedora .
+# docker build -f docker/Dockerfile.test -t test .
 
 WORKDIR /code
 COPY . /code
@@ -19,8 +19,4 @@ RUN mkdir -p build && \
     -fasynchronous-unwind-tables -O2" LDFLAGS="-Wl,--no-undefined" \
     ../configure --prefix=/opt/libabigail --enable-rpm=yes && \
     make -j4 && \
-    make install
-
-FROM fedora:latest
-COPY --from=builder /opt/libabigail /opt/libabigail
-ENV PATH=/opt/libabigail/bin:$PATH
+    make check

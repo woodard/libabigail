@@ -55,3 +55,12 @@ bin  include  lib  share
 ```
 
 Note that the fedora container does not come with spack.
+
+### Testing
+
+We provide a testing container, which will use a fedora base and add new code to
+compile, and then run `make check`. You can do this as follows on your local machine:
+
+```bash
+$ docker build -f docker/Dockerfile.test -t test .
+```
