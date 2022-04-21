@@ -24,3 +24,12 @@ RUN mkdir -p build && \
 FROM fedora:latest
 COPY --from=builder /opt/libabigail /opt/libabigail
 ENV PATH=/opt/libabigail/bin:$PATH
+
+# Runtime dependencies
+RUN dnf install -y \
+    libxml2-devel \
+    libxml2-libs \
+    python3-koji \
+    python3-mock \
+    python3-pyxdg \
+    six

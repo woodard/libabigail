@@ -4,8 +4,9 @@ FROM ghcr.io/woodard/libabigail-fedora-base
 
 RUN dnf install -y \
     file \
-    diffutils
-
+    diffutils \
+    elfutils-libs \
+    libxml2-libs
 
 WORKDIR /code
 COPY . /code

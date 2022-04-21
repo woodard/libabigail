@@ -9,8 +9,10 @@ RUN dnf install -y \
     automake \
     cpio \
     elfutils-devel \
+    elfutils-libs \
     gcc-c++ \
     libtool \
+    libxml2-libs \
     libxml2-devel \
     python3-koji \
     python3-mock \
