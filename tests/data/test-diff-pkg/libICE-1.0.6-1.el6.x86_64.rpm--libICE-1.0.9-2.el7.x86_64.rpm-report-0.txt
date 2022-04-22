@@ -1,6 +1,6 @@
 ================ changes of 'libICE.so.6.3.0'===============
   Functions changes summary: 0 Removed, 1 Changed (100 filtered out), 3 Added functions
-  Variables changes summary: 1 Removed, 2 Changed (12 filtered out), 0 Added variables
+  Variables changes summary: 1 Removed, 1 Changed (13 filtered out), 0 Added variables
 
   3 Added functions:
 
@@ -15,7 +15,7 @@
         underlying type '_IceConn*' changed:
           in pointed to type 'struct _IceConn' at ICEconn.h:131:1:
             type size hasn't changed
-            2 data member changes (3 filtered):
+            1 data member changes (3 filtered):
               type of '_XtransConnInfo* trans_conn' changed:
                 in pointed to type 'struct _XtransConnInfo' at Xtransint.h:136:1:
                   type size changed from 640 to 768 (in bits)
@@ -23,15 +23,12 @@
                     '_XtransConnFd* recv_fds', at offset 640 (in bits) at Xtransint.h:148:1
                     '_XtransConnFd* send_fds', at offset 704 (in bits) at Xtransint.h:149:1
                   no data member change (1 filtered);
-              type of '_IcePingWait* ping_waits' changed:
-                in pointed to type 'struct _IcePingWait' at ICEconn.h:48:1:
-                  entity changed from 'struct _IcePingWait' to compatible type 'typedef _IcePingWait' at ICEconn.h:48:1
 
   1 Removed variable:
 
     [D] 'const in6_addr in6addr_any'    {in6addr_any}
 
-  2 Changed variables:
+  1 Changed variable:
 
     [C] 'char* _IceAuthNames[1]' was changed to 'const char* _IceAuthNames[1]' at globals.h:37:1:
       type of variable changed:
@@ -41,16 +38,6 @@
             type size hasn't changed
         type name changed from 'char*[1]' to 'const char*[1]'
         type size hasn't changed
-
-    [C] '_IceWatchProc* _IceWatchProcs' was changed at globals.h:39:1:
-      type of variable changed:
-        in pointed to type 'struct _IceWatchProc' at ICElibint.h:322:1:
-          entity changed from 'struct _IceWatchProc' to compatible type 'typedef _IceWatchProc' at ICElibint.h:322:1
-            type size hasn't changed
-            1 data member changes (2 filtered):
-              type of '_IceWatchedConnection* watched_connections' changed:
-                in pointed to type 'struct _IceWatchedConnection' at ICElibint.h:315:1:
-                  entity changed from 'struct _IceWatchedConnection' to compatible type 'typedef _IceWatchedConnection' at ICElibint.h:315:1
 
 ================ end of changes of 'libICE.so.6.3.0'===============
 

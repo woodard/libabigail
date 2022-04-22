@@ -101,6 +101,10 @@ struct test_task : public abigail::workers::task
   bool
   set_out_abi_path()
   {
+    if (!spec.out_abi_path)
+      // No output abi path was specified in the spec, so get out.
+      return false;
+
     out_abi_path = out_abi_base + spec.out_abi_path;
     if (!abigail::tools_utils::ensure_parent_dir_created(out_abi_path))
       {

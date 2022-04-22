@@ -541,6 +541,10 @@ compare_dies(const read_context& ctxt,
 	     const Dwarf_Die *l, const Dwarf_Die *r,
 	     bool update_canonical_dies_on_the_fly);
 
+static bool
+compare_dies_during_canonicalization(read_context& ctxt,
+				     const Dwarf_Die *l, const Dwarf_Die *r,
+				     bool update_canonical_dies_on_the_fly);
 
 /// Find the file name of the alternate debug info file.
 ///
@@ -2133,6 +2137,10 @@ public:
   corpus::exported_decls_builder* exported_decls_builder_;
   options_type			options_;
   bool				drop_undefined_syms_;
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  bool				debug_die_canonicalization_is_on_;
+  bool				use_canonical_die_comparison_;
+#endif
   read_context();
 
 private:
@@ -2276,6 +2284,11 @@ public:
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
     drop_undefined_syms_ = false;
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    debug_die_canonicalization_is_on_ =
+      environment->debug_die_canonicalization_is_on();
+    use_canonical_die_comparison_ = true;
+#endif
     load_in_linux_kernel_mode(linux_kernel_mode);
   }
 
@@ -2799,21 +2812,6 @@ public:
 	return;
       }
 
-    if (odr_is_relevant(&die))
-      {
-	// ODR is relevant for this DIE.  In this case, all types with
-	// the same name are considered equivalent.  So the array
-	// i->second shoud only have on element.  If not, then
-	// the DIEs referenced in the array should all compare equal.
-	// Otherwise, this is an ODR violation.  In any case, return
-	// the first element of the array.
-	// ABG_ASSERT(i->second.size() == 1);
-	canonical_die_offset = i->second.front();
-	get_die_from_offset(source, canonical_die_offset, &canonical_die);
-	set_canonical_die_offset(canonical_dies, die_offset, die_offset);
-	return;
-      }
-
     Dwarf_Off cur_die_offset;
     Dwarf_Die potential_canonical_die;
     for (dwarf_offsets_type::const_iterator o = i->second.begin();
@@ -2858,7 +2856,7 @@ public:
   get_canonical_die(const Dwarf_Die *die,
 		    Dwarf_Die &canonical_die,
 		    size_t where,
-		    bool die_as_type) const
+		    bool die_as_type)
   {
     const die_source source = get_die_source(die);
 
@@ -2901,23 +2899,6 @@ public:
     if (i == map.end())
       return false;
 
-    if (odr_is_relevant(die))
-      {
-	// ODR is relevant for this DIE.  In this case, all types with
-	// the same name are considered equivalent.  So the array
-	// i->second shoud only have on element.  If not, then
-	// the DIEs referenced in the array should all compare equal.
-	// Otherwise, this is an ODR violation.  In any case, return
-	// the first element of the array.
-	// ABG_ASSERT(i->second.size() == 1);
-	Dwarf_Off canonical_die_offset = i->second.front();
-	get_die_from_offset(source, canonical_die_offset, &canonical_die);
-	set_canonical_die_offset(canonical_dies,
-				 die_offset,
-				 canonical_die_offset);
-	return true;
-      }
-
     Dwarf_Off cur_die_offset;
     for (dwarf_offsets_type::const_iterator o = i->second.begin();
 	 o != i->second.end();
@@ -2926,8 +2907,9 @@ public:
 	cur_die_offset = *o;
 	get_die_from_offset(source, cur_die_offset, &canonical_die);
 	// compare die and canonical_die.
-	if (compare_dies(*this, die, &canonical_die,
-			 /*update_canonical_dies_on_the_fly=*/true))
+	if (compare_dies_during_canonicalization(const_cast<read_context&>(*this),
+						 die, &canonical_die,
+						 /*update_canonical_dies_on_the_fly=*/true))
 	  {
 	    set_canonical_die_offset(canonical_dies,
 				     die_offset,
@@ -3020,23 +3002,6 @@ public:
 	return false;
       }
 
-    if (odr_is_relevant(die))
-      {
-	// ODR is relevant for this DIE.  In this case, all types with
-	// the same name are considered equivalent.  So the array
-	// i->second shoud only have on element.  If not, then
-	// the DIEs referenced in the array should all compare equal.
-	// Otherwise, this is an ODR violation.  In any case, return
-	// the first element of the array.
-	// ABG_ASSERT(i->second.size() == 1);
-	Dwarf_Off die_offset = i->second.front();
-	get_die_from_offset(source, die_offset, &canonical_die);
-	set_canonical_die_offset(canonical_dies,
-				 initial_die_offset,
-				 die_offset);
-	return true;
-      }
-
     // walk i->second without any iterator (using a while loop rather
     // than a for loop) because compare_dies might add new content to
     // the end of the i->second vector during the walking.
@@ -3046,8 +3011,9 @@ public:
 	Dwarf_Off die_offset = i->second[n];
 	get_die_from_offset(source, die_offset, &canonical_die);
 	// compare die and canonical_die.
-	if (compare_dies(*this, die, &canonical_die,
-			 /*update_canonical_dies_on_the_fly=*/true))
+	if (compare_dies_during_canonicalization(const_cast<read_context&>(*this),
+						 die, &canonical_die,
+						 /*update_canonical_dies_on_the_fly=*/true))
 	  {
 	    set_canonical_die_offset(canonical_dies,
 				     initial_die_offset,
@@ -6854,37 +6820,27 @@ is_type_tag(unsigned tag)
   return result;
 }
 
-/// Test if a given DIE is a type to be canonicalized.  note that a
-/// function DIE (DW_TAG_subprogram) is considered to be a
-/// canonicalize-able type too because we can consider that DIE as
-/// being the type of the function, as well as the function decl
-/// itself.
+/// Test if a given DIE is a type whose canonical type is to be
+/// propagated during DIE canonicalization
+///
+/// This is a sub-routine of compare_dies.
 ///
 /// @param tag the tag of the DIE to consider.
 ///
-/// @return true iff the DIE of tag @p tag is a canonicalize-able DIE.
+/// @return true iff the DIE of tag @p tag is can see its canonical
+/// type be propagated during the type comparison that happens during
+/// DIE canonicalization.
 static bool
-is_canonicalizeable_type_tag(unsigned tag)
+is_canon_type_to_be_propagated_tag(unsigned tag)
 {
   bool result = false;
 
   switch (tag)
     {
-    case DW_TAG_array_type:
     case DW_TAG_class_type:
-    case DW_TAG_enumeration_type:
-    case DW_TAG_pointer_type:
-    case DW_TAG_reference_type:
     case DW_TAG_structure_type:
     case DW_TAG_subroutine_type:
     case DW_TAG_subprogram:
-    case DW_TAG_typedef:
-    case DW_TAG_union_type:
-    case DW_TAG_base_type:
-    case DW_TAG_const_type:
-    case DW_TAG_volatile_type:
-    case DW_TAG_restrict_type:
-    case DW_TAG_rvalue_reference_type:
       result = true;
       break;
 
@@ -7572,6 +7528,27 @@ die_is_declared_inline(Dwarf_Die* die)
   return inline_value == DW_INL_declared_inlined;
 }
 
+/// Compare two DWARF strings using the most accurate (and slowest)
+/// method possible.
+///
+/// @param l the DIE that carries the first string to consider, as an
+/// attribute value.
+///
+/// @param attr_name the name of the attribute which value is the
+/// string to compare.
+///
+/// @return true iff the string carried by @p l equals the one carried
+/// by @p r.
+static bool
+slowly_compare_strings(const Dwarf_Die *l,
+		       const Dwarf_Die *r,
+		       unsigned attr_name)
+{
+  string l_str = die_string_attribute(l, attr_name),
+    r_str = die_string_attribute(r, attr_name);
+  return l_str == r_str;
+}
+
 /// This function is a fast routine (optimization) to compare the
 /// values of two string attributes of two DIEs.
 ///
@@ -7631,22 +7608,19 @@ compare_dies_string_attribute_value(const Dwarf_Die *l, const Dwarf_Die *r,
       //
       // This is the fast path.
       if (l_attr.valp == r_attr.valp)
-	  result = true;
-      else if (l_attr.valp && r_attr.valp)
-	result = *l_attr.valp == *r_attr.valp;
-      else
-	result = false;
-      return true;
+	{
+#if WITH_DEBUG_TYPE_CANONICALIZATION
+	  ABG_ASSERT(slowly_compare_strings(l, r, attr_name));
+#endif
+	  return true;
+	}
     }
 
   // If we reached this point it means we couldn't use the fast path
   // because the string atttributes are strings that are "inline" in
   // the debug info section.  Let's just compare them the slow and
   // obvious way.
-  string l_str = die_string_attribute(l, attr_name),
-    r_str = die_string_attribute(r, attr_name);
-  result = l_str == r_str;
-
+  result = slowly_compare_strings(l, r, attr_name);
   return true;
 }
 
@@ -10169,12 +10143,146 @@ insert_offset_pair(dwarf_offset_pair_set_type& set, Dwarf_Off p1, Dwarf_Off p2)
 /// @param p1 the first value of the pair.
 ///
 /// @param p2 the second value of the pair.
-static void
+///
+/// @return true if a pair was erased from the set.
+static bool
 erase_offset_pair(dwarf_offset_pair_set_type& set, Dwarf_Off p1, Dwarf_Off p2)
 {
   std::pair<Dwarf_Off, Dwarf_Off> p(p1, p2);
-  set.erase(p);
+  return set.erase(p);
 }
+
+/// Look if there is a DWARF offset pair that is common in two sets.
+///
+/// @param l the first set to consider.
+///
+/// @param r the second set to consider.
+///
+/// @return true iff the two sets have a pair in common.
+static bool
+have_offset_pair_in_common(const dwarf_offset_pair_set_type& l,
+			   const dwarf_offset_pair_set_type& r)
+{
+  for (auto t : r)
+    if (l.find(t) != l.end())
+      return true;
+
+  return false;
+}
+
+/// Compare two DIEs in the context of DIE canonicalization.
+///
+/// If DIE canonicalization is on, the function compares the DIEs
+/// canonically and structurally.  The two types of comparison should
+/// be equal, of course.
+///
+/// @param ctxt the read_context.
+///
+/// @param l_offset the offset of the first canonical DIE to compare.
+///
+/// @param r_offset the offset of the second canonical DIE to compare.
+///
+/// @param l_die_source the source of the DIE denoted by the offset @p
+/// l_offset.
+///
+/// @param r_die_source the source of the DIE denoted by the offset @p
+/// r_offset.
+///
+/// @param l_has_canonical_die_offset output parameter.  Is set to
+/// true if @p l_offset has a canonical DIE.
+///
+/// @param r_has_canonical_die_offset output parameter.  Is set to
+/// true if @p r_offset has a canonical DIE.
+///
+/// @param l_canonical_die_offset output parameter.  If @p
+/// l_has_canonical_die_offset is set to true, then this parameter is
+/// set to the offset of the canonical DIE of the DIE designated by @p
+/// l_offset.
+static bool
+try_canonical_die_comparison(const read_context& ctxt,
+			     Dwarf_Off l_offset, Dwarf_Off r_offset,
+			     die_source l_die_source, die_source r_die_source,
+			     bool& l_has_canonical_die_offset,
+			     bool& r_has_canonical_die_offset,
+			     Dwarf_Off& l_canonical_die_offset,
+			     Dwarf_Off& r_canonical_die_offset,
+			     bool& result)
+{
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (ctxt.debug_die_canonicalization_is_on_
+      && !ctxt.use_canonical_die_comparison_)
+    return false;
+#endif
+
+
+  l_has_canonical_die_offset =
+    (l_canonical_die_offset =
+     ctxt.get_canonical_die_offset(l_offset, l_die_source,
+				   /*die_as_type=*/true));
+
+  r_has_canonical_die_offset =
+    (r_canonical_die_offset =
+     ctxt.get_canonical_die_offset(r_offset, r_die_source,
+				   /*die_as_type=*/true));
+
+  if (l_has_canonical_die_offset && r_has_canonical_die_offset)
+    {
+      result = (l_canonical_die_offset == r_canonical_die_offset);
+      return true;
+    }
+
+  return false;
+}
+
+/// This function is called whenever a DIE comparison fails.
+///
+/// This function is intended for debugging purposes.  The idea is for
+/// hackers to set a breakpoint on this function so that they can
+/// discover why exactly the comparison failed.  They then can execute
+/// the program from compare_dies_during_canonicalization, for
+/// instance.
+///
+/// @param @l the left-hand side of the DIE comparison.
+///
+/// @param @r the right-hand side of the DIE comparison.
+static void
+notify_die_comparison_failed(const Dwarf_Die* /*l*/, const Dwarf_Die* /*r*/)
+{
+}
+
+
+/// A macro used to return from DIE comparison routines.
+///
+/// If the return value is false, the macro invokes the
+/// notify_die_comparison_failed signalling function before returning.
+/// That way, hackers willing to learn more about why the comparison
+/// routine returned "false" can just set a breakpoint on
+/// notify_die_comparison_failed and execute the program from
+/// compare_dies_during_canonicalization, for instance.
+///
+/// @param value the value to return from the DIE comparison routines.
+#define ABG_RETURN(value)			\
+  do						\
+    {						\
+      if (value == false)			\
+	notify_die_comparison_failed(l, r);	\
+      return value;				\
+    }						\
+  while(false)
+
+/// A macro used to return the "false" boolean from DIE comparison
+/// routines.
+///
+/// As the return value is false, the macro invokes the
+/// notify_die_comparison_failed signalling function before returning.
+///
+/// @param value the value to return from the DIE comparison routines.
+#define ABG_RETURN_FALSE	    \
+  do				    \
+    {				    \
+      notify_die_comparison_failed(l, r); \
+      return false;		    \
+    } while(false)
 
 /// Compare two DIEs emitted by a C compiler.
 ///
@@ -10203,6 +10311,7 @@ static bool
 compare_dies(const read_context& ctxt,
 	     const Dwarf_Die *l, const Dwarf_Die *r,
 	     dwarf_offset_pair_set_type& aggregates_being_compared,
+	     dwarf_offset_pair_set_type& redundant_aggregates_being_compared,
 	     bool update_canonical_dies_on_the_fly)
 {
   ABG_ASSERT(l);
@@ -10212,28 +10321,28 @@ compare_dies(const read_context& ctxt,
     r_tag = dwarf_tag(const_cast<Dwarf_Die*>(r));
 
   if (l_tag != r_tag)
-    return false;
+    ABG_RETURN_FALSE;
 
   Dwarf_Off l_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(l)),
     r_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(r));
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
+  bool l_has_canonical_die_offset = false, r_has_canonical_die_offset = false;
   const die_source l_die_source = ctxt.get_die_source(l);
   const die_source r_die_source = ctxt.get_die_source(r);
 
   // If 'l' and 'r' already have canonical DIEs, then just compare the
   // offsets of their canonical DIEs.
-  bool l_has_canonical_die_offset =
-    (l_canonical_die_offset =
-     ctxt.get_canonical_die_offset(l_offset, l_die_source,
-				   /*die_as_type=*/true));
-
-  bool r_has_canonical_die_offset =
-    (r_canonical_die_offset =
-     ctxt.get_canonical_die_offset(r_offset, r_die_source,
-				   /*die_as_type=*/true));
-
-  if (l_has_canonical_die_offset && r_has_canonical_die_offset)
-    return l_canonical_die_offset == r_canonical_die_offset;
+  {
+    bool canonical_compare_result = false;
+    if (try_canonical_die_comparison(ctxt, l_offset, r_offset,
+				     l_die_source, r_die_source,
+				     l_has_canonical_die_offset,
+				     r_has_canonical_die_offset,
+				     l_canonical_die_offset,
+				     r_canonical_die_offset,
+				     canonical_compare_result))
+      ABG_RETURN(canonical_compare_result);
+  }
 
   bool result = true;
   bool aggregate_redundancy_detected = false;
@@ -10242,6 +10351,7 @@ compare_dies(const read_context& ctxt,
     {
     case DW_TAG_base_type:
     case DW_TAG_string_type:
+    case DW_TAG_unspecified_type:
       if (!compare_as_type_dies(l, r)
 	  || !compare_as_decl_dies(l, r))
 	result = false;
@@ -10294,6 +10404,7 @@ compare_dies(const read_context& ctxt,
 	else
 	  result = compare_dies(ctxt, &lu_type_die, &ru_type_die,
 				aggregates_being_compared,
+				redundant_aggregates_being_compared,
 				update_canonical_dies_on_the_fly);
       }
       break;
@@ -10347,12 +10458,15 @@ compare_dies(const read_context& ctxt,
 
     case DW_TAG_structure_type:
     case DW_TAG_union_type:
+    case DW_TAG_class_type:
       {
 	if (has_offset_pair(aggregates_being_compared,
 			    die_offset(l), die_offset(r)))
 	  {
 	    result = true;
 	    aggregate_redundancy_detected = true;
+	    redundant_aggregates_being_compared.insert(std::make_pair(die_offset(l),
+								      die_offset(r)));
 	    break;
 	  }
 	else if (!compare_as_decl_dies(l, r) || !compare_as_type_dies(l, r))
@@ -10361,6 +10475,9 @@ compare_dies(const read_context& ctxt,
 	  {
 	    insert_offset_pair(aggregates_being_compared,
 			       die_offset(l), die_offset(r));
+	    if (have_offset_pair_in_common(aggregates_being_compared,
+					   redundant_aggregates_being_compared))
+	      aggregate_redundancy_detected = true;
 	    Dwarf_Die l_member, r_member;
 	    bool found_l_member, found_r_member;
 	    for (found_l_member = dwarf_child(const_cast<Dwarf_Die*>(l),
@@ -10379,10 +10496,12 @@ compare_dies(const read_context& ctxt,
 		  }
 
 		if (l_tag != DW_TAG_member && l_tag != DW_TAG_variable)
+		  // TODO: for now, we don't support c++ class DIEs.
 		  continue;
 
 		if (!compare_dies(ctxt, &l_member, &r_member,
 				  aggregates_being_compared,
+				  redundant_aggregates_being_compared,
 				  update_canonical_dies_on_the_fly))
 		  {
 		    result = false;
@@ -10392,8 +10511,10 @@ compare_dies(const read_context& ctxt,
 	    if (found_l_member != found_r_member)
 	      result = false;
 
-	    erase_offset_pair(aggregates_being_compared,
-			      die_offset(l), die_offset(r));
+	    if (erase_offset_pair(aggregates_being_compared,
+				  die_offset(l), die_offset(r)))
+	      erase_offset_pair(redundant_aggregates_being_compared,
+				die_offset(l), die_offset(r));
 	  }
       }
       break;
@@ -10416,6 +10537,7 @@ compare_dies(const read_context& ctxt,
 		|| r_child_tag == DW_TAG_subrange_type)
 	      if (!compare_dies(ctxt, &l_child, &r_child,
 				aggregates_being_compared,
+				redundant_aggregates_being_compared,
 				update_canonical_dies_on_the_fly))
 		{
 		  result = false;
@@ -10432,8 +10554,9 @@ compare_dies(const read_context& ctxt,
 
 	if (!compare_dies(ctxt, &ltype_die, &rtype_die,
 			  aggregates_being_compared,
+			  redundant_aggregates_being_compared,
 			  update_canonical_dies_on_the_fly))
-	  return false;
+	  ABG_RETURN_FALSE;
       }
       break;
 
@@ -10483,9 +10606,18 @@ compare_dies(const read_context& ctxt,
 	  {
 	    result = true;
 	    aggregate_redundancy_detected = true;
+	    redundant_aggregates_being_compared.insert(std::make_pair(die_offset(l),
+								      die_offset(r)));
 	    break;
 	  }
-	else if (l_tag == DW_TAG_subroutine_type)
+
+	insert_offset_pair(aggregates_being_compared,
+			   die_offset(l), die_offset(r));
+	if (have_offset_pair_in_common(aggregates_being_compared,
+					   redundant_aggregates_being_compared))
+	  aggregate_redundancy_detected = true;
+
+	if (l_tag == DW_TAG_subroutine_type)
 	  {
 	    // So, we are looking at types that are pointed to by a
 	    // function pointer.  These are not real concrete function
@@ -10540,6 +10672,7 @@ compare_dies(const read_context& ctxt,
 		    && !compare_dies(ctxt,
 				     &l_return_type, &r_return_type,
 				     aggregates_being_compared,
+				     redundant_aggregates_being_compared,
 				     update_canonical_dies_on_the_fly)))
 	      result = false;
 	    else
@@ -10562,6 +10695,7 @@ compare_dies(const read_context& ctxt,
 			|| (l_child_tag == DW_TAG_formal_parameter
 			    && !compare_dies(ctxt, &l_child, &r_child,
 					     aggregates_being_compared,
+					     redundant_aggregates_being_compared,
 					     update_canonical_dies_on_the_fly)))
 		      {
 			result = false;
@@ -10573,8 +10707,10 @@ compare_dies(const read_context& ctxt,
 	      }
 	  }
 
-	erase_offset_pair(aggregates_being_compared,
-			  die_offset(l), die_offset(r));
+	if (erase_offset_pair(aggregates_being_compared,
+			      die_offset(l), die_offset(r)))
+	  erase_offset_pair(redundant_aggregates_being_compared,
+			    die_offset(l), die_offset(r));
       }
       break;
 
@@ -10586,6 +10722,7 @@ compare_dies(const read_context& ctxt,
 	if ((l_type_is_void != r_type_is_void)
 	    || !compare_dies(ctxt, &l_type, &r_type,
 			     aggregates_being_compared,
+			     redundant_aggregates_being_compared,
 			     update_canonical_dies_on_the_fly))
 	  result = false;
       }
@@ -10612,6 +10749,7 @@ compare_dies(const read_context& ctxt,
 	      ABG_ASSERT(die_die_attribute(r, DW_AT_type, r_type));
 	      if (!compare_dies(ctxt, &l_type, &r_type,
 				aggregates_being_compared,
+				redundant_aggregates_being_compared,
 				update_canonical_dies_on_the_fly))
 		result = false;
 	    }
@@ -10620,7 +10758,6 @@ compare_dies(const read_context& ctxt,
 	result = false;
       break;
 
-    case DW_TAG_class_type:
     case DW_TAG_enumerator:
     case DW_TAG_packed_type:
     case DW_TAG_set_type:
@@ -10628,7 +10765,6 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_ptr_to_member_type:
     case DW_TAG_thrown_type:
     case DW_TAG_interface_type:
-    case DW_TAG_unspecified_type:
     case DW_TAG_shared_type:
     case DW_TAG_compile_unit:
     case DW_TAG_namespace:
@@ -10674,13 +10810,17 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_GNU_call_site:
     case DW_TAG_GNU_call_site_parameter:
     case DW_TAG_hi_user:
-      ABG_ASSERT_NOT_REACHED;
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+      if (ctxt.debug_die_canonicalization_is_on_)
+	ABG_ASSERT_NOT_REACHED;
+#endif
+      result = false;
     }
 
   if (result == true
       && !aggregate_redundancy_detected
       && update_canonical_dies_on_the_fly
-      && is_canonicalizeable_type_tag(l_tag))
+      && is_canon_type_to_be_propagated_tag(l_tag))
     {
       // If 'l' has no canonical DIE and if 'r' has one, then propagage
       // the canonical DIE of 'r' to 'l'.
@@ -10703,7 +10843,7 @@ compare_dies(const read_context& ctxt,
 					/*die_as_type=*/true);
 	}
     }
-  return result;
+  ABG_RETURN(result);
 }
 
 /// Compare two DIEs emitted by a C compiler.
@@ -10729,7 +10869,63 @@ compare_dies(const read_context& ctxt,
 	     bool update_canonical_dies_on_the_fly)
 {
   dwarf_offset_pair_set_type aggregates_being_compared;
+  dwarf_offset_pair_set_type redundant_aggregates_being_compared;
   return compare_dies(ctxt, l, r, aggregates_being_compared,
+		      redundant_aggregates_being_compared,
+		      update_canonical_dies_on_the_fly);
+}
+
+/// Compare two DIEs for the purpose of canonicalization.
+///
+/// This is a sub-routine of read_context::get_canonical_die.
+///
+/// When DIE canonicalization debugging is on, this function performs
+/// both structural and canonical comparison.  It expects that both
+/// comparison yield the same result.
+///
+/// @param ctxt the read context.
+///
+/// @param l the left-hand-side comparison operand DIE.
+///
+/// @param r the right-hand-side comparison operand DIE.
+///
+/// @param update_canonical_dies_on_the_fly if true, then some
+/// aggregate DIEs will see their canonical types propagated.
+///
+/// @return true iff @p l equals @p r.
+static bool
+compare_dies_during_canonicalization(read_context& ctxt,
+				     const Dwarf_Die *l,
+				     const Dwarf_Die *r,
+				     bool update_canonical_dies_on_the_fly)
+{
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (ctxt.debug_die_canonicalization_is_on_)
+    {
+      bool canonical_equality = false, structural_equality = false;
+      ctxt.use_canonical_die_comparison_ = false;
+      structural_equality = compare_dies(ctxt, l, r,
+					 /*update_canonical_dies_on_the_fly=*/false);
+      ctxt.use_canonical_die_comparison_ = true;
+      canonical_equality = compare_dies(ctxt, l, r,
+					update_canonical_dies_on_the_fly);
+      if (canonical_equality != structural_equality)
+	{
+	  std::cerr << "structural & canonical equality different for DIEs: "
+		    << std::hex
+		    << "l: " << dwarf_dieoffset(const_cast<Dwarf_Die*>(l))
+		    << ", r: " << dwarf_dieoffset(const_cast<Dwarf_Die*>(r))
+		    << std::dec
+		    << ", repr: '"
+		    << ctxt.get_die_pretty_type_representation(l, 0)
+		    << "'"
+		    << std::endl;
+	  ABG_ASSERT_NOT_REACHED;
+	}
+      return structural_equality;
+    }
+#endif
+  return compare_dies(ctxt, l, r,
 		      update_canonical_dies_on_the_fly);
 }
 
@@ -13677,10 +13873,6 @@ build_typedef_type(read_context&	ctxt,
   if (corpus_sptr corp = ctxt.should_reuse_type_from_corpus_group())
     if (loc)
       result = lookup_typedef_type_per_location(loc.expand(), *corp);
-
-  if (!ctxt.odr_is_relevant(die))
-    if (typedef_decl_sptr t = is_typedef(ctxt.lookup_artifact_from_die(die)))
-      result = t;
 
   if (!result)
     {

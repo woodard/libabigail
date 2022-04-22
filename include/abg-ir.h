@@ -217,6 +217,12 @@ public:
 
   bool
   debug_type_canonicalization_is_on() const;
+
+  void
+  debug_die_canonicalization_is_on(bool flag);
+
+  bool
+  debug_die_canonicalization_is_on() const;
 #endif
 
   vector<type_base_sptr>* get_canonical_types(const char* name);
