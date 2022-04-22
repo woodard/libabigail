@@ -1,5 +1,5 @@
 name: Libabigail ABI Checks
-on: 
+on:
   pull_request: []
 
 jobs:
@@ -61,9 +61,9 @@ jobs:
          cp -R $PWD /src
          ls /src
          . /opt/spack/share/spack/setup-env.sh
-         cd /opt/abigail-env    
+         cd /opt/abigail-env
          spack install
-         
+
     - name: Organize Files
       run: |
         mkdir -p /abi
@@ -96,7 +96,7 @@ jobs:
                "libsystemd.so.0"]
 
         # Artifact pairs (named) for comparison)
-        artifacts: [["pr-libs", "latest-libs"]] 
+        artifacts: [["pr-libs", "latest-libs"]]
                     #["pr-libs", "release-libs"]]
 
     steps:
@@ -121,6 +121,6 @@ jobs:
       uses: buildsi/libabigail-action@0.0.11
       env:
         lib: ${{ matrix.libs }}
-      with: 
+      with:
         abidiff: previous/${{ env.lib }} current/${{ env.lib }}
         abidw: "--abidiff current/${{ env.lib }}"

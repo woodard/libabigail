@@ -14,7 +14,7 @@ RUN . /opt/spack/share/spack/setup-env.sh && \
 
 # Prepare a source extraction of libabigail at /src (intended to be overwritten by user)
 COPY . /src
-    
+
 # Second run - should have deps cached
 RUN . /opt/spack/share/spack/setup-env.sh && \
 
@@ -23,7 +23,7 @@ RUN . /opt/spack/share/spack/setup-env.sh && \
     spack --debug install
     # At this point you can spack install, and bind the code to /code to develop
 
-# ensure libabigail stuffs always on the path    
+# ensure libabigail stuffs always on the path
 RUN cd /opt/abigail-env && \
     spack env activate --sh -d . >> /etc/profile.d/z10_spack_environment.sh
 

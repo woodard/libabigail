@@ -210,7 +210,7 @@ def match_nvra(s):
 def is_rpm_file(filename):
     """Return if a file is a RPM"""
     isfile = os.path.isfile(filename)
-    mimetype = mimetypes.guess_type(filename)[0] if isfile else None        
+    mimetype = mimetypes.guess_type(filename)[0] if isfile else None
     isrpm = (mimetype == 'application/x-redhat-package-manager'
              or mimetype == 'application/x-rpm')
 

@@ -4,7 +4,7 @@ Libabigail comes with two Dockerfile in [docker](docker) to build each of:
 
  - a Fedora base image (recommended)
  - an Ubuntu base image.
- 
+
 These containers are built and deployed on merges to the main branch and releases.
 
 ### Usage
