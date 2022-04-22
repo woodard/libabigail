@@ -10,10 +10,12 @@ RUN dnf install -y \
     cpio \
     elfutils-devel \
     gcc-c++ \
+    lbzip2 \
     libtool \
     libxml2-devel \
     python3-koji \
     python3-mock \
     python3-pyxdg \
+    shared-mime-info \
     six \
     wget

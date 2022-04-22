@@ -1,6 +1,12 @@
-FROM ghcr.io/woodard/libabigail-fedora-base as builder
+FROM ghcr.io/woodard/libabigail-fedora-base
 
-# docker build -f docker/Dockerfile.fedora -t ghcr.io/woodard/libabigail-fedora .
+# docker build -f docker/Dockerfile.test -t test .
+
+RUN dnf install -y \
+    file \
+    diffutils \
+    lbzip2 \
+    elfutils-libs
 
 WORKDIR /code
 COPY . /code
@@ -19,20 +25,4 @@ RUN mkdir -p build && \
     -fasynchronous-unwind-tables -O2" LDFLAGS="-Wl,--no-undefined" \
     ../configure --prefix=/opt/libabigail --enable-rpm=yes && \
     make -j4 && \
-    make install
-
-FROM fedora:latest
-COPY --from=builder /opt/libabigail /opt/libabigail
-ENV PATH=/opt/libabigail/bin:$PATH
-
-# Runtime dependencies
-RUN dnf install -y \
-    python3-koji \
-    python3-mock \
-    python3-pyxdg \    
-    elfutils-libelf \
-    elfutils-libs \
-    libstdc++ \
-    lbzip2 \
-    shared-mime-info \
-    six
+    make check || (cat /tests/test-suite.log && exit 1)
