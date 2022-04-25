@@ -2141,8 +2141,8 @@ entry_of_file_with_name(const FTSENT *entry,
       || entry->fts_info == FTS_NS)
     return false;
 
-  string fpath = entry->fts_path;
-  if (string_ends_with(fpath, fname))
+  string fpath = ::basename(entry->fts_path);
+  if (fpath == fname)
     return true;
   return false;
 }
