@@ -3258,6 +3258,12 @@ struct decl_topo_comp
       return !fl && sl;
 
     // We reach this point if location data is useless.
+    if (f->get_is_anonymous()
+	&& s->get_is_anonymous()
+	&& (get_pretty_representation(f, true)
+	    == get_pretty_representation(s, true)))
+      return f->get_name() < s->get_name();
+
     return (get_pretty_representation(f, true)
 	    < get_pretty_representation(s, true));
   }
@@ -3383,16 +3389,21 @@ struct type_topo_comp
 	    type_base *peeled_s =
 	      peel_pointer_or_reference_type(s, true);
 
-	    s1 = get_pretty_representation(peeled_f, true);
-	    s2 = get_pretty_representation(peeled_s, true);
+	    s1 = peeled_f->get_pretty_representation();
+	    s2 = peeled_s->get_pretty_representation();
 	    if (s1 != s2)
 	      return s1 < s2;
 
 	    // The underlying type of pointer/reference have the same
 	    // textual representation; let's try to peel of typedefs
 	    // as well and we'll consider sorting the result as decls.
-	    peeled_f = peel_typedef_pointer_or_reference_type(f, true);
-	    peeled_s = peel_typedef_pointer_or_reference_type(s, true);
+	    peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
+	    peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
+
+	    s1 = peeled_f->get_pretty_representation();
+	    s2 = peeled_s->get_pretty_representation();
+	    if (s1 != s2)
+	      return s1 < s2;
 	  }
       }
 
@@ -3404,8 +3415,8 @@ struct type_topo_comp
 
     if (!fd)
       {
-	type_base *peeled_f = peel_typedef_pointer_or_reference_type(f, true);
-	type_base *peeled_s = peel_typedef_pointer_or_reference_type(s, true);
+	type_base *peeled_f = peel_pointer_or_reference_type(f, true);
+	type_base *peeled_s = peel_pointer_or_reference_type(s, true);
 
 	fd = is_decl(peeled_f);
 	sd = is_decl(peeled_s);
@@ -3413,9 +3424,20 @@ struct type_topo_comp
 	if (!!fd != !!sd)
 	  return fd && !sd;
 
-	if (!fd)
-	  return (get_pretty_representation(f, true)
-		  < get_pretty_representation(s, true));
+	string s1 = get_pretty_representation(peeled_f, true);
+	string s2 = get_pretty_representation(peeled_s, true);
+
+	if (!fd || s1 != s2)
+	  return (s1 < s2);
+
+	peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
+	peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
+
+	s1 = get_pretty_representation(peeled_f, true);
+	s2 = get_pretty_representation(peeled_s, true);
+
+	if (s1 != s2)
+	  return s1 < s2;
       }
 
     // From this point, fd and sd should be non-nil
@@ -16227,6 +16249,18 @@ reference_type_def::get_qualified_name(bool internal) const
   return peek_qualified_name();
 }
 
+string
+reference_type_def::get_pretty_representation(bool internal,
+					      bool qualified_name) const
+{
+  string result = get_name_of_reference_to_type(*get_pointed_to_type(),
+						is_lvalue(),
+						qualified_name,
+						internal);
+
+  return result;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -22012,10 +22046,10 @@ class_decl::class_decl(const environment* env, const string& name,
 ///
 /// @param is_anonymous whether the newly created instance is
 /// anonymous.
-class_decl:: class_decl(const environment* env, const string& name,
-			size_t size_in_bits, size_t align_in_bits,
-			bool is_struct, const location& locus,
-			visibility vis, bool is_anonymous)
+class_decl::class_decl(const environment* env, const string& name,
+		       size_t size_in_bits, size_t align_in_bits,
+		       bool is_struct, const location& locus,
+		       visibility vis, bool is_anonymous)
   : type_or_decl_base(env,
 		      CLASS_TYPE
 		      | ABSTRACT_TYPE_BASE

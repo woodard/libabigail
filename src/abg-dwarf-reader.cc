@@ -324,6 +324,15 @@ static bool
 die_is_decl(const Dwarf_Die* die);
 
 static bool
+die_is_declaration_only(Dwarf_Die* die);
+
+static bool
+die_has_size_attribute(const Dwarf_Die *die);
+
+static bool
+die_has_no_child(const Dwarf_Die *die);
+
+static bool
 die_is_namespace(const Dwarf_Die* die);
 
 static bool
@@ -372,6 +381,9 @@ die_this_pointer_is_const(Dwarf_Die* die);
 
 static bool
 die_object_pointer_is_for_const_method(Dwarf_Die* die);
+
+static bool
+is_type_die_to_be_canonicalized(const Dwarf_Die *die);
 
 static bool
 die_is_at_class_scope(const read_context& ctxt,
@@ -545,6 +557,10 @@ static bool
 compare_dies_during_canonicalization(read_context& ctxt,
 				     const Dwarf_Die *l, const Dwarf_Die *r,
 				     bool update_canonical_dies_on_the_fly);
+
+
+static bool
+get_member_child_die(const Dwarf_Die *die, Dwarf_Die *child);
 
 /// Find the file name of the alternate debug info file.
 ///
@@ -2969,6 +2985,9 @@ public:
 	return true;
       }
 
+    if (!is_type_die_to_be_canonicalized(die))
+      return false;
+
     // The map that associates the string representation of 'die'
     // with a vector of offsets of potentially equivalent DIEs.
     istring_dwarf_offsets_map_type& map =
@@ -3164,8 +3183,9 @@ public:
     if (do_associate_by_repr)
       {
 	Dwarf_Die equiv_die;
-	get_or_compute_canonical_die(die, equiv_die, where_offset,
-				     /*die_as_type=*/false);
+	if (!get_or_compute_canonical_die(die, equiv_die, where_offset,
+					  /*die_as_type=*/false))
+	  return;
 	die_offset = dwarf_dieoffset(&equiv_die);
       }
     else
@@ -3852,7 +3872,9 @@ public:
       return;
 
     Dwarf_Die equiv_die;
-    get_or_compute_canonical_die(die, equiv_die, where, /*die_as_type=*/true);
+    if (!get_or_compute_canonical_die(die, equiv_die, where,
+				      /*die_as_type=*/true))
+      return;
 
     die_artefact_map_type& m =
       type_die_artefact_maps().get_container(*this, &equiv_die);
@@ -6755,10 +6777,54 @@ die_is_effectively_public_decl(const read_context& ctxt,
 static bool
 die_is_declaration_only(Dwarf_Die* die)
 {
-  bool is_declaration_only = false;
-  die_flag_attribute(die, DW_AT_declaration, is_declaration_only, false);
-  return is_declaration_only;
+  bool is_declaration = false;
+  die_flag_attribute(die, DW_AT_declaration, is_declaration, false);
+  if (is_declaration && !die_has_size_attribute(die))
+    return true;
+  return false;
 }
+
+/// Test if a DIE has size attribute.
+///
+/// @param die the DIE to consider.
+///
+/// @return true if the DIE has a size attribute.
+static bool
+die_has_size_attribute(const Dwarf_Die *die)
+{
+  uint64_t s;
+  if (die_size_in_bits(die, s))
+    return true;
+  return false;
+}
+
+/// Test that a DIE has no child DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die has no child DIE.
+static bool
+die_has_no_child(const Dwarf_Die *die)
+{
+  if (!die)
+    return true;
+
+  Dwarf_Die child;
+  if (dwarf_child(const_cast<Dwarf_Die*>(die), &child) == 0)
+    return false;
+  return true;
+}
+
+/// Test whether a given DIE represents a declaration-only DIE.
+///
+/// That is, if the DIE has the DW_AT_declaration flag set.
+///
+/// @param die the DIE to consider.
+//
+/// @return true if a DW_AT_declaration is present, false otherwise.
+static bool
+die_is_declaration_only(const Dwarf_Die* die)
+{return die_is_declaration_only(const_cast<Dwarf_Die*>(die));}
 
 /// Tests whether a given DIE is artificial.
 ///
@@ -6846,6 +6912,36 @@ is_canon_type_to_be_propagated_tag(unsigned tag)
 
     default:
       result = false;
+      break;
+    }
+
+  return result;
+}
+
+/// Test if a given DIE is to be canonicalized.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die is to be canonicalized.
+static bool
+is_type_die_to_be_canonicalized(const Dwarf_Die *die)
+{
+  bool result = false;
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+
+  if (!is_type_tag(tag))
+    return false;
+
+  switch (tag)
+    {
+    case DW_TAG_class_type:
+    case DW_TAG_structure_type:
+    case DW_TAG_union_type:
+      result = !die_is_declaration_only(die);
+      break;
+
+    default:
+      result = true;
       break;
     }
 
@@ -7649,7 +7745,7 @@ compare_dies_cu_decl_file(const Dwarf_Die* l, const Dwarf_Die *r, bool &result)
     compare_dies_string_attribute_value(&l_cu, &r_cu,
 					DW_AT_name,
 					result);
-  if (compared)
+  if (compared && result)
     {
       Dwarf_Die peeled_l, peeled_r;
       if (die_is_pointer_reference_or_typedef_type(l)
@@ -10019,9 +10115,45 @@ compare_as_decl_dies(const Dwarf_Die *l, const Dwarf_Die *r)
   return true;
 }
 
+/// Test if at least one of two ODR-relevant DIEs is decl-only.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param l the first type DIE to consider.
+///
+/// @param r the second type DIE to consider.
+///
+/// @return true iff either @p l or @p r is decl-only and both are
+/// ODR-relevant.
+static bool
+at_least_one_decl_only_among_odr_relevant_dies(const read_context &ctxt,
+					       const Dwarf_Die *l,
+					       const Dwarf_Die *r)
+{
+  if (!(ctxt.odr_is_relevant(l) && ctxt.odr_is_relevant(r)))
+    return false;
+
+  if ((die_is_declaration_only(l) && die_has_no_child(l))
+      || (die_is_declaration_only(r) && die_has_no_child(r)))
+    return true;
+  return false;
+}
+
 /// Compares two type DIEs
 ///
 /// This is a subroutine of compare_dies.
+///
+/// Note that this function doesn't look at the name of the DIEs.
+/// Naming is taken into account by the function compare_as_decl_dies.
+///
+/// If the two DIEs are from a translation unit that is subject to the
+/// ONE Definition Rule, then the function considers that if one DIE
+/// is a declaration, then it's equivalent to the second.  In that
+/// case, the sizes of the two DIEs are not compared.  This is so that
+/// a declaration of a type compares equal to the definition of the
+/// type.
+///
+/// @param ctxt the read context to consider.
 ///
 /// @param l the left operand of the comparison operator.
 ///
@@ -10029,7 +10161,9 @@ compare_as_decl_dies(const Dwarf_Die *l, const Dwarf_Die *r)
 ///
 /// @return true iff @p l equals @p r.
 static bool
-compare_as_type_dies(const Dwarf_Die *l, const Dwarf_Die *r)
+compare_as_type_dies(const read_context& ctxt,
+		     const Dwarf_Die *l,
+		     const Dwarf_Die *r)
 {
   ABG_ASSERT(l && r);
   ABG_ASSERT(die_is_type(l));
@@ -10046,11 +10180,39 @@ compare_as_type_dies(const Dwarf_Die *l, const Dwarf_Die *r)
     // DW_TAG_string_type DIEs are different, by default.
     return false;
 
+  if (at_least_one_decl_only_among_odr_relevant_dies(ctxt, l, r))
+    // A declaration of a type compares equal to the definition of the
+    // type.
+    return true;
+
   uint64_t l_size = 0, r_size = 0;
   die_size_in_bits(l, l_size);
   die_size_in_bits(r, r_size);
 
   return l_size == r_size;
+}
+
+/// Compare two DIEs as decls (looking as their names etc) and as
+/// types (looking at their size etc).
+///
+/// @param ctxt the read context to consider.
+///
+/// @param l the first DIE to consider.
+///
+/// @param r the second DIE to consider.
+///
+/// @return TRUE iff @p l equals @p r as far as naming and size is
+/// concerned.
+static bool
+compare_as_decl_and_type_dies(const read_context &ctxt,
+			      const Dwarf_Die *l,
+			      const Dwarf_Die *r)
+{
+  if (!compare_as_decl_dies(l, r)
+      || !compare_as_type_dies(ctxt, l, r))
+    return false;
+
+  return true;
 }
 
 /// Test if two DIEs representing function declarations have the same
@@ -10234,6 +10396,7 @@ try_canonical_die_comparison(const read_context& ctxt,
   return false;
 }
 
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
 /// This function is called whenever a DIE comparison fails.
 ///
 /// This function is intended for debugging purposes.  The idea is for
@@ -10250,6 +10413,11 @@ notify_die_comparison_failed(const Dwarf_Die* /*l*/, const Dwarf_Die* /*r*/)
 {
 }
 
+#define NOTIFY_DIE_COMPARISON_FAILED(l, r) \
+  notify_die_comparison_failed(l, r)
+#else
+#define NOTIFY_DIE_COMPARISON_FAILED(l, r)
+#endif
 
 /// A macro used to return from DIE comparison routines.
 ///
@@ -10265,7 +10433,9 @@ notify_die_comparison_failed(const Dwarf_Die* /*l*/, const Dwarf_Die* /*r*/)
   do						\
     {						\
       if (value == false)			\
-	notify_die_comparison_failed(l, r);	\
+	{					\
+	  NOTIFY_DIE_COMPARISON_FAILED(l, r);	\
+	}					\
       return value;				\
     }						\
   while(false)
@@ -10280,9 +10450,94 @@ notify_die_comparison_failed(const Dwarf_Die* /*l*/, const Dwarf_Die* /*r*/)
 #define ABG_RETURN_FALSE	    \
   do				    \
     {				    \
-      notify_die_comparison_failed(l, r); \
+      NOTIFY_DIE_COMPARISON_FAILED(l, r); \
       return false;		    \
     } while(false)
+
+/// A macro to set the 'result' variable to 'false'.
+///
+/// The macro invokes the notify_die_comparison_failed function so
+/// that the hacker can set a debugging breakpoint on
+/// notify_die_comparison_failed to know where a DIE comparison failed
+/// during compare_dies_during_canonicalization for instance.
+///
+/// @param result the 'result' variable to set.
+///
+/// @param l the first DIE of the comparison operation.
+///
+/// @param r the second DIE of the comparison operation.
+#define SET_RESULT_TO_FALSE(result, l , r)		   \
+  do							   \
+    {							   \
+      result = false;					   \
+      NOTIFY_DIE_COMPARISON_FAILED(l, r);		   \
+    } while(false)
+
+/// Get the next member sibling of a given class or union member DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @param member out parameter. This is set to the next member
+/// sibling, iff the function returns TRUE.
+///
+/// @return TRUE iff the function set @p member to the next member
+/// sibling DIE.
+static bool
+get_next_member_sibling_die(const Dwarf_Die *die, Dwarf_Die *member)
+{
+  if (!die)
+    return false;
+
+  bool found_member = false;
+  for (found_member = (dwarf_siblingof(const_cast<Dwarf_Die*>(die),
+				       member) == 0);
+       found_member;
+       found_member = (dwarf_siblingof(member, member) == 0))
+    {
+      int tag = dwarf_tag(member);
+      if (tag == DW_TAG_member || tag == DW_TAG_inheritance)
+	break;
+    }
+
+  return found_member;
+}
+
+/// Get the first child DIE of a class/struct/union DIE that is a
+/// member DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @param child out parameter.  This is set to the first child DIE of
+/// @p iff this function returns TRUE.
+///
+/// @return TRUE iff @p child is set to the first child DIE of @p die
+/// that is a member DIE.
+static bool
+get_member_child_die(const Dwarf_Die *die, Dwarf_Die *child)
+{
+  if (!die)
+    return false;
+
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  ABG_ASSERT(tag == DW_TAG_structure_type
+	     || tag == DW_TAG_union_type
+	     || tag == DW_TAG_class_type);
+
+  bool found_child = (dwarf_child(const_cast<Dwarf_Die*>(die),
+				   child) == 0);
+
+  if (!found_child)
+    return false;
+
+  tag = dwarf_tag(child);
+
+  if (!(tag == DW_TAG_member
+	|| tag == DW_TAG_inheritance
+	|| tag == DW_TAG_subprogram))
+    found_child = get_next_member_sibling_die(child, child);
+
+  return found_child;
+}
 
 /// Compare two DIEs emitted by a C compiler.
 ///
@@ -10352,9 +10607,8 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_base_type:
     case DW_TAG_string_type:
     case DW_TAG_unspecified_type:
-      if (!compare_as_type_dies(l, r)
-	  || !compare_as_decl_dies(l, r))
-	result = false;
+      if (!compare_as_decl_and_type_dies(ctxt, l, r))
+	SET_RESULT_TO_FALSE(result, l, r);
       break;
 
     case DW_TAG_typedef:
@@ -10365,9 +10619,9 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_volatile_type:
     case DW_TAG_restrict_type:
       {
-	if (!compare_as_type_dies(l, r))
+	if (!compare_as_type_dies(ctxt, l, r))
 	  {
-	    result = false;
+	    SET_RESULT_TO_FALSE(result, l, r);
 	    break;
 	  }
 
@@ -10383,7 +10637,7 @@ compare_dies(const read_context& ctxt,
 	    // Note that pointers, reference or qualified types to
 	    // anonymous types are not taking into account here because
 	    // those always need to be structurally compared.
-	    result = true;
+	    SET_RESULT_TO_FALSE(result, l, r);
 	    break;
 	  }
       }
@@ -10400,7 +10654,7 @@ compare_dies(const read_context& ctxt,
 	if (lu_is_void && ru_is_void)
 	  result = true;
 	else if (lu_is_void != ru_is_void)
-	  result = false;
+	  SET_RESULT_TO_FALSE(result, l, r);
 	else
 	  result = compare_dies(ctxt, &lu_type_die, &ru_type_die,
 				aggregates_being_compared,
@@ -10410,49 +10664,48 @@ compare_dies(const read_context& ctxt,
       break;
 
     case DW_TAG_enumeration_type:
-      if (!compare_as_type_dies(l, r)
-	  || !compare_as_decl_dies(l, r))
-	result = false;
+      if (!compare_as_decl_and_type_dies(ctxt, l, r))
+	SET_RESULT_TO_FALSE(result, l, r);
       else
 	{
 	  // Walk the enumerators.
 	  Dwarf_Die l_enumtor, r_enumtor;
-	  bool found_l_enumtor, found_r_enumtor;
+	  bool found_l_enumtor = true, found_r_enumtor = true;
 
-	  for (found_l_enumtor = dwarf_child(const_cast<Dwarf_Die*>(l),
-					     &l_enumtor) == 0,
-		 found_r_enumtor = dwarf_child(const_cast<Dwarf_Die*>(r),
-					       &r_enumtor) == 0;
-	       found_l_enumtor && found_r_enumtor;
-	       found_l_enumtor = dwarf_siblingof(&l_enumtor, &l_enumtor) == 0,
-		 found_r_enumtor = dwarf_siblingof(&r_enumtor, &r_enumtor) == 0)
-	    {
-	      int l_tag = dwarf_tag(&l_enumtor), r_tag = dwarf_tag(&r_enumtor);
-	      if ( l_tag != r_tag)
-		{
-		  result = false;
-		  break;
-		}
+	  if (!at_least_one_decl_only_among_odr_relevant_dies(ctxt, l, r))
+	    for (found_l_enumtor = dwarf_child(const_cast<Dwarf_Die*>(l),
+					       &l_enumtor) == 0,
+		   found_r_enumtor = dwarf_child(const_cast<Dwarf_Die*>(r),
+						 &r_enumtor) == 0;
+		 found_l_enumtor && found_r_enumtor;
+		 found_l_enumtor = dwarf_siblingof(&l_enumtor, &l_enumtor) == 0,
+		   found_r_enumtor = dwarf_siblingof(&r_enumtor, &r_enumtor) == 0)
+	      {
+		int l_tag = dwarf_tag(&l_enumtor), r_tag = dwarf_tag(&r_enumtor);
+		if ( l_tag != r_tag)
+		  {
+		    SET_RESULT_TO_FALSE(result, l, r);
+		    break;
+		  }
 
-	      if (l_tag != DW_TAG_enumerator)
-		continue;
+		if (l_tag != DW_TAG_enumerator)
+		  continue;
 
-	      uint64_t l_val = 0, r_val = 0;
-	      die_unsigned_constant_attribute(&l_enumtor,
-					      DW_AT_const_value,
-					      l_val);
-	      die_unsigned_constant_attribute(&r_enumtor,
-					      DW_AT_const_value,
-					      r_val);
-	      if (l_val != r_val)
-		{
-		  result = false;
-		  break;
-		}
-	    }
+		uint64_t l_val = 0, r_val = 0;
+		die_unsigned_constant_attribute(&l_enumtor,
+						DW_AT_const_value,
+						l_val);
+		die_unsigned_constant_attribute(&r_enumtor,
+						DW_AT_const_value,
+						r_val);
+		if (l_val != r_val)
+		  {
+		    SET_RESULT_TO_FALSE(result, l, r);
+		    break;
+		  }
+	      }
 	  if (found_l_enumtor != found_r_enumtor )
-	    result = false;
-
+	    SET_RESULT_TO_FALSE(result, l, r);
 	}
       break;
 
@@ -10469,8 +10722,8 @@ compare_dies(const read_context& ctxt,
 								      die_offset(r)));
 	    break;
 	  }
-	else if (!compare_as_decl_dies(l, r) || !compare_as_type_dies(l, r))
-	  result = false;
+	else if (!compare_as_decl_and_type_dies(ctxt, l, r))
+	  SET_RESULT_TO_FALSE(result, l, r);
 	else
 	  {
 	    insert_offset_pair(aggregates_being_compared,
@@ -10479,37 +10732,42 @@ compare_dies(const read_context& ctxt,
 					   redundant_aggregates_being_compared))
 	      aggregate_redundancy_detected = true;
 	    Dwarf_Die l_member, r_member;
-	    bool found_l_member, found_r_member;
-	    for (found_l_member = dwarf_child(const_cast<Dwarf_Die*>(l),
-					      &l_member) == 0,
-		   found_r_member = dwarf_child(const_cast<Dwarf_Die*>(r),
-						&r_member) == 0;
-		 found_l_member && found_r_member;
-		 found_l_member = dwarf_siblingof(&l_member, &l_member) == 0,
-		   found_r_member = dwarf_siblingof(&r_member, &r_member) == 0)
-	      {
-		int l_tag = dwarf_tag(&l_member), r_tag = dwarf_tag(&r_member);
-		if (l_tag != r_tag)
-		  {
-		    result = false;
-		    break;
-		  }
+	    bool found_l_member = true, found_r_member = true;
 
-		if (l_tag != DW_TAG_member && l_tag != DW_TAG_variable)
-		  // TODO: for now, we don't support c++ class DIEs.
-		  continue;
+	    if (!at_least_one_decl_only_among_odr_relevant_dies(ctxt, l, r))
+	      for (found_l_member = get_member_child_die(l, &l_member),
+		     found_r_member = get_member_child_die(r, &r_member);
+		   found_l_member && found_r_member;
+		   found_l_member = get_next_member_sibling_die(&l_member,
+								&l_member),
+		     found_r_member = get_next_member_sibling_die(&r_member,
+								  &r_member))
+		{
+		  int l_tag = dwarf_tag(&l_member),
+		    r_tag = dwarf_tag(&r_member);
 
-		if (!compare_dies(ctxt, &l_member, &r_member,
-				  aggregates_being_compared,
-				  redundant_aggregates_being_compared,
-				  update_canonical_dies_on_the_fly))
-		  {
-		    result = false;
-		    break;
-		  }
-	      }
+		  if (l_tag != r_tag)
+		    {
+		      SET_RESULT_TO_FALSE(result, l, r);
+		      break;
+		    }
+
+		  ABG_ASSERT(l_tag == DW_TAG_member
+			     || l_tag == DW_TAG_variable
+			     || l_tag == DW_TAG_inheritance
+			     || l_tag == DW_TAG_subprogram);
+
+		  if (!compare_dies(ctxt, &l_member, &r_member,
+				    aggregates_being_compared,
+				    redundant_aggregates_being_compared,
+				    update_canonical_dies_on_the_fly))
+		    {
+		      SET_RESULT_TO_FALSE(result, l, r);
+		      break;
+		    }
+		}
 	    if (found_l_member != found_r_member)
-	      result = false;
+	      SET_RESULT_TO_FALSE(result, l, r);
 
 	    if (erase_offset_pair(aggregates_being_compared,
 				  die_offset(l), die_offset(r)))
@@ -10540,12 +10798,12 @@ compare_dies(const read_context& ctxt,
 				redundant_aggregates_being_compared,
 				update_canonical_dies_on_the_fly))
 		{
-		  result = false;
+		  SET_RESULT_TO_FALSE(result, l, r);
 		  break;
 		}
 	  }
 	if (found_l_child != found_r_child)
-	  result = false;
+	  SET_RESULT_TO_FALSE(result, l, r);
 	// Compare the types of the elements of the array.
 	Dwarf_Die ltype_die, rtype_die;
 	bool found_ltype = die_die_attribute(l, DW_AT_type, ltype_die);
@@ -10591,7 +10849,7 @@ compare_dies(const read_context& ctxt,
 
 	if ((l_lower_bound != r_lower_bound)
 	    || (l_upper_bound != r_upper_bound))
-	  result = false;
+	  SET_RESULT_TO_FALSE(result, l, r);
       }
       break;
 
@@ -10627,7 +10885,7 @@ compare_dies(const read_context& ctxt,
 	    // obviously they are different DIEs.
 	    if (ln != rn)
 	      {
-		result = false;
+		SET_RESULT_TO_FALSE(result, l, r);
 		break;
 	      }
 
@@ -10646,7 +10904,7 @@ compare_dies(const read_context& ctxt,
 	if (l_tag == DW_TAG_subprogram
 	    && !fn_die_equal_by_linkage_name(ctxt, l, r))
 	  {
-	    result = false;
+	    SET_RESULT_TO_FALSE(result, l, r);
 	    break;
 	  }
 	else if (l_tag == DW_TAG_subprogram
@@ -10674,7 +10932,7 @@ compare_dies(const read_context& ctxt,
 				     aggregates_being_compared,
 				     redundant_aggregates_being_compared,
 				     update_canonical_dies_on_the_fly)))
-	      result = false;
+	      SET_RESULT_TO_FALSE(result, l, r);
 	    else
 	      {
 		Dwarf_Die l_child, r_child;
@@ -10698,12 +10956,12 @@ compare_dies(const read_context& ctxt,
 					     redundant_aggregates_being_compared,
 					     update_canonical_dies_on_the_fly)))
 		      {
-			result = false;
+			SET_RESULT_TO_FALSE(result, l, r);
 			break;
 		      }
 		  }
 		if (found_l_child != found_r_child)
-		  result = false;
+		  SET_RESULT_TO_FALSE(result, l, r);
 	      }
 	  }
 
@@ -10725,7 +10983,7 @@ compare_dies(const read_context& ctxt,
 				 aggregates_being_compared,
 				 redundant_aggregates_being_compared,
 				 update_canonical_dies_on_the_fly)))
-	  result = false;
+	  SET_RESULT_TO_FALSE(result, l, r);
       }
       break;
 
@@ -10740,7 +10998,7 @@ compare_dies(const read_context& ctxt,
 	      die_member_offset(ctxt, l, l_offset_in_bits);
 	      die_member_offset(ctxt, r, r_offset_in_bits);
 	      if (l_offset_in_bits != r_offset_in_bits)
-		result = false;
+		SET_RESULT_TO_FALSE(result, l, r);
 	    }
 	  if (result)
 	    {
@@ -10752,18 +11010,74 @@ compare_dies(const read_context& ctxt,
 				aggregates_being_compared,
 				redundant_aggregates_being_compared,
 				update_canonical_dies_on_the_fly))
-		result = false;
+		SET_RESULT_TO_FALSE(result, l, r);
 	    }
 	}
       else
-	result = false;
+	SET_RESULT_TO_FALSE(result, l, r);
+      break;
+
+    case DW_TAG_inheritance:
+      {
+	Dwarf_Die l_type, r_type;
+	ABG_ASSERT(die_die_attribute(l, DW_AT_type, l_type));
+	ABG_ASSERT(die_die_attribute(r, DW_AT_type, r_type));
+	if (!compare_dies(ctxt, &l_type, &r_type,
+			  aggregates_being_compared,
+			  redundant_aggregates_being_compared,
+			  update_canonical_dies_on_the_fly))
+	  ABG_RETURN(false);
+
+	uint64_t l_a = 0, r_a = 0;
+	die_unsigned_constant_attribute(l, DW_AT_accessibility, l_a);
+	die_unsigned_constant_attribute(r, DW_AT_accessibility, r_a);
+	if (l_a != r_a)
+	  ABG_RETURN(false);
+
+	die_unsigned_constant_attribute(l, DW_AT_virtuality, l_a);
+	die_unsigned_constant_attribute(r, DW_AT_virtuality, r_a);
+	if (l_a != r_a)
+	  ABG_RETURN(false);
+
+	int64_t l_offset_in_bits = 0, r_offset_in_bits = 0;
+	die_member_offset(ctxt, l, l_offset_in_bits);
+	die_member_offset(ctxt, r, r_offset_in_bits);
+	if (l_offset_in_bits != r_offset_in_bits)
+	  ABG_RETURN(false);
+      }
+      break;
+
+    case DW_TAG_ptr_to_member_type:
+      {
+	if (compare_dies_string_attribute_value(l, r, DW_AT_name, result))
+	  if (!result)
+	    ABG_RETURN(false);
+
+	Dwarf_Die l_type, r_type;
+	ABG_ASSERT(die_die_attribute(l, DW_AT_type, l_type));
+	ABG_ASSERT(die_die_attribute(r, DW_AT_type, r_type));
+	result = compare_dies(ctxt, &l_type, &r_type,
+			      aggregates_being_compared,
+			      redundant_aggregates_being_compared,
+			      update_canonical_dies_on_the_fly);
+	if (!result)
+	  ABG_RETURN(result);
+
+	ABG_ASSERT(die_die_attribute(l, DW_AT_containing_type, l_type));
+	ABG_ASSERT(die_die_attribute(r, DW_AT_containing_type, r_type));
+	result = compare_dies(ctxt, &l_type, &r_type,
+			      aggregates_being_compared,
+			      redundant_aggregates_being_compared,
+			      update_canonical_dies_on_the_fly);
+	if (!result)
+	  ABG_RETURN(result);
+      }
       break;
 
     case DW_TAG_enumerator:
     case DW_TAG_packed_type:
     case DW_TAG_set_type:
     case DW_TAG_file_type:
-    case DW_TAG_ptr_to_member_type:
     case DW_TAG_thrown_type:
     case DW_TAG_interface_type:
     case DW_TAG_shared_type:
@@ -10782,7 +11096,6 @@ compare_dies(const read_context& ctxt,
     case DW_TAG_variant:
     case DW_TAG_common_block:
     case DW_TAG_common_inclusion:
-    case DW_TAG_inheritance:
     case DW_TAG_inlined_subroutine:
     case DW_TAG_with_stmt:
     case DW_TAG_access_declaration:
@@ -10815,7 +11128,9 @@ compare_dies(const read_context& ctxt,
       if (ctxt.debug_die_canonicalization_is_on_)
 	ABG_ASSERT_NOT_REACHED;
 #endif
+      ABG_ASSERT_NOT_REACHED;
       result = false;
+      break;
     }
 
   if (result == true
@@ -12265,6 +12580,7 @@ lookup_class_typedef_or_enum_type_from_corpus(Dwarf_Die* die,
   return lookup_class_typedef_or_enum_type_from_corpus(scope, type_name);
 }
 
+
 /// Test if a DIE represents a function that is a member of a given
 /// class type.
 ///
@@ -12516,8 +12832,9 @@ add_or_update_class_type(read_context&	 ctxt,
       ABG_ASSERT(result);
     }
 
-  if (size != result->get_size_in_bits())
-    result->set_size_in_bits(size);
+  if (!klass || klass->get_is_declaration_only())
+    if (size != result->get_size_in_bits())
+      result->set_size_in_bits(size);
 
   if (klass)
     // We are amending a class that was built before.  So let's check
@@ -14840,11 +15157,6 @@ read_debug_info_into_corpus(read_context& ctxt)
       }
   }
 
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  if (ctxt.env()->self_comparison_debug_is_on())
-    ctxt.env()->set_self_comparison_debug_input(ctxt.current_corpus());
-#endif
-
   return ctxt.current_corpus();
 }
 
@@ -15235,7 +15547,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    if (result)
 	      {
 		maybe_set_member_type_access_specifier(is_decl(result), die);
-		maybe_canonicalize_type(die, ctxt);
+		maybe_canonicalize_type(is_type(result), ctxt);
 	      }
 	  }
       }

@@ -167,7 +167,7 @@
       <typedef-decl name='string' type-id='type-id-45' filepath='/usr/include/c++/4.8.2/bits/stringfwd.h' line='62' column='1' id='type-id-64'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-45'>
+      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-45'>
         <member-type access='private'>
           <class-decl name='_Alloc_hider' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-85'>
             <member-function access='public' constructor='yes'>
@@ -735,5 +735,7 @@
       <parameter type-id='type-id-65' name='s' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1'/>
       <return type-id='type-id-67'/>
     </function-decl>
+    <namespace-decl name='__gnu_cxx'>
+    </namespace-decl>
   </abi-instr>
 </abi-corpus>
