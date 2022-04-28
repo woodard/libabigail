@@ -132,7 +132,7 @@ struct non_canonicalized_type_hash
   {
     ABG_ASSERT(is_non_canonicalized_type(p));
     std::hash<string> h;
-    return h(p->get_pretty_representation(true, true));
+    return h(p->get_pretty_representation(false, true));
   }
 }; // end struct non_canonicalized_type_hash
 
@@ -159,9 +159,9 @@ struct non_canonicalized_type_equal
     ABG_ASSERT(is_non_canonicalized_type(l));
     ABG_ASSERT(is_non_canonicalized_type(r));
 
-    if (l->get_pretty_representation(true, true)
-	!= r->get_pretty_representation(true, true))
-      return false;
+    /*    if (l->get_pretty_representation(false, true)
+	!= r->get_pretty_representation(false, true))
+	return false;*/
 
    return *l == *r;
   }
@@ -682,6 +682,18 @@ public:
 
       if (r1 == r2)
 	{
+	  if (is_typedef(l) || is_typedef(r))
+	    {
+	      l = peel_typedef_type(l);
+	      r = peel_typedef_type(r);
+
+	      r1 = ir::get_pretty_representation(l, true),
+		r2 = ir::get_pretty_representation(r, true);
+
+	      if (r1 != r2)
+		return r1 < r2;
+	    }
+
 	  type_ptr_map::const_iterator i =
 	    map->find(const_cast<type_base*>(l));
 	  if (i != map->end())
@@ -2042,6 +2054,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
       // ... or a class.
       else if (class_decl* c = is_class_type(*i))
 	{
+	  c = is_class_type(look_through_decl_only_class(c));
 	  class_decl_sptr class_type(c, noop_deleter());
 	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
 				       /*prepare_to_handle_members=*/false);

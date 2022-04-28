@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 11 Changed (91 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 10 Changed (92 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -24,7 +24,7 @@
     [A] 'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
     [A] 'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 
-  11 functions with some indirect sub-type change:
+  10 functions with some indirect sub-type change:
 
     [C] 'method void tbb::filter::set_end_of_input()' at pipeline.cpp:700:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::filter*' has sub-type changes:
@@ -70,7 +70,7 @@
                             2 data member insertions:
                               'volatile intptr_t* my_ref_top_priority', at offset 576 (in bits) at scheduler.h:96:1
                               'volatile uintptr_t* my_ref_reload_epoch', at offset 640 (in bits) at scheduler.h:99:1
-                            3 data member changes (2 filtered):
+                            3 data member changes:
                               type of 'tbb::internal::arena_slot* my_arena_slot' changed:
                                 in pointed to type 'struct tbb::internal::arena_slot' at scheduler_common.h:316:1:
                                   type size hasn't changed
@@ -237,14 +237,6 @@
           type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-
-    [C] 'method bool tbb::task_group_context::cancel_group_execution()' at task.h:473:1 has some indirect sub-type changes:
-      implicit parameter 0 of type 'tbb::task_group_context*' has sub-type changes:
-        in pointed to type 'class tbb::task_group_context' at task.h:302:1:
-          type size hasn't changed
-          1 data member insertion:
-            'tbb::internal::cpu_ctl_env_space my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
-          no data member changes (3 filtered);
 
     [C] 'method tbb::thread_bound_filter::result_type tbb::thread_bound_filter::process_item()' at pipeline.cpp:712:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::thread_bound_filter*' has sub-type changes:

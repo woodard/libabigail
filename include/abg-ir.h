@@ -2371,6 +2371,10 @@ public:
   virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
+  virtual string
+  get_pretty_representation(bool internal = false,
+			    bool qualified_name = true) const;
+
   virtual bool
   traverse(ir_node_visitor& v);
 
