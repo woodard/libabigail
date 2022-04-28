@@ -2042,6 +2042,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
       // ... or a class.
       else if (class_decl* c = is_class_type(*i))
 	{
+	  c = is_class_type(look_through_decl_only_class(c));
 	  class_decl_sptr class_type(c, noop_deleter());
 	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
 				       /*prepare_to_handle_members=*/false);

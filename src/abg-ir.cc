@@ -16227,6 +16227,18 @@ reference_type_def::get_qualified_name(bool internal) const
   return peek_qualified_name();
 }
 
+string
+reference_type_def::get_pretty_representation(bool internal,
+					      bool qualified_name) const
+{
+  string result = get_name_of_reference_to_type(*get_pointed_to_type(),
+						is_lvalue(),
+						qualified_name,
+						internal);
+
+  return result;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -22012,10 +22024,10 @@ class_decl::class_decl(const environment* env, const string& name,
 ///
 /// @param is_anonymous whether the newly created instance is
 /// anonymous.
-class_decl:: class_decl(const environment* env, const string& name,
-			size_t size_in_bits, size_t align_in_bits,
-			bool is_struct, const location& locus,
-			visibility vis, bool is_anonymous)
+class_decl::class_decl(const environment* env, const string& name,
+		       size_t size_in_bits, size_t align_in_bits,
+		       bool is_struct, const location& locus,
+		       visibility vis, bool is_anonymous)
   : type_or_decl_base(env,
 		      CLASS_TYPE
 		      | ABSTRACT_TYPE_BASE

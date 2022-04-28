@@ -725,7 +725,9 @@ struct environment::priv
       unordered_map<uintptr_t, string>::const_iterator it =
 	pointer_type_id_map_.find(reinterpret_cast<uintptr_t>(t));
       if (it == pointer_type_id_map_.end())
-	return false;
+	// This type didn't have a type-id in the abixml file.  Maybe
+	// it's a function or method type.  So let's just keep going.
+	return true;
       type_id = it->second;
     }
 
