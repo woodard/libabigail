@@ -310,6 +310,10 @@ Options
     Show sizes and offsets in decimal base.  This option is activated
     by default.
 
+  * ``--ignore-soname``
+
+    Ignore differences in the SONAME when doing a comparison
+
   *  ``--no-show-relative-offset-changes``
 
      Without this option, when the offset of a data member changes,
