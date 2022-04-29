@@ -15,7 +15,7 @@ on:
   # On push to main we build and deploy images
   push:
     branches:
-      - master
+      - develop
 
   # Do build to test works on PR
   pull_request: []
