@@ -268,6 +268,14 @@ static InOutSpec in_out_specs[] =
     "data/test-read-ctf/test-callback2.abi",
     "output/test-read-ctf/test-callback2.abi",
   },
+  {
+    "data/test-read-ctf/test-forward-undefine-type-decl.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-ctf/test-forward-undefine-type-decl.abi",
+    "output/test-read-ctf/test-forward-undefine-type-decl.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
 };
