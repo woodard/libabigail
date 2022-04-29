@@ -669,6 +669,9 @@ test-read-ctf/test-list-struct.abi	\
 test-read-ctf/test-callback2.c		\
 test-read-ctf/test-callback2.o		\
 test-read-ctf/test-callback2.abi	\
+test-read-ctf/test-anonymous-fields.c	\
+test-read-ctf/test-anonymous-fields.o	\
+test-read-ctf/test-anonymous-fields.o.abi	\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
