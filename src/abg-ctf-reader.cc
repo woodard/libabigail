@@ -384,6 +384,61 @@ process_ctf_sou_members(read_context *ctxt,
     fprintf(stderr, "ERROR from ctf_member_next\n");
 }
 
+/// Create a declaration-only union or struct type and add it to the
+/// IR.
+///
+/// @param ctxt the read context.
+/// @param tunit the current IR translation unit.
+/// @param ctf_dictionary the CTF dictionary being read.
+/// @param ctf_type the CTF type ID of the source type.
+/// @return the resulting IR node created.
+
+static type_base_sptr
+process_ctf_forward_type(read_context *ctxt,
+                         translation_unit_sptr tunit,
+                         ctf_dict_t *ctf_dictionary,
+                         ctf_id_t ctf_type)
+{
+  decl_base_sptr result;
+  std::string type_name = ctf_type_name_raw(ctf_dictionary,
+                                            ctf_type);
+  bool type_is_anonymous = (type_name == "");
+  uint32_t kind = ctf_type_kind_forwarded (ctf_dictionary, ctf_type);
+
+  if (kind == CTF_K_UNION)
+    {
+      union_decl_sptr
+       union_fwd(new union_decl(ctxt->ir_env,
+                                type_name,
+                                /*alignment=*/0,
+                                location(),
+                                decl_base::VISIBILITY_DEFAULT,
+                                type_is_anonymous));
+      union_fwd->set_is_declaration_only(true);
+      result = union_fwd;
+    }
+  else
+    {
+      class_decl_sptr
+       struct_fwd(new class_decl(ctxt->ir_env, type_name,
+                                 /*alignment=*/0, /*size=*/0,
+                                 true /* is_struct */,
+                                 location(),
+                                 decl_base::VISIBILITY_DEFAULT,
+                                 type_is_anonymous));
+      struct_fwd->set_is_declaration_only(true);
+      result = struct_fwd;
+    }
+
+  if (!result)
+    return is_type(result);
+
+  add_decl_to_scope(result, tunit->get_global_scope());
+  ctxt->add_type(ctf_type, is_type(result));
+
+  return is_type(result);
+}
+
 /// Build and return a struct type libabigail IR.
 ///
 /// @param ctxt the read context.
@@ -813,6 +868,13 @@ process_ctf_type(read_context *ctxt,
         result = is_type(struct_decl);
         break;
       }
+    case CTF_K_FORWARD:
+      {
+        result = process_ctf_forward_type(ctxt, tunit,
+					  ctf_dictionary,
+                                          ctf_type);
+      }
+      break;
     case CTF_K_UNION:
       {
         union_decl_sptr union_decl

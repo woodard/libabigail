@@ -660,6 +660,9 @@ test-read-ctf/test-functions-declaration.o	\
 test-read-ctf/test-forward-type-decl.abi	\
 test-read-ctf/test-forward-type-decl.o	\
 test-read-ctf/test-forward-type-decl.c	\
+test-read-ctf/test-forward-undefine-type-decl.abi	\
+test-read-ctf/test-forward-undefine-type-decl.c		\
+test-read-ctf/test-forward-undefine-type-decl.o		\
 test-read-ctf/test-list-struct.c	\
 test-read-ctf/test-list-struct.o	\
 test-read-ctf/test-list-struct.abi	\
