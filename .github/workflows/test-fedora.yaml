@@ -1,4 +1,4 @@
-name: Libabigail ABI Diff Checks
+name: Libabigail Fedora Self Checks
 on:
   pull_request: []
 
@@ -9,9 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-
-        # Pairs of path and install command
-	packages: ["aspell",
+        # Names of packages with known problems
+        packages: ["aspell",
 		   "btrfs-progs",
 		   "dovecot",
 		   "geos",
@@ -37,7 +36,8 @@ jobs:
 		   "webrtc-audio-processing",
 		   "xerces-c",
 		   "zfs-fuse"]
-	libs: [["/lib64/libabigail.so", "libabigail"],
+        # Pairs of path and install command
+        libs: [["/lib64/libabigail.so", "libabigail"],
                ["/lib64/libadwaitaqtpriv.so", "libadwaita-qt5"],
                ["/lib64/libaspell.so", "aspell"],
                ["/lib64/libboost_log.so", "boost-log"],
@@ -77,9 +77,9 @@ jobs:
     steps:
     - name: Run fedabipkgdiff
       env:
-	package: ${ matrix.packages }
+	package: ${{ matrix.packages }}
       run: fedabipkgdiff --self-compare -a --from fc36 ${package}
-      
+
     - name: Install Library
       env:
         lib: ${{ matrix.libs[1] }}
