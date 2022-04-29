@@ -1,4 +1,4 @@
-Functions changes summary: 8 Removed, 6 Changed (3 filtered out), 16 Added functions
+Functions changes summary: 8 Removed, 5 Changed (5 filtered out), 16 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 Function symbols changes summary: 1 Removed, 0 Added function symbol not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -34,14 +34,28 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
     note that this adds a new entry to the vtable of class std::tr1::_Sp_counted_base<__gnu_cxx::_Lock_policy::_S_atomic>
   [A] 'function void std::tr1::__enable_shared_from_this_helper<__gnu_cxx::_Lock_policy::_S_atomic>(const std::tr1::__shared_count<__gnu_cxx::_Lock_policy::_S_atomic>&, ...)'    {_ZNSt3tr132__enable_shared_from_this_helperILN9__gnu_cxx12_Lock_policyE2EEEvRKNS_14__shared_countIXT_EEEz}
 
-6 functions with some indirect sub-type change:
+5 functions with some indirect sub-type change:
 
   [C] 'method abigail::interned_string abigail::xml_writer::write_context::get_id_for_type(abigail::ir::type_base*) const' at abg-writer.cc:247:1 has some indirect sub-type changes:
+    return type changed:
+      type size hasn't changed
+      1 data member change:
+        type of 'std::__cxx11::string* raw_' changed:
+          in pointed to type 'typedef std::__cxx11::string' at stringfwd.h:74:1:
+            underlying type 'class std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >' at basic_string.h:72:1 changed:
+              type size hasn't changed
+              3 data member deletions:
+                'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider _M_dataplus', at offset 0 (in bits) at basic_string.h:115:1
+                'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::size_type _M_string_length', at offset 64 (in bits) at basic_string.h:116:1
+                'union {char _M_local_buf[16]; std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::size_type _M_allocated_capacity;}', at offset 128 (in bits)
     implicit parameter 0 of type 'const abigail::xml_writer::write_context*' has sub-type changes:
       in pointed to type 'const abigail::xml_writer::write_context':
         in unqualified underlying type 'class abigail::xml_writer::write_context' at abg-writer.cc:155:1:
           type size hasn't changed
-          4 data member changes (3 filtered):
+          5 data member changes (4 filtered):
+            type of 'abigail::config m_config' changed:
+              type size hasn't changed
+              no data member changes (4 filtered);
             type of 'abigail::xml_writer::type_ptr_map m_type_id_map' changed:
               underlying type 'class std::tr1::unordered_map<abigail::ir::type_base*, abigail::interned_string, abigail::xml_writer::type_hasher, abigail::diff_utils::deep_ptr_eq_functor, std::allocator<std::pair<abigail::ir::type_base* const, abigail::interned_string> > >' at unordered_map.h:180:1 changed:
                 type name changed from 'std::tr1::unordered_map<abigail::ir::type_base*, abigail::interned_string, abigail::xml_writer::type_hasher, abigail::diff_utils::deep_ptr_eq_functor, std::allocator<std::pair<abigail::ir::type_base* const, abigail::interned_string> > >' to 'std::tr1::unordered_map<abigail::ir::type_base *, abigail::interned_string, abigail::xml_writer::type_hasher, abigail::diff_utils::deep_ptr_eq_functor, std::allocator<std::pair<abigail::ir::type_base *const, abigail::interned_string> > >'
@@ -119,43 +133,24 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                   typedef name changed from std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_Map_pointer to std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_Map_pointer at stl_deque.h:112:1
                   underlying type 'typedef std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::__ptr_to' at stl_deque.h:116:1 changed:
                     entity changed from 'typedef std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::__ptr_to' to compatible type 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >**'
-                      in pointed to type 'class std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >':
-                        entity changed from 'class std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >' to 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*'
-                        type size changed from 256 to 64 (in bits)
               and name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Deque_impl::_M_map' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_Deque_impl::_M_map' at stl_deque.h:550:1
               type of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::iterator _M_start' changed:
                 typedef name changed from std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::iterator to std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::iterator at stl_deque.h:485:1
                 underlying type 'struct std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>' at stl_deque.h:106:1 changed:
                   type name changed from 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>' to 'std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>'
                   type size hasn't changed
-                  1 data member changes (3 filtered):
+                  4 data member changes:
+                    type of 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_Elt_pointer _M_cur' changed:
+                      typedef name changed from std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_Elt_pointer to std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_Elt_pointer at stl_deque.h:111:1
+                      underlying type 'typedef std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::__ptr_to' at stl_deque.h:116:1 changed:
+                        entity changed from 'typedef std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::__ptr_to' to compatible type 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*'
+                    and name of 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_M_cur' changed to 'std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_M_cur' at stl_deque.h:137:1
+                    name of 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_M_first' changed to 'std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_M_first' at stl_deque.h:138:1
+                    name of 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_M_last' changed to 'std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_M_last' at stl_deque.h:139:1
                     name of 'std::_Deque_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>::_M_node' changed to 'std::_Deque_iterator<std::__cxx11::basic_string<char>, std::__cxx11::basic_string<char> &, std::__cxx11::basic_string<char> *>::_M_node' at stl_deque.h:140:1
               and name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Deque_impl::_M_start' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_Deque_impl::_M_start' at stl_deque.h:552:1
               name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Deque_impl::_M_finish' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_Deque_impl::_M_finish' at stl_deque.h:553:1
           and name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_impl' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_M_impl' at stl_deque.h:631:1
-
-  [C] 'method void std::_Deque_base<unsigned int, std::allocator<unsigned int> >::_M_initialize_map(std::size_t)' at stl_deque.h:625:1 has some indirect sub-type changes:
-    implicit parameter 0 of type 'std::_Deque_base<unsigned int, std::allocator<unsigned int> >*' has sub-type changes:
-      in pointed to type 'class std::_Deque_base<unsigned int, std::allocator<unsigned int> >' at stl_deque.h:458:1:
-        type size hasn't changed
-        1 data member change:
-          type of 'std::_Deque_base<unsigned int, std::allocator<unsigned int> >::_Deque_impl _M_impl' changed:
-            type size hasn't changed
-            2 data member changes (1 filtered):
-              type of 'std::_Deque_base<unsigned int, std::allocator<unsigned int> >::_Map_pointer _M_map' changed:
-                underlying type 'typedef std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::_Map_pointer' at stl_deque.h:123:1 changed:
-                  typedef name changed from std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::_Map_pointer to std::_Deque_iterator<unsigned int, unsigned int &, unsigned int *>::_Map_pointer at stl_deque.h:112:1
-                  underlying type 'typedef std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::__ptr_to' at stl_deque.h:116:1 changed:
-                    entity changed from 'typedef std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::__ptr_to' to compatible type 'unsigned int**'
-                      in pointed to type 'unsigned int':
-                        entity changed from 'unsigned int' to 'unsigned int*'
-                        type size changed from 32 to 64 (in bits)
-              type of 'std::_Deque_base<unsigned int, std::allocator<unsigned int> >::iterator _M_start' changed:
-                underlying type 'struct std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>' at stl_deque.h:106:1 changed:
-                  type name changed from 'std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>' to 'std::_Deque_iterator<unsigned int, unsigned int &, unsigned int *>'
-                  type size hasn't changed
-                  1 data member changes (3 filtered):
-                    name of 'std::_Deque_iterator<unsigned int, unsigned int&, unsigned int*>::_M_node' changed to 'std::_Deque_iterator<unsigned int, unsigned int &, unsigned int *>::_M_node' at stl_deque.h:140:1
 
 1 Removed function symbol not referenced by debug info:
 

@@ -106,7 +106,8 @@ test_task::run_abidw(const string& extargs)
         + in_elf_path
         + "\nand:\n"
         + out_abi_path
-        + "\n";
+        + "\n"
+	+ "command was: '" + cmd + "'\n";
 
       return false;
     }
@@ -129,11 +130,12 @@ test_task::run_diff()
   string cmd = "diff -u " + in_abi_path + " " + out_abi_path;
   if (system(cmd.c_str()))
     {
-      error_message = string("ABIs differ:\n")
+      error_message = string("ABI files differ:\n")
         + in_abi_path
         + "\nand:\n"
         + out_abi_path
-        + "\n";
+        + "\n"
+	+ "command was: '" + cmd + "'\n";
 
       return false;
     }
