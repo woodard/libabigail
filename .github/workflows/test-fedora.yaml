@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-	# Names of packages with known problems
-	packages: ["aspell",
+        # Names of packages with known problems
+        packages: ["aspell",
 		   "btrfs-progs",
 		   "dovecot",
 		   "geos",
@@ -36,8 +36,8 @@ jobs:
 		   "webrtc-audio-processing",
 		   "xerces-c",
 		   "zfs-fuse"]
-	# Pairs of path and install command
-	libs: [["/lib64/libabigail.so", "libabigail"],
+        # Pairs of path and install command
+        libs: [["/lib64/libabigail.so", "libabigail"],
                ["/lib64/libadwaitaqtpriv.so", "libadwaita-qt5"],
                ["/lib64/libaspell.so", "aspell"],
                ["/lib64/libboost_log.so", "boost-log"],
@@ -79,7 +79,7 @@ jobs:
       env:
 	package: ${{ matrix.packages }}
       run: fedabipkgdiff --self-compare -a --from fc36 ${package}
-      
+
     - name: Install Library
       env:
         lib: ${{ matrix.libs[1] }}
