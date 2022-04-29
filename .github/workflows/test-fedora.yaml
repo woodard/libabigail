@@ -77,7 +77,7 @@ jobs:
     steps:
     - name: Run fedabipkgdiff
       env:
-	package: ${{ matrix.packages }}
+        package: ${{ matrix.packages }}
       run: fedabipkgdiff --self-compare -a --from fc36 ${package}
 
     - name: Install Library
