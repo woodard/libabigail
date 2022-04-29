@@ -1,4 +1,4 @@
-name: Libabigail Fedora Self Checks
+name: Libabigail ABI Diff Checks
 on: 
   pull_request: []
 
@@ -9,33 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Names of packages with known problems
-        packages: ["aspell",
-		   "btrfs-progs",
-		   "dovecot",
-		   "geos",
-		   "gimp",
-		   "glibmm24",
-		   "hdf5",
-		   "infinipath-psm",
-		   "libabigail",
-		   "libdap",
-		   "libicu67",
-		   "libkml",
-		   "libmusicbrainz5",
-		   "libopenmpt",
-		   "libXt",
-		   "llvm",
-		   "lpsolve",
-		   "openmpi",
-		   "proj",
-		   "protobuf",
-		   "qt5-qtwayland",
-		   "taglib",
-		   "tigervnc",
-		   "webrtc-audio-processing",
-		   "xerces-c",
-		   "zfs-fuse"]
+
         # Pairs of path and install command
         libs: [["/lib64/libabigail.so", "libabigail"],
                ["/lib64/libadwaitaqtpriv.so", "libadwaita-qt5"],
@@ -75,11 +49,6 @@ jobs:
                ["/lib64/libvtkRenderingCore.so", "vtk"],
                ["/lib64/libwebrtc_audio_processing.so", "webrtc-audio-processing"]]
     steps:
-    - name: Run fedabipkgdiff
-      env:
-	package: ${{ matrix.packages }}
-      run: fedabipkgdiff --self-compare -a --from fc36 ${package}
-
     - name: Install Library
       env:
         lib: ${{ matrix.libs[1] }}
