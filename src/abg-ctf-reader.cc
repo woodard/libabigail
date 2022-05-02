@@ -350,7 +350,7 @@ process_ctf_sou_members(read_context *ctxt,
   while ((member_size = ctf_member_next(ctf_dictionary, ctf_type,
                                         &member_next, &member_name,
                                         &member_ctf_type,
-                                        CTF_MN_RECURSE)) >= 0)
+                                        0 /* flags */)) >= 0)
     {
       ctf_membinfo_t membinfo;
 
