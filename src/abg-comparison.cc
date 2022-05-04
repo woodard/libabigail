@@ -10921,7 +10921,10 @@ compute_diff(const corpus_sptr	f,
 
   ctxt->set_corpus_diff(r);
 
-  r->priv_->sonames_equal_ = f->get_soname() == s->get_soname();
+  if(ctxt->show_soname_change())
+    r->priv_->sonames_equal_ = f->get_soname() == s->get_soname();
+  else
+    r->priv_->sonames_equal_ = true;
 
   r->priv_->architectures_equal_ =
     f->get_architecture_name() == s->get_architecture_name();

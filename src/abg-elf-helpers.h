@@ -148,6 +148,9 @@ bool
 architecture_is_arm32(Elf* elf_handle);
 
 bool
+architecture_is_arm64(Elf* elf_handle);
+
+bool
 architecture_is_big_endian(Elf* elf_handle);
 
 GElf_Addr

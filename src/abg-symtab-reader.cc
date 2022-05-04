@@ -236,9 +236,6 @@ symtab::load_(Elf*	       elf_handle,
   std::unordered_set<std::string> exported_kernel_symbols;
   std::unordered_map<std::string, uint64_t> crc_values;
 
-  const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
-  const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
-
   for (size_t i = 0; i < number_syms; ++i)
     {
       GElf_Sym *sym, sym_mem;
@@ -347,23 +344,8 @@ symtab::load_(Elf*	       elf_handle,
 	}
       else if (symbol_sptr->is_defined())
 	{
-	  GElf_Addr symbol_value =
-	      elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle,
-								    sym);
-
-	  // See also symtab::add_alternative_address_lookups.
-	  if (symbol_sptr->is_function())
-	    {
-	      if (is_arm32)
-		// Clear bit zero of ARM32 addresses as per "ELF for the Arm
-		// Architecture" section 5.5.3.
-		// https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
-		symbol_value &= ~1;
-	      else if (is_ppc64)
-		update_function_entry_address_symbol_map(elf_handle, sym,
-							 symbol_sptr);
-	    }
-
+	  const GElf_Addr symbol_value =
+	    get_symbol_value(elf_handle, sym, symbol_sptr);
 	  const auto result =
 	    addr_symbol_map_.emplace(symbol_value, symbol_sptr);
 	  if (!result.second)
@@ -483,6 +465,49 @@ symtab::update_main_symbol(GElf_Addr addr, const std::string& name)
     addr_symbol_map_[addr] = new_main;
 }
 
+/// Various adjustments and bookkeeping may be needed to provide a correct
+/// interpretation (one that matches DWARF addresses) of raw symbol values.
+///
+/// @param elf_handle the ELF handle
+///
+/// @param elf_symbol the ELF symbol
+///
+/// @param symbol_sptr the libabigail symbol
+///
+/// @return a possibly-adjusted symbol value
+GElf_Addr
+symtab::get_symbol_value(Elf* elf_handle,
+			 GElf_Sym* elf_symbol,
+			 const elf_symbol_sptr& symbol_sptr)
+{
+  const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
+  const bool is_arm64 = elf_helpers::architecture_is_arm64(elf_handle);
+  const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
+
+  GElf_Addr symbol_value =
+    elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle,
+							  elf_symbol);
+
+  if (symbol_sptr->is_function())
+    {
+      if (is_arm32)
+	// Clear bit zero of ARM32 addresses as per "ELF for the Arm
+	// Architecture" section 5.5.3.
+	// https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
+	symbol_value &= ~1;
+      else if (is_ppc64)
+	update_function_entry_address_symbol_map(elf_handle, elf_symbol,
+						 symbol_sptr);
+    }
+  if (is_arm64)
+    // Copy bit 55 over bits 56 to 63 which may be tag information.
+    symbol_value = symbol_value & (1ULL<<55)
+		   ? symbol_value | (0xffULL<<56)
+		   : symbol_value &~ (0xffULL<<56);
+
+  return symbol_value;
+}
+
 /// Update the function entry symbol map to later allow lookups of this symbol
 /// by entry address as well. This is relevant for ppc64 ELFv1 binaries.
 ///
@@ -582,9 +607,6 @@ symtab::update_function_entry_address_symbol_map(
 void
 symtab::add_alternative_address_lookups(Elf* elf_handle)
 {
-  const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
-  const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
-
   Elf_Scn* symtab_section = elf_helpers::find_symtab_section(elf_handle);
   if (!symtab_section)
     return;
@@ -634,23 +656,8 @@ symtab::add_alternative_address_lookups(Elf* elf_handle)
 	  if (symbols.size() == 1)
 	    {
 	      const auto& symbol_sptr = symbols[0];
-	      GElf_Addr	  symbol_value =
-		  elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(
-		      elf_handle, sym);
-
-	      // See also symtab::load_.
-	      if (symbol_sptr->is_function())
-		{
-		  if (is_arm32)
-		    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
-		    // Architecture" section 5.5.3.
-		    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
-		    symbol_value &= ~1;
-		  else if (is_ppc64)
-		    update_function_entry_address_symbol_map(elf_handle, sym,
-							     symbol_sptr);
-		}
-
+	      const GElf_Addr symbol_value =
+		get_symbol_value(elf_handle, sym, symbol_sptr);
 	      addr_symbol_map_.emplace(symbol_value, symbol_sptr);
 	    }
 	}

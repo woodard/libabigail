@@ -78,6 +78,7 @@ struct options
   bool			no_default_supprs;
   bool			no_arch;
   bool			no_corpus;
+  bool                  ignore_soname;
   bool			leaf_changes_only;
   bool			fail_no_debug_info;
   bool			show_hexadecimal_values;
@@ -125,6 +126,7 @@ struct options
       no_default_supprs(),
       no_arch(),
       no_corpus(),
+      ignore_soname(false),
       leaf_changes_only(),
       fail_no_debug_info(),
       show_hexadecimal_values(),
@@ -205,6 +207,7 @@ display_usage(const string& prog_name, ostream& out)
        "default suppression specification\n"
     << " --no-architecture  do not take architecture in account\n"
     << " --no-corpus-path  do not take the path to the corpora into account\n"
+    << " --ignore-soname  do not take the SONAMEs into account\n"
     << " --fail-no-debug-info  bail out if no debug info was found\n"
     << " --leaf-changes-only|-l  only show leaf changes, "
     "so no change impact analysis (implies --redundant)\n"
@@ -404,6 +407,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.no_arch = true;
       else if (!strcmp(argv[i], "--no-corpus-path"))
 	opts.no_corpus = true;
+      else if (!strcmp(argv[i], "--ignore-soname"))
+	opts.ignore_soname = true;
       else if (!strcmp(argv[i], "--fail-no-debug-info"))
 	opts.fail_no_debug_info = true;
       else if (!strcmp(argv[i], "--leaf-changes-only")
@@ -699,6 +704,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
   ctxt->show_linkage_names(opts.show_linkage_names);
   ctxt->show_locs(opts.show_locs);
+  // Intentional logic flip of ignore_soname
+  ctxt->show_soname_change(!opts.ignore_soname);
   // So when we are showing only leaf changes, we want to show
   // redundant changes because of this: Suppose several functions have
   // their return type changed from void* to int*.  We want them all
