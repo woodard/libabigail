@@ -660,12 +660,18 @@ test-read-ctf/test-functions-declaration.o	\
 test-read-ctf/test-forward-type-decl.abi	\
 test-read-ctf/test-forward-type-decl.o	\
 test-read-ctf/test-forward-type-decl.c	\
+test-read-ctf/test-forward-undefine-type-decl.abi	\
+test-read-ctf/test-forward-undefine-type-decl.c		\
+test-read-ctf/test-forward-undefine-type-decl.o		\
 test-read-ctf/test-list-struct.c	\
 test-read-ctf/test-list-struct.o	\
 test-read-ctf/test-list-struct.abi	\
 test-read-ctf/test-callback2.c		\
 test-read-ctf/test-callback2.o		\
 test-read-ctf/test-callback2.abi	\
+test-read-ctf/test-anonymous-fields.c	\
+test-read-ctf/test-anonymous-fields.o	\
+test-read-ctf/test-anonymous-fields.o.abi	\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
