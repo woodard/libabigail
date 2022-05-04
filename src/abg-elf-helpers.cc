@@ -900,6 +900,23 @@ architecture_is_arm32(Elf* elf_handle)
   return (elf_header && elf_header->e_machine == EM_ARM);
 }
 
+/// Test if the architecture of the current binary is arm64.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the architecture of the current binary is arm64.
+bool
+architecture_is_arm64(Elf* elf_handle)
+{
+#ifdef HAVE_EM_AARCH64_MACRO
+  GElf_Ehdr  eh_mem;
+  GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
+  return (elf_header && elf_header->e_machine == EM_AARCH64);
+#else
+  return false;
+#endif
+}
+
 /// Test if the endianness of the current binary is Big Endian.
 ///
 /// https://en.wikipedia.org/wiki/Endianness.
