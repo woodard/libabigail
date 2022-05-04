@@ -74,6 +74,7 @@ public:
   bool			redundant_opt_set;
   bool			no_redundant_opt_set;
   bool			show_locs;
+  bool			ignore_soname;
 
   options(const char* program_name)
     :prog_name(program_name),
@@ -85,7 +86,8 @@ public:
      show_redundant(true),
      redundant_opt_set(),
      no_redundant_opt_set(),
-     show_locs(true)
+     show_locs(true),
+     ignore_soname(false)
   {}
 }; // end struct options
 
@@ -112,6 +114,7 @@ display_usage(const string& prog_name, ostream& out)
     << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --no-redundant  do not display redundant changes\n"
     << "  --no-show-locs  do now show location information\n"
+    << "  --ignore-soname  do not take the SONAMEs into account\n"
     << "  --redundant  display redundant changes (this is the default)\n"
     << "  --weak-mode  check compatibility between the application and "
     "just one version of the library.\n"
@@ -206,6 +209,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--ignore-soname"))
+	opts.ignore_soname=true;
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "-h"))
 	{
@@ -277,6 +282,8 @@ create_diff_context(const options& opts)
   ctxt->show_linkage_names(true);
   ctxt->show_redundant_changes(opts.show_redundant);
   ctxt->show_locs(opts.show_locs);
+  // Intentional logic flip of ignore_soname
+  ctxt->show_soname_change(!opts.ignore_soname);
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
      | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
