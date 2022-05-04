@@ -1,5 +1,5 @@
 name: Libabigail ABI Diff Checks
-on: 
+on:
   pull_request: []
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
         libpath: ${{ matrix.libs[0] }}
       run: |
         for name in $(find -type f $libpath*); do
-          printf "abidw --abidiff ${name}\n" 
+          printf "abidw --abidiff ${name}\n"
           abidw --abidiff ${name}
           echo $?
         done
