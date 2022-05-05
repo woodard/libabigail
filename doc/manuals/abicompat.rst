@@ -77,7 +77,6 @@ Options
    Do not show information about where in the *second shared library*
    the respective type was changed.
 
-
   * ``--ignore-soname``
 
     Ignore differences in the SONAME when doing a comparison
