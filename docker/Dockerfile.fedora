@@ -32,6 +32,7 @@ RUN dnf install -y \
     koji \
     lbzip2 \
     libstdc++ \
+    python-unversioned-command \
     python3-koji \
     python3-mock \
     python3-pyxdg \
