@@ -27,12 +27,14 @@ ENV PATH=/opt/libabigail/bin:$PATH
 
 # Runtime dependencies
 RUN dnf install -y \
+    elfutils-libelf \
+    elfutils-libs \
+    koji \
+    lbzip2 \
+    libstdc++ \
     python3-koji \
     python3-mock \
     python3-pyxdg \
-    elfutils-libelf \
-    elfutils-libs \
-    libstdc++ \
-    lbzip2 \
     shared-mime-info \
-    six
+    six \
+    wget
