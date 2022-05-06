@@ -33,6 +33,7 @@ RUN dnf install -y \
     lbzip2 \
     libstdc++ \
     python3 \
+    python-unversioned-command \
     python3-koji \
     python3-mock \
     python3-pyxdg \
