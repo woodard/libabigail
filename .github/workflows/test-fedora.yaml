@@ -39,4 +39,6 @@ jobs:
     steps:
     - name: Run fedabipkgdiff
       run: |
+        shopt -s expand_aliases
+        alias python="python3"
         fedabipkgdiff --self-compare -a --from fc36 ${{ matrix.packages }}
