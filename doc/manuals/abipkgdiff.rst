@@ -468,6 +468,10 @@ Options
        ==== SELF CHECK SUCCEEDED for 'libGLU.so.1.3.1' ====
       $
 
+  * ``--ctf``
+
+     This is used to compare packages with CTF debug information, if present.
+
 .. _abipkgdiff_return_value_label:
 
 Return value
