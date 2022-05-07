@@ -70,8 +70,6 @@ public:
   Elf *elf_handler;
   int elf_fd;
 
-  /// set when ELF is ET_EXEC
-  bool is_elf_exec;
 
   /// The symtab read from the ELF file.
   symtab_reader::symtab_sptr symtab;
@@ -253,9 +251,13 @@ public:
 
   /// Constructor.
   ///
-  /// ctfa data member can be used per courpus group.
-  ///
   /// @param elf_path the path to the ELF file.
+  ///
+  /// @param environment the environment used by the current context.
+  /// This environment contains resources needed by the reader and by
+  /// the types and declarations that are to be created later.  Note
+  /// that ABI artifacts that are to be compared all need to be
+  /// created within the same environment.
   read_context(const string& elf_path, ir::environment *env) :
     ctfa(NULL)
   {
@@ -284,7 +286,6 @@ public:
     ir_env = env;
     elf_handler = NULL;
     elf_fd = -1;
-    is_elf_exec = false;
     symtab.reset();
     cur_corpus_group_.reset();
     exported_decls_builder_ = 0;
@@ -908,8 +909,11 @@ process_ctf_qualified_type(read_context *ctxt,
   else
     ABG_ASSERT_NOT_REACHED;
 
-  result.reset(new qualified_type_def(utype, qualifiers, location()));
+  // qualifiers are not be use in functions
+  if (is_function_type(utype))
+    return result;
 
+  result.reset(new qualified_type_def(utype, qualifiers, location()));
   if (result)
     {
       decl_base_sptr qualified_type_decl = get_type_declaration(result);
@@ -1226,16 +1230,16 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
       std::string sym_name = symbol->get_name();
       ctf_id_t ctf_sym_type;
 
-      if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
-          || ctxt->is_elf_exec)
-        ctf_sym_type= ctf_lookup_variable (ctf_dict, sym_name.c_str());
-      else
+      ctf_sym_type = ctf_lookup_variable(ctf_dict, sym_name.c_str());
+      if (ctf_sym_type == (ctf_id_t) -1
+          && !(corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN))
+        // lookup in function objects
         ctf_sym_type = ctf_lookup_by_symbol_name(ctf_dict, sym_name.c_str());
 
       if (ctf_sym_type == (ctf_id_t) -1)
         continue;
 
-      if (ctf_type_kind (ctf_dict, ctf_sym_type) != CTF_K_FUNCTION)
+      if (ctf_type_kind(ctf_dict, ctf_sym_type) != CTF_K_FUNCTION)
         {
           const char *var_name = sym_name.c_str();
           type_base_sptr var_type = lookup_type(ctxt, corp, ir_translation_unit,
@@ -1275,7 +1279,7 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
           func_declaration->set_symbol(symbol);
           add_decl_to_scope(func_declaration,
                             ir_translation_unit->get_global_scope());
-	  func_declaration->set_is_in_public_symbol_table(true);
+          func_declaration->set_is_in_public_symbol_table(true);
           ctxt->maybe_add_fn_to_exported_decls(func_declaration.get());
         }
     }
@@ -1366,10 +1370,13 @@ fill_ctf_section(Elf_Scn *elf_section, ctf_sect_t *ctf_section)
 static int
 slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 {
-  /* Set the ELF architecture.  */
+  Elf_Scn *symtab_scn;
+  Elf_Scn *ctf_scn;
+  Elf_Scn *strtab_scn;
   GElf_Ehdr eh_mem;
   GElf_Ehdr *ehdr = gelf_getehdr(ctxt->elf_handler, &eh_mem);
-  ctxt->is_elf_exec = (ehdr->e_type == ET_EXEC);
+
+  /* Set the ELF architecture.  */
   corp->set_architecture_name(elf_helpers::e_machine_to_string(ehdr->e_machine));
 
   /* Read the symtab from the ELF file and set it in the corpus.  */
@@ -1382,10 +1389,20 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
     return 1;
 
   /* Get the raw ELF section contents for libctf.  */
-  Elf_Scn *ctf_scn = elf_helpers::find_section(ctxt->elf_handler, ".ctf", SHT_PROGBITS);
-  Elf_Scn *symtab_scn = elf_helpers::find_symbol_table_section(ctxt->elf_handler);
-  Elf_Scn *strtab_scn = elf_helpers::find_strtab_for_symtab_section(ctxt->elf_handler,
-                                                                    symtab_scn);
+  ctf_scn = elf_helpers::find_section(ctxt->elf_handler, ".ctf", SHT_PROGBITS);
+
+  // ET_{EXEC,DYN} needs .dyn{sym,str} in ctf_arc_bufopen
+  const char *symtab_name = ".dynsym";
+  const char *strtab_name = ".dynstr";
+
+  if (ehdr->e_type == ET_REL)
+    {
+      symtab_name = ".symtab";
+      strtab_name = ".strtab";
+    }
+
+  symtab_scn = elf_helpers::find_section_by_name(ctxt->elf_handler, symtab_name);
+  strtab_scn = elf_helpers::find_section_by_name(ctxt->elf_handler, strtab_name);
 
   if (ctf_scn == NULL || symtab_scn == NULL || strtab_scn == NULL)
     return 0;

@@ -50,6 +50,9 @@ find_section(Elf*		elf_handle,
 	     Elf64_Word		section_type);
 
 Elf_Scn*
+find_section_by_name(Elf* elf_handle, const std::string& name);
+
+Elf_Scn*
 find_section(Elf* elf_handle, Elf64_Word section_type);
 
 Elf_Scn*
