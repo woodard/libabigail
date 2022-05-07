@@ -84,6 +84,52 @@ public:
 
   corpus_sptr			cur_corpus_;
   corpus_group_sptr		cur_corpus_group_;
+  corpus::exported_decls_builder* exported_decls_builder_;
+
+  /// Setter of the exported decls builder object.
+  ///
+  /// Note that this @ref read_context is not responsible for the live
+  /// time of the exported_decls_builder object.  The corpus is.
+  ///
+  /// @param b the new builder.
+  void
+  exported_decls_builder(corpus::exported_decls_builder* b)
+  {exported_decls_builder_ = b;}
+
+  /// Getter of the exported decls builder object.
+  ///
+  /// @return the exported decls builder.
+  corpus::exported_decls_builder*
+  exported_decls_builder()
+  {return exported_decls_builder_;}
+
+  /// If a given function decl is suitable for the set of exported
+  /// functions of the current corpus, this function adds it to that
+  /// set.
+  ///
+  /// @param fn the function to consider for inclusion into the set of
+  /// exported functions of the current corpus.
+  void
+  maybe_add_fn_to_exported_decls(function_decl* fn)
+  {
+    if (fn)
+      if (corpus::exported_decls_builder* b = exported_decls_builder())
+	b->maybe_add_fn_to_exported_fns(fn);
+  }
+
+  /// If a given variable decl is suitable for the set of exported
+  /// variables of the current corpus, this variable adds it to that
+  /// set.
+  ///
+  /// @param fn the variable to consider for inclusion into the set of
+  /// exported variables of the current corpus.
+  void
+  maybe_add_var_to_exported_decls(var_decl* var)
+  {
+    if (var)
+      if (corpus::exported_decls_builder* b = exported_decls_builder())
+	b->maybe_add_var_to_exported_vars(var);
+  }
 
   /// Getter of the current corpus group being constructed.
   ///
@@ -241,6 +287,7 @@ public:
     is_elf_exec = false;
     symtab.reset();
     cur_corpus_group_.reset();
+    exported_decls_builder_ = 0;
   }
 
   ~read_context()
@@ -392,6 +439,26 @@ process_ctf_base_type(read_context *ctxt,
   return result;
 }
 
+/// Build the IR node for a variadic parameter type.
+///
+/// @param ctxt the read context to use.
+///
+/// @return the variadic parameter type.
+static decl_base_sptr
+build_ir_node_for_variadic_parameter_type(read_context &ctxt,
+                                          translation_unit_sptr tunit)
+{
+
+  ir::environment* env = ctxt.ir_env;
+  ABG_ASSERT(env);
+  type_base_sptr t = env->get_variadic_parameter_type();
+  decl_base_sptr type_declaration = get_type_declaration(t);
+  if (!has_scope(type_declaration))
+    add_decl_to_scope(type_declaration, tunit->get_global_scope());
+  canonicalize(t);
+  return type_declaration;
+}
+
 /// Build and return a function type libabigail IR.
 ///
 /// @param ctxt the read context.
@@ -442,8 +509,21 @@ process_ctf_function_type(read_context *ctxt,
       function_decl::parameter_sptr parm
         (new function_decl::parameter(arg_type, "",
                                       location(),
-                                      vararg_p && (i == argc - 1),
+                                      false,
                                       false /* is_artificial */));
+      function_parms.push_back(parm);
+    }
+
+  if (vararg_p)
+    {
+      type_base_sptr arg_type =
+       is_type(build_ir_node_for_variadic_parameter_type(*ctxt, tunit));
+
+      function_decl::parameter_sptr parm
+       (new function_decl::parameter(arg_type, "",
+                                     location(),
+                                     true,
+                                     false /* is_artificial */));
       function_parms.push_back(parm);
     }
 
@@ -1144,22 +1224,22 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
   for (const auto& symbol : symtab_reader::filtered_symtab(*symtab, filter))
     {
       std::string sym_name = symbol->get_name();
-      ctf_id_t ctf_var_type;
+      ctf_id_t ctf_sym_type;
 
       if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
           || ctxt->is_elf_exec)
-        ctf_var_type= ctf_lookup_variable (ctf_dict, sym_name.c_str());
+        ctf_sym_type= ctf_lookup_variable (ctf_dict, sym_name.c_str());
       else
-        ctf_var_type = ctf_lookup_by_symbol_name(ctf_dict, sym_name.c_str());
+        ctf_sym_type = ctf_lookup_by_symbol_name(ctf_dict, sym_name.c_str());
 
-      if (ctf_var_type == (ctf_id_t) -1)
+      if (ctf_sym_type == (ctf_id_t) -1)
         continue;
 
-      if (ctf_type_kind (ctf_dict, ctf_var_type) != CTF_K_FUNCTION)
+      if (ctf_type_kind (ctf_dict, ctf_sym_type) != CTF_K_FUNCTION)
         {
           const char *var_name = sym_name.c_str();
           type_base_sptr var_type = lookup_type(ctxt, corp, ir_translation_unit,
-                                                ctf_dict, ctf_var_type);
+                                                ctf_dict, ctf_sym_type);
           if (!var_type)
             /* Ignore variable if its type can't be sorted out.  */
             continue;
@@ -1173,11 +1253,13 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
           var_declaration->set_symbol(symbol);
           add_decl_to_scope(var_declaration,
                             ir_translation_unit->get_global_scope());
+          var_declaration->set_is_in_public_symbol_table(true);
+          ctxt->maybe_add_var_to_exported_decls(var_declaration.get());
         }
       else
         {
           const char *func_name = sym_name.c_str();
-          ctf_id_t ctf_sym = ctf_var_type;
+          ctf_id_t ctf_sym = ctf_sym_type;
           type_base_sptr func_type = lookup_type(ctxt, corp, ir_translation_unit,
                                                  ctf_dict, ctf_sym);
           if (!func_type)
@@ -1193,6 +1275,8 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
           func_declaration->set_symbol(symbol);
           add_decl_to_scope(func_declaration,
                             ir_translation_unit->get_global_scope());
+	  func_declaration->set_is_in_public_symbol_table(true);
+          ctxt->maybe_add_fn_to_exported_decls(func_declaration.get());
         }
     }
 
@@ -1369,6 +1453,10 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
       status = elf_reader::STATUS_NO_SYMBOLS_FOUND;
       return corp;
     }
+
+  // Set the set of exported declaration that are defined.
+  ctxt->exported_decls_builder
+   (ctxt->cur_corpus_->get_exported_decls_builder().get());
 
   int errp;
   if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)

@@ -26,6 +26,7 @@
       <return type-id='type-id-10'/>
     </function-decl>
     <function-type size-in-bits='64' alignment-in-bits='8' id='type-id-9'>
+      <parameter is-variadic='yes'/>
       <return type-id='type-id-10'/>
     </function-type>
     <type-decl name='void' id='type-id-10'/>
