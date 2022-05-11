@@ -45,14 +45,6 @@ e_machine_to_string(GElf_Half e_machine);
 //
 
 Elf_Scn*
-find_section(Elf*		elf_handle,
-	     const std::string& name,
-	     Elf64_Word		section_type);
-
-Elf_Scn*
-find_section(Elf* elf_handle, Elf64_Word section_type);
-
-Elf_Scn*
 find_symtab_section(Elf* elf_handle);
 
 Elf_Scn*

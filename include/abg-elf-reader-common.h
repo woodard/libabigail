@@ -18,6 +18,7 @@
 #ifndef __ABG_ELF_READER_COMMON_H__
 #define __ABG_ELF_READER_COMMON_H__
 
+#include <gelf.h>
 #include <string>
 
 namespace abigail
@@ -62,6 +63,14 @@ operator|=(status&, status);
 
 status&
 operator&=(status&, status);
+
+Elf_Scn*
+find_section(Elf*		elf_handle,
+	     const std::string& name,
+	     Elf64_Word		section_type);
+
+Elf_Scn*
+find_section(Elf* elf_handle, Elf64_Word section_type);
 
 }// end namespace elf_reader
 
