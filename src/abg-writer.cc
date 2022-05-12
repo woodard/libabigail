@@ -111,8 +111,82 @@ public:
 /// to a string.
 typedef unordered_map<type_base*, interned_string> type_ptr_map;
 
+/// The hashing functor of for the set of non canonicalized types, aka
+/// @ref nc_type_ptr_set_type
+struct non_canonicalized_type_hash
+{
+  /// Hashing function
+  ///
+  /// This hashes a string representation of the non canonicalized
+  /// types.  For now, two typedefs with different names but with the
+  /// same underlying types will hash differently.
+  ///
+  /// TODO: try making typedefs with different names hash the same if
+  /// their underlying types are equal and see what breaks.
+  ///
+  /// @param p the non canonicalized type to hash.
+  ///
+  /// @return the hash value.
+  size_t
+  operator() (const type_base* p) const
+  {
+    ABG_ASSERT(is_non_canonicalized_type(p));
+    std::hash<string> h;
+    return h(p->get_pretty_representation(false, true));
+  }
+}; // end struct non_canonicalized_type_hash
+
+/// The equality functor of for the set of non canonicalized types, aka
+/// @ref nc_type_ptr_set_type
+struct non_canonicalized_type_equal
+{
+  /// The equality operator.
+  ///
+  /// @param l the left-hand operand of the operation.
+  ///
+  /// @param r the right-hand operand of the operation.
+  ///
+  /// For now, two typedefs with different names but with the same
+  /// underlying types are considered different.
+  ///
+  /// TODO: try making typedefs with different names hash the same if
+  /// their underlying types are equal and see what breaks.
+  //
+  // @return true iff @p l equals @p r.
+  bool
+  operator()(const type_base *l, const type_base *r) const
+  {
+    ABG_ASSERT(is_non_canonicalized_type(l));
+    ABG_ASSERT(is_non_canonicalized_type(r));
+
+    /*    if (l->get_pretty_representation(false, true)
+	!= r->get_pretty_representation(false, true))
+	return false;*/
+
+   return *l == *r;
+  }
+}; // end struct non_canonicalized_type_equal
+
 // A convenience typedef for a set of type_base*.
 typedef std::unordered_set<const type_base*> type_ptr_set_type;
+
+/// A set meant to carry non canonicalized types.
+///
+/// Those types make the function is_non_canonicalized_type return
+/// true.
+typedef std::unordered_set<const type_base*,
+			   non_canonicalized_type_hash,
+			   non_canonicalized_type_equal>
+nc_type_ptr_set_type;
+
+/// A map meant to carry non canonicalized types as key.
+///
+/// Those types make the function is_non_canonicalized_type return
+/// true.
+typedef std::unordered_map<const type_base*, interned_string,
+			   non_canonicalized_type_hash,
+			   non_canonicalized_type_equal>
+nc_type_ptr_istr_map_type;
 
 /// A convenience typedef for a set of function type*.
 typedef std::unordered_set<function_type*> fn_type_ptr_set_type;
@@ -141,14 +215,17 @@ class write_context
   bool					m_write_default_sizes;
   type_id_style_kind			m_type_id_style;
   mutable type_ptr_map			m_type_id_map;
+  // type id map for non-canonicalized types.
+  mutable nc_type_ptr_istr_map_type	m_nc_type_id_map;
   mutable unordered_set<uint32_t>	m_used_type_id_hashes;
   mutable type_ptr_set_type		m_emitted_type_set;
-  type_ptr_set_type			m_emitted_decl_only_set;
+  // a set of non-canonicalized types that are emitted.
+  nc_type_ptr_set_type	m_emitted_non_canonicalized_type_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_set_type			m_referenced_types_set;
   fn_type_ptr_set_type			m_referenced_fn_types_set;
-  type_ptr_set_type			m_referenced_non_canonical_types_set;
+  nc_type_ptr_set_type	m_referenced_non_canonicalized_types_set;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -380,6 +457,8 @@ public:
   type_has_existing_id(type_base* type) const
   {
     type = get_exemplar_type(type);
+    if (is_non_canonicalized_type(type))
+      return m_nc_type_id_map.find(type) != m_nc_type_id_map.end();
     return m_type_id_map.find(type) != m_type_id_map.end();
   }
 
@@ -399,17 +478,28 @@ public:
   get_id_for_type(type_base* type) const
   {
     type_base* c = get_exemplar_type(type);
-
-    type_ptr_map::const_iterator it = m_type_id_map.find(c);
-    if (it != m_type_id_map.end())
-      return it->second;
+    bool is_non_canon_type = is_non_canonicalized_type(c);
+    if (is_non_canon_type)
+      {
+	auto it = m_nc_type_id_map.find(c);
+	if (it != m_nc_type_id_map.end())
+	  return it->second;
+      }
+    else
+      {
+	auto it = m_type_id_map.find(c);
+	if (it != m_type_id_map.end())
+	  return it->second;
+      }
 
     switch (m_type_id_style)
       {
       case SEQUENCE_TYPE_ID_STYLE:
 	{
 	  interned_string id = get_id_manager().get_id_with_prefix("type-id-");
-	  return m_type_id_map[c] = id;
+	  return is_non_canon_type
+	    ? m_nc_type_id_map[c] = id
+	    : m_type_id_map[c] = id;
 	}
       case HASH_TYPE_ID_STYLE:
 	{
@@ -419,7 +509,9 @@ public:
 	    ++hash;
 	  std::ostringstream os;
 	  os << std::hex << std::setfill('0') << std::setw(8) << hash;
-	  return m_type_id_map[c] = c->get_environment()->intern(os.str());
+	  return is_non_canon_type
+	    ? m_nc_type_id_map[c] = c->get_environment()->intern(os.str())
+	    : m_type_id_map[c] = c->get_environment()->intern(os.str());
 	}
       }
     ABG_ASSERT_NOT_REACHED;
@@ -454,7 +546,10 @@ public:
 
   void
   clear_type_id_map()
-  {m_type_id_map.clear();}
+  {
+    m_type_id_map.clear();
+    m_nc_type_id_map.clear();
+  }
 
 
   /// Getter of the set of types that were referenced by a pointer,
@@ -480,9 +575,9 @@ public:
   /// which were referenced by a pointer, reference or typedef.
   ///
   /// @return the of referenced type that have no canonical types.
-  const type_ptr_set_type&
-  get_referenced_non_canonical_types() const
-  {return m_referenced_non_canonical_types_set;}
+  const nc_type_ptr_set_type&
+  get_referenced_non_canonicalized_types() const
+  {return m_referenced_non_canonicalized_types_set;}
 
   /// Test if there are non emitted referenced types.
   ///
@@ -491,18 +586,15 @@ public:
   has_non_emitted_referenced_types() const
   {
     for (const auto t : get_referenced_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
+      if (!type_is_emitted(t))
 	  return false;
 
-    for (const auto t : get_referenced_non_canonical_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
-	  return false;
+    for (const auto t : get_referenced_non_canonicalized_types())
+      if (!type_is_emitted(t))
+	return false;
 
-    for (const auto t : get_referenced_non_canonical_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
+    for (const auto t : get_referenced_non_canonicalized_types())
+      if (!type_is_emitted(t))
 	return false;
 
     return true;
@@ -521,10 +613,10 @@ public:
     // structure.
     if (function_type* f = is_function_type(t))
       m_referenced_fn_types_set.insert(f);
-    else if (!t->get_naked_canonical_type())
+    else if (is_non_canonicalized_type(t))
       // If the type doesn't have a canonical type, record it in a
       // dedicated data structure.
-      m_referenced_non_canonical_types_set.insert(t);
+      m_referenced_non_canonicalized_types_set.insert(t);
     else
       m_referenced_types_set.insert(t);
   }
@@ -543,9 +635,9 @@ public:
     if (function_type* f = is_function_type(t))
       return (m_referenced_fn_types_set.find(f)
 	      != m_referenced_fn_types_set.end());
-    else if (!t->get_naked_canonical_type())
-      return (m_referenced_non_canonical_types_set.find(t)
-	      != m_referenced_non_canonical_types_set.end());
+    else if (is_non_canonicalized_type(t))
+      return (m_referenced_non_canonicalized_types_set.find(t)
+	      != m_referenced_non_canonicalized_types_set.end());
     else
       return m_referenced_types_set.find(t) != m_referenced_types_set.end();
   }
@@ -590,6 +682,18 @@ public:
 
       if (r1 == r2)
 	{
+	  if (is_typedef(l) || is_typedef(r))
+	    {
+	      l = peel_typedef_type(l);
+	      r = peel_typedef_type(r);
+
+	      r1 = ir::get_pretty_representation(l, true),
+		r2 = ir::get_pretty_representation(r, true);
+
+	      if (r1 != r2)
+		return r1 < r2;
+	    }
+
 	  type_ptr_map::const_iterator i =
 	    map->find(const_cast<type_base*>(l));
 	  if (i != map->end())
@@ -700,7 +804,10 @@ public:
   record_type_as_emitted(const type_base* t)
   {
     type_base* c = get_exemplar_type(t);
-    m_emitted_type_set.insert(c);
+    if (is_non_canonicalized_type(c))
+      m_emitted_non_canonicalized_type_set.insert(c);
+    else
+      m_emitted_type_set.insert(c);
   }
 
   /// Test if a given type has been written out to the XML output.
@@ -713,7 +820,11 @@ public:
   type_is_emitted(const type_base* t) const
   {
     type_base* c = get_exemplar_type(t);
-    return m_emitted_type_set.find(c) != m_emitted_type_set.end();
+    if (is_non_canonicalized_type(c))
+      return (m_emitted_non_canonicalized_type_set.find(c)
+	      != m_emitted_non_canonicalized_type_set.end());
+
+    return (m_emitted_type_set.find(c) != m_emitted_type_set.end());
   }
 
   /// Test if a given type has been written out to the XML output.
@@ -741,55 +852,6 @@ public:
     return m_emitted_decls_set.find(irepr) != m_emitted_decls_set.end();
   }
 
-  /// Record a declaration-only class as being emitted.
-  ///
-  /// For now, this function expects a declaration-only class,
-  /// otherwise, it aborts.
-  ///
-  /// @param t the declaration-only class to report as emitted.
-  void
-  record_decl_only_type_as_emitted(type_base* t)
-  {
-    class_or_union* cl = is_class_or_union_type(t);
-    ABG_ASSERT(cl && cl->get_is_declaration_only());
-    m_emitted_decl_only_set.insert(t);
-  }
-
-  /// Record a declaration-only class as being emitted.
-  ///
-  /// For now, this function expects a declaration-only class,
-  /// otherwise, it aborts.
-  ///
-  /// @param t the declaration-only class to report as emitted.
-  void
-  record_decl_only_type_as_emitted(const type_base_sptr& t)
-  {record_decl_only_type_as_emitted(t.get());}
-
-  /// Test if a declaration-only class has been emitted.
-  ///
-  /// @param t the declaration-only class to test for.
-  ///
-  /// @return true iff the declaration-only class @p t has been
-  /// emitted.
-  bool
-  decl_only_type_is_emitted(const type_base* t) const
-  {
-    type_ptr_set_type::const_iterator i = m_emitted_decl_only_set.find(t);
-    if (i == m_emitted_decl_only_set.end())
-      return false;
-    return true;
-  }
-
-  /// Test if a declaration-only class has been emitted.
-  ///
-  /// @param t the declaration-only class to test for.
-  ///
-  /// @return true iff the declaration-only class @p t has been
-  /// emitted.
-  bool
-  decl_only_type_is_emitted(const type_base_sptr& t) const
-  {return decl_only_type_is_emitted(t.get());}
-
   /// Record a declaration as emitted in the abixml output.
   ///
   /// @param decl the decl to consider.
@@ -808,12 +870,9 @@ public:
   get_emitted_types_set() const
   {return m_emitted_type_set;}
 
-  /// Get the set of types that have been emitted.
-  ///
-  /// @return the set of types that have been emitted.
-  const type_ptr_set_type&
-  get_emitted_decl_only_types_set() const
-  {return m_emitted_decl_only_set;}
+  const nc_type_ptr_set_type&
+  get_emitted_non_canonicalized_type_set() const
+  {return m_emitted_non_canonicalized_type_set;}
 
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
@@ -821,7 +880,7 @@ public:
   clear_referenced_types()
   {
     m_referenced_types_set.clear();
-    m_referenced_non_canonical_types_set.clear();
+    m_referenced_non_canonicalized_types_set.clear();
     m_referenced_fn_types_set.clear();
   }
 
@@ -1995,6 +2054,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
       // ... or a class.
       else if (class_decl* c = is_class_type(*i))
 	{
+	  c = is_class_type(look_through_decl_only_class(c));
 	  class_decl_sptr class_type(c, noop_deleter());
 	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
 				       /*prepare_to_handle_members=*/false);
@@ -2246,8 +2306,7 @@ referenced_type_should_be_emitted(const type_base *t,
   if ((tu_is_last || (t->get_translation_unit()
 		      && (t->get_translation_unit()->get_absolute_path()
 			  == tu.get_absolute_path())))
-      && !ctxt.type_is_emitted(t)
-      && !ctxt.decl_only_type_is_emitted(t))
+      && !ctxt.type_is_emitted(t))
     return true;
   return false;
 }
@@ -2296,12 +2355,9 @@ write_referenced_types(write_context &		ctxt,
     if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
       referenced_types_to_emit.insert(*i);
 
-  for (type_ptr_set_type::const_iterator i =
-	 ctxt.get_referenced_non_canonical_types().begin();
-       i != ctxt.get_referenced_non_canonical_types().end();
-       ++i)
-    if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-      referenced_types_to_emit.insert(*i);
+  for (auto i : ctxt.get_referenced_non_canonicalized_types())
+    if (referenced_type_should_be_emitted(i, ctxt, tu, is_last))
+      referenced_types_to_emit.insert(i);
 
   // Ok, now let's emit the referenced type for good.
   while (!referenced_types_to_emit.empty())
@@ -2362,12 +2418,9 @@ write_referenced_types(write_context &		ctxt,
 	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
 	  referenced_types_to_emit.insert(*i);
 
-      for (type_ptr_set_type::const_iterator i =
-	     ctxt.get_referenced_non_canonical_types().begin();
-	   i != ctxt.get_referenced_non_canonical_types().end();
-	   ++i)
-	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
-	  referenced_types_to_emit.insert(*i);
+      for (auto i : ctxt.get_referenced_non_canonicalized_types())
+	if (referenced_type_should_be_emitted(i, ctxt, tu, is_last))
+	  referenced_types_to_emit.insert(i);
     }
 }
 
@@ -2458,6 +2511,9 @@ write_translation_unit(write_context&		ctxt,
 		&& !ctxt.type_is_emitted(class_type))
 	      write_type(class_type, ctxt,
 			 indent + c.get_xml_element_indent());
+
+	  if (is_non_canonicalized_type(t) && !ctxt.type_is_emitted(t))
+	    write_type(t, ctxt, indent + c.get_xml_element_indent());
 	}
       else
 	{
@@ -3845,12 +3901,7 @@ write_class_decl(const class_decl_sptr& d,
       o << "</class-decl>\n";
     }
 
-  // We allow several *declarations* of the same class in the corpus,
-  // but only one definition.
-  if (!decl->get_is_declaration_only())
-    ctxt.record_type_as_emitted(decl);
-  else
-    ctxt.record_decl_only_type_as_emitted(decl);
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -4005,12 +4056,7 @@ write_union_decl(const union_decl_sptr& d,
       o << "</union-decl>\n";
     }
 
-  // We allow several *declarations* of the same union in the corpus,
-  // but only one definition.
-  if (!decl->get_is_declaration_only())
-    ctxt.record_type_as_emitted(decl);
-  else
-    ctxt.record_decl_only_type_as_emitted(decl);
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -4848,7 +4894,7 @@ write_canonical_type_ids(xml_writer::write_context& ctxt, ostream& o)
   for (const auto &type : ctxt.get_emitted_types_set())
     write_type_record(ctxt, type, o);
 
-  for (const auto &type : ctxt.get_emitted_decl_only_types_set())
+  for (const auto &type : ctxt.get_emitted_non_canonicalized_type_set())
     write_type_record(ctxt, type, o);
 
   o << "</abixml-types-check>\n";
