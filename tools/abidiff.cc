@@ -78,7 +78,7 @@ struct options
   bool			no_default_supprs;
   bool			no_arch;
   bool			no_corpus;
-  bool                  ignore_soname;
+  bool			ignore_soname;
   bool			leaf_changes_only;
   bool			fail_no_debug_info;
   bool			show_hexadecimal_values;

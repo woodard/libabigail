@@ -74,7 +74,7 @@ public:
   bool			redundant_opt_set;
   bool			no_redundant_opt_set;
   bool			show_locs;
-  bool                  ignore_soname;
+  bool			ignore_soname;
 
   options(const char* program_name)
     :prog_name(program_name),
