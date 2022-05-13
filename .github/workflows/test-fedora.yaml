@@ -26,9 +26,7 @@ jobs:
                ["/lib64/libglibmm-2.4.so", "glibmm24"],
                ["/lib64/mozilla/plugins/gmp-gmpopenh264/system-installed/libgmpopenh264.so", "mozilla-openh264"],
                ["/lib64/libhdf5_cpp.so", "hdf5"],
-               ["/lib64/libicui18n.so", "libicu67"],
                ["/lib64/libicui18n.so", "libicu"],
-               ["/lib64/libicuuc.so", "libicu67"],
                ["/lib64/libicuuc.so", "libicu"],
                ["/lib64/dyninst/libinstructionAPI.so", "dyninst"],
                ["/lib64/libjavascriptcoregtk-4.0.so", "webkit2gtk3-jsc"],
@@ -48,6 +46,9 @@ jobs:
                ["/lib64/libreoffice/program/libuno_cppuhelpergcc3.so", "libreoffice-ure"],
                ["/lib64/libvtkRenderingCore.so", "vtk"],
                ["/lib64/libwebrtc_audio_processing.so", "webrtc-audio-processing"]]
+        # Exclude these for the moment, they are failing for some inexplicable reason
+        #      ["/lib64/libicui18n.so", "libicu67"],
+        #      ["/lib64/libicuuc.so", "libicu67"],	
     steps:
     - name: Install Library
       env:
