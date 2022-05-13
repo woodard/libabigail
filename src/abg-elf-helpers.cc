@@ -296,6 +296,35 @@ e_machine_to_string(GElf_Half e_machine)
     }
 }
 
+/// Find and return a section by its name.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the section found, nor nil if none was found.
+Elf_Scn*
+find_section_by_name(Elf* elf_handle, const std::string& name)
+{
+  size_t section_header_string_index = 0;
+  if (elf_getshdrstrndx (elf_handle, &section_header_string_index) < 0)
+    return 0;
+
+  Elf_Scn* section = 0;
+  GElf_Shdr header_mem, *header;
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      header = gelf_getshdr(section, &header_mem);
+      if (header == NULL)
+        continue;
+
+      const char* section_name =
+	elf_strptr(elf_handle, section_header_string_index, header->sh_name);
+      if (section_name && name == section_name)
+	return section;
+    }
+
+  return 0;
+}
+
 /// Find and return a section by its name and its type.
 ///
 /// @param elf_handle the elf handle to use.
