@@ -1325,6 +1325,7 @@ compare(const elf_file& elf1,
     if (opts.use_ctf)
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf1.path,
+							    di_dirs1,
                                                             env.get());
         ABG_ASSERT(ctxt_ctf);
         corpus1 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
@@ -1429,6 +1430,7 @@ compare(const elf_file& elf1,
     if (opts.use_ctf)
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf2.path,
+							    di_dirs2,
 							    env.get());
         corpus2 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
                                                    c2_status);
@@ -1602,6 +1604,7 @@ compare_to_self(const elf_file& elf,
     if (opts.use_ctf)
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf.path,
+							    di_dirs,
                                                             env.get());
         ABG_ASSERT(ctxt_ctf);
         corp = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),

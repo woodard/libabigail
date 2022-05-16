@@ -540,9 +540,9 @@ load_corpus_and_write_abixml(char* argv[],
   if (opts.use_ctf)
     {
       abigail::ctf_reader::read_context_sptr ctxt
-        = abigail::ctf_reader::create_read_context (opts.in_file_path,
-                                                    env.get());
-
+        = abigail::ctf_reader::create_read_context(opts.in_file_path,
+                                                   opts.prepared_di_root_paths,
+                                                   env.get());
       assert (ctxt);
       t.start();
       corp = abigail::ctf_reader::read_corpus (ctxt, s);

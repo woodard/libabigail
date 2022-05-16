@@ -2633,6 +2633,9 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
 /// @param root the path of the directory under which the kernel
 /// kernel modules were found.
 ///
+/// @param di_root the directory in aboslute path which debug
+/// info is to be found for binaries under director @p root
+///
 /// @param verbose true if the function has to emit some verbose
 /// messages.
 ///
@@ -2646,6 +2649,7 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
                               const string&       vmlinux,
                               vector<string>&     modules,
                               const string&       root,
+                              vector<char**>&     di_roots,
                               bool                verbose,
                               timer&              t,
                               environment_sptr&   env)
@@ -2655,7 +2659,7 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
 
   abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
   ctf_reader::read_context_sptr ctxt;
-  ctxt = ctf_reader::create_read_context(vmlinux, env.get());
+  ctxt = ctf_reader::create_read_context(vmlinux, di_roots, env.get());
   group.reset(new corpus_group(env.get(), root));
   set_read_context_corpus_group(*ctxt, group);
 
@@ -2690,7 +2694,7 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, env.get());
+      reset_read_context(ctxt, *m, di_roots, env.get());
       set_read_context_corpus_group(*ctxt, group);
 
       t.start();
@@ -2788,7 +2792,8 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
                                       supprs, verbose, t, env);
 #ifdef WITH_CTF
       maybe_load_vmlinux_ctf_corpus(origin, group, vmlinux,
-                                    modules, root, verbose, t, env);
+                                    modules, root, di_roots,
+                                    verbose, t, env);
 #endif
     }
 

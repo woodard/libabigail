@@ -300,6 +300,8 @@ e_machine_to_string(GElf_Half e_machine)
 ///
 /// @param elf_handle the elf handle to use.
 ///
+/// @param name the section name.
+///
 /// @return the section found, nor nil if none was found.
 Elf_Scn*
 find_section_by_name(Elf* elf_handle, const std::string& name)

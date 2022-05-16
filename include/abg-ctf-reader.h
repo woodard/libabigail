@@ -31,6 +31,7 @@ typedef shared_ptr<read_context> read_context_sptr;
 
 read_context_sptr
 create_read_context(const std::string& elf_path,
+                    const vector<char**>& debug_info_root_paths,
                     ir::environment *env);
 corpus_sptr
 read_corpus(read_context *ctxt, elf_reader::status& status);
@@ -47,6 +48,7 @@ set_read_context_corpus_group(read_context& ctxt, corpus_group_sptr& group);
 void
 reset_read_context(read_context_sptr &ctxt,
                    const std::string&	elf_path,
+                   const vector<char**>& debug_info_root_path,
                    ir::environment*	environment);
 std::string
 dic_type_key(ctf_dict_t *dic, ctf_id_t ctf_type);
