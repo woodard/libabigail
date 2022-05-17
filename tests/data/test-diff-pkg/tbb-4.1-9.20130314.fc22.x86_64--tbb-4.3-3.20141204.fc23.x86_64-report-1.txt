@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 8 Changed (100 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 8 Changed (94 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -37,7 +37,7 @@
                   type size hasn't changed
                   1 data member insertion:
                     'tbb::internal::cpu_ctl_env_space my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
-                  1 data member changes (1 filtered):
+                  1 data member changes (2 filtered):
                     type of 'char _leading_padding[80]' changed:
                       type name changed from 'char[80]' to 'char[72]'
                       array type size changed from 640 to 576
@@ -64,6 +64,7 @@
           type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+          no data member change (1 filtered);
 
     [C] 'method void tbb::queuing_rw_mutex::internal_construct()' at queuing_rw_mutex.h:146:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::queuing_rw_mutex*' has sub-type changes:
@@ -71,6 +72,7 @@
           type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+          no data member change (1 filtered);
 
     [C] 'method void tbb::recursive_mutex::internal_construct()' at recursive_mutex.h:224:1 has some indirect sub-type changes:
       implicit parameter 0 of type 'tbb::recursive_mutex*' has sub-type changes:
@@ -86,14 +88,13 @@
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
-    [C] 'method void tbb::spin_rw_mutex::internal_acquire_reader()' at spin_rw_mutex_v2.h:44:1 has some indirect sub-type changes:
-      parameter 1 of type 'tbb::spin_rw_mutex*' has sub-type changes:
-        in pointed to type 'typedef tbb::spin_rw_mutex' at spin_rw_mutex.h:38:1:
-          underlying type 'class tbb::spin_rw_mutex_v3' at spin_rw_mutex.h:43:1 changed:
-            type size hasn't changed
-            1 base class insertion:
-              class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-            no data member change (1 filtered);
+    [C] 'method void tbb::spin_rw_mutex_v3::internal_acquire_reader()' at spin_rw_mutex.h:53:1 has some indirect sub-type changes:
+      implicit parameter 0 of type 'tbb::spin_rw_mutex_v3*' has sub-type changes:
+        in pointed to type 'class tbb::spin_rw_mutex_v3' at spin_rw_mutex.h:42:1:
+          type size hasn't changed
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+          no data member change (1 filtered);
 
   3 Removed variable symbols not referenced by debug info:
 
