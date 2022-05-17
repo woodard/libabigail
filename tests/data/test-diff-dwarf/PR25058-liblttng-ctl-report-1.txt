@@ -89,12 +89,7 @@ Variables changes summary: 0 Removed, 0 Changed, 3 Added variables
     parameter 1 of type 'lttng_action*' has sub-type changes:
       in pointed to type 'struct lttng_action':
         type size hasn't changed
-        3 data member changes:
-          type of 'action_validate_cb validate' changed:
-            underlying type 'bool (lttng_action*)*' changed:
-              in pointed to type 'function type bool (lttng_action*)':
-                parameter 1 of type 'lttng_action*' has sub-type changes:
-                  pointed to type 'struct lttng_action' changed, as being reported
+        2 data member changes:
           type of 'action_serialize_cb serialize' changed:
             underlying type 'typedef ssize_t (lttng_action*, char*)*' changed:
               in pointed to type 'function type typedef ssize_t (lttng_action*, char*)':
