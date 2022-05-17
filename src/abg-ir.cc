@@ -13620,7 +13620,7 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
   /// kernel corpus, let's move on.  Otherwise bail out.
   if (!(t1_corpus && t2_corpus
 	&& t1_corpus == t2_corpus
-	&& (t1_corpus->get_origin() == corpus::LINUX_KERNEL_BINARY_ORIGIN)
+	&& (t1_corpus->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
 	&& (is_class_or_union_type(&t1)
 	    || is_enum_type(&t1))))
     return false;

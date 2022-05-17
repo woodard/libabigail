@@ -22,6 +22,7 @@
 
 using std::string;
 using std::cerr;
+using std::vector;
 
 using abigail::tests::read_common::InOutSpec;
 using abigail::tests::read_common::test_task;
@@ -269,20 +270,28 @@ static InOutSpec in_out_specs[] =
     "output/test-read-ctf/test-list-struct.abi",
   },
   {
+    "data/test-read-common/test-PR26568-1.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-ctf/test-PR26568-1.o.abi",
+    "output/test-read-ctf/test-PR26568-1.o.abi",
+  },
+  {
+    "data/test-read-common/test-PR26568-2.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-ctf/test-PR26568-2.o.abi",
+    "output/test-read-ctf/test-PR26568-2.o.abi",
+  },
+  {
     "data/test-read-ctf/test-callback2.o",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-callback2.abi",
     "output/test-read-ctf/test-callback2.abi",
-  },
-  {
-    "data/test-read-ctf/test-forward-undefine-type-decl.o",
-    "",
-    "",
-    SEQUENCE_TYPE_ID_STYLE,
-    "data/test-read-ctf/test-forward-undefine-type-decl.abi",
-    "output/test-read-ctf/test-forward-undefine-type-decl.abi",
   },
   // This should be the last entry.
   {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
@@ -338,9 +347,11 @@ test_task_ctf::perform()
   env.reset(new abigail::ir::environment);
   abigail::elf_reader::status status =
     abigail::elf_reader::STATUS_UNKNOWN;
+  vector<char**> di_roots;
   ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
 
   read_context_sptr ctxt = create_read_context(in_elf_path,
+                                               di_roots,
                                                env.get());
   ABG_ASSERT(ctxt);
 

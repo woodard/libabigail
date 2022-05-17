@@ -14954,10 +14954,12 @@ read_debug_info_into_corpus(read_context& ctxt)
   // First set some mundane properties of the corpus gathered from
   // ELF.
   ctxt.current_corpus()->set_path(ctxt.elf_path());
+
+  corpus::origin origin = corpus::DWARF_ORIGIN;
   if (is_linux_kernel(ctxt.elf_handle()))
-    ctxt.current_corpus()->set_origin(corpus::LINUX_KERNEL_BINARY_ORIGIN);
-  else
-    ctxt.current_corpus()->set_origin(corpus::DWARF_ORIGIN);
+    origin |= corpus::LINUX_KERNEL_BINARY_ORIGIN;
+  ctxt.current_corpus()->set_origin(origin);
+
   ctxt.current_corpus()->set_soname(ctxt.dt_soname());
   ctxt.current_corpus()->set_needed(ctxt.dt_needed());
   ctxt.current_corpus()->set_architecture_name(ctxt.elf_architecture());

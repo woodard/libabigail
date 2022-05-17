@@ -247,7 +247,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
     <<  " --stats  show statistics about various internal stuff\n"
-    << "  --ctf use CTF instead of DWARF in ELF files\n"
+#ifdef WITH_CTF
+    << " --ctf use CTF instead of DWARF in ELF files\n"
+#endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
     << " --debug debug the process of comparing an ABI corpus against itself"
 #endif
@@ -1184,6 +1186,7 @@ main(int argc, char* argv[])
               {
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file1,
+                                                             opts.prepared_di_root_paths1,
                                                              env.get());
                 ABG_ASSERT(ctxt);
                 c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
@@ -1267,6 +1270,7 @@ main(int argc, char* argv[])
               {
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file2,
+                                                             opts.prepared_di_root_paths2,
                                                              env.get());
                 ABG_ASSERT(ctxt);
                 c2 = abigail::ctf_reader::read_corpus(ctxt.get(),
