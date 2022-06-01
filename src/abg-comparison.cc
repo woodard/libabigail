@@ -9858,7 +9858,11 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
     s.net_num_vars_removed() +
     s.net_num_vars_added() +
     s.net_num_leaf_var_changes() +
-    s.net_num_leaf_type_changes();
+    s.net_num_leaf_type_changes() +
+    s.net_num_removed_func_syms() +
+    s.net_num_added_func_syms() +
+    s.net_num_removed_var_syms() +
+    s.net_num_added_var_syms();
 
   if (!sonames_equal_)
     out << indent << "ELF SONAME changed\n";
