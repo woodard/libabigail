@@ -143,7 +143,6 @@ class write_context
   mutable type_ptr_map			m_type_id_map;
   mutable unordered_set<uint32_t>	m_used_type_id_hashes;
   mutable type_ptr_set_type		m_emitted_type_set;
-  type_ptr_set_type			m_emitted_decl_only_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_set_type			m_referenced_types_set;
@@ -491,18 +490,15 @@ public:
   has_non_emitted_referenced_types() const
   {
     for (const auto t : get_referenced_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
-	  return false;
+      if (!type_is_emitted(t))
+	return false;
 
     for (const auto t : get_referenced_non_canonical_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
-	  return false;
+      if (!type_is_emitted(t))
+	return false;
 
     for (const auto t : get_referenced_non_canonical_types())
-      if (!type_is_emitted(t)
-	  && !decl_only_type_is_emitted(t))
+      if (!type_is_emitted(t))
 	return false;
 
     return true;
@@ -741,55 +737,6 @@ public:
     return m_emitted_decls_set.find(irepr) != m_emitted_decls_set.end();
   }
 
-  /// Record a declaration-only class as being emitted.
-  ///
-  /// For now, this function expects a declaration-only class,
-  /// otherwise, it aborts.
-  ///
-  /// @param t the declaration-only class to report as emitted.
-  void
-  record_decl_only_type_as_emitted(type_base* t)
-  {
-    class_or_union* cl = is_class_or_union_type(t);
-    ABG_ASSERT(cl && cl->get_is_declaration_only());
-    m_emitted_decl_only_set.insert(t);
-  }
-
-  /// Record a declaration-only class as being emitted.
-  ///
-  /// For now, this function expects a declaration-only class,
-  /// otherwise, it aborts.
-  ///
-  /// @param t the declaration-only class to report as emitted.
-  void
-  record_decl_only_type_as_emitted(const type_base_sptr& t)
-  {record_decl_only_type_as_emitted(t.get());}
-
-  /// Test if a declaration-only class has been emitted.
-  ///
-  /// @param t the declaration-only class to test for.
-  ///
-  /// @return true iff the declaration-only class @p t has been
-  /// emitted.
-  bool
-  decl_only_type_is_emitted(const type_base* t) const
-  {
-    type_ptr_set_type::const_iterator i = m_emitted_decl_only_set.find(t);
-    if (i == m_emitted_decl_only_set.end())
-      return false;
-    return true;
-  }
-
-  /// Test if a declaration-only class has been emitted.
-  ///
-  /// @param t the declaration-only class to test for.
-  ///
-  /// @return true iff the declaration-only class @p t has been
-  /// emitted.
-  bool
-  decl_only_type_is_emitted(const type_base_sptr& t) const
-  {return decl_only_type_is_emitted(t.get());}
-
   /// Record a declaration as emitted in the abixml output.
   ///
   /// @param decl the decl to consider.
@@ -807,13 +754,6 @@ public:
   const type_ptr_set_type&
   get_emitted_types_set() const
   {return m_emitted_type_set;}
-
-  /// Get the set of types that have been emitted.
-  ///
-  /// @return the set of types that have been emitted.
-  const type_ptr_set_type&
-  get_emitted_decl_only_types_set() const
-  {return m_emitted_decl_only_set;}
 
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
@@ -2246,8 +2186,7 @@ referenced_type_should_be_emitted(const type_base *t,
   if ((tu_is_last || (t->get_translation_unit()
 		      && (t->get_translation_unit()->get_absolute_path()
 			  == tu.get_absolute_path())))
-      && !ctxt.type_is_emitted(t)
-      && !ctxt.decl_only_type_is_emitted(t))
+      && !ctxt.type_is_emitted(t))
     return true;
   return false;
 }
@@ -3845,12 +3784,7 @@ write_class_decl(const class_decl_sptr& d,
       o << "</class-decl>\n";
     }
 
-  // We allow several *declarations* of the same class in the corpus,
-  // but only one definition.
-  if (!decl->get_is_declaration_only())
-    ctxt.record_type_as_emitted(decl);
-  else
-    ctxt.record_decl_only_type_as_emitted(decl);
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -4005,12 +3939,7 @@ write_union_decl(const union_decl_sptr& d,
       o << "</union-decl>\n";
     }
 
-  // We allow several *declarations* of the same union in the corpus,
-  // but only one definition.
-  if (!decl->get_is_declaration_only())
-    ctxt.record_type_as_emitted(decl);
-  else
-    ctxt.record_decl_only_type_as_emitted(decl);
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -4846,9 +4775,6 @@ write_canonical_type_ids(xml_writer::write_context& ctxt, ostream& o)
   o << "<abixml-types-check>\n";
 
   for (const auto &type : ctxt.get_emitted_types_set())
-    write_type_record(ctxt, type, o);
-
-  for (const auto &type : ctxt.get_emitted_decl_only_types_set())
     write_type_record(ctxt, type, o);
 
   o << "</abixml-types-check>\n";
