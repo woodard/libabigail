@@ -691,7 +691,7 @@ main(int argc, char* argv[])
   suppressions_type& supprs = ctxt->suppressions();
   bool files_suppressed = (file_is_suppressed(opts.app_path, supprs)
 			   || file_is_suppressed(opts.lib1_path, supprs)
-			   ||file_is_suppressed(opts.lib2_path, supprs));
+			   || file_is_suppressed(opts.lib2_path, supprs));
 
   if (files_suppressed)
     // We don't have to compare anything because a user
