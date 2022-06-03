@@ -148,6 +148,9 @@ bool
 architecture_is_ppc64(Elf* elf_handle);
 
 bool
+architecture_is_ppc32(Elf* elf_handle);
+
+bool
 architecture_is_arm32(Elf* elf_handle);
 
 bool

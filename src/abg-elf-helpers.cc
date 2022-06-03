@@ -300,6 +300,8 @@ e_machine_to_string(GElf_Half e_machine)
 ///
 /// @param elf_handle the elf handle to use.
 ///
+/// @param name the section name.
+///
 /// @return the section found, nor nil if none was found.
 Elf_Scn*
 find_section_by_name(Elf* elf_handle, const std::string& name)
@@ -914,6 +916,19 @@ architecture_is_ppc64(Elf* elf_handle)
   GElf_Ehdr  eh_mem;
   GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
   return (elf_header && elf_header->e_machine == EM_PPC64);
+}
+
+/// Test if the architecture of the current binary is ppc32.
+///
+/// @param elf_handle the ELF handle to consider.
+///
+/// @return true iff the architecture of the current binary is ppc32.
+bool
+architecture_is_ppc32(Elf* elf_handle)
+{
+  GElf_Ehdr  eh_mem;
+  GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
+  return (elf_header && elf_header->e_machine == EM_PPC);
 }
 
 /// Test if the architecture of the current binary is arm32.

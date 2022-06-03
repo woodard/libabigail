@@ -70,6 +70,10 @@ public:
   Elf *elf_handler;
   int elf_fd;
 
+  /// libelf handler for the ELF file from which we read the CTF data,
+  /// and the corresponding file descriptor found in external .debug file
+  Elf *elf_handler_dbg;
+  int elf_fd_dbg;
 
   /// The symtab read from the ELF file.
   symtab_reader::symtab_sptr symtab;
@@ -83,6 +87,8 @@ public:
   corpus_sptr			cur_corpus_;
   corpus_group_sptr		cur_corpus_group_;
   corpus::exported_decls_builder* exported_decls_builder_;
+  // The set of directories under which to look for debug info.
+  vector<char**>		debug_info_root_paths_;
 
   /// Setter of the exported decls builder object.
   ///
@@ -253,21 +259,29 @@ public:
   ///
   /// @param elf_path the path to the ELF file.
   ///
-  /// @param environment the environment used by the current context.
+  /// @param debug_info_root_paths vector with the paths
+  /// to directories where .debug file is located.
+  ///
+  /// @param env the environment used by the current context.
   /// This environment contains resources needed by the reader and by
   /// the types and declarations that are to be created later.  Note
   /// that ABI artifacts that are to be compared all need to be
   /// created within the same environment.
-  read_context(const string& elf_path, ir::environment *env) :
-    ctfa(NULL)
+  read_context(const string& elf_path,
+               const vector<char**>& debug_info_root_paths,
+               ir::environment *env) :
+   ctfa(NULL)
   {
-    initialize(elf_path, env);
+    initialize(elf_path, debug_info_root_paths, env);
   }
 
   /// Initializer of read_context.
   ///
   /// @param elf_path the path to the elf file the context is to be
   /// used for.
+  ///
+  /// @param debug_info_root_paths vector with the paths
+  /// to directories where .debug file is located.
   ///
   /// @param environment the environment used by the current context.
   /// This environment contains resources needed by the reader and by
@@ -279,16 +293,22 @@ public:
   /// must be greater than the life time of the resulting @ref
   /// read_context the context uses resources that are allocated in
   /// the environment.
-  void initialize(const string& elf_path, ir::environment *env)
+  void
+  initialize(const string& elf_path,
+             const vector<char**>& debug_info_root_paths,
+             ir::environment *env)
   {
     types_map.clear();
     filename = elf_path;
     ir_env = env;
     elf_handler = NULL;
+    elf_handler_dbg = NULL;
     elf_fd = -1;
+    elf_fd_dbg = -1;
     symtab.reset();
     cur_corpus_group_.reset();
     exported_decls_builder_ = 0;
+    debug_info_root_paths_ = debug_info_root_paths;
   }
 
   ~read_context()
@@ -1332,6 +1352,10 @@ close_elf_handler (read_context *ctxt)
   /* Finish the ELF handler and close the associated file.  */
   elf_end(ctxt->elf_handler);
   close(ctxt->elf_fd);
+
+  /* Finish the ELF handler and close the associated debug file.  */
+  elf_end(ctxt->elf_handler_dbg);
+  close(ctxt->elf_fd_dbg);
 }
 
 /// Fill a CTF section description with the information in a given ELF
@@ -1358,38 +1382,113 @@ fill_ctf_section(Elf_Scn *elf_section, ctf_sect_t *ctf_section)
   ctf_section->cts_entsize = section_header->sh_entsize;
 }
 
+/// Find a CTF section and debug symbols in a given ELF using
+/// .gnu_debuglink section.
+///
+/// @param ctxt the read context.
+/// @param ctf_dbg_section the CTF section to fill with the raw data.
+static void
+find_alt_debuginfo(read_context *ctxt, Elf_Scn **ctf_dbg_scn)
+{
+  std::string name;
+  Elf_Data *data;
+
+  Elf_Scn *section = elf_helpers::find_section
+    (ctxt->elf_handler, ".gnu_debuglink", SHT_PROGBITS);
+
+  if (section
+      && (data = elf_getdata(section, NULL))
+      && data->d_size != 0)
+    name = (char *) data->d_buf;
+
+  int fd = -1;
+  Elf *hdlr = NULL;
+  *ctf_dbg_scn = NULL;
+
+  if (!name.empty())
+    for (vector<char**>::const_iterator i = ctxt->debug_info_root_paths_.begin();
+         i != ctxt->debug_info_root_paths_.end();
+         ++i)
+      {
+        std::string file_path;
+        if (!tools_utils::find_file_under_dir(**i, name, file_path))
+          continue;
+
+        if ((fd = open(file_path.c_str(), O_RDONLY)) == -1)
+          continue;
+
+        if ((hdlr = elf_begin(fd, ELF_C_READ, NULL)) == NULL)
+          {
+            close(fd);
+            continue;
+          }
+
+        ctxt->symtab =
+          symtab_reader::symtab::load(hdlr, ctxt->ir_env, nullptr);
+
+        // unlikely .ctf was designed to be present in stripped file
+        *ctf_dbg_scn =
+          elf_helpers::find_section(hdlr, ".ctf", SHT_PROGBITS);
+          break;
+
+        elf_end(hdlr);
+        close(fd);
+      }
+
+  // If we don't have a symbol table, use current one in ELF file
+  if (!ctxt->symtab)
+    ctxt->symtab =
+     symtab_reader::symtab::load(ctxt->elf_handler, ctxt->ir_env, nullptr);
+
+  ctxt->elf_handler_dbg = hdlr;
+  ctxt->elf_fd_dbg = fd;
+}
+
 /// Slurp certain information from the ELF file described by a given
 /// read context and install it in a libabigail corpus.
 ///
 /// @param ctxt the read context
 /// @param corp the libabigail corpus in which to install the info.
-///
-/// @return 0 if there is an error.
-/// @return 1 otherwise.
-
-static int
-slurp_elf_info(read_context *ctxt, corpus_sptr corp)
+/// @param status the resulting status flags.
+static void
+slurp_elf_info(read_context *ctxt,
+               corpus_sptr corp,
+               elf_reader::status& status)
 {
-  Elf_Scn *symtab_scn;
-  Elf_Scn *ctf_scn;
-  Elf_Scn *strtab_scn;
-  GElf_Ehdr eh_mem;
-  GElf_Ehdr *ehdr = gelf_getehdr(ctxt->elf_handler, &eh_mem);
-
   /* Set the ELF architecture.  */
+  GElf_Ehdr *ehdr, eh_mem;
+  Elf_Scn *symtab_scn;
+  Elf_Scn *ctf_scn, *ctf_dbg_scn;
+  Elf_Scn *strtab_scn;
+
+  if (!(ehdr = gelf_getehdr(ctxt->elf_handler, &eh_mem)))
+      return;
+
   corp->set_architecture_name(elf_helpers::e_machine_to_string(ehdr->e_machine));
 
-  /* Read the symtab from the ELF file and set it in the corpus.  */
-  ctxt->symtab =
-    symtab_reader::symtab::load(ctxt->elf_handler, ctxt->ir_env,
-                                0 /* No suppressions.  */);
+  find_alt_debuginfo(ctxt, &ctf_dbg_scn);
+  ABG_ASSERT(ctxt->symtab);
   corp->set_symtab(ctxt->symtab);
 
   if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
-    return 1;
+    {
+      status |= elf_reader::STATUS_OK;
+      return;
+    }
 
   /* Get the raw ELF section contents for libctf.  */
-  ctf_scn = elf_helpers::find_section(ctxt->elf_handler, ".ctf", SHT_PROGBITS);
+  const char *ctf_name = ".ctf";
+  ctf_scn = elf_helpers::find_section_by_name(ctxt->elf_handler, ctf_name);
+  if (ctf_scn == NULL)
+    {
+      if (ctf_dbg_scn)
+        ctf_scn = ctf_dbg_scn;
+      else
+        {
+          status |= elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
+          return;
+        }
+    }
 
   // ET_{EXEC,DYN} needs .dyn{sym,str} in ctf_arc_bufopen
   const char *symtab_name = ".dynsym";
@@ -1403,15 +1502,17 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 
   symtab_scn = elf_helpers::find_section_by_name(ctxt->elf_handler, symtab_name);
   strtab_scn = elf_helpers::find_section_by_name(ctxt->elf_handler, strtab_name);
-
-  if (ctf_scn == NULL || symtab_scn == NULL || strtab_scn == NULL)
-    return 0;
+  if (symtab_scn == NULL || strtab_scn == NULL)
+    {
+      status |= elf_reader::STATUS_NO_SYMBOLS_FOUND;
+      return;
+    }
 
   fill_ctf_section(ctf_scn, &ctxt->ctf_sect);
   fill_ctf_section(symtab_scn, &ctxt->symtab_sect);
   fill_ctf_section(strtab_scn, &ctxt->strtab_sect);
 
-  return 1;
+  status |= elf_reader::STATUS_OK;
 }
 
 /// Create and return a new read context to process CTF information
@@ -1422,9 +1523,12 @@ slurp_elf_info(read_context *ctxt, corpus_sptr corp)
 
 read_context_sptr
 create_read_context(const std::string& elf_path,
+                    const vector<char**>& debug_info_root_paths,
                     ir::environment *env)
 {
-  read_context_sptr result(new read_context(elf_path, env));
+  read_context_sptr result(new read_context(elf_path,
+                                            debug_info_root_paths,
+                                            env));
   return result;
 }
 
@@ -1443,17 +1547,12 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
 {
   corpus_sptr corp
     = std::make_shared<corpus>(ctxt->ir_env, ctxt->filename);
-
   ctxt->cur_corpus_ = corp;
-  /* Be optimist.  */
-  status = elf_reader::STATUS_OK;
+  status = elf_reader::STATUS_UNKNOWN;
 
   /* Open the ELF file.  */
   if (!open_elf_handler(ctxt))
-    {
-      status = elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
       return corp;
-    }
 
   bool is_linux_kernel = elf_helpers::is_linux_kernel(ctxt->elf_handler);
   corpus::origin origin = corpus::CTF_ORIGIN;
@@ -1465,11 +1564,11 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
   if (ctxt->cur_corpus_group_)
     ctxt->cur_corpus_group_->add_corpus(ctxt->cur_corpus_);
 
-  if (!slurp_elf_info(ctxt, corp) && !is_linux_kernel)
-    {
-      status = elf_reader::STATUS_NO_SYMBOLS_FOUND;
+  slurp_elf_info(ctxt, corp, status);
+  if (!is_linux_kernel
+      && ((status & elf_reader::STATUS_DEBUG_INFO_NOT_FOUND) |
+          (status & elf_reader::STATUS_NO_SYMBOLS_FOUND)))
       return corp;
-    }
 
   // Set the set of exported declaration that are defined.
   ctxt->exported_decls_builder
@@ -1496,7 +1595,7 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
 
   ctxt->ir_env->canonicalization_is_done(false);
   if (ctxt->ctfa == NULL)
-    status = elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
+    status |= elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
   else
     {
       process_ctf_archive(ctxt, corp);
@@ -1583,10 +1682,11 @@ read_and_add_corpus_to_group_from_elf(read_context* ctxt,
 void
 reset_read_context(read_context_sptr	&ctxt,
                    const std::string&	 elf_path,
+                   const vector<char**>& debug_info_root_path,
                    ir::environment*	 environment)
 {
   if (ctxt)
-    ctxt->initialize(elf_path, environment);
+    ctxt->initialize(elf_path, debug_info_root_path, environment);
 }
 
 /// Returns a key to be use in types_map dict conformed by

@@ -343,17 +343,7 @@ symtab::load_(Elf*	       elf_handle,
 	    }
 	}
       else if (symbol_sptr->is_defined())
-	{
-	  const GElf_Addr symbol_value =
-	    get_symbol_value(elf_handle, sym, symbol_sptr);
-	  const auto result =
-	    addr_symbol_map_.emplace(symbol_value, symbol_sptr);
-	  if (!result.second)
-	    // A symbol with the same address already exists.  This
-	    // means this symbol is an alias of the main symbol with
-	    // that address.  So let's register this new alias as such.
-	    result.first->second->get_main_symbol()->add_alias(symbol_sptr);
-	}
+	setup_symbol_lookup_tables(elf_handle, sym, symbol_sptr);
     }
 
   add_alternative_address_lookups(elf_handle);
@@ -468,6 +458,10 @@ symtab::update_main_symbol(GElf_Addr addr, const std::string& name)
 /// Various adjustments and bookkeeping may be needed to provide a correct
 /// interpretation (one that matches DWARF addresses) of raw symbol values.
 ///
+/// This is a sub-routine for symtab::load_and
+/// symtab::add_alternative_address_lookups and must be called only
+/// once (per symbol) during the execution of the former.
+///
 /// @param elf_handle the ELF handle
 ///
 /// @param elf_symbol the ELF symbol
@@ -476,34 +470,48 @@ symtab::update_main_symbol(GElf_Addr addr, const std::string& name)
 ///
 /// @return a possibly-adjusted symbol value
 GElf_Addr
-symtab::get_symbol_value(Elf* elf_handle,
-			 GElf_Sym* elf_symbol,
-			 const elf_symbol_sptr& symbol_sptr)
+symtab::setup_symbol_lookup_tables(Elf* elf_handle,
+				   GElf_Sym* elf_symbol,
+				   const elf_symbol_sptr& symbol_sptr)
 {
   const bool is_arm32 = elf_helpers::architecture_is_arm32(elf_handle);
   const bool is_arm64 = elf_helpers::architecture_is_arm64(elf_handle);
   const bool is_ppc64 = elf_helpers::architecture_is_ppc64(elf_handle);
+  const bool is_ppc32 = elf_helpers::architecture_is_ppc32(elf_handle);
 
   GElf_Addr symbol_value =
     elf_helpers::maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle,
 							  elf_symbol);
 
-  if (symbol_sptr->is_function())
-    {
-      if (is_arm32)
-	// Clear bit zero of ARM32 addresses as per "ELF for the Arm
-	// Architecture" section 5.5.3.
-	// https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
-	symbol_value &= ~1;
-      else if (is_ppc64)
-	update_function_entry_address_symbol_map(elf_handle, elf_symbol,
-						 symbol_sptr);
-    }
+  if (is_arm32 && symbol_sptr->is_function())
+    // Clear bit zero of ARM32 addresses as per "ELF for the Arm
+    // Architecture" section 5.5.3.
+    // https://static.docs.arm.com/ihi0044/g/aaelf32.pdf
+    symbol_value &= ~1;
+
   if (is_arm64)
     // Copy bit 55 over bits 56 to 63 which may be tag information.
     symbol_value = symbol_value & (1ULL<<55)
 		   ? symbol_value | (0xffULL<<56)
 		   : symbol_value &~ (0xffULL<<56);
+
+  if (symbol_sptr->is_defined())
+    {
+      const auto result =
+	addr_symbol_map_.emplace(symbol_value, symbol_sptr);
+      if (!result.second)
+	// A symbol with the same address already exists.  This
+	// means this symbol is an alias of the main symbol with
+	// that address.  So let's register this new alias as such.
+	result.first->second->get_main_symbol()->add_alias(symbol_sptr);
+    }
+
+  // Please note that update_function_entry_address_symbol_map depends
+  // on the symbol aliases been setup.  This is why, the
+  // elf_symbol::add_alias call is done above BEFORE this point.
+  if ((is_ppc64 || is_ppc32) && symbol_sptr->is_function())
+    update_function_entry_address_symbol_map(elf_handle, elf_symbol,
+					     symbol_sptr);
 
   return symbol_value;
 }
@@ -656,9 +664,7 @@ symtab::add_alternative_address_lookups(Elf* elf_handle)
 	  if (symbols.size() == 1)
 	    {
 	      const auto& symbol_sptr = symbols[0];
-	      const GElf_Addr symbol_value =
-		get_symbol_value(elf_handle, sym, symbol_sptr);
-	      addr_symbol_map_.emplace(symbol_value, symbol_sptr);
+		setup_symbol_lookup_tables(elf_handle, sym, symbol_sptr);
 	    }
 	}
     }

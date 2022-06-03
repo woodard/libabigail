@@ -247,7 +247,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
     <<  " --stats  show statistics about various internal stuff\n"
-    << "  --ctf use CTF instead of DWARF in ELF files\n"
+#ifdef WITH_CTF
+    << " --ctf use CTF instead of DWARF in ELF files\n"
+#endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
     << " --debug debug the process of comparing an ABI corpus against itself"
 #endif
@@ -1125,20 +1127,7 @@ main(int argc, char* argv[])
       abigail::tools_utils::file_type t1_type, t2_type;
 
       t1_type = guess_file_type(opts.file1);
-      if (t1_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file1 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
-
       t2_type = guess_file_type(opts.file2);
-      if (t2_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file2 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
 
       environment_sptr env(new environment);
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -1184,6 +1173,7 @@ main(int argc, char* argv[])
               {
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file1,
+                                                             opts.prepared_di_root_paths1,
                                                              env.get());
                 ABG_ASSERT(ctxt);
                 c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
@@ -1267,6 +1257,7 @@ main(int argc, char* argv[])
               {
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file2,
+                                                             opts.prepared_di_root_paths2,
                                                              env.get());
                 ABG_ASSERT(ctxt);
                 c2 = abigail::ctf_reader::read_corpus(ctxt.get(),
