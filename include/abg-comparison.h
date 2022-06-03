@@ -1716,6 +1716,9 @@ public:
   const base_diff_sptrs_type&
   changed_bases();
 
+  const vector<class_decl::base_spec_sptr>&
+  moved_bases() const;
+
   virtual bool
   has_changes() const;
 

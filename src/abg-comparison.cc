@@ -5217,6 +5217,11 @@ class_diff::ensure_lookup_tables_populated(void) const
 		if (j->second != b)
 		  get_priv()->changed_bases_[name] =
 		    compute_diff(j->second, b, context());
+		else
+		  // The base class changed place.  IOW, the base
+		  // classes got re-arranged.  Let's keep track of the
+		  // base classes that moved.
+		  get_priv()->moved_bases_.push_back(b);
 		get_priv()->deleted_bases_.erase(j);
 	      }
 	    else
@@ -5546,6 +5551,16 @@ class_diff::inserted_bases() const
 const base_diff_sptrs_type&
 class_diff::changed_bases()
 {return get_priv()->sorted_changed_bases_;}
+
+/// Getter for the vector of bases that "moved".
+/// That is, the vector of base types which position changed.  If this
+/// vector is not empty, it means the bases of the underlying class
+/// type got re-ordered.
+///
+/// @return the vector of bases that moved.
+const vector<class_decl::base_spec_sptr>&
+class_diff::moved_bases() const
+{return get_priv()->moved_bases_;}
 
 /// @return the edit script of the bases of the two classes.
 edit_script&

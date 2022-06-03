@@ -691,6 +691,8 @@ leaf_reporter::report(const class_diff& d,
 
   d.class_or_union_diff::report(out, indent);
 
+  maybe_report_base_class_reordering(d, out, indent);
+
   maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 
   d.reported_once(true);
