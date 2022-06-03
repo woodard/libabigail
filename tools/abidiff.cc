@@ -1127,20 +1127,7 @@ main(int argc, char* argv[])
       abigail::tools_utils::file_type t1_type, t2_type;
 
       t1_type = guess_file_type(opts.file1);
-      if (t1_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file1 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
-
       t2_type = guess_file_type(opts.file2);
-      if (t2_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file2 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
 
       environment_sptr env(new environment);
 #ifdef WITH_DEBUG_SELF_COMPARISON
