@@ -782,9 +782,10 @@ main(int argc, char* argv[])
 #ifdef WITH_CTF
             if (opts.use_ctf)
               {
-                abigail::ctf_reader::read_context_sptr ctxt
-                  = abigail::ctf_reader::create_read_context(opts.file_path,
-                                                             env.get());
+                abigail::ctf_reader::read_context_sptr ctxt =
+                  abigail::ctf_reader::create_read_context(opts.file_path,
+                                                           di_roots,
+                                                           env.get());
                 ABG_ASSERT(ctxt);
                 corp = abigail::ctf_reader::read_corpus(ctxt.get(), s);
               }

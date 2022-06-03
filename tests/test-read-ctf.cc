@@ -22,6 +22,7 @@
 
 using std::string;
 using std::cerr;
+using std::vector;
 
 using abigail::tests::read_common::InOutSpec;
 using abigail::tests::read_common::test_task;
@@ -346,9 +347,11 @@ test_task_ctf::perform()
   env.reset(new abigail::ir::environment);
   abigail::elf_reader::status status =
     abigail::elf_reader::STATUS_UNKNOWN;
+  vector<char**> di_roots;
   ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
 
   read_context_sptr ctxt = create_read_context(in_elf_path,
+                                               di_roots,
                                                env.get());
   ABG_ASSERT(ctxt);
 
