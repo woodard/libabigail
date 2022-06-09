@@ -2094,6 +2094,9 @@ public:
   /// A map that associates a function type representations to
   /// function types, inside a translation unit.
   mutable istring_fn_type_map_type per_tu_repr_to_fn_type_maps_;
+  mutable std::unordered_map<std::pair<Dwarf_Off, Dwarf_Off>,
+			     size_t,
+			     dwarf_offset_pair_hash> die_comparison_visits_;
 
   die_class_or_union_map_type	die_wip_classes_map_;
   die_class_or_union_map_type	alternate_die_wip_classes_map_;
@@ -10216,6 +10219,15 @@ compare_dies(const read_context& ctxt,
 
   Dwarf_Off l_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(l)),
     r_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(r));
+
+  if (l_offset == r_offset)
+    return true;
+  auto& visit = ctxt.die_comparison_visits_[std::make_pair(l_offset, r_offset)];
+  if (visit == 10000)
+    return true;
+  else
+    ++visit;
+
   Dwarf_Off l_canonical_die_offset = 0, r_canonical_die_offset = 0;
   const die_source l_die_source = ctxt.get_die_source(l);
   const die_source r_die_source = ctxt.get_die_source(r);
