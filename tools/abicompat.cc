@@ -39,9 +39,11 @@
 #include "abg-corpus.h"
 #include "abg-reader.h"
 #include "abg-dwarf-reader.h"
-#include "abg-ctf-reader.h"
 #include "abg-comparison.h"
 #include "abg-suppression.h"
+#ifdef WITH_CTF
+#include "abg-ctf-reader.h"
+#endif
 
 using std::string;
 using std::cerr;
