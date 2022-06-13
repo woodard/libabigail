@@ -1149,13 +1149,23 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 	  << "\n";
     }
 
-  if (symbol1->get_crc() != 0 && symbol2->get_crc() != 0
-      && symbol1->get_crc() != symbol2->get_crc())
+  const abg_compat::optional<uint64_t>& crc1 = symbol1->get_crc();
+  const abg_compat::optional<uint64_t>& crc2 = symbol2->get_crc();
+  if (crc1 != crc2)
     {
+      const std::string none = "(none)";
       out << indent << "CRC (modversions) changed from "
-	  << std::showbase << std::hex
-	  << symbol1->get_crc() << " to " << symbol2->get_crc()
-	  << std::noshowbase << std::dec
+	  << std::showbase << std::hex;
+      if (crc1.has_value())
+	out << crc1.value();
+      else
+	out << none;
+      out << " to ";
+      if (crc2.has_value())
+	out << crc2.value();
+      else
+	out << none;
+      out << std::noshowbase << std::dec
 	  << "\n";
     }
 }

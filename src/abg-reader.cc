@@ -3239,10 +3239,6 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
 	is_default_version = true;
     }
 
-  uint64_t crc = 0;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "crc"))
-    crc = strtoull(CHAR_STR(s), NULL, 0);
-
   elf_symbol::type type = elf_symbol::NOTYPE_TYPE;
   read_elf_symbol_type(node, type);
 
@@ -3266,8 +3262,8 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
 
   e->set_is_suppressed(is_suppressed);
 
-  if (crc != 0)
-    e->set_crc(crc);
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "crc"))
+    e->set_crc(strtoull(CHAR_STR(s), NULL, 0));
 
   return e;
 }

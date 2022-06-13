@@ -1724,7 +1724,7 @@ struct elf_symbol::priv
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
   bool			is_in_ksymtab_;
-  uint64_t		crc_;
+  abg_compat::optional<uint64_t>	crc_;
   bool			is_suppressed_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
@@ -1741,7 +1741,7 @@ struct elf_symbol::priv
       is_defined_(false),
       is_common_(false),
       is_in_ksymtab_(false),
-      crc_(0),
+      crc_(),
       is_suppressed_(false)
   {}
 
@@ -1756,7 +1756,7 @@ struct elf_symbol::priv
        const elf_symbol::version& ve,
        elf_symbol::visibility	  vi,
        bool			  is_in_ksymtab,
-       uint64_t			  crc,
+       const abg_compat::optional<uint64_t>&	crc,
        bool			  is_suppressed)
     : env_(e),
       index_(i),
@@ -1826,7 +1826,7 @@ elf_symbol::elf_symbol(const environment* e,
 		       const version&	  ve,
 		       visibility	  vi,
 		       bool		  is_in_ksymtab,
-		       uint64_t		  crc,
+		       const abg_compat::optional<uint64_t>&	crc,
 		       bool		  is_suppressed)
   : priv_(new priv(e,
 		   i,
@@ -1897,7 +1897,7 @@ elf_symbol::create(const environment* e,
 		   const version&     ve,
 		   visibility	      vi,
 		   bool		      is_in_ksymtab,
-		   uint64_t	      crc,
+		   const abg_compat::optional<uint64_t>&	crc,
 		   bool		      is_suppressed)
 {
   elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi,
@@ -1923,8 +1923,7 @@ textually_equals(const elf_symbol&l,
 		 && l.is_defined() == r.is_defined()
 		 && l.is_common_symbol() == r.is_common_symbol()
 		 && l.get_version() == r.get_version()
-		 && (l.get_crc() == 0 || r.get_crc() == 0
-		     || l.get_crc() == r.get_crc()));
+		 && l.get_crc() == r.get_crc());
 
   if (equals && l.is_variable())
     // These are variable symbols.  Let's compare their symbol size.
@@ -2132,8 +2131,8 @@ elf_symbol::set_is_in_ksymtab(bool is_in_ksymtab)
 
 /// Getter of the 'crc' property.
 ///
-/// @return the CRC (modversions) value for Linux Kernel symbols (if present)
-uint64_t
+/// @return the CRC (modversions) value for Linux Kernel symbols, if any
+const abg_compat::optional<uint64_t>&
 elf_symbol::get_crc() const
 {return priv_->crc_;}
 
@@ -2141,7 +2140,7 @@ elf_symbol::get_crc() const
 ///
 /// @param crc the new CRC (modversions) value for Linux Kernel symbols
 void
-elf_symbol::set_crc(uint64_t crc)
+elf_symbol::set_crc(const abg_compat::optional<uint64_t>& crc)
 {priv_->crc_ = crc;}
 
 /// Getter for the 'is-suppressed' property.

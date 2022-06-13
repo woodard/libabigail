@@ -234,9 +234,7 @@ crc_changed(const function_or_var_decl_sptr& f,
   const auto& symbol_s = s->get_symbol();
   if (!symbol_f || !symbol_s)
     return false;
-  const auto crc_f = symbol_f->get_crc();
-  const auto crc_s = symbol_s->get_crc();
-  return crc_f != 0 && crc_s != 0 && crc_f != crc_s;
+  return symbol_f->get_crc() != symbol_s->get_crc();
 }
 
 /// Test if the current diff tree node carries a CRC change in either a

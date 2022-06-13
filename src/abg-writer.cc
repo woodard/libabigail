@@ -3193,10 +3193,10 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
   if (sym->is_common_symbol())
     o << " is-common='yes'";
 
-  if (sym->get_crc() != 0)
+  if (sym->get_crc().has_value())
     o << " crc='"
-      << std::hex << std::showbase << sym->get_crc() << "'"
-      << std::dec << std::noshowbase;
+      << std::hex << std::showbase << sym->get_crc().value()
+      << std::dec << std::noshowbase << "'";
 
   o << "/>\n";
 
