@@ -22119,7 +22119,7 @@ class_decl::get_pretty_representation(bool internal,
   // it has a name, which is the typedef name.
   if (get_is_anonymous())
     {
-      if (internal)
+      if (internal && !get_name().empty())
 	return cl + get_type_name(this, qualified_name, /*internal=*/true);
       return get_class_or_union_flat_representation(this, "",
 						    /*one_line=*/true,
@@ -23929,7 +23929,7 @@ union_decl::get_pretty_representation(bool internal,
   string repr;
   if (get_is_anonymous())
     {
-      if (internal)
+      if (internal && !get_name().empty())
 	repr = string("union ") +
 	  get_type_name(this, qualified_name, /*internal=*/true);
       else
