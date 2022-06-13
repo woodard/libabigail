@@ -1168,6 +1168,24 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
       out << std::noshowbase << std::dec
 	  << "\n";
     }
+
+  const abg_compat::optional<std::string>& ns1 = symbol1->get_namespace();
+  const abg_compat::optional<std::string>& ns2 = symbol2->get_namespace();
+  if (ns1 != ns2)
+    {
+      const std::string none = "(none)";
+      out << indent << "namespace changed from ";
+      if (ns1.has_value())
+	out << "'" << ns1.value() << "'";
+      else
+	out << none;
+      out << " to ";
+      if (ns2.has_value())
+	out << "'" << ns2.value() << "'";
+      else
+	out << none;
+      out << "\n";
+    }
 }
 
 /// For a given symbol, emit a string made of its name and version.

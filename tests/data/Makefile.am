@@ -93,6 +93,9 @@ test-abidiff/test-crc-2.xml \
 test-abidiff/test-crc-report-0-1.txt \
 test-abidiff/test-crc-report-1-0.txt \
 test-abidiff/test-crc-report-1-2.txt \
+test-abidiff/test-namespace-0.xml \
+test-abidiff/test-namespace-1.xml \
+test-abidiff/test-namespace-report.txt \
 test-abidiff/test-PR27985-report.txt	 \
 test-abidiff/test-PR27985-v0.c		 \
 test-abidiff/test-PR27985-v0.o		 \

@@ -1725,6 +1725,7 @@ struct elf_symbol::priv
   bool			is_common_;
   bool			is_in_ksymtab_;
   abg_compat::optional<uint64_t>	crc_;
+  abg_compat::optional<std::string>	namespace_;
   bool			is_suppressed_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
@@ -1742,6 +1743,7 @@ struct elf_symbol::priv
       is_common_(false),
       is_in_ksymtab_(false),
       crc_(),
+      namespace_(),
       is_suppressed_(false)
   {}
 
@@ -1757,6 +1759,7 @@ struct elf_symbol::priv
        elf_symbol::visibility	  vi,
        bool			  is_in_ksymtab,
        const abg_compat::optional<uint64_t>&	crc,
+       const abg_compat::optional<std::string>&	ns,
        bool			  is_suppressed)
     : env_(e),
       index_(i),
@@ -1770,6 +1773,7 @@ struct elf_symbol::priv
       is_common_(c),
       is_in_ksymtab_(is_in_ksymtab),
       crc_(crc),
+      namespace_(ns),
       is_suppressed_(is_suppressed)
   {
     if (!is_common_)
@@ -1815,6 +1819,8 @@ elf_symbol::elf_symbol()
 /// @param vi the visibility of the symbol.
 ///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
+///
+/// @param ns the namespace of Linux Kernel symbols, if any
 elf_symbol::elf_symbol(const environment* e,
 		       size_t		  i,
 		       size_t		  s,
@@ -1827,6 +1833,7 @@ elf_symbol::elf_symbol(const environment* e,
 		       visibility	  vi,
 		       bool		  is_in_ksymtab,
 		       const abg_compat::optional<uint64_t>&	crc,
+		       const abg_compat::optional<std::string>&	ns,
 		       bool		  is_suppressed)
   : priv_(new priv(e,
 		   i,
@@ -1840,6 +1847,7 @@ elf_symbol::elf_symbol(const environment* e,
 		   vi,
 		   is_in_ksymtab,
 		   crc,
+		   ns,
 		   is_suppressed))
 {}
 
@@ -1883,6 +1891,8 @@ elf_symbol::create()
 ///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
 ///
+/// @param ns the namespace of Linux Kernel symbols, if any
+///
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
 elf_symbol_sptr
@@ -1898,10 +1908,11 @@ elf_symbol::create(const environment* e,
 		   visibility	      vi,
 		   bool		      is_in_ksymtab,
 		   const abg_compat::optional<uint64_t>&	crc,
+		   const abg_compat::optional<std::string>&	ns,
 		   bool		      is_suppressed)
 {
   elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi,
-				     is_in_ksymtab, crc, is_suppressed));
+				     is_in_ksymtab, crc, ns, is_suppressed));
   sym->priv_->main_symbol_ = sym;
   return sym;
 }
@@ -1923,7 +1934,8 @@ textually_equals(const elf_symbol&l,
 		 && l.is_defined() == r.is_defined()
 		 && l.is_common_symbol() == r.is_common_symbol()
 		 && l.get_version() == r.get_version()
-		 && l.get_crc() == r.get_crc());
+		 && l.get_crc() == r.get_crc()
+		 && l.get_namespace() == r.get_namespace());
 
   if (equals && l.is_variable())
     // These are variable symbols.  Let's compare their symbol size.
@@ -2142,6 +2154,20 @@ elf_symbol::get_crc() const
 void
 elf_symbol::set_crc(const abg_compat::optional<uint64_t>& crc)
 {priv_->crc_ = crc;}
+
+/// Getter of the 'namespace' property.
+///
+/// @return the namespace for Linux Kernel symbols, if any
+const abg_compat::optional<std::string>&
+elf_symbol::get_namespace() const
+{return priv_->namespace_;}
+
+/// Setter of the 'namespace' property.
+///
+/// @param ns the new namespace for Linux Kernel symbols, if any
+void
+elf_symbol::set_namespace(const abg_compat::optional<std::string>& ns)
+{priv_->namespace_ = ns;}
 
 /// Getter for the 'is-suppressed' property.
 ///
