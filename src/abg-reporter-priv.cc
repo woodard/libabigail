@@ -1387,7 +1387,7 @@ reporter_base::diff_to_be_reported(const diff *d) const
 void
 maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
 					      ostream			&out,
-					      const string		indent)
+					      const string		&indent)
 {
   const diff_context_sptr& ctxt = d.context();
 
