@@ -1698,6 +1698,9 @@ test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt \
 test-alt-dwarf-file/rhbz1951526/usr/bin/gimp-2.10 \
 test-alt-dwarf-file/rhbz1951526/usr/lib/debug/.dwz/gimp-2.10.22-2.el9.1.aarch64 \
 test-alt-dwarf-file/rhbz1951526/usr/lib/debug/usr/bin/gimp-2.10-2.10.22-2.el9.1.aarch64.debug \
+test-alt-dwarf-file/libstdc++/libstdc++-report.txt \
+test-alt-dwarf-file/libstdc++/usr/lib/debug/usr/lib64/libstdc++.so.6.0.30-12.1.1-1.fc37.x86_64.debug \
+test-alt-dwarf-file/libstdc++/usr/lib64/libstdc++.so.6.0.30 \
 \
 test-abicompat/libtest0-fn-changed-libapp-v0.so \
 test-abicompat/libtest0-fn-changed-libapp-v1.so \

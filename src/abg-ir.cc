@@ -4745,7 +4745,8 @@ decl_base::set_naming_typedef(const typedef_decl_sptr& t)
 
   priv_->naming_typedef_ = t;
   set_name(t->get_name());
-  set_qualified_name(t->get_qualified_name());
+  string qualified_name = build_qualified_name(get_scope(), t->get_name());
+  set_qualified_name(get_environment()->intern(qualified_name));
   set_is_anonymous(false);
   // Now that the qualified type of the decl has changed, let's update
   // the qualified names of the member types of this decls.
@@ -8554,7 +8555,14 @@ get_function_type_name(const function_type& fn_type,
 		       bool internal)
 {
   std::ostringstream o;
-  type_base_sptr return_type = fn_type.get_return_type();
+  // When the function name is used for internal purposes (e.g, for
+  // canonicalization), we want its representation to stay the same,
+  // regardless of typedefs.  So let's strip typedefs from the return
+  // type.
+  type_base_sptr return_type =
+    internal
+    ? peel_typedef_type(fn_type.get_return_type())
+    : fn_type.get_return_type();
   const environment* env = fn_type.get_environment();
   ABG_ASSERT(env);
 
@@ -8625,7 +8633,14 @@ get_method_type_name(const method_type& fn_type,
 		     bool internal)
 {
   std::ostringstream o;
-  type_base_sptr return_type= fn_type.get_return_type();
+  // When the function name is used for internal purposes (e.g, for
+  // canonicalization), we want its representation to stay the same,
+  // regardless of typedefs.  So let's strip typedefs from the return
+  // type.
+  type_base_sptr return_type =
+    internal
+    ? peel_typedef_type(fn_type.get_return_type())
+    : fn_type.get_return_type();
   const environment* env = fn_type.get_environment();
   ABG_ASSERT(env);
 
@@ -19099,7 +19114,15 @@ equals(const function_type& l,
 
   if (compare_result_types)
     {
-      if (l.get_return_type() != r.get_return_type())
+      // Let's not consider typedefs when comparing return types to
+      // avoid spurious changes.
+      //
+      // TODO: We should also do this for parameter types, or rather,
+      // we should teach the equality operators in the IR, at some
+      // point, to peel typedefs off.
+      if (peel_typedef_type(l.get_return_type())
+	  !=
+	  peel_typedef_type(r.get_return_type()))
 	{
 	  result = false;
 	  if (k)

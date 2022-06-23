@@ -6760,13 +6760,9 @@
     <pointer-type-def type-id='type-id-786' size-in-bits='64' id='type-id-787'/>
     <pointer-type-def type-id='type-id-788' size-in-bits='64' id='type-id-789'/>
     <pointer-type-def type-id='type-id-361' size-in-bits='64' id='type-id-790'/>
-    <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-791'/>
-    <pointer-type-def type-id='type-id-384' size-in-bits='64' id='type-id-792'/>
-    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-381'/>
-    <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-793'/>
-    <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-794'/>
-    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-795'/>
-    <pointer-type-def type-id='type-id-386' size-in-bits='64' id='type-id-796'/>
+    <pointer-type-def type-id='type-id-791' size-in-bits='64' id='type-id-792'/>
+    <pointer-type-def type-id='type-id-793' size-in-bits='64' id='type-id-794'/>
+    <pointer-type-def type-id='type-id-795' size-in-bits='64' id='type-id-796'/>
     <pointer-type-def type-id='type-id-797' size-in-bits='64' id='type-id-798'/>
     <pointer-type-def type-id='type-id-799' size-in-bits='64' id='type-id-800'/>
     <pointer-type-def type-id='type-id-801' size-in-bits='64' id='type-id-802'/>
@@ -6777,32 +6773,36 @@
     <pointer-type-def type-id='type-id-811' size-in-bits='64' id='type-id-812'/>
     <pointer-type-def type-id='type-id-813' size-in-bits='64' id='type-id-814'/>
     <pointer-type-def type-id='type-id-815' size-in-bits='64' id='type-id-816'/>
-    <pointer-type-def type-id='type-id-817' size-in-bits='64' id='type-id-818'/>
-    <pointer-type-def type-id='type-id-819' size-in-bits='64' id='type-id-820'/>
-    <pointer-type-def type-id='type-id-821' size-in-bits='64' id='type-id-822'/>
-    <pointer-type-def type-id='type-id-823' size-in-bits='64' id='type-id-824'/>
-    <pointer-type-def type-id='type-id-825' size-in-bits='64' id='type-id-826'/>
-    <pointer-type-def type-id='type-id-827' size-in-bits='64' id='type-id-828'/>
-    <pointer-type-def type-id='type-id-829' size-in-bits='64' id='type-id-830'/>
-    <pointer-type-def type-id='type-id-831' size-in-bits='64' id='type-id-832'/>
-    <pointer-type-def type-id='type-id-833' size-in-bits='64' id='type-id-834'/>
-    <pointer-type-def type-id='type-id-835' size-in-bits='64' id='type-id-836'/>
-    <pointer-type-def type-id='type-id-837' size-in-bits='64' id='type-id-838'/>
-    <pointer-type-def type-id='type-id-839' size-in-bits='64' id='type-id-840'/>
-    <pointer-type-def type-id='type-id-841' size-in-bits='64' id='type-id-842'/>
-    <pointer-type-def type-id='type-id-843' size-in-bits='64' id='type-id-844'/>
-    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-845'/>
+    <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-817'/>
+    <pointer-type-def type-id='type-id-818' size-in-bits='64' id='type-id-819'/>
+    <pointer-type-def type-id='type-id-384' size-in-bits='64' id='type-id-820'/>
+    <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-381'/>
+    <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-821'/>
+    <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-822'/>
+    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-823'/>
+    <pointer-type-def type-id='type-id-386' size-in-bits='64' id='type-id-824'/>
+    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-825'/>
+    <pointer-type-def type-id='type-id-826' size-in-bits='64' id='type-id-827'/>
+    <pointer-type-def type-id='type-id-160' size-in-bits='64' id='type-id-166'/>
+    <pointer-type-def type-id='type-id-828' size-in-bits='64' id='type-id-829'/>
+    <pointer-type-def type-id='type-id-830' size-in-bits='64' id='type-id-831'/>
+    <pointer-type-def type-id='type-id-832' size-in-bits='64' id='type-id-833'/>
+    <pointer-type-def type-id='type-id-834' size-in-bits='64' id='type-id-835'/>
+    <pointer-type-def type-id='type-id-836' size-in-bits='64' id='type-id-837'/>
+    <pointer-type-def type-id='type-id-838' size-in-bits='64' id='type-id-839'/>
+    <pointer-type-def type-id='type-id-840' size-in-bits='64' id='type-id-841'/>
+    <pointer-type-def type-id='type-id-842' size-in-bits='64' id='type-id-843'/>
+    <pointer-type-def type-id='type-id-844' size-in-bits='64' id='type-id-845'/>
     <pointer-type-def type-id='type-id-846' size-in-bits='64' id='type-id-847'/>
     <pointer-type-def type-id='type-id-848' size-in-bits='64' id='type-id-849'/>
     <pointer-type-def type-id='type-id-850' size-in-bits='64' id='type-id-851'/>
     <pointer-type-def type-id='type-id-852' size-in-bits='64' id='type-id-853'/>
-    <pointer-type-def type-id='type-id-160' size-in-bits='64' id='type-id-166'/>
-    <pointer-type-def type-id='type-id-854' size-in-bits='64' id='type-id-855'/>
     <pointer-type-def type-id='type-id-105' size-in-bits='64' id='type-id-127'/>
+    <pointer-type-def type-id='type-id-854' size-in-bits='64' id='type-id-855'/>
     <pointer-type-def type-id='type-id-856' size-in-bits='64' id='type-id-857'/>
     <pointer-type-def type-id='type-id-858' size-in-bits='64' id='type-id-859'/>
-    <pointer-type-def type-id='type-id-860' size-in-bits='64' id='type-id-861'/>
     <pointer-type-def type-id='type-id-230' size-in-bits='64' id='type-id-218'/>
+    <pointer-type-def type-id='type-id-860' size-in-bits='64' id='type-id-861'/>
     <pointer-type-def type-id='type-id-862' size-in-bits='64' id='type-id-389'/>
     <pointer-type-def type-id='type-id-863' size-in-bits='64' id='type-id-864'/>
     <pointer-type-def type-id='type-id-865' size-in-bits='64' id='type-id-866'/>
@@ -7203,7 +7203,7 @@
       <parameter type-id='type-id-403' name='count' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='223' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='read_f' type-id='type-id-830' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='223' column='1' id='type-id-912'/>
+    <typedef-decl name='read_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='223' column='1' id='type-id-912'/>
     <function-decl name='__interceptor_pread' mangled-name='__interceptor_pread' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pread'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1'/>
       <parameter type-id='type-id-1' name='ptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1'/>
@@ -7211,7 +7211,7 @@
       <parameter type-id='type-id-901' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pread_f' type-id='type-id-834' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' id='type-id-913'/>
+    <typedef-decl name='pread_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' id='type-id-913'/>
     <function-decl name='__interceptor_pread64' mangled-name='__interceptor_pread64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pread64'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1'/>
       <parameter type-id='type-id-1' name='ptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1'/>
@@ -7219,14 +7219,14 @@
       <parameter type-id='type-id-903' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pread64_f' type-id='type-id-832' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' id='type-id-914'/>
+    <typedef-decl name='pread64_f' type-id='type-id-810' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' id='type-id-914'/>
     <function-decl name='__interceptor_readv' mangled-name='__interceptor_readv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_readv'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1'/>
       <parameter type-id='type-id-4' name='iovcnt' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='readv_f' type-id='type-id-820' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' id='type-id-915'/>
+    <typedef-decl name='readv_f' type-id='type-id-796' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' id='type-id-915'/>
     <function-decl name='__interceptor_preadv' mangled-name='__interceptor_preadv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_preadv'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1'/>
@@ -7234,7 +7234,7 @@
       <parameter type-id='type-id-901' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='preadv_f' type-id='type-id-824' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' id='type-id-916'/>
+    <typedef-decl name='preadv_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' id='type-id-916'/>
     <function-decl name='__interceptor_preadv64' mangled-name='__interceptor_preadv64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_preadv64'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1'/>
@@ -7242,14 +7242,14 @@
       <parameter type-id='type-id-903' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='preadv64_f' type-id='type-id-822' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' id='type-id-917'/>
+    <typedef-decl name='preadv64_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' id='type-id-917'/>
     <function-decl name='__interceptor_write' mangled-name='__interceptor_write' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_write'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1'/>
       <parameter type-id='type-id-1' name='ptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1'/>
       <parameter type-id='type-id-403' name='count' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='write_f' type-id='type-id-830' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' id='type-id-918'/>
+    <typedef-decl name='write_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' id='type-id-918'/>
     <function-decl name='__interceptor_pwrite' mangled-name='__interceptor_pwrite' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwrite'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1'/>
       <parameter type-id='type-id-1' name='ptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1'/>
@@ -7257,7 +7257,7 @@
       <parameter type-id='type-id-901' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pwrite_f' type-id='type-id-834' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' id='type-id-919'/>
+    <typedef-decl name='pwrite_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' id='type-id-919'/>
     <function-decl name='__interceptor_pwrite64' mangled-name='__interceptor_pwrite64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwrite64'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1'/>
       <parameter type-id='type-id-1' name='ptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1'/>
@@ -7265,14 +7265,14 @@
       <parameter type-id='type-id-903' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pwrite64_f' type-id='type-id-828' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' id='type-id-920'/>
+    <typedef-decl name='pwrite64_f' type-id='type-id-806' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' id='type-id-920'/>
     <function-decl name='__interceptor_writev' mangled-name='__interceptor_writev' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_writev'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1'/>
       <parameter type-id='type-id-4' name='iovcnt' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='writev_f' type-id='type-id-820' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' id='type-id-921'/>
+    <typedef-decl name='writev_f' type-id='type-id-796' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' id='type-id-921'/>
     <function-decl name='__interceptor_pwritev' mangled-name='__interceptor_pwritev' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwritev'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1'/>
@@ -7280,7 +7280,7 @@
       <parameter type-id='type-id-901' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pwritev_f' type-id='type-id-824' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' id='type-id-922'/>
+    <typedef-decl name='pwritev_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' id='type-id-922'/>
     <function-decl name='__interceptor_pwritev64' mangled-name='__interceptor_pwritev64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwritev64'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1'/>
       <parameter type-id='type-id-465' name='iov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1'/>
@@ -7288,7 +7288,7 @@
       <parameter type-id='type-id-903' name='offset' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='pwritev64_f' type-id='type-id-822' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' id='type-id-923'/>
+    <typedef-decl name='pwritev64_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' id='type-id-923'/>
     <function-decl name='__interceptor_prctl' mangled-name='__interceptor_prctl' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='411' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_prctl'>
       <parameter type-id='type-id-4' name='option' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='411' column='1'/>
       <parameter type-id='type-id-105' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='411' column='1'/>
@@ -7302,7 +7302,7 @@
       <parameter type-id='type-id-127' name='t' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='432' column='1'/>
       <return type-id='type-id-105'/>
     </function-decl>
-    <typedef-decl name='time_f' type-id='type-id-855' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='432' column='1' id='type-id-925'/>
+    <typedef-decl name='time_f' type-id='type-id-841' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='432' column='1' id='type-id-925'/>
     <function-decl name='__interceptor_localtime' mangled-name='__interceptor_localtime' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='456' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_localtime'>
       <parameter type-id='type-id-127' name='timep' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='456' column='1'/>
       <return type-id='type-id-481'/>
@@ -7356,41 +7356,41 @@
     <typedef-decl name='strptime_f' type-id='type-id-505' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='550' column='1' id='type-id-934'/>
     <function-decl name='__interceptor_vscanf' mangled-name='__interceptor_vscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_vscanf'>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='vscanf_f' type-id='type-id-651' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1' id='type-id-935'/>
     <function-decl name='__interceptor_vsscanf' mangled-name='__interceptor_vsscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_vsscanf'>
       <parameter type-id='type-id-2' name='str' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='vsscanf_f' type-id='type-id-643' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1' id='type-id-936'/>
     <function-decl name='__interceptor_vfscanf' mangled-name='__interceptor_vfscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_vfscanf'>
       <parameter type-id='type-id-1' name='stream' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='vfscanf_f' type-id='type-id-742' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1' id='type-id-937'/>
     <function-decl name='__interceptor___isoc99_vscanf' mangled-name='__interceptor___isoc99_vscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor___isoc99_vscanf'>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='__isoc99_vscanf_f' type-id='type-id-651' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1' id='type-id-938'/>
     <function-decl name='__interceptor___isoc99_vsscanf' mangled-name='__interceptor___isoc99_vsscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor___isoc99_vsscanf'>
       <parameter type-id='type-id-2' name='str' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='__isoc99_vsscanf_f' type-id='type-id-643' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1' id='type-id-939'/>
     <function-decl name='__interceptor___isoc99_vfscanf' mangled-name='__interceptor___isoc99_vfscanf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor___isoc99_vfscanf'>
       <parameter type-id='type-id-1' name='stream' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='__isoc99_vfscanf_f' type-id='type-id-742' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1' id='type-id-940'/>
@@ -7655,7 +7655,7 @@
       <parameter type-id='type-id-4' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1417' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='recvmsg_f' type-id='type-id-826' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1417' column='1' id='type-id-977'/>
+    <typedef-decl name='recvmsg_f' type-id='type-id-802' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1417' column='1' id='type-id-977'/>
     <function-decl name='__interceptor_getpeername' mangled-name='__interceptor_getpeername' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1437' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_getpeername'>
       <parameter type-id='type-id-4' name='sockfd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1437' column='1'/>
       <parameter type-id='type-id-1' name='addr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1437' column='1'/>
@@ -7699,7 +7699,7 @@
       <parameter type-id='type-id-1' name='data' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1524' column='1'/>
       <return type-id='type-id-91'/>
     </function-decl>
-    <typedef-decl name='ptrace_f' type-id='type-id-840' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1524' column='1' id='type-id-984'/>
+    <typedef-decl name='ptrace_f' type-id='type-id-839' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1524' column='1' id='type-id-984'/>
     <function-decl name='__interceptor_setlocale' mangled-name='__interceptor_setlocale' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1570' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_setlocale'>
       <parameter type-id='type-id-4' name='category' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1570' column='1'/>
       <parameter type-id='type-id-25' name='locale' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1570' column='1'/>
@@ -7723,21 +7723,21 @@
       <parameter type-id='type-id-4' name='base' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1614' column='1'/>
       <return type-id='type-id-900'/>
     </function-decl>
-    <typedef-decl name='strtoimax_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1614' column='1' id='type-id-988'/>
+    <typedef-decl name='strtoimax_f' type-id='type-id-819' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1614' column='1' id='type-id-988'/>
     <function-decl name='__interceptor_strtoumax' mangled-name='__interceptor_strtoumax' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_strtoumax'>
       <parameter type-id='type-id-2' name='nptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1'/>
       <parameter type-id='type-id-530' name='endptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1'/>
       <parameter type-id='type-id-4' name='base' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1'/>
       <return type-id='type-id-900'/>
     </function-decl>
-    <typedef-decl name='strtoumax_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' id='type-id-989'/>
+    <typedef-decl name='strtoumax_f' type-id='type-id-819' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' id='type-id-989'/>
     <function-decl name='__interceptor_mbstowcs' mangled-name='__interceptor_mbstowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbstowcs'>
       <parameter type-id='type-id-896' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1'/>
       <parameter type-id='type-id-2' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1'/>
       <parameter type-id='type-id-403' name='len' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='mbstowcs_f' type-id='type-id-814' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' id='type-id-990'/>
+    <typedef-decl name='mbstowcs_f' type-id='type-id-853' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' id='type-id-990'/>
     <function-decl name='__interceptor_mbsrtowcs' mangled-name='__interceptor_mbsrtowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbsrtowcs'>
       <parameter type-id='type-id-896' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1'/>
       <parameter type-id='type-id-343' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1'/>
@@ -7745,7 +7745,7 @@
       <parameter type-id='type-id-1' name='ps' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='mbsrtowcs_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' id='type-id-991'/>
+    <typedef-decl name='mbsrtowcs_f' type-id='type-id-851' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' id='type-id-991'/>
     <function-decl name='__interceptor_mbsnrtowcs' mangled-name='__interceptor_mbsnrtowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbsnrtowcs'>
       <parameter type-id='type-id-896' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1'/>
       <parameter type-id='type-id-343' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1'/>
@@ -7754,14 +7754,14 @@
       <parameter type-id='type-id-1' name='ps' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='mbsnrtowcs_f' type-id='type-id-810' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' id='type-id-992'/>
+    <typedef-decl name='mbsnrtowcs_f' type-id='type-id-849' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' id='type-id-992'/>
     <function-decl name='__interceptor_wcstombs' mangled-name='__interceptor_wcstombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcstombs'>
       <parameter type-id='type-id-25' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1'/>
       <parameter type-id='type-id-568' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1'/>
       <parameter type-id='type-id-403' name='len' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='wcstombs_f' type-id='type-id-804' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' id='type-id-993'/>
+    <typedef-decl name='wcstombs_f' type-id='type-id-833' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' id='type-id-993'/>
     <function-decl name='__interceptor_wcsrtombs' mangled-name='__interceptor_wcsrtombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcsrtombs'>
       <parameter type-id='type-id-25' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1'/>
       <parameter type-id='type-id-569' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1'/>
@@ -7769,7 +7769,7 @@
       <parameter type-id='type-id-1' name='ps' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='wcsrtombs_f' type-id='type-id-802' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' id='type-id-994'/>
+    <typedef-decl name='wcsrtombs_f' type-id='type-id-831' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' id='type-id-994'/>
     <function-decl name='__interceptor_wcsnrtombs' mangled-name='__interceptor_wcsnrtombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcsnrtombs'>
       <parameter type-id='type-id-25' name='dest' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1'/>
       <parameter type-id='type-id-569' name='src' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1'/>
@@ -7778,7 +7778,7 @@
       <parameter type-id='type-id-1' name='ps' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='wcsnrtombs_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' id='type-id-995'/>
+    <typedef-decl name='wcsnrtombs_f' type-id='type-id-829' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' id='type-id-995'/>
     <function-decl name='__interceptor_tcgetattr' mangled-name='__interceptor_tcgetattr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1752' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_tcgetattr'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1752' column='1'/>
       <parameter type-id='type-id-1' name='termios_p' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1752' column='1'/>
@@ -7802,7 +7802,7 @@
       <parameter type-id='type-id-403' name='len' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1806' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='confstr_f' type-id='type-id-806' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1806' column='1' id='type-id-999'/>
+    <typedef-decl name='confstr_f' type-id='type-id-837' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1806' column='1' id='type-id-999'/>
     <function-decl name='__interceptor_sched_getaffinity' mangled-name='__interceptor_sched_getaffinity' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1820' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sched_getaffinity'>
       <parameter type-id='type-id-4' name='pid' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1820' column='1'/>
       <parameter type-id='type-id-403' name='cpusetsize' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1820' column='1'/>
@@ -8170,14 +8170,14 @@
       <parameter type-id='type-id-578' name='cos' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2697' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
-    <typedef-decl name='sincos_f' type-id='type-id-859' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2697' column='1' id='type-id-1059'/>
+    <typedef-decl name='sincos_f' type-id='type-id-857' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2697' column='1' id='type-id-1059'/>
     <function-decl name='__interceptor_sincosf' mangled-name='__interceptor_sincosf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sincosf'>
       <parameter type-id='type-id-357' name='x' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1'/>
       <parameter type-id='type-id-587' name='sin' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1'/>
       <parameter type-id='type-id-587' name='cos' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
-    <typedef-decl name='sincosf_f' type-id='type-id-861' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' id='type-id-1060'/>
+    <typedef-decl name='sincosf_f' type-id='type-id-859' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' id='type-id-1060'/>
     <function-decl name='__interceptor_sincosl' mangled-name='__interceptor_sincosl' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2711' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sincosl'>
       <parameter type-id='type-id-361' name='x' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2711' column='1'/>
       <parameter type-id='type-id-790' name='sin' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2711' column='1'/>
@@ -8247,7 +8247,7 @@
     <typedef-decl name='drand48_r_f' type-id='type-id-746' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2818' column='1' id='type-id-1071'/>
     <function-decl name='__interceptor_lrand48_r' mangled-name='__interceptor_lrand48_r' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_lrand48_r'>
       <parameter type-id='type-id-1' name='buffer' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
-      <parameter type-id='type-id-791' name='result' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
+      <parameter type-id='type-id-817' name='result' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='lrand48_r_f' type-id='type-id-756' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1' id='type-id-1072'/>
@@ -8257,7 +8257,7 @@
       <parameter type-id='type-id-1' name='stream' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2840' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='getline_f' type-id='type-id-818' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2840' column='1' id='type-id-1073'/>
+    <typedef-decl name='getline_f' type-id='type-id-794' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2840' column='1' id='type-id-1073'/>
     <function-decl name='__interceptor_getdelim' mangled-name='__interceptor_getdelim' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_getdelim'>
       <parameter type-id='type-id-530' name='lineptr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1'/>
       <parameter type-id='type-id-404' name='n' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1'/>
@@ -8265,7 +8265,7 @@
       <parameter type-id='type-id-1' name='stream' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1'/>
       <return type-id='type-id-898'/>
     </function-decl>
-    <typedef-decl name='getdelim_f' type-id='type-id-816' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' id='type-id-1074'/>
+    <typedef-decl name='getdelim_f' type-id='type-id-792' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' id='type-id-1074'/>
     <function-decl name='__interceptor_iconv' mangled-name='__interceptor_iconv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_iconv'>
       <parameter type-id='type-id-1' name='cd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1'/>
       <parameter type-id='type-id-530' name='inbuf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1'/>
@@ -8274,29 +8274,29 @@
       <parameter type-id='type-id-404' name='outbytesleft' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1'/>
       <return type-id='type-id-403'/>
     </function-decl>
-    <typedef-decl name='iconv_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' id='type-id-1075'/>
+    <typedef-decl name='iconv_f' type-id='type-id-845' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' id='type-id-1075'/>
     <function-decl name='__interceptor_times' mangled-name='__interceptor_times' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_times'>
       <parameter type-id='type-id-1' name='tms' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1'/>
       <return type-id='type-id-1222'/>
     </function-decl>
-    <typedef-decl name='times_f' type-id='type-id-836' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' id='type-id-1076'/>
+    <typedef-decl name='times_f' type-id='type-id-816' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' id='type-id-1076'/>
     <typedef-decl name='kernel_sigset_t' type-id='type-id-24' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='130' column='1' id='type-id-559'/>
     <function-decl name='__sanitizer_syscall_pre_impl_recvmsg' mangled-name='__sanitizer_syscall_pre_impl_recvmsg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_recvmsg'>
       <parameter type-id='type-id-41' name='sockfd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
-      <parameter type-id='type-id-794' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
+      <parameter type-id='type-id-822' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_recvmsg' mangled-name='__sanitizer_syscall_post_impl_recvmsg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_recvmsg'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
       <parameter type-id='type-id-41' name='sockfd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
-      <parameter type-id='type-id-794' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
+      <parameter type-id='type-id-822' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='158' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_recvmmsg' mangled-name='__sanitizer_syscall_pre_impl_recvmmsg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_recvmmsg'>
       <parameter type-id='type-id-41' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
-      <parameter type-id='type-id-793' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
+      <parameter type-id='type-id-821' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
       <parameter type-id='type-id-41' name='vlen' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='170' column='1'/>
       <parameter type-id='type-id-1' name='timeout' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='170' column='1'/>
@@ -8305,7 +8305,7 @@
     <function-decl name='__sanitizer_syscall_post_impl_recvmmsg' mangled-name='__sanitizer_syscall_post_impl_recvmmsg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_recvmmsg'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
       <parameter type-id='type-id-41' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
-      <parameter type-id='type-id-793' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
+      <parameter type-id='type-id-821' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
       <parameter type-id='type-id-41' name='vlen' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='175' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='175' column='1'/>
       <parameter type-id='type-id-1' name='timeout' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='175' column='1'/>
@@ -10716,46 +10716,46 @@
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_bind' mangled-name='__sanitizer_syscall_pre_impl_bind' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_bind'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_bind' mangled-name='__sanitizer_syscall_post_impl_bind' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_bind'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1761' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_connect' mangled-name='__sanitizer_syscall_pre_impl_connect' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_connect'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_connect' mangled-name='__sanitizer_syscall_post_impl_connect' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_connect'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1770' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_accept' mangled-name='__sanitizer_syscall_pre_impl_accept' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_accept'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_accept' mangled-name='__sanitizer_syscall_post_impl_accept' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_accept'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1779' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_accept4' mangled-name='__sanitizer_syscall_pre_impl_accept4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_accept4'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1787' column='1'/>
       <return type-id='type-id-24'/>
@@ -10763,34 +10763,34 @@
     <function-decl name='__sanitizer_syscall_post_impl_accept4' mangled-name='__sanitizer_syscall_post_impl_accept4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_accept4'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1790' column='1'/>
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1790' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_getsockname' mangled-name='__sanitizer_syscall_pre_impl_getsockname' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_getsockname'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1798' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_getsockname' mangled-name='__sanitizer_syscall_post_impl_getsockname' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_getsockname'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1801' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_pre_impl_getpeername' mangled-name='__sanitizer_syscall_pre_impl_getpeername' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_getpeername'>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1809' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
     <function-decl name='__sanitizer_syscall_post_impl_getpeername' mangled-name='__sanitizer_syscall_post_impl_getpeername' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_post_impl_getpeername'>
       <parameter type-id='type-id-41' name='res' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1812' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
@@ -10814,7 +10814,7 @@
       <parameter type-id='type-id-1' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1827' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1827' column='1'/>
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1827' column='1'/>
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
       <parameter type-id='type-id-41' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
@@ -10824,7 +10824,7 @@
       <parameter type-id='type-id-1' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1830' column='1'/>
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1830' column='1'/>
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1830' column='1'/>
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
       <parameter type-id='type-id-41' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
@@ -10875,7 +10875,7 @@
       <parameter type-id='type-id-1' name='buf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1858' column='1'/>
       <parameter type-id='type-id-41' name='len' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1858' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1858' column='1'/>
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
       <parameter type-id='type-id-1' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
@@ -10885,7 +10885,7 @@
       <parameter type-id='type-id-1' name='buf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1861' column='1'/>
       <parameter type-id='type-id-41' name='len' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1861' column='1'/>
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1861' column='1'/>
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
       <parameter type-id='type-id-1' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
@@ -13083,7 +13083,7 @@
       <parameter type-id='type-id-160' name='sec' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='238' column='1'/>
       <return type-id='type-id-160'/>
     </function-decl>
-    <typedef-decl name='sleep_f' type-id='type-id-853' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='238' column='1' id='type-id-1077'/>
+    <typedef-decl name='sleep_f' type-id='type-id-827' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='238' column='1' id='type-id-1077'/>
     <function-decl name='__interceptor_usleep' mangled-name='__interceptor_usleep' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='245' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_usleep'>
       <parameter type-id='type-id-1231' name='usec' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='245' column='1'/>
       <return type-id='type-id-4'/>
@@ -13149,13 +13149,13 @@
       <parameter type-id='type-id-4' name='val' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='459' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
-    <typedef-decl name='longjmp_f' type-id='type-id-857' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='459' column='1' id='type-id-1089'/>
+    <typedef-decl name='longjmp_f' type-id='type-id-855' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='459' column='1' id='type-id-1089'/>
     <function-decl name='__interceptor_siglongjmp' mangled-name='__interceptor_siglongjmp' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_siglongjmp'>
       <parameter type-id='type-id-221' name='env' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1'/>
       <parameter type-id='type-id-4' name='val' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1'/>
       <return type-id='type-id-24'/>
     </function-decl>
-    <typedef-decl name='siglongjmp_f' type-id='type-id-857' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' id='type-id-1090'/>
+    <typedef-decl name='siglongjmp_f' type-id='type-id-855' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' id='type-id-1090'/>
     <function-decl name='__interceptor_malloc' mangled-name='__interceptor_malloc' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='475' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_malloc'>
       <parameter type-id='type-id-91' name='size' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='475' column='1'/>
       <return type-id='type-id-1'/>
@@ -13193,7 +13193,7 @@
       <parameter type-id='type-id-1' name='p' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='541' column='1'/>
       <return type-id='type-id-91'/>
     </function-decl>
-    <typedef-decl name='malloc_usable_size_f' type-id='type-id-842' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='541' column='1' id='type-id-1097'/>
+    <typedef-decl name='malloc_usable_size_f' type-id='type-id-843' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='541' column='1' id='type-id-1097'/>
     <function-decl name='operator new' mangled-name='_Znwm' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='559' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Znwm'>
       <parameter type-id='type-id-91' name='size' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='559' column='1'/>
       <return type-id='type-id-1'/>
@@ -13234,7 +13234,7 @@
       <parameter type-id='type-id-2' name='s' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='613' column='1'/>
       <return type-id='type-id-91'/>
     </function-decl>
-    <typedef-decl name='strlen_f' type-id='type-id-838' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='613' column='1' id='type-id-1098'/>
+    <typedef-decl name='strlen_f' type-id='type-id-835' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='613' column='1' id='type-id-1098'/>
     <function-decl name='__interceptor_memset' mangled-name='__interceptor_memset' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='620' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_memset'>
       <parameter type-id='type-id-1' name='dst' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='620' column='1'/>
       <parameter type-id='type-id-4' name='v' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='620' column='1'/>
@@ -13793,14 +13793,14 @@
       <parameter type-id='type-id-4' name='flags' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1474' column='1'/>
       <return type-id='type-id-1231'/>
     </function-decl>
-    <typedef-decl name='send_f' type-id='type-id-849' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1474' column='1' id='type-id-1188'/>
+    <typedef-decl name='send_f' type-id='type-id-814' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1474' column='1' id='type-id-1188'/>
     <function-decl name='__interceptor_sendmsg' mangled-name='__interceptor_sendmsg' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sendmsg'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1'/>
       <parameter type-id='type-id-1' name='msg' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1'/>
       <parameter type-id='type-id-4' name='flags' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1'/>
       <return type-id='type-id-1231'/>
     </function-decl>
-    <typedef-decl name='sendmsg_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' id='type-id-1189'/>
+    <typedef-decl name='sendmsg_f' type-id='type-id-804' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' id='type-id-1189'/>
     <function-decl name='__interceptor_recv' mangled-name='__interceptor_recv' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_recv'>
       <parameter type-id='type-id-4' name='fd' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1'/>
       <parameter type-id='type-id-1' name='buf' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1'/>
@@ -13808,7 +13808,7 @@
       <parameter type-id='type-id-4' name='flags' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1'/>
       <return type-id='type-id-1231'/>
     </function-decl>
-    <typedef-decl name='recv_f' type-id='type-id-849' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' id='type-id-1190'/>
+    <typedef-decl name='recv_f' type-id='type-id-814' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' id='type-id-1190'/>
     <function-decl name='__interceptor_unlink' mangled-name='__interceptor_unlink' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1505' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_unlink'>
       <parameter type-id='type-id-25' name='path' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1505' column='1'/>
       <return type-id='type-id-4'/>
@@ -13839,7 +13839,7 @@
       <parameter type-id='type-id-1' name='f' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1554' column='1'/>
       <return type-id='type-id-91'/>
     </function-decl>
-    <typedef-decl name='fread_f' type-id='type-id-844' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1554' column='1' id='type-id-1195'/>
+    <typedef-decl name='fread_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1554' column='1' id='type-id-1195'/>
     <function-decl name='__interceptor_fwrite' mangled-name='__interceptor_fwrite' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_fwrite'>
       <parameter type-id='type-id-1' name='p' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1'/>
       <parameter type-id='type-id-91' name='size' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1'/>
@@ -13847,7 +13847,7 @@
       <parameter type-id='type-id-1' name='f' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1'/>
       <return type-id='type-id-91'/>
     </function-decl>
-    <typedef-decl name='fwrite_f' type-id='type-id-844' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' id='type-id-1196'/>
+    <typedef-decl name='fwrite_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' id='type-id-1196'/>
     <function-decl name='__interceptor_fflush' mangled-name='__interceptor_fflush' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1572' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_fflush'>
       <parameter type-id='type-id-1' name='stream' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1572' column='1'/>
       <return type-id='type-id-4'/>
@@ -13891,8 +13891,8 @@
     <typedef-decl name='epoll_wait_f' type-id='type-id-705' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1619' column='1' id='type-id-1203'/>
     <function-decl name='__interceptor_sigaction' mangled-name='__interceptor_sigaction' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sigaction'>
       <parameter type-id='type-id-4' name='sig' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
-      <parameter type-id='type-id-796' name='act' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
-      <parameter type-id='type-id-796' name='old' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
+      <parameter type-id='type-id-824' name='act' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
+      <parameter type-id='type-id-824' name='old' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
       <return type-id='type-id-4'/>
     </function-decl>
     <typedef-decl name='sigaction_f' type-id='type-id-691' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1' id='type-id-1204'/>
@@ -13901,7 +13901,7 @@
       <parameter type-id='type-id-388' name='h' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1698' column='1'/>
       <return type-id='type-id-388'/>
     </function-decl>
-    <typedef-decl name='signal_f' type-id='type-id-851' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1698' column='1' id='type-id-1205'/>
+    <typedef-decl name='signal_f' type-id='type-id-861' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1698' column='1' id='type-id-1205'/>
     <function-decl name='__interceptor_sigsuspend' mangled-name='__interceptor_sigsuspend' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1710' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sigsuspend'>
       <parameter type-id='type-id-554' name='mask' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1710' column='1'/>
       <return type-id='type-id-4'/>
@@ -14377,7 +14377,7 @@
     <function-type size-in-bits='64' id='type-id-642'>
       <parameter type-id='type-id-2' name='str'/>
       <parameter type-id='type-id-2' name='format'/>
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <return type-id='type-id-4'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-644'>
@@ -14399,7 +14399,7 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-650'>
       <parameter type-id='type-id-2' name='format'/>
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <return type-id='type-id-4'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-652'>
@@ -14515,8 +14515,8 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-690'>
       <parameter type-id='type-id-4' name='sig'/>
-      <parameter type-id='type-id-796' name='act'/>
-      <parameter type-id='type-id-796' name='old'/>
+      <parameter type-id='type-id-824' name='act'/>
+      <parameter type-id='type-id-824' name='old'/>
       <return type-id='type-id-4'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-692'>
@@ -14659,7 +14659,7 @@
     <function-type size-in-bits='64' id='type-id-741'>
       <parameter type-id='type-id-1' name='stream'/>
       <parameter type-id='type-id-2' name='format'/>
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <return type-id='type-id-4'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-743'>
@@ -14702,7 +14702,7 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-755'>
       <parameter type-id='type-id-1' name='buffer'/>
-      <parameter type-id='type-id-791' name='result'/>
+      <parameter type-id='type-id-817' name='result'/>
       <return type-id='type-id-4'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-757'>
@@ -14789,13 +14789,100 @@
       <parameter type-id='type-id-33' name='quo'/>
       <return type-id='type-id-361'/>
     </function-type>
+    <function-type size-in-bits='64' id='type-id-791'>
+      <parameter type-id='type-id-530' name='lineptr'/>
+      <parameter type-id='type-id-404' name='n'/>
+      <parameter type-id='type-id-4' name='delim'/>
+      <parameter type-id='type-id-1' name='stream'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-793'>
+      <parameter type-id='type-id-530' name='lineptr'/>
+      <parameter type-id='type-id-404' name='n'/>
+      <parameter type-id='type-id-1' name='stream'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-795'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-465' name='iov'/>
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <return type-id='type-id-898'/>
+    </function-type>
     <function-type size-in-bits='64' id='type-id-797'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-465' name='iov'/>
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <parameter type-id='type-id-903' name='offset'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-799'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-465' name='iov'/>
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <parameter type-id='type-id-901' name='offset'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-801'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-474' name='msg'/>
+      <parameter type-id='type-id-4' name='flags'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-803'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='msg'/>
+      <parameter type-id='type-id-4' name='flags'/>
+      <return type-id='type-id-1231'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-805'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='ptr'/>
+      <parameter type-id='type-id-903' name='count'/>
+      <parameter type-id='type-id-903' name='offset'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-807'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='ptr'/>
+      <parameter type-id='type-id-403' name='count'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-809'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='ptr'/>
+      <parameter type-id='type-id-403' name='count'/>
+      <parameter type-id='type-id-903' name='offset'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-811'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='ptr'/>
+      <parameter type-id='type-id-403' name='count'/>
+      <parameter type-id='type-id-901' name='offset'/>
+      <return type-id='type-id-898'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-813'>
+      <parameter type-id='type-id-4' name='fd'/>
+      <parameter type-id='type-id-1' name='buf'/>
+      <parameter type-id='type-id-1231' name='len'/>
+      <parameter type-id='type-id-4' name='flags'/>
+      <return type-id='type-id-1231'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-815'>
+      <parameter type-id='type-id-1' name='tms'/>
+      <return type-id='type-id-1222'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-818'>
       <parameter type-id='type-id-2' name='nptr'/>
       <parameter type-id='type-id-530' name='endptr'/>
       <parameter type-id='type-id-4' name='base'/>
       <return type-id='type-id-900'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-799'>
+    <function-type size-in-bits='64' id='type-id-826'>
+      <parameter type-id='type-id-160' name='sec'/>
+      <return type-id='type-id-160'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-828'>
       <parameter type-id='type-id-25' name='dest'/>
       <parameter type-id='type-id-569' name='src'/>
       <parameter type-id='type-id-403' name='nms'/>
@@ -14803,26 +14890,41 @@
       <parameter type-id='type-id-1' name='ps'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-801'>
+    <function-type size-in-bits='64' id='type-id-830'>
       <parameter type-id='type-id-25' name='dest'/>
       <parameter type-id='type-id-569' name='src'/>
       <parameter type-id='type-id-403' name='len'/>
       <parameter type-id='type-id-1' name='ps'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-803'>
+    <function-type size-in-bits='64' id='type-id-832'>
       <parameter type-id='type-id-25' name='dest'/>
       <parameter type-id='type-id-568' name='src'/>
       <parameter type-id='type-id-403' name='len'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-805'>
+    <function-type size-in-bits='64' id='type-id-836'>
       <parameter type-id='type-id-4' name='name'/>
       <parameter type-id='type-id-25' name='buf'/>
       <parameter type-id='type-id-403' name='len'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-807'>
+    <function-type size-in-bits='64' id='type-id-838'>
+      <parameter type-id='type-id-4' name='request'/>
+      <parameter type-id='type-id-4' name='pid'/>
+      <parameter type-id='type-id-1' name='addr'/>
+      <parameter type-id='type-id-1' name='data'/>
+      <return type-id='type-id-91'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-840'>
+      <parameter type-id='type-id-127' name='t'/>
+      <return type-id='type-id-105'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-842'>
+      <parameter type-id='type-id-1' name='p'/>
+      <return type-id='type-id-91'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-844'>
       <parameter type-id='type-id-1' name='cd'/>
       <parameter type-id='type-id-530' name='inbuf'/>
       <parameter type-id='type-id-404' name='inbytesleft'/>
@@ -14830,7 +14932,14 @@
       <parameter type-id='type-id-404' name='outbytesleft'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-809'>
+    <function-type size-in-bits='64' id='type-id-846'>
+      <parameter type-id='type-id-1' name='ptr'/>
+      <parameter type-id='type-id-91' name='size'/>
+      <parameter type-id='type-id-91' name='nmemb'/>
+      <parameter type-id='type-id-1' name='f'/>
+      <return type-id='type-id-91'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-848'>
       <parameter type-id='type-id-896' name='dest'/>
       <parameter type-id='type-id-343' name='src'/>
       <parameter type-id='type-id-403' name='nms'/>
@@ -14838,153 +14947,44 @@
       <parameter type-id='type-id-1' name='ps'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-811'>
+    <function-type size-in-bits='64' id='type-id-850'>
       <parameter type-id='type-id-896' name='dest'/>
       <parameter type-id='type-id-343' name='src'/>
       <parameter type-id='type-id-403' name='len'/>
       <parameter type-id='type-id-1' name='ps'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-813'>
+    <function-type size-in-bits='64' id='type-id-852'>
       <parameter type-id='type-id-896' name='dest'/>
       <parameter type-id='type-id-2' name='src'/>
       <parameter type-id='type-id-403' name='len'/>
       <return type-id='type-id-403'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-815'>
-      <parameter type-id='type-id-530' name='lineptr'/>
-      <parameter type-id='type-id-404' name='n'/>
-      <parameter type-id='type-id-4' name='delim'/>
-      <parameter type-id='type-id-1' name='stream'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-817'>
-      <parameter type-id='type-id-530' name='lineptr'/>
-      <parameter type-id='type-id-404' name='n'/>
-      <parameter type-id='type-id-1' name='stream'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-819'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-465' name='iov'/>
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-821'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-465' name='iov'/>
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <parameter type-id='type-id-903' name='offset'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-823'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-465' name='iov'/>
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <parameter type-id='type-id-901' name='offset'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-825'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-474' name='msg'/>
-      <parameter type-id='type-id-4' name='flags'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-827'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='ptr'/>
-      <parameter type-id='type-id-903' name='count'/>
-      <parameter type-id='type-id-903' name='offset'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-829'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='ptr'/>
-      <parameter type-id='type-id-403' name='count'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-831'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='ptr'/>
-      <parameter type-id='type-id-403' name='count'/>
-      <parameter type-id='type-id-903' name='offset'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-833'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='ptr'/>
-      <parameter type-id='type-id-403' name='count'/>
-      <parameter type-id='type-id-901' name='offset'/>
-      <return type-id='type-id-898'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-835'>
-      <parameter type-id='type-id-1' name='tms'/>
-      <return type-id='type-id-1222'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-839'>
-      <parameter type-id='type-id-4' name='request'/>
-      <parameter type-id='type-id-4' name='pid'/>
-      <parameter type-id='type-id-1' name='addr'/>
-      <parameter type-id='type-id-1' name='data'/>
-      <return type-id='type-id-91'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-841'>
-      <parameter type-id='type-id-1' name='p'/>
-      <return type-id='type-id-91'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-843'>
-      <parameter type-id='type-id-1' name='ptr'/>
-      <parameter type-id='type-id-91' name='size'/>
-      <parameter type-id='type-id-91' name='nmemb'/>
-      <parameter type-id='type-id-1' name='f'/>
-      <return type-id='type-id-91'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-846'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='msg'/>
-      <parameter type-id='type-id-4' name='flags'/>
-      <return type-id='type-id-1231'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-848'>
-      <parameter type-id='type-id-4' name='fd'/>
-      <parameter type-id='type-id-1' name='buf'/>
-      <parameter type-id='type-id-1231' name='len'/>
-      <parameter type-id='type-id-4' name='flags'/>
-      <return type-id='type-id-1231'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-850'>
-      <parameter type-id='type-id-4' name='sig'/>
-      <parameter type-id='type-id-388' name='h'/>
-      <return type-id='type-id-388'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-852'>
-      <parameter type-id='type-id-160' name='sec'/>
-      <return type-id='type-id-160'/>
-    </function-type>
     <function-type size-in-bits='64' id='type-id-854'>
-      <parameter type-id='type-id-127' name='t'/>
-      <return type-id='type-id-105'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-856'>
       <parameter type-id='type-id-221' name='env'/>
       <parameter type-id='type-id-4' name='val'/>
       <return type-id='type-id-24'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-858'>
+    <function-type size-in-bits='64' id='type-id-856'>
       <parameter type-id='type-id-356' name='x'/>
       <parameter type-id='type-id-578' name='sin'/>
       <parameter type-id='type-id-578' name='cos'/>
       <return type-id='type-id-24'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-860'>
+    <function-type size-in-bits='64' id='type-id-858'>
       <parameter type-id='type-id-357' name='x'/>
       <parameter type-id='type-id-587' name='sin'/>
       <parameter type-id='type-id-587' name='cos'/>
       <return type-id='type-id-24'/>
     </function-type>
+    <function-type size-in-bits='64' id='type-id-860'>
+      <parameter type-id='type-id-4' name='sig'/>
+      <parameter type-id='type-id-388' name='h'/>
+      <return type-id='type-id-388'/>
+    </function-type>
     <function-type size-in-bits='64' id='type-id-862'>
       <parameter type-id='type-id-4'/>
-      <parameter type-id='type-id-792'/>
+      <parameter type-id='type-id-820'/>
       <parameter type-id='type-id-1'/>
       <return type-id='type-id-24'/>
     </function-type>
@@ -15071,7 +15071,7 @@
       <parameter type-id='type-id-2' name='str'/>
       <return type-id='type-id-25'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-837'>
+    <function-type size-in-bits='64' id='type-id-834'>
       <parameter type-id='type-id-2' name='s'/>
       <return type-id='type-id-91'/>
     </function-type>

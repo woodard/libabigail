@@ -3267,40 +3267,40 @@
         <var-decl name='reserved3' type-id='eaa32e2f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='153' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='GetVersion' type-id='4b15419a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='155' column='1'/>
+        <var-decl name='GetVersion' type-id='18d755d9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='155' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='160'>
-        <var-decl name='DefineClass' type-id='3358ddb3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='157' column='1'/>
+        <var-decl name='DefineClass' type-id='b4e3f2fb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='157' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='FindClass' type-id='e905d0ac' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='159' column='1'/>
+        <var-decl name='FindClass' type-id='a247d414' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='159' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='224'>
-        <var-decl name='FromReflectedMethod' type-id='09176273' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='161' column='1'/>
+        <var-decl name='FromReflectedMethod' type-id='133c13b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='161' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='FromReflectedField' type-id='04aa9df2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='162' column='1'/>
+        <var-decl name='FromReflectedField' type-id='1408155c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='162' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='288'>
-        <var-decl name='ToReflectedMethod' type-id='582ba311' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='164' column='1'/>
+        <var-decl name='ToReflectedMethod' type-id='aaa7cbbb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='164' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='GetSuperclass' type-id='93737cc2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='166' column='1'/>
+        <var-decl name='GetSuperclass' type-id='6a4b7aaa' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='166' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='352'>
-        <var-decl name='IsAssignableFrom' type-id='f39f8bbd' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='167' column='1'/>
+        <var-decl name='IsAssignableFrom' type-id='20c24fe1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='167' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='ToReflectedField' type-id='58398eee' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='170' column='1'/>
+        <var-decl name='ToReflectedField' type-id='3c391da4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='170' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='416'>
-        <var-decl name='Throw' type-id='4a0b9bf1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='172' column='1'/>
+        <var-decl name='Throw' type-id='9a1d84ce' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='172' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='ThrowNew' type-id='0571aa74' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='173' column='1'/>
+        <var-decl name='ThrowNew' type-id='cf5d6c0d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='173' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='480'>
-        <var-decl name='ExceptionOccurred' type-id='7fdf58e1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='174' column='1'/>
+        <var-decl name='ExceptionOccurred' type-id='b3dfc495' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='174' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <var-decl name='ExceptionDescribe' type-id='8bc971a6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='175' column='1'/>
@@ -3312,13 +3312,13 @@
         <var-decl name='FatalError' type-id='2deb20e5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='177' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='608'>
-        <var-decl name='PushLocalFrame' type-id='9aeb7958' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='179' column='1'/>
+        <var-decl name='PushLocalFrame' type-id='5496326b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='179' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
-        <var-decl name='PopLocalFrame' type-id='a0ba6dc8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='180' column='1'/>
+        <var-decl name='PopLocalFrame' type-id='510ae83a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='180' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='672'>
-        <var-decl name='NewGlobalRef' type-id='a0ba6dc8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='182' column='1'/>
+        <var-decl name='NewGlobalRef' type-id='510ae83a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='182' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <var-decl name='DeleteGlobalRef' type-id='8a1f7e9e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='183' column='1'/>
@@ -3327,115 +3327,115 @@
         <var-decl name='DeleteLocalRef' type-id='8a1f7e9e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='184' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='768'>
-        <var-decl name='IsSameObject' type-id='782c53f5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='185' column='1'/>
+        <var-decl name='IsSameObject' type-id='3d0f6989' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='185' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='800'>
-        <var-decl name='NewLocalRef' type-id='a0ba6dc8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='187' column='1'/>
+        <var-decl name='NewLocalRef' type-id='510ae83a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='187' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
-        <var-decl name='EnsureLocalCapacity' type-id='9aeb7958' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='188' column='1'/>
+        <var-decl name='EnsureLocalCapacity' type-id='5496326b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='188' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='864'>
-        <var-decl name='AllocObject' type-id='151a1d63' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='190' column='1'/>
+        <var-decl name='AllocObject' type-id='4dd53dc5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='190' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
-        <var-decl name='NewObject' type-id='f8af7982' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='191' column='1'/>
+        <var-decl name='NewObject' type-id='0bf53c2c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='191' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='928'>
-        <var-decl name='NewObjectV' type-id='a01a6e09' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='192' column='1'/>
+        <var-decl name='NewObjectV' type-id='f6c19e77' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='192' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='960'>
-        <var-decl name='NewObjectA' type-id='f0a0ff54' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='193' column='1'/>
+        <var-decl name='NewObjectA' type-id='cb260be6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='193' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='992'>
-        <var-decl name='GetObjectClass' type-id='b5f4f133' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='195' column='1'/>
+        <var-decl name='GetObjectClass' type-id='36621f5b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='195' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
-        <var-decl name='IsInstanceOf' type-id='bcee08ac' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='196' column='1'/>
+        <var-decl name='IsInstanceOf' type-id='cfa619a8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='196' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1056'>
-        <var-decl name='GetMethodID' type-id='30974818' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='197' column='1'/>
+        <var-decl name='GetMethodID' type-id='e787d4e4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='197' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
-        <var-decl name='CallObjectMethod' type-id='2dab161d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='199' column='1'/>
+        <var-decl name='CallObjectMethod' type-id='e3a17ed7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='199' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1120'>
-        <var-decl name='CallObjectMethodV' type-id='0290ef52' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='200' column='1'/>
+        <var-decl name='CallObjectMethodV' type-id='886195f8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='200' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
-        <var-decl name='CallObjectMethodA' type-id='4278623b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='201' column='1'/>
+        <var-decl name='CallObjectMethodA' type-id='6ea5e66d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='201' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1184'>
-        <var-decl name='CallBooleanMethod' type-id='461c5f2a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='202' column='1'/>
+        <var-decl name='CallBooleanMethod' type-id='03bc2706' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='202' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
-        <var-decl name='CallBooleanMethodV' type-id='88d99751' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='203' column='1'/>
+        <var-decl name='CallBooleanMethodV' type-id='71bf1195' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='203' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1248'>
-        <var-decl name='CallBooleanMethodA' type-id='74823d0c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='204' column='1'/>
+        <var-decl name='CallBooleanMethodA' type-id='61421910' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='204' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1280'>
-        <var-decl name='CallByteMethod' type-id='17d955f8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='205' column='1'/>
+        <var-decl name='CallByteMethod' type-id='40bf8efb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='205' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1312'>
-        <var-decl name='CallByteMethodV' type-id='44bea17b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='206' column='1'/>
+        <var-decl name='CallByteMethodV' type-id='2b49d1c4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='206' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1344'>
-        <var-decl name='CallByteMethodA' type-id='ed0795aa' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='207' column='1'/>
+        <var-decl name='CallByteMethodA' type-id='5a3ae4f9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='207' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1376'>
-        <var-decl name='CallCharMethod' type-id='e747dee6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='208' column='1'/>
+        <var-decl name='CallCharMethod' type-id='103c63e9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='208' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
-        <var-decl name='CallCharMethodV' type-id='d31f1c35' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='209' column='1'/>
+        <var-decl name='CallCharMethodV' type-id='9f915366' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='209' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1440'>
-        <var-decl name='CallCharMethodA' type-id='b0061f70' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='210' column='1'/>
+        <var-decl name='CallCharMethodA' type-id='422f8a4f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='210' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1472'>
-        <var-decl name='CallShortMethod' type-id='bf87e894' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='211' column='1'/>
+        <var-decl name='CallShortMethod' type-id='072ec070' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='211' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1504'>
-        <var-decl name='CallShortMethodV' type-id='5da2c37f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='212' column='1'/>
+        <var-decl name='CallShortMethodV' type-id='dd929613' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='212' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1536'>
-        <var-decl name='CallShortMethodA' type-id='5db5877e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='213' column='1'/>
+        <var-decl name='CallShortMethodA' type-id='d9767672' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='213' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1568'>
-        <var-decl name='CallIntMethod' type-id='3271bf2f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='214' column='1'/>
+        <var-decl name='CallIntMethod' type-id='d6261a6e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='214' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1600'>
-        <var-decl name='CallIntMethodV' type-id='66ebe6b0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='215' column='1'/>
+        <var-decl name='CallIntMethodV' type-id='2af90a7d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='215' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1632'>
-        <var-decl name='CallIntMethodA' type-id='6c56e815' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='216' column='1'/>
+        <var-decl name='CallIntMethodA' type-id='df4df828' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='216' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1664'>
-        <var-decl name='CallLongMethod' type-id='ea8867ec' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='217' column='1'/>
+        <var-decl name='CallLongMethod' type-id='bd6709ae' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='217' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1696'>
-        <var-decl name='CallLongMethodV' type-id='5f929ab7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='218' column='1'/>
+        <var-decl name='CallLongMethodV' type-id='9b10843d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='218' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1728'>
-        <var-decl name='CallLongMethodA' type-id='a55b35a6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='219' column='1'/>
+        <var-decl name='CallLongMethodA' type-id='41244068' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='219' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1760'>
-        <var-decl name='CallFloatMethod' type-id='e8139a80' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='220' column='1'/>
+        <var-decl name='CallFloatMethod' type-id='ae148f89' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='220' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1792'>
-        <var-decl name='CallFloatMethodV' type-id='9ac8b1e3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='221' column='1'/>
+        <var-decl name='CallFloatMethodV' type-id='ec4dcb46' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='221' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1824'>
-        <var-decl name='CallFloatMethodA' type-id='413559e2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='222' column='1'/>
+        <var-decl name='CallFloatMethodA' type-id='85bd6b6f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='222' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1856'>
-        <var-decl name='CallDoubleMethod' type-id='a642a393' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='223' column='1'/>
+        <var-decl name='CallDoubleMethod' type-id='2e12dc68' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='223' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1888'>
-        <var-decl name='CallDoubleMethodV' type-id='95fba39c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='224' column='1'/>
+        <var-decl name='CallDoubleMethodV' type-id='c1b190ab' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='224' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1920'>
-        <var-decl name='CallDoubleMethodA' type-id='a3ea0661' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='225' column='1'/>
+        <var-decl name='CallDoubleMethodA' type-id='462f7efa' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='225' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1952'>
         <var-decl name='CallVoidMethod' type-id='d696f7b3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='226' column='1'/>
@@ -3447,85 +3447,85 @@
         <var-decl name='CallVoidMethodA' type-id='921cf101' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='228' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2048'>
-        <var-decl name='CallNonvirtualObjectMethod' type-id='4f7677f6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='230' column='1'/>
+        <var-decl name='CallNonvirtualObjectMethod' type-id='c5c23b24' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='230' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2080'>
-        <var-decl name='CallNonvirtualObjectMethodV' type-id='15887ec5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='232' column='1'/>
+        <var-decl name='CallNonvirtualObjectMethodV' type-id='e8958f4f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='232' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2112'>
-        <var-decl name='CallNonvirtualObjectMethodA' type-id='34c67260' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='234' column='1'/>
+        <var-decl name='CallNonvirtualObjectMethodA' type-id='26376bee' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='234' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2144'>
-        <var-decl name='CallNonvirtualBooleanMethod' type-id='f1191df9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='236' column='1'/>
+        <var-decl name='CallNonvirtualBooleanMethod' type-id='1e0ea67d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='236' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2176'>
-        <var-decl name='CallNonvirtualBooleanMethodV' type-id='ff535cb6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='238' column='1'/>
+        <var-decl name='CallNonvirtualBooleanMethodV' type-id='854f6072' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='238' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2208'>
-        <var-decl name='CallNonvirtualBooleanMethodA' type-id='fb38167f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='240' column='1'/>
+        <var-decl name='CallNonvirtualBooleanMethodA' type-id='58b3ba9b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='240' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2240'>
-        <var-decl name='CallNonvirtualByteMethod' type-id='377b5e63' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='242' column='1'/>
+        <var-decl name='CallNonvirtualByteMethod' type-id='888e2c20' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='242' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2272'>
-        <var-decl name='CallNonvirtualByteMethodV' type-id='1930d02c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='244' column='1'/>
+        <var-decl name='CallNonvirtualByteMethodV' type-id='6cb0cfc3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='244' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2304'>
-        <var-decl name='CallNonvirtualByteMethodA' type-id='1d2f8a91' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='246' column='1'/>
+        <var-decl name='CallNonvirtualByteMethodA' type-id='2b203982' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='246' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2336'>
-        <var-decl name='CallNonvirtualCharMethod' type-id='63f7d65d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='248' column='1'/>
+        <var-decl name='CallNonvirtualCharMethod' type-id='c569ef7a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='248' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2368'>
-        <var-decl name='CallNonvirtualCharMethodV' type-id='c32cfa12' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='250' column='1'/>
+        <var-decl name='CallNonvirtualCharMethodV' type-id='1655d561' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='250' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2400'>
-        <var-decl name='CallNonvirtualCharMethodA' type-id='c2280e7b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='252' column='1'/>
+        <var-decl name='CallNonvirtualCharMethodA' type-id='faf16cbc' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='252' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2432'>
-        <var-decl name='CallNonvirtualShortMethod' type-id='0de4af77' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='254' column='1'/>
+        <var-decl name='CallNonvirtualShortMethod' type-id='f7df945b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='254' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2464'>
-        <var-decl name='CallNonvirtualShortMethodV' type-id='255ff5d8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='256' column='1'/>
+        <var-decl name='CallNonvirtualShortMethodV' type-id='2626b4e4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='256' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2496'>
-        <var-decl name='CallNonvirtualShortMethodA' type-id='f4bbad8d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='258' column='1'/>
+        <var-decl name='CallNonvirtualShortMethodA' type-id='308377d9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='258' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2528'>
-        <var-decl name='CallNonvirtualIntMethod' type-id='ce1853bc' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='260' column='1'/>
+        <var-decl name='CallNonvirtualIntMethod' type-id='a9da4265' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='260' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2560'>
-        <var-decl name='CallNonvirtualIntMethodV' type-id='d5b0b547' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='262' column='1'/>
+        <var-decl name='CallNonvirtualIntMethodV' type-id='5452a27a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='262' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2592'>
-        <var-decl name='CallNonvirtualIntMethodA' type-id='3318dad6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='264' column='1'/>
+        <var-decl name='CallNonvirtualIntMethodA' type-id='9a705913' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='264' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2624'>
-        <var-decl name='CallNonvirtualLongMethod' type-id='3459b4cf' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='266' column='1'/>
+        <var-decl name='CallNonvirtualLongMethod' type-id='5d6eec25' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='266' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2656'>
-        <var-decl name='CallNonvirtualLongMethodV' type-id='a60dd490' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='268' column='1'/>
+        <var-decl name='CallNonvirtualLongMethodV' type-id='3eb668ba' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='268' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2688'>
-        <var-decl name='CallNonvirtualLongMethodA' type-id='326df5b5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='270' column='1'/>
+        <var-decl name='CallNonvirtualLongMethodA' type-id='d684a7d3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='270' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2720'>
-        <var-decl name='CallNonvirtualFloatMethod' type-id='eb164d0b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='272' column='1'/>
+        <var-decl name='CallNonvirtualFloatMethod' type-id='9c2a8c9a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='272' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2752'>
-        <var-decl name='CallNonvirtualFloatMethodV' type-id='8c4e1254' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='274' column='1'/>
+        <var-decl name='CallNonvirtualFloatMethodV' type-id='429f9ec1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='274' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2784'>
-        <var-decl name='CallNonvirtualFloatMethodA' type-id='a0bc56e9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='276' column='1'/>
+        <var-decl name='CallNonvirtualFloatMethodA' type-id='5cc6425c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='276' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2816'>
-        <var-decl name='CallNonvirtualDoubleMethod' type-id='2dcc8b98' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='278' column='1'/>
+        <var-decl name='CallNonvirtualDoubleMethod' type-id='80ea0533' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='278' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2848'>
-        <var-decl name='CallNonvirtualDoubleMethodV' type-id='0e5e0cdb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='280' column='1'/>
+        <var-decl name='CallNonvirtualDoubleMethodV' type-id='69f1a17c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='280' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2880'>
-        <var-decl name='CallNonvirtualDoubleMethodA' type-id='a937264a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='282' column='1'/>
+        <var-decl name='CallNonvirtualDoubleMethodA' type-id='0bd83281' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='282' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2912'>
         <var-decl name='CallNonvirtualVoidMethod' type-id='c14258b8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='284' column='1'/>
@@ -3537,34 +3537,34 @@
         <var-decl name='CallNonvirtualVoidMethodA' type-id='41d61b6a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='288' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3008'>
-        <var-decl name='GetFieldID' type-id='5d99509b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='291' column='1'/>
+        <var-decl name='GetFieldID' type-id='268a1fc5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='291' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3040'>
-        <var-decl name='GetObjectField' type-id='7139225a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='293' column='1'/>
+        <var-decl name='GetObjectField' type-id='c4e4e430' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='293' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3072'>
-        <var-decl name='GetBooleanField' type-id='13196dfd' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='294' column='1'/>
+        <var-decl name='GetBooleanField' type-id='db9229f9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='294' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3104'>
-        <var-decl name='GetByteField' type-id='c8bc780f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='295' column='1'/>
+        <var-decl name='GetByteField' type-id='83e3c684' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='295' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3136'>
-        <var-decl name='GetCharField' type-id='239d7ad9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='296' column='1'/>
+        <var-decl name='GetCharField' type-id='d162eb86' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='296' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3168'>
-        <var-decl name='GetShortField' type-id='476f48bb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='297' column='1'/>
+        <var-decl name='GetShortField' type-id='c8f8ae67' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='297' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3200'>
-        <var-decl name='GetIntField' type-id='f7e564c8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='298' column='1'/>
+        <var-decl name='GetIntField' type-id='6ebc9001' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='298' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3232'>
-        <var-decl name='GetLongField' type-id='ac4e6cb3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='299' column='1'/>
+        <var-decl name='GetLongField' type-id='086b6f41' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='299' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3264'>
-        <var-decl name='GetFloatField' type-id='06fbd437' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='300' column='1'/>
+        <var-decl name='GetFloatField' type-id='03d8b5a6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='300' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3296'>
-        <var-decl name='GetDoubleField' type-id='47bc557c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='301' column='1'/>
+        <var-decl name='GetDoubleField' type-id='3a07cbbf' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='301' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3328'>
         <var-decl name='SetObjectField' type-id='e333ff60' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='303' column='1'/>
@@ -3594,88 +3594,88 @@
         <var-decl name='SetDoubleField' type-id='195d3e42' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='311' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3616'>
-        <var-decl name='GetStaticMethodID' type-id='30974818' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='313' column='1'/>
+        <var-decl name='GetStaticMethodID' type-id='e787d4e4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='313' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3648'>
-        <var-decl name='CallStaticObjectMethod' type-id='f8af7982' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='315' column='1'/>
+        <var-decl name='CallStaticObjectMethod' type-id='0bf53c2c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='315' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3680'>
-        <var-decl name='CallStaticObjectMethodV' type-id='a01a6e09' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='316' column='1'/>
+        <var-decl name='CallStaticObjectMethodV' type-id='f6c19e77' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='316' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3712'>
-        <var-decl name='CallStaticObjectMethodA' type-id='f0a0ff54' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='317' column='1'/>
+        <var-decl name='CallStaticObjectMethodA' type-id='cb260be6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='317' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3744'>
-        <var-decl name='CallStaticBooleanMethod' type-id='916299d7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='318' column='1'/>
+        <var-decl name='CallStaticBooleanMethod' type-id='4be7351b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='318' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3776'>
-        <var-decl name='CallStaticBooleanMethodV' type-id='412650f8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='319' column='1'/>
+        <var-decl name='CallStaticBooleanMethodV' type-id='d5caad24' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='319' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3808'>
-        <var-decl name='CallStaticBooleanMethodA' type-id='339f696d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='321' column='1'/>
+        <var-decl name='CallStaticBooleanMethodA' type-id='39665099' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='321' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3840'>
-        <var-decl name='CallStaticByteMethod' type-id='ce9d67cd' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='322' column='1'/>
+        <var-decl name='CallStaticByteMethod' type-id='26dda748' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='322' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3872'>
-        <var-decl name='CallStaticByteMethodV' type-id='478facc2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='323' column='1'/>
+        <var-decl name='CallStaticByteMethodV' type-id='a8ca014b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='323' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3904'>
-        <var-decl name='CallStaticByteMethodA' type-id='db28fdcb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='324' column='1'/>
+        <var-decl name='CallStaticByteMethodA' type-id='c6a8fada' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='324' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3936'>
-        <var-decl name='CallStaticCharMethod' type-id='3bd86cfb' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='325' column='1'/>
+        <var-decl name='CallStaticCharMethod' type-id='07b74db6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='325' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='3968'>
-        <var-decl name='CallStaticCharMethodV' type-id='dddcefc4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='326' column='1'/>
+        <var-decl name='CallStaticCharMethodV' type-id='a6dba205' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='326' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4000'>
-        <var-decl name='CallStaticCharMethodA' type-id='692552f9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='327' column='1'/>
+        <var-decl name='CallStaticCharMethodA' type-id='cdfaa320' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='327' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4032'>
-        <var-decl name='CallStaticShortMethod' type-id='362e2831' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='328' column='1'/>
+        <var-decl name='CallStaticShortMethod' type-id='3ae45885' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='328' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4064'>
-        <var-decl name='CallStaticShortMethodV' type-id='d1173c4e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='329' column='1'/>
+        <var-decl name='CallStaticShortMethodV' type-id='5fd19dda' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='329' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4096'>
-        <var-decl name='CallStaticShortMethodA' type-id='097c7407' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='330' column='1'/>
+        <var-decl name='CallStaticShortMethodA' type-id='501077b3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='330' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4128'>
-        <var-decl name='CallStaticIntMethod' type-id='64ca4b84' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='331' column='1'/>
+        <var-decl name='CallStaticIntMethod' type-id='08d19343' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='331' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4160'>
-        <var-decl name='CallStaticIntMethodV' type-id='0323d66f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='332' column='1'/>
+        <var-decl name='CallStaticIntMethodV' type-id='661ce4cc' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='332' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4192'>
-        <var-decl name='CallStaticIntMethodA' type-id='30b9a8ce' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='333' column='1'/>
+        <var-decl name='CallStaticIntMethodA' type-id='670a3f71' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='333' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4224'>
-        <var-decl name='CallStaticLongMethod' type-id='8c22ffe9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='334' column='1'/>
+        <var-decl name='CallStaticLongMethod' type-id='3c4aa383' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='334' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4256'>
-        <var-decl name='CallStaticLongMethodV' type-id='60306f66' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='335' column='1'/>
+        <var-decl name='CallStaticLongMethodV' type-id='e448b98c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='335' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4288'>
-        <var-decl name='CallStaticLongMethodA' type-id='1fda464f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='336' column='1'/>
+        <var-decl name='CallStaticLongMethodA' type-id='d94e6db1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='336' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4320'>
-        <var-decl name='CallStaticFloatMethod' type-id='4ed90115' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='337' column='1'/>
+        <var-decl name='CallStaticFloatMethod' type-id='ae1447d6' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='337' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4352'>
-        <var-decl name='CallStaticFloatMethodV' type-id='87e0b5ea' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='338' column='1'/>
+        <var-decl name='CallStaticFloatMethodV' type-id='758e6965' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='338' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4384'>
-        <var-decl name='CallStaticFloatMethodA' type-id='caa57963' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='339' column='1'/>
+        <var-decl name='CallStaticFloatMethodA' type-id='416b80c0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='339' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4416'>
-        <var-decl name='CallStaticDoubleMethod' type-id='04b3e5a0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='340' column='1'/>
+        <var-decl name='CallStaticDoubleMethod' type-id='b353f23d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='340' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4448'>
-        <var-decl name='CallStaticDoubleMethodV' type-id='be0ed943' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='341' column='1'/>
+        <var-decl name='CallStaticDoubleMethodV' type-id='8c402bb2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='341' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4480'>
-        <var-decl name='CallStaticDoubleMethodA' type-id='df8dc702' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='342' column='1'/>
+        <var-decl name='CallStaticDoubleMethodA' type-id='e020195b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='342' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4512'>
         <var-decl name='CallStaticVoidMethod' type-id='a86eb340' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='343' column='1'/>
@@ -3687,34 +3687,34 @@
         <var-decl name='CallStaticVoidMethodA' type-id='6fc0eca2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='345' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4608'>
-        <var-decl name='GetStaticFieldID' type-id='5d99509b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='347' column='1'/>
+        <var-decl name='GetStaticFieldID' type-id='268a1fc5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='347' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4640'>
-        <var-decl name='GetStaticObjectField' type-id='d7560895' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='350' column='1'/>
+        <var-decl name='GetStaticObjectField' type-id='3da870f3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='350' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4672'>
-        <var-decl name='GetStaticBooleanField' type-id='4127a730' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='351' column='1'/>
+        <var-decl name='GetStaticBooleanField' type-id='ed8a4724' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='351' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4704'>
-        <var-decl name='GetStaticByteField' type-id='c404650a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='352' column='1'/>
+        <var-decl name='GetStaticByteField' type-id='fe0f389f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='352' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4736'>
-        <var-decl name='GetStaticCharField' type-id='0736b484' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='353' column='1'/>
+        <var-decl name='GetStaticCharField' type-id='56968229' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='353' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4768'>
-        <var-decl name='GetStaticShortField' type-id='0d5970ee' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='354' column='1'/>
+        <var-decl name='GetStaticShortField' type-id='4aef27a2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='354' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4800'>
-        <var-decl name='GetStaticIntField' type-id='771014ab' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='355' column='1'/>
+        <var-decl name='GetStaticIntField' type-id='9ef1ec6c' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='355' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4832'>
-        <var-decl name='GetStaticLongField' type-id='a4a6a786' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='356' column='1'/>
+        <var-decl name='GetStaticLongField' type-id='6225d3ac' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='356' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4864'>
-        <var-decl name='GetStaticFloatField' type-id='337e1672' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='357' column='1'/>
+        <var-decl name='GetStaticFloatField' type-id='2b8d1ec9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='357' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4896'>
-        <var-decl name='GetStaticDoubleField' type-id='bd4849d7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='358' column='1'/>
+        <var-decl name='GetStaticDoubleField' type-id='b2550e7a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='358' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='4928'>
         <var-decl name='SetStaticObjectField' type-id='6c160b51' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='360' column='1'/>
@@ -3744,10 +3744,10 @@
         <var-decl name='SetStaticDoubleField' type-id='30411993' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='368' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5216'>
-        <var-decl name='NewString' type-id='40f183ab' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='370' column='1'/>
+        <var-decl name='NewString' type-id='081e36ed' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='370' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5248'>
-        <var-decl name='GetStringLength' type-id='a7d6acc8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='371' column='1'/>
+        <var-decl name='GetStringLength' type-id='6c0b3361' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='371' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5280'>
         <var-decl name='GetStringChars' type-id='e5a87447' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='372' column='1'/>
@@ -3756,10 +3756,10 @@
         <var-decl name='ReleaseStringChars' type-id='61d681d5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='373' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5344'>
-        <var-decl name='NewStringUTF' type-id='691ba251' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='374' column='1'/>
+        <var-decl name='NewStringUTF' type-id='629338b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='374' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5376'>
-        <var-decl name='GetStringUTFLength' type-id='a7d6acc8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='375' column='1'/>
+        <var-decl name='GetStringUTFLength' type-id='6c0b3361' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='375' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5408'>
         <var-decl name='GetStringUTFChars' type-id='08565ebd' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='377' column='1'/>
@@ -3768,40 +3768,40 @@
         <var-decl name='ReleaseStringUTFChars' type-id='ac33476b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='378' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5472'>
-        <var-decl name='GetArrayLength' type-id='a23a76e0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='379' column='1'/>
+        <var-decl name='GetArrayLength' type-id='1f46a8b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='379' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5504'>
-        <var-decl name='NewObjectArray' type-id='e4f2ab66' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='380' column='1'/>
+        <var-decl name='NewObjectArray' type-id='1665dab2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='380' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5536'>
-        <var-decl name='GetObjectArrayElement' type-id='0ae13aef' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='381' column='1'/>
+        <var-decl name='GetObjectArrayElement' type-id='e49a4e19' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='381' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5568'>
         <var-decl name='SetObjectArrayElement' type-id='99167093' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='382' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5600'>
-        <var-decl name='NewBooleanArray' type-id='162473c8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='384' column='1'/>
+        <var-decl name='NewBooleanArray' type-id='837c8b4a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='384' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5632'>
-        <var-decl name='NewByteArray' type-id='be49c182' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='385' column='1'/>
+        <var-decl name='NewByteArray' type-id='291f8894' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='385' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5664'>
-        <var-decl name='NewCharArray' type-id='ac74c0c4' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='386' column='1'/>
+        <var-decl name='NewCharArray' type-id='fb7cddfa' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='386' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5696'>
-        <var-decl name='NewShortArray' type-id='978c735e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='387' column='1'/>
+        <var-decl name='NewShortArray' type-id='e57ddc44' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='387' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5728'>
-        <var-decl name='NewIntArray' type-id='2041a8d7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='388' column='1'/>
+        <var-decl name='NewIntArray' type-id='4e1a93c3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='388' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5760'>
-        <var-decl name='NewLongArray' type-id='d7ea3436' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='389' column='1'/>
+        <var-decl name='NewLongArray' type-id='389a57a0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='389' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5792'>
-        <var-decl name='NewFloatArray' type-id='69b7386a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='390' column='1'/>
+        <var-decl name='NewFloatArray' type-id='5bbf72ec' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='390' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5824'>
-        <var-decl name='NewDoubleArray' type-id='31ebf17b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='391' column='1'/>
+        <var-decl name='NewDoubleArray' type-id='4441b0b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='391' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='5856'>
         <var-decl name='GetBooleanArrayElements' type-id='9b3c0ac2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='393' column='1'/>
@@ -3900,19 +3900,19 @@
         <var-decl name='SetDoubleArrayRegion' type-id='348c02e9' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='451' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='6880'>
-        <var-decl name='RegisterNatives' type-id='764ac7bf' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='454' column='1'/>
+        <var-decl name='RegisterNatives' type-id='a3c133e0' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='454' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='6912'>
-        <var-decl name='UnregisterNatives' type-id='9447819d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='456' column='1'/>
+        <var-decl name='UnregisterNatives' type-id='6f79c54e' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='456' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='6944'>
-        <var-decl name='MonitorEnter' type-id='67a46ff2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='457' column='1'/>
+        <var-decl name='MonitorEnter' type-id='c21036b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='457' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='6976'>
-        <var-decl name='MonitorExit' type-id='67a46ff2' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='458' column='1'/>
+        <var-decl name='MonitorExit' type-id='c21036b7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='458' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7008'>
-        <var-decl name='GetJavaVM' type-id='5a4c25bf' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='459' column='1'/>
+        <var-decl name='GetJavaVM' type-id='a65198e8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='459' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7040'>
         <var-decl name='GetStringRegion' type-id='fb79cfe8' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='461' column='1'/>
@@ -3933,25 +3933,25 @@
         <var-decl name='ReleaseStringCritical' type-id='61d681d5' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='468' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7232'>
-        <var-decl name='NewWeakGlobalRef' type-id='03bcacf3' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='470' column='1'/>
+        <var-decl name='NewWeakGlobalRef' type-id='510ae83a' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='470' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7264'>
         <var-decl name='DeleteWeakGlobalRef' type-id='ccc141a1' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='471' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7296'>
-        <var-decl name='ExceptionCheck' type-id='5796afad' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='473' column='1'/>
+        <var-decl name='ExceptionCheck' type-id='22b63871' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='473' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7328'>
-        <var-decl name='NewDirectByteBuffer' type-id='2c684c9f' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='475' column='1'/>
+        <var-decl name='NewDirectByteBuffer' type-id='c011502d' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='475' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7360'>
         <var-decl name='GetDirectBufferAddress' type-id='bd98ffce' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='476' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7392'>
-        <var-decl name='GetDirectBufferCapacity' type-id='47653e05' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='477' column='1'/>
+        <var-decl name='GetDirectBufferCapacity' type-id='a2ff3a77' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='477' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='7424'>
-        <var-decl name='GetObjectRefType' type-id='500eebf7' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='480' column='1'/>
+        <var-decl name='GetObjectRefType' type-id='d85ab86b' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='480' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='_JNIEnv' size-in-bits='32' is-struct='yes' visibility='default' filepath='libnativehelper/include_jni/jni.h' line='489' column='1' id='c9459134'>
@@ -4019,20 +4019,57 @@
     <pointer-type-def type-id='c9459134' size-in-bits='32' id='71bed232'/>
     <pointer-type-def type-id='440aaf49' size-in-bits='32' id='85c463b1'/>
     <pointer-type-def type-id='2ca86b0d' size-in-bits='32' id='715a5bad'/>
+    <pointer-type-def type-id='b15bc960' size-in-bits='32' id='837c8b4a'/>
     <pointer-type-def type-id='1e7918a7' size-in-bits='32' id='047d4fff'/>
+    <pointer-type-def type-id='e11f28f2' size-in-bits='32' id='291f8894'/>
     <pointer-type-def type-id='eeed1f5d' size-in-bits='32' id='349a45dd'/>
+    <pointer-type-def type-id='cff016a0' size-in-bits='32' id='fb7cddfa'/>
     <pointer-type-def type-id='e53ab91c' size-in-bits='32' id='a5a1fc5a'/>
+    <pointer-type-def type-id='e7767992' size-in-bits='32' id='a247d414'/>
+    <pointer-type-def type-id='8fc602cf' size-in-bits='32' id='b4e3f2fb'/>
+    <pointer-type-def type-id='14b14180' size-in-bits='32' id='6a4b7aaa'/>
+    <pointer-type-def type-id='010ee697' size-in-bits='32' id='36621f5b'/>
     <pointer-type-def type-id='530c1a32' size-in-bits='32' id='76b5a6a0'/>
+    <pointer-type-def type-id='0227b7cb' size-in-bits='32' id='4441b0b7'/>
     <pointer-type-def type-id='2e67d715' size-in-bits='32' id='ee3187c5'/>
+    <pointer-type-def type-id='4221e479' size-in-bits='32' id='268a1fc5'/>
+    <pointer-type-def type-id='0d0538f2' size-in-bits='32' id='1408155c'/>
     <pointer-type-def type-id='a87003ef' size-in-bits='32' id='dda33667'/>
+    <pointer-type-def type-id='c3cab792' size-in-bits='32' id='5bbf72ec'/>
     <pointer-type-def type-id='b0749e8e' size-in-bits='32' id='0faa6e74'/>
+    <pointer-type-def type-id='9dadd0af' size-in-bits='32' id='4e1a93c3'/>
     <pointer-type-def type-id='fb46a283' size-in-bits='32' id='15b6e673'/>
+    <pointer-type-def type-id='c2b8dc36' size-in-bits='32' id='389a57a0'/>
     <pointer-type-def type-id='d988e2e8' size-in-bits='32' id='b09bab5e'/>
+    <pointer-type-def type-id='855cee92' size-in-bits='32' id='e787d4e4'/>
+    <pointer-type-def type-id='215c6e3b' size-in-bits='32' id='133c13b7'/>
     <pointer-type-def type-id='baffb083' size-in-bits='32' id='478e3663'/>
+    <pointer-type-def type-id='76521db1' size-in-bits='32' id='4dd53dc5'/>
+    <pointer-type-def type-id='98bd8c47' size-in-bits='32' id='3da870f3'/>
+    <pointer-type-def type-id='64eeac8a' size-in-bits='32' id='3c391da4'/>
+    <pointer-type-def type-id='69002c5c' size-in-bits='32' id='cb260be6'/>
+    <pointer-type-def type-id='ad610557' size-in-bits='32' id='aaa7cbbb'/>
+    <pointer-type-def type-id='8065ca7b' size-in-bits='32' id='f6c19e77'/>
+    <pointer-type-def type-id='20b53d0a' size-in-bits='32' id='0bf53c2c'/>
+    <pointer-type-def type-id='11384920' size-in-bits='32' id='510ae83a'/>
+    <pointer-type-def type-id='986d17a4' size-in-bits='32' id='26376bee'/>
+    <pointer-type-def type-id='0331d4f3' size-in-bits='32' id='e8958f4f'/>
+    <pointer-type-def type-id='7f2b3de2' size-in-bits='32' id='c5c23b24'/>
+    <pointer-type-def type-id='1c07a57e' size-in-bits='32' id='c4e4e430'/>
+    <pointer-type-def type-id='d3039ad1' size-in-bits='32' id='6ea5e66d'/>
+    <pointer-type-def type-id='5347fa1e' size-in-bits='32' id='886195f8'/>
+    <pointer-type-def type-id='ce48ca6b' size-in-bits='32' id='e3a17ed7'/>
+    <pointer-type-def type-id='80a2281d' size-in-bits='32' id='e49a4e19'/>
+    <pointer-type-def type-id='af76bbd1' size-in-bits='32' id='c011502d'/>
     <pointer-type-def type-id='fdf9f098' size-in-bits='32' id='14c7458e'/>
+    <pointer-type-def type-id='e4c39128' size-in-bits='32' id='1665dab2'/>
     <pointer-type-def type-id='30a4d497' size-in-bits='32' id='3239e3af'/>
+    <pointer-type-def type-id='4312461a' size-in-bits='32' id='e57ddc44'/>
     <pointer-type-def type-id='ae6a1c55' size-in-bits='32' id='e65fd0e5'/>
+    <pointer-type-def type-id='bf8b79fb' size-in-bits='32' id='629338b7'/>
+    <pointer-type-def type-id='6a61bc51' size-in-bits='32' id='081e36ed'/>
     <pointer-type-def type-id='07f10124' size-in-bits='32' id='a5fd6882'/>
+    <pointer-type-def type-id='e13d7981' size-in-bits='32' id='b3dfc495'/>
     <pointer-type-def type-id='27450c90' size-in-bits='32' id='a39ba61d'/>
     <reference-type-def kind='lvalue' type-id='663ed4a0' size-in-bits='32' id='4b4fe04a'/>
     <pointer-type-def type-id='663ed4a0' size-in-bits='32' id='3f4fcd66'/>
@@ -5040,9 +5077,53 @@
     <qualified-type-def type-id='c523b9f1' const='yes' id='effb3702'/>
     <pointer-type-def type-id='effb3702' size-in-bits='32' id='f077d3f8'/>
     <pointer-type-def type-id='f077d3f8' size-in-bits='32' id='5ea27396'/>
+    <pointer-type-def type-id='751bbba0' size-in-bits='32' id='b2550e7a'/>
+    <pointer-type-def type-id='3d193fe7' size-in-bits='32' id='e020195b'/>
+    <pointer-type-def type-id='e8eae280' size-in-bits='32' id='8c402bb2'/>
+    <pointer-type-def type-id='c1c06b31' size-in-bits='32' id='b353f23d'/>
+    <pointer-type-def type-id='48fdf325' size-in-bits='32' id='0bd83281'/>
+    <pointer-type-def type-id='96b697f2' size-in-bits='32' id='69f1a17c'/>
+    <pointer-type-def type-id='208d4eb7' size-in-bits='32' id='80ea0533'/>
+    <pointer-type-def type-id='9484a943' size-in-bits='32' id='3a07cbbf'/>
+    <pointer-type-def type-id='c5334730' size-in-bits='32' id='462f7efa'/>
+    <pointer-type-def type-id='e0a266ff' size-in-bits='32' id='c1b190ab'/>
+    <pointer-type-def type-id='f7adc4e6' size-in-bits='32' id='2e12dc68'/>
+    <pointer-type-def type-id='7fa34897' size-in-bits='32' id='d85ab86b'/>
+    <pointer-type-def type-id='2bedc155' size-in-bits='32' id='2b8d1ec9'/>
+    <pointer-type-def type-id='9847645e' size-in-bits='32' id='416b80c0'/>
+    <pointer-type-def type-id='2ba43f31' size-in-bits='32' id='758e6965'/>
+    <pointer-type-def type-id='afc30ad4' size-in-bits='32' id='ae1447d6'/>
+    <pointer-type-def type-id='dd0ce0d2' size-in-bits='32' id='5cc6425c'/>
+    <pointer-type-def type-id='e7a956c5' size-in-bits='32' id='429f9ec1'/>
+    <pointer-type-def type-id='2aaa6670' size-in-bits='32' id='9c2a8c9a'/>
+    <pointer-type-def type-id='b9a2936c' size-in-bits='32' id='03d8b5a6'/>
+    <pointer-type-def type-id='96b1521b' size-in-bits='32' id='85bd6b6f'/>
+    <pointer-type-def type-id='b3455944' size-in-bits='32' id='ec4dcb46'/>
+    <pointer-type-def type-id='3ced74dd' size-in-bits='32' id='ae148f89'/>
     <reference-type-def kind='lvalue' type-id='a6c45d85' size-in-bits='32' id='2a1f6799'/>
     <pointer-type-def type-id='a6c45d85' size-in-bits='32' id='361f7a7d'/>
     <pointer-type-def type-id='e322b6ef' size-in-bits='32' id='c5f12884'/>
+    <pointer-type-def type-id='f68d4a05' size-in-bits='32' id='18d755d9'/>
+    <pointer-type-def type-id='2fb8ba3e' size-in-bits='32' id='a65198e8'/>
+    <pointer-type-def type-id='fd01ee73' size-in-bits='32' id='1f46a8b7'/>
+    <pointer-type-def type-id='4039aa84' size-in-bits='32' id='6f79c54e'/>
+    <pointer-type-def type-id='aac1adbe' size-in-bits='32' id='a3c133e0'/>
+    <pointer-type-def type-id='97ac77f1' size-in-bits='32' id='cf5d6c0d'/>
+    <pointer-type-def type-id='701071ea' size-in-bits='32' id='9ef1ec6c'/>
+    <pointer-type-def type-id='7f4628e5' size-in-bits='32' id='670a3f71'/>
+    <pointer-type-def type-id='5a3b7732' size-in-bits='32' id='661ce4cc'/>
+    <pointer-type-def type-id='f4082a77' size-in-bits='32' id='08d19343'/>
+    <pointer-type-def type-id='badbb20f' size-in-bits='32' id='5496326b'/>
+    <pointer-type-def type-id='bf2f3ff3' size-in-bits='32' id='c21036b7'/>
+    <pointer-type-def type-id='b02ad03f' size-in-bits='32' id='9a705913'/>
+    <pointer-type-def type-id='585e26a8' size-in-bits='32' id='5452a27a'/>
+    <pointer-type-def type-id='bcbfbc79' size-in-bits='32' id='a9da4265'/>
+    <pointer-type-def type-id='90ae06f5' size-in-bits='32' id='6ebc9001'/>
+    <pointer-type-def type-id='cfb6b57e' size-in-bits='32' id='df4df828'/>
+    <pointer-type-def type-id='cfb63111' size-in-bits='32' id='2af90a7d'/>
+    <pointer-type-def type-id='08289274' size-in-bits='32' id='d6261a6e'/>
+    <pointer-type-def type-id='81c093cd' size-in-bits='32' id='6c0b3361'/>
+    <pointer-type-def type-id='7cae5494' size-in-bits='32' id='9a1d84ce'/>
     <pointer-type-def type-id='96ee24a5' size-in-bits='32' id='585e1de9'/>
     <reference-type-def kind='lvalue' type-id='95e97e5e' size-in-bits='32' id='769216e8'/>
     <pointer-type-def type-id='95e97e5e' size-in-bits='32' id='7292109c'/>
@@ -5066,9 +5147,43 @@
     <pointer-type-def type-id='9a10f134' size-in-bits='32' id='aa210e95'/>
     <pointer-type-def type-id='da4ac88c' size-in-bits='32' id='5353c67e'/>
     <pointer-type-def type-id='e095c704' size-in-bits='32' id='b9c88d6a'/>
+    <pointer-type-def type-id='65ac402a' size-in-bits='32' id='6225d3ac'/>
+    <pointer-type-def type-id='eee53025' size-in-bits='32' id='d94e6db1'/>
+    <pointer-type-def type-id='4fa09cf2' size-in-bits='32' id='e448b98c'/>
+    <pointer-type-def type-id='b392f3b7' size-in-bits='32' id='3c4aa383'/>
+    <pointer-type-def type-id='02732cb3' size-in-bits='32' id='a2ff3a77'/>
+    <pointer-type-def type-id='1c3b64ff' size-in-bits='32' id='d684a7d3'/>
+    <pointer-type-def type-id='f189b9e8' size-in-bits='32' id='3eb668ba'/>
+    <pointer-type-def type-id='02f4e539' size-in-bits='32' id='5d6eec25'/>
+    <pointer-type-def type-id='3a3ee135' size-in-bits='32' id='086b6f41'/>
+    <pointer-type-def type-id='a329d5be' size-in-bits='32' id='41244068'/>
+    <pointer-type-def type-id='283ee8d1' size-in-bits='32' id='9b10843d'/>
+    <pointer-type-def type-id='1b6356b4' size-in-bits='32' id='bd6709ae'/>
     <pointer-type-def type-id='3d7d8cbf' size-in-bits='32' id='a68021ce'/>
     <pointer-type-def type-id='05d4c620' size-in-bits='32' id='b8263143'/>
     <pointer-type-def type-id='ad707ada' size-in-bits='32' id='e90c4311'/>
+    <pointer-type-def type-id='1125f2c8' size-in-bits='32' id='4aef27a2'/>
+    <pointer-type-def type-id='4dff45bf' size-in-bits='32' id='501077b3'/>
+    <pointer-type-def type-id='3f815828' size-in-bits='32' id='5fd19dda'/>
+    <pointer-type-def type-id='d9279df9' size-in-bits='32' id='3ae45885'/>
+    <pointer-type-def type-id='7eebb2fd' size-in-bits='32' id='308377d9'/>
+    <pointer-type-def type-id='24c696da' size-in-bits='32' id='2626b4e4'/>
+    <pointer-type-def type-id='42bf5bbf' size-in-bits='32' id='f7df945b'/>
+    <pointer-type-def type-id='889ad70b' size-in-bits='32' id='c8f8ae67'/>
+    <pointer-type-def type-id='6e2e3468' size-in-bits='32' id='d9767672'/>
+    <pointer-type-def type-id='c050b627' size-in-bits='32' id='dd929613'/>
+    <pointer-type-def type-id='4bde468e' size-in-bits='32' id='072ec070'/>
+    <pointer-type-def type-id='0e846d7b' size-in-bits='32' id='fe0f389f'/>
+    <pointer-type-def type-id='4715bbb8' size-in-bits='32' id='c6a8fada'/>
+    <pointer-type-def type-id='dcb9a1d7' size-in-bits='32' id='a8ca014b'/>
+    <pointer-type-def type-id='307626fe' size-in-bits='32' id='26dda748'/>
+    <pointer-type-def type-id='4ceb2960' size-in-bits='32' id='2b203982'/>
+    <pointer-type-def type-id='43cf01cf' size-in-bits='32' id='6cb0cfc3'/>
+    <pointer-type-def type-id='e56709b6' size-in-bits='32' id='888e2c20'/>
+    <pointer-type-def type-id='7d91d8aa' size-in-bits='32' id='83e3c684'/>
+    <pointer-type-def type-id='cd21e8a5' size-in-bits='32' id='5a3ae4f9'/>
+    <pointer-type-def type-id='d7754972' size-in-bits='32' id='2b49d1c4'/>
+    <pointer-type-def type-id='fe80b037' size-in-bits='32' id='40bf8efb'/>
     <pointer-type-def type-id='b59d7dce' size-in-bits='32' id='78c01427'/>
     <reference-type-def kind='lvalue' type-id='60f5da7d' size-in-bits='32' id='809cbcf9'/>
     <reference-type-def kind='rvalue' type-id='60f5da7d' size-in-bits='32' id='55bd530d'/>
@@ -5625,153 +5740,37 @@
     <reference-type-def kind='lvalue' type-id='814fe063' size-in-bits='32' id='747a3607'/>
     <pointer-type-def type-id='c9d12d66' size-in-bits='32' id='b2eb2c3f'/>
     <pointer-type-def type-id='dddf6ca2' size-in-bits='32' id='d915a820'/>
-    <pointer-type-def type-id='59ed1e59' size-in-bits='32' id='5796afad'/>
-    <pointer-type-def type-id='a1390ee9' size-in-bits='32' id='f39f8bbd'/>
-    <pointer-type-def type-id='7be75d9e' size-in-bits='32' id='4127a730'/>
-    <pointer-type-def type-id='554d87f1' size-in-bits='32' id='339f696d'/>
-    <pointer-type-def type-id='6da5b67e' size-in-bits='32' id='412650f8'/>
-    <pointer-type-def type-id='1a9d598b' size-in-bits='32' id='916299d7'/>
-    <pointer-type-def type-id='6935722a' size-in-bits='32' id='bcee08ac'/>
-    <pointer-type-def type-id='4dd30b7b' size-in-bits='32' id='fb38167f'/>
-    <pointer-type-def type-id='96fb4d64' size-in-bits='32' id='ff535cb6'/>
-    <pointer-type-def type-id='6b6501bd' size-in-bits='32' id='f1191df9'/>
-    <pointer-type-def type-id='bed9a8c1' size-in-bits='32' id='13196dfd'/>
-    <pointer-type-def type-id='0ccd5902' size-in-bits='32' id='74823d0c'/>
-    <pointer-type-def type-id='b7d01ad5' size-in-bits='32' id='88d99751'/>
-    <pointer-type-def type-id='2b209300' size-in-bits='32' id='461c5f2a'/>
-    <pointer-type-def type-id='3b720171' size-in-bits='32' id='782c53f5'/>
-    <pointer-type-def type-id='aca2cd7e' size-in-bits='32' id='162473c8'/>
-    <pointer-type-def type-id='8e80bdd8' size-in-bits='32' id='c404650a'/>
-    <pointer-type-def type-id='3eafa32f' size-in-bits='32' id='db28fdcb'/>
-    <pointer-type-def type-id='148c6738' size-in-bits='32' id='478facc2'/>
-    <pointer-type-def type-id='e6efff49' size-in-bits='32' id='ce9d67cd'/>
-    <pointer-type-def type-id='fe213acd' size-in-bits='32' id='1d2f8a91'/>
-    <pointer-type-def type-id='ca62bfca' size-in-bits='32' id='1930d02c'/>
-    <pointer-type-def type-id='b142692f' size-in-bits='32' id='377b5e63'/>
-    <pointer-type-def type-id='4142d35b' size-in-bits='32' id='c8bc780f'/>
-    <pointer-type-def type-id='ed5f0798' size-in-bits='32' id='ed0795aa'/>
-    <pointer-type-def type-id='d664a6f7' size-in-bits='32' id='44bea17b'/>
-    <pointer-type-def type-id='e0efb9de' size-in-bits='32' id='17d955f8'/>
-    <pointer-type-def type-id='8f71b7e8' size-in-bits='32' id='be49c182'/>
-    <pointer-type-def type-id='db9b93fa' size-in-bits='32' id='0736b484'/>
-    <pointer-type-def type-id='b6d76995' size-in-bits='32' id='692552f9'/>
-    <pointer-type-def type-id='e5e01142' size-in-bits='32' id='dddcefc4'/>
-    <pointer-type-def type-id='2987b0c7' size-in-bits='32' id='3bd86cfb'/>
-    <pointer-type-def type-id='ab5a280f' size-in-bits='32' id='c2280e7b'/>
-    <pointer-type-def type-id='b10103d8' size-in-bits='32' id='c32cfa12'/>
-    <pointer-type-def type-id='07f91629' size-in-bits='32' id='63f7d65d'/>
-    <pointer-type-def type-id='57aaeac5' size-in-bits='32' id='239d7ad9'/>
-    <pointer-type-def type-id='85d5402e' size-in-bits='32' id='b0061f70'/>
-    <pointer-type-def type-id='8833c461' size-in-bits='32' id='d31f1c35'/>
-    <pointer-type-def type-id='4e7eaf04' size-in-bits='32' id='e747dee6'/>
-    <pointer-type-def type-id='717ad472' size-in-bits='32' id='ac74c0c4'/>
-    <pointer-type-def type-id='e1e0781a' size-in-bits='32' id='e905d0ac'/>
-    <pointer-type-def type-id='2f03f5b7' size-in-bits='32' id='3358ddb3'/>
-    <pointer-type-def type-id='b3b907e8' size-in-bits='32' id='93737cc2'/>
-    <pointer-type-def type-id='caf8409f' size-in-bits='32' id='b5f4f133'/>
-    <pointer-type-def type-id='ed3044e3' size-in-bits='32' id='bd4849d7'/>
-    <pointer-type-def type-id='126e53d0' size-in-bits='32' id='df8dc702'/>
-    <pointer-type-def type-id='dad530df' size-in-bits='32' id='be0ed943'/>
-    <pointer-type-def type-id='9539c406' size-in-bits='32' id='04b3e5a0'/>
-    <pointer-type-def type-id='a8186878' size-in-bits='32' id='a937264a'/>
-    <pointer-type-def type-id='2f0b7817' size-in-bits='32' id='0e5e0cdb'/>
-    <pointer-type-def type-id='b7e7edbe' size-in-bits='32' id='2dcc8b98'/>
-    <pointer-type-def type-id='a4a61472' size-in-bits='32' id='47bc557c'/>
-    <pointer-type-def type-id='837777dd' size-in-bits='32' id='a3ea0661'/>
-    <pointer-type-def type-id='2f02ea7a' size-in-bits='32' id='95fba39c'/>
-    <pointer-type-def type-id='461d0e9f' size-in-bits='32' id='a642a393'/>
-    <pointer-type-def type-id='dc0b1ac7' size-in-bits='32' id='31ebf17b'/>
-    <pointer-type-def type-id='fea2690f' size-in-bits='32' id='5d99509b'/>
-    <pointer-type-def type-id='14c3a3b0' size-in-bits='32' id='04aa9df2'/>
-    <pointer-type-def type-id='41b981f8' size-in-bits='32' id='337e1672'/>
-    <pointer-type-def type-id='88f16d4f' size-in-bits='32' id='caa57963'/>
-    <pointer-type-def type-id='02a81098' size-in-bits='32' id='87e0b5ea'/>
-    <pointer-type-def type-id='1dba3069' size-in-bits='32' id='4ed90115'/>
-    <pointer-type-def type-id='3197286d' size-in-bits='32' id='a0bc56e9'/>
-    <pointer-type-def type-id='413b072a' size-in-bits='32' id='8c4e1254'/>
-    <pointer-type-def type-id='1cd86ccf' size-in-bits='32' id='eb164d0b'/>
-    <pointer-type-def type-id='16cc647b' size-in-bits='32' id='06fbd437'/>
-    <pointer-type-def type-id='b9c972b8' size-in-bits='32' id='413559e2'/>
-    <pointer-type-def type-id='fba5b0d7' size-in-bits='32' id='9ac8b1e3'/>
-    <pointer-type-def type-id='757515fe' size-in-bits='32' id='e8139a80'/>
-    <pointer-type-def type-id='cd5e6e48' size-in-bits='32' id='69b7386a'/>
-    <pointer-type-def type-id='06074860' size-in-bits='32' id='4b15419a'/>
-    <pointer-type-def type-id='50ce2e7b' size-in-bits='32' id='5a4c25bf'/>
-    <pointer-type-def type-id='fcac2709' size-in-bits='32' id='9447819d'/>
-    <pointer-type-def type-id='1d639c93' size-in-bits='32' id='764ac7bf'/>
-    <pointer-type-def type-id='c12bf182' size-in-bits='32' id='0571aa74'/>
-    <pointer-type-def type-id='21fee85f' size-in-bits='32' id='771014ab'/>
-    <pointer-type-def type-id='83574fe4' size-in-bits='32' id='30b9a8ce'/>
-    <pointer-type-def type-id='dd7295b3' size-in-bits='32' id='0323d66f'/>
-    <pointer-type-def type-id='4a42a622' size-in-bits='32' id='64ca4b84'/>
-    <pointer-type-def type-id='f4d3e94e' size-in-bits='32' id='9aeb7958'/>
-    <pointer-type-def type-id='47891898' size-in-bits='32' id='67a46ff2'/>
-    <pointer-type-def type-id='42337f0c' size-in-bits='32' id='3318dad6'/>
-    <pointer-type-def type-id='968ef04b' size-in-bits='32' id='d5b0b547'/>
-    <pointer-type-def type-id='b2cf38da' size-in-bits='32' id='ce1853bc'/>
-    <pointer-type-def type-id='533df676' size-in-bits='32' id='f7e564c8'/>
-    <pointer-type-def type-id='66c316f9' size-in-bits='32' id='6c56e815'/>
-    <pointer-type-def type-id='4bcddb36' size-in-bits='32' id='66ebe6b0'/>
-    <pointer-type-def type-id='becc7143' size-in-bits='32' id='3271bf2f'/>
-    <pointer-type-def type-id='0149d965' size-in-bits='32' id='4a0b9bf1'/>
-    <pointer-type-def type-id='31d87a2b' size-in-bits='32' id='2041a8d7'/>
-    <pointer-type-def type-id='467aaa2c' size-in-bits='32' id='a4a6a786'/>
-    <pointer-type-def type-id='56c055db' size-in-bits='32' id='1fda464f'/>
-    <pointer-type-def type-id='8c344f84' size-in-bits='32' id='60306f66'/>
-    <pointer-type-def type-id='5d529e9d' size-in-bits='32' id='8c22ffe9'/>
-    <pointer-type-def type-id='a017e9d1' size-in-bits='32' id='47653e05'/>
-    <pointer-type-def type-id='82d29439' size-in-bits='32' id='326df5b5'/>
-    <pointer-type-def type-id='4aec61f6' size-in-bits='32' id='a60dd490'/>
-    <pointer-type-def type-id='18caaa83' size-in-bits='32' id='3459b4cf'/>
-    <pointer-type-def type-id='98f7aa67' size-in-bits='32' id='ac4e6cb3'/>
-    <pointer-type-def type-id='ee0744fc' size-in-bits='32' id='a55b35a6'/>
-    <pointer-type-def type-id='4890b95b' size-in-bits='32' id='5f929ab7'/>
-    <pointer-type-def type-id='b01f64aa' size-in-bits='32' id='ea8867ec'/>
-    <pointer-type-def type-id='9441d304' size-in-bits='32' id='d7ea3436'/>
-    <pointer-type-def type-id='1ab7137e' size-in-bits='32' id='30974818'/>
-    <pointer-type-def type-id='7a6fe7df' size-in-bits='32' id='09176273'/>
-    <pointer-type-def type-id='38d85c8f' size-in-bits='32' id='151a1d63'/>
-    <pointer-type-def type-id='41301cf9' size-in-bits='32' id='d7560895'/>
-    <pointer-type-def type-id='f341e414' size-in-bits='32' id='58398eee'/>
-    <pointer-type-def type-id='21042e4a' size-in-bits='32' id='f0a0ff54'/>
-    <pointer-type-def type-id='67748225' size-in-bits='32' id='582ba311'/>
-    <pointer-type-def type-id='e612672d' size-in-bits='32' id='a01a6e09'/>
-    <pointer-type-def type-id='1f8f9f18' size-in-bits='32' id='f8af7982'/>
-    <pointer-type-def type-id='2e613a3e' size-in-bits='32' id='a0ba6dc8'/>
-    <pointer-type-def type-id='7f8ca3fe' size-in-bits='32' id='34c67260'/>
-    <pointer-type-def type-id='bf1e0391' size-in-bits='32' id='15887ec5'/>
-    <pointer-type-def type-id='ae2834f4' size-in-bits='32' id='4f7677f6'/>
-    <pointer-type-def type-id='6c431008' size-in-bits='32' id='7139225a'/>
-    <pointer-type-def type-id='e24417ff' size-in-bits='32' id='4278623b'/>
-    <pointer-type-def type-id='b66924e8' size-in-bits='32' id='0290ef52'/>
-    <pointer-type-def type-id='d776b039' size-in-bits='32' id='2dab161d'/>
-    <pointer-type-def type-id='6ab04463' size-in-bits='32' id='0ae13aef'/>
-    <pointer-type-def type-id='ef48369b' size-in-bits='32' id='2c684c9f'/>
-    <pointer-type-def type-id='38edd3d4' size-in-bits='32' id='e4f2ab66'/>
-    <pointer-type-def type-id='e8f54abb' size-in-bits='32' id='500eebf7'/>
-    <pointer-type-def type-id='dc1ed48c' size-in-bits='32' id='0d5970ee'/>
-    <pointer-type-def type-id='0ed3c13b' size-in-bits='32' id='097c7407'/>
-    <pointer-type-def type-id='da5acea4' size-in-bits='32' id='d1173c4e'/>
-    <pointer-type-def type-id='307d2c7d' size-in-bits='32' id='362e2831'/>
-    <pointer-type-def type-id='3fa8e199' size-in-bits='32' id='f4bbad8d'/>
-    <pointer-type-def type-id='5e933196' size-in-bits='32' id='255ff5d8'/>
-    <pointer-type-def type-id='90c673e3' size-in-bits='32' id='0de4af77'/>
-    <pointer-type-def type-id='49617147' size-in-bits='32' id='476f48bb'/>
-    <pointer-type-def type-id='e3e7515c' size-in-bits='32' id='5db5877e'/>
-    <pointer-type-def type-id='5ad5f77b' size-in-bits='32' id='5da2c37f'/>
-    <pointer-type-def type-id='f6de0a0a' size-in-bits='32' id='bf87e894'/>
-    <pointer-type-def type-id='558a0aa4' size-in-bits='32' id='978c735e'/>
-    <pointer-type-def type-id='5d4b6f06' size-in-bits='32' id='a23a76e0'/>
-    <pointer-type-def type-id='d318157e' size-in-bits='32' id='a7d6acc8'/>
-    <pointer-type-def type-id='4b5c8855' size-in-bits='32' id='691ba251'/>
-    <pointer-type-def type-id='7de99def' size-in-bits='32' id='40f183ab'/>
-    <pointer-type-def type-id='4bd440f5' size-in-bits='32' id='7fdf58e1'/>
-    <pointer-type-def type-id='3d8c391f' size-in-bits='32' id='03bcacf3'/>
     <pointer-type-def type-id='8f92235e' size-in-bits='32' id='90421557'/>
+    <pointer-type-def type-id='c2ab665d' size-in-bits='32' id='22b63871'/>
+    <pointer-type-def type-id='099e830d' size-in-bits='32' id='20c24fe1'/>
+    <pointer-type-def type-id='68923e02' size-in-bits='32' id='ed8a4724'/>
+    <pointer-type-def type-id='c39bb24d' size-in-bits='32' id='39665099'/>
+    <pointer-type-def type-id='1590c34a' size-in-bits='32' id='d5caad24'/>
+    <pointer-type-def type-id='48fd5caf' size-in-bits='32' id='4be7351b'/>
+    <pointer-type-def type-id='4e0d6b36' size-in-bits='32' id='cfa619a8'/>
+    <pointer-type-def type-id='8c9e07a7' size-in-bits='32' id='58b3ba9b'/>
+    <pointer-type-def type-id='d3c3f6c0' size-in-bits='32' id='854f6072'/>
+    <pointer-type-def type-id='ca610cf1' size-in-bits='32' id='1e0ea67d'/>
+    <pointer-type-def type-id='6758006d' size-in-bits='32' id='db9229f9'/>
+    <pointer-type-def type-id='3f3fcf26' size-in-bits='32' id='61421910'/>
+    <pointer-type-def type-id='8c60d829' size-in-bits='32' id='71bf1195'/>
+    <pointer-type-def type-id='23a76bac' size-in-bits='32' id='03bc2706'/>
+    <pointer-type-def type-id='4124e285' size-in-bits='32' id='3d0f6989'/>
     <reference-type-def kind='lvalue' type-id='002ac4a6' size-in-bits='32' id='c3535580'/>
     <reference-type-def kind='rvalue' type-id='002ac4a6' size-in-bits='32' id='222fd452'/>
     <reference-type-def kind='lvalue' type-id='f0981eeb' size-in-bits='32' id='8c787cb7'/>
     <pointer-type-def type-id='f0981eeb' size-in-bits='32' id='807869d3'/>
+    <pointer-type-def type-id='1ecdf72d' size-in-bits='32' id='56968229'/>
+    <pointer-type-def type-id='1d1024e6' size-in-bits='32' id='cdfaa320'/>
+    <pointer-type-def type-id='3e594669' size-in-bits='32' id='a6dba205'/>
+    <pointer-type-def type-id='7410246c' size-in-bits='32' id='07b74db6'/>
+    <pointer-type-def type-id='68797c1a' size-in-bits='32' id='faf16cbc'/>
+    <pointer-type-def type-id='db7c949d' size-in-bits='32' id='1655d561'/>
+    <pointer-type-def type-id='52668408' size-in-bits='32' id='c569ef7a'/>
+    <pointer-type-def type-id='95a642e4' size-in-bits='32' id='d162eb86'/>
+    <pointer-type-def type-id='59b54183' size-in-bits='32' id='422f8a4f'/>
+    <pointer-type-def type-id='ffa18e9c' size-in-bits='32' id='9f915366'/>
+    <pointer-type-def type-id='c1dde4f5' size-in-bits='32' id='103c63e9'/>
     <pointer-type-def type-id='ee076206' size-in-bits='32' id='953b12f8'/>
     <pointer-type-def type-id='03e3ce24' size-in-bits='32' id='8bc971a6'/>
     <pointer-type-def type-id='a1159711' size-in-bits='32' id='2deb20e5'/>
@@ -17404,6 +17403,229 @@
         </class-decl>
       </namespace-decl>
     </namespace-decl>
+    <function-type size-in-bits='32' id='b15bc960'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='e825b06b'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e11f28f2'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='61dc2b35'/>
+    </function-type>
+    <function-type size-in-bits='32' id='cff016a0'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='088b642f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e7767992'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='80f4b756'/>
+      <return type-id='70de5c42'/>
+    </function-type>
+    <function-type size-in-bits='32' id='8fc602cf'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='80f4b756'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='a8d5bec6'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='70de5c42'/>
+    </function-type>
+    <function-type size-in-bits='32' id='14b14180'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <return type-id='70de5c42'/>
+    </function-type>
+    <function-type size-in-bits='32' id='010ee697'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='70de5c42'/>
+    </function-type>
+    <function-type size-in-bits='32' id='0227b7cb'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='feee141c'/>
+    </function-type>
+    <function-type size-in-bits='32' id='4221e479'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='80f4b756'/>
+      <parameter type-id='80f4b756'/>
+      <return type-id='1f3810cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='0d0538f2'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='1f3810cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c3cab792'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='6e9854cd'/>
+    </function-type>
+    <function-type size-in-bits='32' id='9dadd0af'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='181f4ac0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c2b8dc36'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='b43b1271'/>
+    </function-type>
+    <function-type size-in-bits='32' id='855cee92'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='80f4b756'/>
+      <parameter type-id='80f4b756'/>
+      <return type-id='38565182'/>
+    </function-type>
+    <function-type size-in-bits='32' id='215c6e3b'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='38565182'/>
+    </function-type>
+    <function-type size-in-bits='32' id='76521db1'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='98bd8c47'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='64eeac8a'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <parameter type-id='cc6e09ca'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='69002c5c'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='ad610557'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='cc6e09ca'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='8065ca7b'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='20b53d0a'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='11384920'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='986d17a4'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='0331d4f3'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7f2b3de2'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='1c07a57e'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='d3039ad1'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='5347fa1e'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='ce48ca6b'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='80a2281d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2d5e6f72'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='af76bbd1'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='eaa32e2f'/>
+      <parameter type-id='c8745fdc'/>
+      <return type-id='96f3d089'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e4c39128'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='2d5e6f72'/>
+    </function-type>
+    <function-type size-in-bits='32' id='4312461a'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='152bf3a9'/>
+    </function-type>
+    <function-type size-in-bits='32' id='bf8b79fb'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='80f4b756'/>
+      <return type-id='5b7c7bab'/>
+    </function-type>
+    <function-type size-in-bits='32' id='6a61bc51'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='3b4676f4'/>
+      <parameter type-id='2c2f1adb'/>
+      <return type-id='5b7c7bab'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e13d7981'>
+      <parameter type-id='fae49a1f'/>
+      <return type-id='5b89f496'/>
+    </function-type>
     <function-type size-in-bits='32' id='055a6f41'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='5b7c7bab'/>
@@ -17415,6 +17637,297 @@
       <parameter type-id='5b7c7bab'/>
       <parameter type-id='d4a328b7'/>
       <return type-id='3b4676f4'/>
+    </function-type>
+    <function-type size-in-bits='32' id='751bbba0'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='3d193fe7'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e8eae280'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c1c06b31'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='48fdf325'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='96b697f2'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='208d4eb7'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='9484a943'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c5334730'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e0a266ff'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='f7adc4e6'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='973e3c3f'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7fa34897'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='c36bf49e'/>
+    </function-type>
+    <function-type size-in-bits='32' id='2bedc155'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='9847645e'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='2ba43f31'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='afc30ad4'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='dd0ce0d2'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e7a956c5'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='2aaa6670'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='b9a2936c'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='96b1521b'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='b3455944'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='3ced74dd'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='1a7fe6b0'/>
+    </function-type>
+    <function-type size-in-bits='32' id='f68d4a05'>
+      <parameter type-id='fae49a1f'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='2fb8ba3e'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='17ed04c8'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='fd01ee73'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='65b69bb3'/>
+      <return type-id='2c2f1adb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='4039aa84'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='aac1adbe'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='8ec52105'/>
+      <parameter type-id='0b9c02cb'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='97ac77f1'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='80f4b756'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='701071ea'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7f4628e5'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='5a3b7732'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='f4082a77'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='badbb20f'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='0b9c02cb'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='bf2f3ff3'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='b02ad03f'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='585e26a8'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='bcbfbc79'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='90ae06f5'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='cfb6b57e'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='cfb63111'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='08289274'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='0b9c02cb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='81c093cd'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='5b7c7bab'/>
+      <return type-id='2c2f1adb'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7cae5494'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='5b89f496'/>
+      <return type-id='0b9c02cb'/>
     </function-type>
     <function-type size-in-bits='32' id='96ee24a5'>
       <parameter type-id='eaa32e2f'/>
@@ -17469,636 +17982,39 @@
       <parameter type-id='d4a328b7'/>
       <return type-id='aa210e95'/>
     </function-type>
-    <function-type size-in-bits='32' id='59ed1e59'>
-      <parameter type-id='fae49a1f'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='a1390ee9'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='70de5c42'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='7be75d9e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='554d87f1'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='6da5b67e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1a9d598b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='6935722a'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4dd30b7b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='96fb4d64'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='6b6501bd'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='bed9a8c1'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='0ccd5902'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b7d01ad5'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2b209300'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='3b720171'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='cc6e09ca'/>
-    </function-type>
-    <function-type size-in-bits='32' id='aca2cd7e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='e825b06b'/>
-    </function-type>
-    <function-type size-in-bits='32' id='8e80bdd8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='3eafa32f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='148c6738'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e6efff49'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='fe213acd'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ca62bfca'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b142692f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4142d35b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ed5f0798'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='d664a6f7'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e0efb9de'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='adf18958'/>
-    </function-type>
-    <function-type size-in-bits='32' id='8f71b7e8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='61dc2b35'/>
-    </function-type>
-    <function-type size-in-bits='32' id='db9b93fa'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b6d76995'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e5e01142'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2987b0c7'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ab5a280f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b10103d8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='07f91629'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='57aaeac5'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='85d5402e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='8833c461'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4e7eaf04'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='8dfe2e06'/>
-    </function-type>
-    <function-type size-in-bits='32' id='717ad472'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='088b642f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e1e0781a'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='80f4b756'/>
-      <return type-id='70de5c42'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2f03f5b7'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='80f4b756'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='a8d5bec6'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='70de5c42'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b3b907e8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <return type-id='70de5c42'/>
-    </function-type>
-    <function-type size-in-bits='32' id='caf8409f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='70de5c42'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ed3044e3'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='126e53d0'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='dad530df'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='9539c406'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='a8186878'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2f0b7817'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b7e7edbe'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='a4a61472'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='837777dd'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2f02ea7a'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='461d0e9f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='973e3c3f'/>
-    </function-type>
-    <function-type size-in-bits='32' id='dc0b1ac7'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='feee141c'/>
-    </function-type>
-    <function-type size-in-bits='32' id='fea2690f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='80f4b756'/>
-      <parameter type-id='80f4b756'/>
-      <return type-id='1f3810cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='14c3a3b0'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='1f3810cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='41b981f8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='88f16d4f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='02a81098'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1dba3069'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='3197286d'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='413b072a'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1cd86ccf'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='16cc647b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b9c972b8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='fba5b0d7'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='757515fe'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='1a7fe6b0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='cd5e6e48'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='6e9854cd'/>
-    </function-type>
-    <function-type size-in-bits='32' id='06074860'>
-      <parameter type-id='fae49a1f'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='50ce2e7b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='17ed04c8'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='fcac2709'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1d639c93'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='8ec52105'/>
-      <parameter type-id='0b9c02cb'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='c12bf182'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='80f4b756'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='21fee85f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='83574fe4'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='dd7295b3'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4a42a622'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='f4d3e94e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='0b9c02cb'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='47891898'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='42337f0c'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='968ef04b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b2cf38da'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='533df676'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='66c316f9'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4bcddb36'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='becc7143'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='0149d965'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='5b89f496'/>
-      <return type-id='0b9c02cb'/>
-    </function-type>
-    <function-type size-in-bits='32' id='31d87a2b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='181f4ac0'/>
-    </function-type>
-    <function-type size-in-bits='32' id='467aaa2c'>
+    <function-type size-in-bits='32' id='65ac402a'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='1f3810cb'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='56c055db'>
+    <function-type size-in-bits='32' id='eee53025'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter type-id='786cbe73'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='8c344f84'>
+    <function-type size-in-bits='32' id='4fa09cf2'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter type-id='2aee9912'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='5d529e9d'>
+    <function-type size-in-bits='32' id='b392f3b7'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter is-variadic='yes'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='a017e9d1'>
+    <function-type size-in-bits='32' id='02732cb3'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='82d29439'>
+    <function-type size-in-bits='32' id='1c3b64ff'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18106,7 +18022,7 @@
       <parameter type-id='786cbe73'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='4aec61f6'>
+    <function-type size-in-bits='32' id='f189b9e8'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18114,7 +18030,7 @@
       <parameter type-id='2aee9912'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='18caaa83'>
+    <function-type size-in-bits='32' id='02f4e539'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18122,204 +18038,61 @@
       <parameter is-variadic='yes'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='98f7aa67'>
+    <function-type size-in-bits='32' id='3a3ee135'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='1f3810cb'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='ee0744fc'>
+    <function-type size-in-bits='32' id='a329d5be'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter type-id='786cbe73'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='4890b95b'>
+    <function-type size-in-bits='32' id='283ee8d1'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter type-id='2aee9912'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='b01f64aa'>
+    <function-type size-in-bits='32' id='1b6356b4'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter is-variadic='yes'/>
       <return type-id='c8745fdc'/>
     </function-type>
-    <function-type size-in-bits='32' id='9441d304'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='b43b1271'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1ab7137e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='80f4b756'/>
-      <parameter type-id='80f4b756'/>
-      <return type-id='38565182'/>
-    </function-type>
-    <function-type size-in-bits='32' id='7a6fe7df'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='38565182'/>
-    </function-type>
-    <function-type size-in-bits='32' id='38d85c8f'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='41301cf9'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='f341e414'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='1f3810cb'/>
-      <parameter type-id='cc6e09ca'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='21042e4a'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='67748225'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='cc6e09ca'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e612672d'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='1f8f9f18'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='2e613a3e'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='7f8ca3fe'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='bf1e0391'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ae2834f4'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='6c431008'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='1f3810cb'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e24417ff'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='786cbe73'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='b66924e8'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter type-id='2aee9912'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='d776b039'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <parameter type-id='38565182'/>
-      <parameter is-variadic='yes'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='6ab04463'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2d5e6f72'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='ef48369b'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='eaa32e2f'/>
-      <parameter type-id='c8745fdc'/>
-      <return type-id='96f3d089'/>
-    </function-type>
-    <function-type size-in-bits='32' id='38edd3d4'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <parameter type-id='70de5c42'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='2d5e6f72'/>
-    </function-type>
-    <function-type size-in-bits='32' id='e8f54abb'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='96f3d089'/>
-      <return type-id='c36bf49e'/>
-    </function-type>
-    <function-type size-in-bits='32' id='dc1ed48c'>
+    <function-type size-in-bits='32' id='1125f2c8'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='1f3810cb'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='0ed3c13b'>
+    <function-type size-in-bits='32' id='4dff45bf'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter type-id='786cbe73'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='da5acea4'>
+    <function-type size-in-bits='32' id='3f815828'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter type-id='2aee9912'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='307d2c7d'>
+    <function-type size-in-bits='32' id='d9279df9'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='70de5c42'/>
       <parameter type-id='38565182'/>
       <parameter is-variadic='yes'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='3fa8e199'>
+    <function-type size-in-bits='32' id='7eebb2fd'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18327,7 +18100,7 @@
       <parameter type-id='786cbe73'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='5e933196'>
+    <function-type size-in-bits='32' id='24c696da'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18335,7 +18108,7 @@
       <parameter type-id='2aee9912'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='90c673e3'>
+    <function-type size-in-bits='32' id='42bf5bbf'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='70de5c42'/>
@@ -18343,67 +18116,288 @@
       <parameter is-variadic='yes'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='49617147'>
+    <function-type size-in-bits='32' id='889ad70b'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='1f3810cb'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='e3e7515c'>
+    <function-type size-in-bits='32' id='6e2e3468'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter type-id='786cbe73'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='5ad5f77b'>
+    <function-type size-in-bits='32' id='c050b627'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter type-id='2aee9912'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='f6de0a0a'>
+    <function-type size-in-bits='32' id='4bde468e'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
       <parameter type-id='38565182'/>
       <parameter is-variadic='yes'/>
       <return type-id='9a10f134'/>
     </function-type>
-    <function-type size-in-bits='32' id='558a0aa4'>
+    <function-type size-in-bits='32' id='0e846d7b'>
       <parameter type-id='fae49a1f'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='152bf3a9'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='adf18958'/>
     </function-type>
-    <function-type size-in-bits='32' id='5d4b6f06'>
+    <function-type size-in-bits='32' id='4715bbb8'>
       <parameter type-id='fae49a1f'/>
-      <parameter type-id='65b69bb3'/>
-      <return type-id='2c2f1adb'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='adf18958'/>
     </function-type>
-    <function-type size-in-bits='32' id='d318157e'>
+    <function-type size-in-bits='32' id='dcb9a1d7'>
       <parameter type-id='fae49a1f'/>
-      <parameter type-id='5b7c7bab'/>
-      <return type-id='2c2f1adb'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='adf18958'/>
     </function-type>
-    <function-type size-in-bits='32' id='4b5c8855'>
+    <function-type size-in-bits='32' id='307626fe'>
       <parameter type-id='fae49a1f'/>
-      <parameter type-id='80f4b756'/>
-      <return type-id='5b7c7bab'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='adf18958'/>
     </function-type>
-    <function-type size-in-bits='32' id='7de99def'>
-      <parameter type-id='fae49a1f'/>
-      <parameter type-id='3b4676f4'/>
-      <parameter type-id='2c2f1adb'/>
-      <return type-id='5b7c7bab'/>
-    </function-type>
-    <function-type size-in-bits='32' id='4bd440f5'>
-      <parameter type-id='fae49a1f'/>
-      <return type-id='5b89f496'/>
-    </function-type>
-    <function-type size-in-bits='32' id='3d8c391f'>
+    <function-type size-in-bits='32' id='4ceb2960'>
       <parameter type-id='fae49a1f'/>
       <parameter type-id='96f3d089'/>
-      <return type-id='6c9a8402'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='43cf01cf'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='e56709b6'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7d91d8aa'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='cd21e8a5'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='d7754972'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='fe80b037'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='adf18958'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c2ab665d'>
+      <parameter type-id='fae49a1f'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='099e830d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='70de5c42'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='68923e02'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c39bb24d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='1590c34a'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='48fd5caf'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='4e0d6b36'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='8c9e07a7'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='d3c3f6c0'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='ca610cf1'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='6758006d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='3f3fcf26'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='8c60d829'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='23a76bac'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='4124e285'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='96f3d089'/>
+      <return type-id='cc6e09ca'/>
+    </function-type>
+    <function-type size-in-bits='32' id='1ecdf72d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='1d1024e6'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='3e594669'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='7410246c'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='68797c1a'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='db7c949d'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='52668408'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='70de5c42'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='95a642e4'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='1f3810cb'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='59b54183'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='786cbe73'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='ffa18e9c'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter type-id='2aee9912'/>
+      <return type-id='8dfe2e06'/>
+    </function-type>
+    <function-type size-in-bits='32' id='c1dde4f5'>
+      <parameter type-id='fae49a1f'/>
+      <parameter type-id='96f3d089'/>
+      <parameter type-id='38565182'/>
+      <parameter is-variadic='yes'/>
+      <return type-id='8dfe2e06'/>
     </function-type>
     <function-type size-in-bits='32' id='03e3ce24'>
       <parameter type-id='fae49a1f'/>

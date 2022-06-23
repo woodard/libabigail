@@ -11618,92 +11618,92 @@
     <pointer-type-def type-id='type-id-788' size-in-bits='64' id='type-id-789'/>
     <!-- long double* -->
     <pointer-type-def type-id='type-id-361' size-in-bits='64' id='type-id-790'/>
+    <!-- typedef SSIZE_T (char**, SIZE_T*, int, void*)* -->
+    <pointer-type-def type-id='type-id-791' size-in-bits='64' id='type-id-792'/>
+    <!-- typedef SSIZE_T (char**, SIZE_T*, void*)* -->
+    <pointer-type-def type-id='type-id-793' size-in-bits='64' id='type-id-794'/>
+    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int)* -->
+    <pointer-type-def type-id='type-id-795' size-in-bits='64' id='type-id-796'/>
+    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF64_T)* -->
+    <pointer-type-def type-id='type-id-797' size-in-bits='64' id='type-id-798'/>
+    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF_T)* -->
+    <pointer-type-def type-id='type-id-799' size-in-bits='64' id='type-id-800'/>
+    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_msghdr*, int)* -->
+    <pointer-type-def type-id='type-id-801' size-in-bits='64' id='type-id-802'/>
+    <!-- typedef long_t (int, void*, int)* -->
+    <pointer-type-def type-id='type-id-803' size-in-bits='64' id='type-id-804'/>
+    <!-- typedef SSIZE_T (int, void*, typedef OFF64_T, typedef OFF64_T)* -->
+    <pointer-type-def type-id='type-id-805' size-in-bits='64' id='type-id-806'/>
+    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T)* -->
+    <pointer-type-def type-id='type-id-807' size-in-bits='64' id='type-id-808'/>
+    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF64_T)* -->
+    <pointer-type-def type-id='type-id-809' size-in-bits='64' id='type-id-810'/>
+    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF_T)* -->
+    <pointer-type-def type-id='type-id-811' size-in-bits='64' id='type-id-812'/>
+    <!-- typedef long_t (int, void*, typedef long_t, int)* -->
+    <pointer-type-def type-id='type-id-813' size-in-bits='64' id='type-id-814'/>
+    <!-- typedef __sanitizer::__sanitizer_clock_t (void*)* -->
+    <pointer-type-def type-id='type-id-815' size-in-bits='64' id='type-id-816'/>
     <!-- long int* -->
-    <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-791'/>
+    <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-817'/>
+    <!-- typedef INTMAX_T (const char*, char**, int)* -->
+    <pointer-type-def type-id='type-id-818' size-in-bits='64' id='type-id-819'/>
     <!-- my_siginfo_t* -->
-    <pointer-type-def type-id='type-id-384' size-in-bits='64' id='type-id-792'/>
+    <pointer-type-def type-id='type-id-384' size-in-bits='64' id='type-id-820'/>
     <!-- sanitizer_kernel_iovec* -->
     <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-381'/>
     <!-- sanitizer_kernel_mmsghdr* -->
-    <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-793'/>
+    <pointer-type-def type-id='type-id-382' size-in-bits='64' id='type-id-821'/>
     <!-- sanitizer_kernel_msghdr* -->
-    <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-794'/>
+    <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-822'/>
     <!-- sanitizer_kernel_sockaddr* -->
-    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-795'/>
+    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-823'/>
     <!-- sigaction_t* -->
-    <pointer-type-def type-id='type-id-386' size-in-bits='64' id='type-id-796'/>
-    <!-- typedef INTMAX_T (const char*, char**, int)* -->
-    <pointer-type-def type-id='type-id-797' size-in-bits='64' id='type-id-798'/>
-    <!-- typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, typedef SIZE_T, void*)* -->
-    <pointer-type-def type-id='type-id-799' size-in-bits='64' id='type-id-800'/>
-    <!-- typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, void*)* -->
-    <pointer-type-def type-id='type-id-801' size-in-bits='64' id='type-id-802'/>
-    <!-- typedef SIZE_T (char*, const wchar_t*, typedef SIZE_T)* -->
-    <pointer-type-def type-id='type-id-803' size-in-bits='64' id='type-id-804'/>
-    <!-- typedef SIZE_T (int, char*, typedef SIZE_T)* -->
-    <pointer-type-def type-id='type-id-805' size-in-bits='64' id='type-id-806'/>
-    <!-- typedef SIZE_T (void*, char**, SIZE_T*, char**, SIZE_T*)* -->
-    <pointer-type-def type-id='type-id-807' size-in-bits='64' id='type-id-808'/>
-    <!-- typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, typedef SIZE_T, void*)* -->
-    <pointer-type-def type-id='type-id-809' size-in-bits='64' id='type-id-810'/>
-    <!-- typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, void*)* -->
-    <pointer-type-def type-id='type-id-811' size-in-bits='64' id='type-id-812'/>
-    <!-- typedef SIZE_T (wchar_t*, const char*, typedef SIZE_T)* -->
-    <pointer-type-def type-id='type-id-813' size-in-bits='64' id='type-id-814'/>
-    <!-- typedef SSIZE_T (char**, SIZE_T*, int, void*)* -->
-    <pointer-type-def type-id='type-id-815' size-in-bits='64' id='type-id-816'/>
-    <!-- typedef SSIZE_T (char**, SIZE_T*, void*)* -->
-    <pointer-type-def type-id='type-id-817' size-in-bits='64' id='type-id-818'/>
-    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int)* -->
-    <pointer-type-def type-id='type-id-819' size-in-bits='64' id='type-id-820'/>
-    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF64_T)* -->
-    <pointer-type-def type-id='type-id-821' size-in-bits='64' id='type-id-822'/>
-    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF_T)* -->
-    <pointer-type-def type-id='type-id-823' size-in-bits='64' id='type-id-824'/>
-    <!-- typedef SSIZE_T (int, __sanitizer::__sanitizer_msghdr*, int)* -->
-    <pointer-type-def type-id='type-id-825' size-in-bits='64' id='type-id-826'/>
-    <!-- typedef SSIZE_T (int, void*, typedef OFF64_T, typedef OFF64_T)* -->
-    <pointer-type-def type-id='type-id-827' size-in-bits='64' id='type-id-828'/>
-    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T)* -->
-    <pointer-type-def type-id='type-id-829' size-in-bits='64' id='type-id-830'/>
-    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF64_T)* -->
-    <pointer-type-def type-id='type-id-831' size-in-bits='64' id='type-id-832'/>
-    <!-- typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF_T)* -->
-    <pointer-type-def type-id='type-id-833' size-in-bits='64' id='type-id-834'/>
-    <!-- typedef __sanitizer::__sanitizer_clock_t (void*)* -->
-    <pointer-type-def type-id='type-id-835' size-in-bits='64' id='type-id-836'/>
-    <!-- typedef __sanitizer::uptr (const char*)* -->
-    <pointer-type-def type-id='type-id-837' size-in-bits='64' id='type-id-838'/>
-    <!-- typedef __sanitizer::uptr (int, int, void*, void*)* -->
-    <pointer-type-def type-id='type-id-839' size-in-bits='64' id='type-id-840'/>
-    <!-- typedef __sanitizer::uptr (void*)* -->
-    <pointer-type-def type-id='type-id-841' size-in-bits='64' id='type-id-842'/>
-    <!-- typedef __sanitizer::uptr (void*, typedef __sanitizer::uptr, typedef __sanitizer::uptr, void*)* -->
-    <pointer-type-def type-id='type-id-843' size-in-bits='64' id='type-id-844'/>
+    <pointer-type-def type-id='type-id-386' size-in-bits='64' id='type-id-824'/>
     <!-- typedef __va_list_tag __va_list_tag* -->
-    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-845'/>
-    <!-- typedef long_t (int, void*, int)* -->
-    <pointer-type-def type-id='type-id-846' size-in-bits='64' id='type-id-847'/>
-    <!-- typedef long_t (int, void*, typedef long_t, int)* -->
-    <pointer-type-def type-id='type-id-848' size-in-bits='64' id='type-id-849'/>
-    <!-- typedef sighandler_t (int, typedef sighandler_t)* -->
-    <pointer-type-def type-id='type-id-850' size-in-bits='64' id='type-id-851'/>
+    <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-825'/>
     <!-- unsigned int (unsigned int)* -->
-    <pointer-type-def type-id='type-id-852' size-in-bits='64' id='type-id-853'/>
+    <pointer-type-def type-id='type-id-826' size-in-bits='64' id='type-id-827'/>
     <!-- unsigned int* -->
     <pointer-type-def type-id='type-id-160' size-in-bits='64' id='type-id-166'/>
+    <!-- typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, typedef SIZE_T, void*)* -->
+    <pointer-type-def type-id='type-id-828' size-in-bits='64' id='type-id-829'/>
+    <!-- typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, void*)* -->
+    <pointer-type-def type-id='type-id-830' size-in-bits='64' id='type-id-831'/>
+    <!-- typedef SIZE_T (char*, const wchar_t*, typedef SIZE_T)* -->
+    <pointer-type-def type-id='type-id-832' size-in-bits='64' id='type-id-833'/>
+    <!-- typedef __sanitizer::uptr (const char*)* -->
+    <pointer-type-def type-id='type-id-834' size-in-bits='64' id='type-id-835'/>
+    <!-- typedef SIZE_T (int, char*, typedef SIZE_T)* -->
+    <pointer-type-def type-id='type-id-836' size-in-bits='64' id='type-id-837'/>
+    <!-- typedef __sanitizer::uptr (int, int, void*, void*)* -->
+    <pointer-type-def type-id='type-id-838' size-in-bits='64' id='type-id-839'/>
     <!-- unsigned long int (unsigned long int*)* -->
-    <pointer-type-def type-id='type-id-854' size-in-bits='64' id='type-id-855'/>
+    <pointer-type-def type-id='type-id-840' size-in-bits='64' id='type-id-841'/>
+    <!-- typedef __sanitizer::uptr (void*)* -->
+    <pointer-type-def type-id='type-id-842' size-in-bits='64' id='type-id-843'/>
+    <!-- typedef SIZE_T (void*, char**, SIZE_T*, char**, SIZE_T*)* -->
+    <pointer-type-def type-id='type-id-844' size-in-bits='64' id='type-id-845'/>
+    <!-- typedef __sanitizer::uptr (void*, typedef __sanitizer::uptr, typedef __sanitizer::uptr, void*)* -->
+    <pointer-type-def type-id='type-id-846' size-in-bits='64' id='type-id-847'/>
+    <!-- typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, typedef SIZE_T, void*)* -->
+    <pointer-type-def type-id='type-id-848' size-in-bits='64' id='type-id-849'/>
+    <!-- typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, void*)* -->
+    <pointer-type-def type-id='type-id-850' size-in-bits='64' id='type-id-851'/>
+    <!-- typedef SIZE_T (wchar_t*, const char*, typedef SIZE_T)* -->
+    <pointer-type-def type-id='type-id-852' size-in-bits='64' id='type-id-853'/>
     <!-- unsigned long int* -->
     <pointer-type-def type-id='type-id-105' size-in-bits='64' id='type-id-127'/>
     <!-- void (__sanitizer::uptr*, int)* -->
-    <pointer-type-def type-id='type-id-856' size-in-bits='64' id='type-id-857'/>
+    <pointer-type-def type-id='type-id-854' size-in-bits='64' id='type-id-855'/>
     <!-- void (double, double*, double*)* -->
-    <pointer-type-def type-id='type-id-858' size-in-bits='64' id='type-id-859'/>
+    <pointer-type-def type-id='type-id-856' size-in-bits='64' id='type-id-857'/>
     <!-- void (float, float*, float*)* -->
-    <pointer-type-def type-id='type-id-860' size-in-bits='64' id='type-id-861'/>
+    <pointer-type-def type-id='type-id-858' size-in-bits='64' id='type-id-859'/>
     <!-- void (int)* -->
     <pointer-type-def type-id='type-id-230' size-in-bits='64' id='type-id-218'/>
+    <!-- typedef sighandler_t (int, typedef sighandler_t)* -->
+    <pointer-type-def type-id='type-id-860' size-in-bits='64' id='type-id-861'/>
     <!-- void (int, my_siginfo_t*, void*)* -->
     <pointer-type-def type-id='type-id-862' size-in-bits='64' id='type-id-389'/>
     <!-- void (int, void*)* -->
@@ -12494,7 +12494,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef SIZE_T)* read_f -->
-    <typedef-decl name='read_f' type-id='type-id-830' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='223' column='1' id='type-id-912'/>
+    <typedef-decl name='read_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='223' column='1' id='type-id-912'/>
     <!-- SSIZE_T __interceptor_pread(int, void*, SIZE_T, OFF_T) -->
     <function-decl name='__interceptor_pread' mangled-name='__interceptor_pread' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pread'>
       <!-- parameter of type 'int' -->
@@ -12509,7 +12509,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF_T)* pread_f -->
-    <typedef-decl name='pread_f' type-id='type-id-834' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' id='type-id-913'/>
+    <typedef-decl name='pread_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='238' column='1' id='type-id-913'/>
     <!-- SSIZE_T __interceptor_pread64(int, void*, SIZE_T, OFF64_T) -->
     <function-decl name='__interceptor_pread64' mangled-name='__interceptor_pread64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pread64'>
       <!-- parameter of type 'int' -->
@@ -12524,7 +12524,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF64_T)* pread64_f -->
-    <typedef-decl name='pread64_f' type-id='type-id-832' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' id='type-id-914'/>
+    <typedef-decl name='pread64_f' type-id='type-id-810' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='253' column='1' id='type-id-914'/>
     <!-- SSIZE_T __interceptor_readv(int, __sanitizer::__sanitizer_iovec*, int) -->
     <function-decl name='__interceptor_readv' mangled-name='__interceptor_readv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_readv'>
       <!-- parameter of type 'int' -->
@@ -12537,7 +12537,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int)* readv_f -->
-    <typedef-decl name='readv_f' type-id='type-id-820' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' id='type-id-915'/>
+    <typedef-decl name='readv_f' type-id='type-id-796' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='268' column='1' id='type-id-915'/>
     <!-- SSIZE_T __interceptor_preadv(int, __sanitizer::__sanitizer_iovec*, int, OFF_T) -->
     <function-decl name='__interceptor_preadv' mangled-name='__interceptor_preadv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_preadv'>
       <!-- parameter of type 'int' -->
@@ -12552,7 +12552,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF_T)* preadv_f -->
-    <typedef-decl name='preadv_f' type-id='type-id-824' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' id='type-id-916'/>
+    <typedef-decl name='preadv_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='284' column='1' id='type-id-916'/>
     <!-- SSIZE_T __interceptor_preadv64(int, __sanitizer::__sanitizer_iovec*, int, OFF64_T) -->
     <function-decl name='__interceptor_preadv64' mangled-name='__interceptor_preadv64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_preadv64'>
       <!-- parameter of type 'int' -->
@@ -12567,7 +12567,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF64_T)* preadv64_f -->
-    <typedef-decl name='preadv64_f' type-id='type-id-822' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' id='type-id-917'/>
+    <typedef-decl name='preadv64_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='300' column='1' id='type-id-917'/>
     <!-- SSIZE_T __interceptor_write(int, void*, SIZE_T) -->
     <function-decl name='__interceptor_write' mangled-name='__interceptor_write' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_write'>
       <!-- parameter of type 'int' -->
@@ -12580,7 +12580,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef SIZE_T)* write_f -->
-    <typedef-decl name='write_f' type-id='type-id-830' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' id='type-id-918'/>
+    <typedef-decl name='write_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' id='type-id-918'/>
     <!-- SSIZE_T __interceptor_pwrite(int, void*, SIZE_T, OFF_T) -->
     <function-decl name='__interceptor_pwrite' mangled-name='__interceptor_pwrite' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwrite'>
       <!-- parameter of type 'int' -->
@@ -12595,7 +12595,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef SIZE_T, typedef OFF_T)* pwrite_f -->
-    <typedef-decl name='pwrite_f' type-id='type-id-834' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' id='type-id-919'/>
+    <typedef-decl name='pwrite_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='332' column='1' id='type-id-919'/>
     <!-- SSIZE_T __interceptor_pwrite64(int, void*, OFF64_T, OFF64_T) -->
     <function-decl name='__interceptor_pwrite64' mangled-name='__interceptor_pwrite64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwrite64'>
       <!-- parameter of type 'int' -->
@@ -12610,7 +12610,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, void*, typedef OFF64_T, typedef OFF64_T)* pwrite64_f -->
-    <typedef-decl name='pwrite64_f' type-id='type-id-828' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' id='type-id-920'/>
+    <typedef-decl name='pwrite64_f' type-id='type-id-806' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='347' column='1' id='type-id-920'/>
     <!-- SSIZE_T __interceptor_writev(int, __sanitizer::__sanitizer_iovec*, int) -->
     <function-decl name='__interceptor_writev' mangled-name='__interceptor_writev' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_writev'>
       <!-- parameter of type 'int' -->
@@ -12623,7 +12623,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int)* writev_f -->
-    <typedef-decl name='writev_f' type-id='type-id-820' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' id='type-id-921'/>
+    <typedef-decl name='writev_f' type-id='type-id-796' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' id='type-id-921'/>
     <!-- SSIZE_T __interceptor_pwritev(int, __sanitizer::__sanitizer_iovec*, int, OFF_T) -->
     <function-decl name='__interceptor_pwritev' mangled-name='__interceptor_pwritev' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwritev'>
       <!-- parameter of type 'int' -->
@@ -12638,7 +12638,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF_T)* pwritev_f -->
-    <typedef-decl name='pwritev_f' type-id='type-id-824' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' id='type-id-922'/>
+    <typedef-decl name='pwritev_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='379' column='1' id='type-id-922'/>
     <!-- SSIZE_T __interceptor_pwritev64(int, __sanitizer::__sanitizer_iovec*, int, OFF64_T) -->
     <function-decl name='__interceptor_pwritev64' mangled-name='__interceptor_pwritev64' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_pwritev64'>
       <!-- parameter of type 'int' -->
@@ -12653,7 +12653,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, typedef OFF64_T)* pwritev64_f -->
-    <typedef-decl name='pwritev64_f' type-id='type-id-822' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' id='type-id-923'/>
+    <typedef-decl name='pwritev64_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='395' column='1' id='type-id-923'/>
     <!-- int __interceptor_prctl(int, unsigned long int, unsigned long int, unsigned long int, unsigned long int) -->
     <function-decl name='__interceptor_prctl' mangled-name='__interceptor_prctl' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='411' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_prctl'>
       <!-- parameter of type 'int' -->
@@ -12679,7 +12679,7 @@
       <return type-id='type-id-105'/>
     </function-decl>
     <!-- typedef unsigned long int (unsigned long int*)* time_f -->
-    <typedef-decl name='time_f' type-id='type-id-855' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='432' column='1' id='type-id-925'/>
+    <typedef-decl name='time_f' type-id='type-id-841' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='432' column='1' id='type-id-925'/>
     <!-- __sanitizer::__sanitizer_tm* __interceptor_localtime(unsigned long int*) -->
     <function-decl name='__interceptor_localtime' mangled-name='__interceptor_localtime' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='456' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_localtime'>
       <!-- parameter of type 'unsigned long int*' -->
@@ -12778,7 +12778,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='587' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -12791,7 +12791,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='590' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -12804,7 +12804,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='593' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -12815,7 +12815,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='597' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -12828,7 +12828,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='600' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -12841,7 +12841,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
+      <parameter type-id='type-id-825' name='ap' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='604' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -13327,7 +13327,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (int, __sanitizer::__sanitizer_msghdr*, int)* recvmsg_f -->
-    <typedef-decl name='recvmsg_f' type-id='type-id-826' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1417' column='1' id='type-id-977'/>
+    <typedef-decl name='recvmsg_f' type-id='type-id-802' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1417' column='1' id='type-id-977'/>
     <!-- int __interceptor_getpeername(int, void*, unsigned int*) -->
     <function-decl name='__interceptor_getpeername' mangled-name='__interceptor_getpeername' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1437' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_getpeername'>
       <!-- parameter of type 'int' -->
@@ -13408,7 +13408,7 @@
       <return type-id='type-id-91'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::uptr (int, int, void*, void*)* ptrace_f -->
-    <typedef-decl name='ptrace_f' type-id='type-id-840' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1524' column='1' id='type-id-984'/>
+    <typedef-decl name='ptrace_f' type-id='type-id-839' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1524' column='1' id='type-id-984'/>
     <!-- char* __interceptor_setlocale(int, char*) -->
     <function-decl name='__interceptor_setlocale' mangled-name='__interceptor_setlocale' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1570' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_setlocale'>
       <!-- parameter of type 'int' -->
@@ -13452,7 +13452,7 @@
       <return type-id='type-id-900'/>
     </function-decl>
     <!-- typedef typedef INTMAX_T (const char*, char**, int)* strtoimax_f -->
-    <typedef-decl name='strtoimax_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1614' column='1' id='type-id-988'/>
+    <typedef-decl name='strtoimax_f' type-id='type-id-819' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1614' column='1' id='type-id-988'/>
     <!-- INTMAX_T __interceptor_strtoumax(const char*, char**, int) -->
     <function-decl name='__interceptor_strtoumax' mangled-name='__interceptor_strtoumax' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_strtoumax'>
       <!-- parameter of type 'const char*' -->
@@ -13465,7 +13465,7 @@
       <return type-id='type-id-900'/>
     </function-decl>
     <!-- typedef typedef INTMAX_T (const char*, char**, int)* strtoumax_f -->
-    <typedef-decl name='strtoumax_f' type-id='type-id-798' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' id='type-id-989'/>
+    <typedef-decl name='strtoumax_f' type-id='type-id-819' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1622' column='1' id='type-id-989'/>
     <!-- SIZE_T __interceptor_mbstowcs(wchar_t*, const char*, SIZE_T) -->
     <function-decl name='__interceptor_mbstowcs' mangled-name='__interceptor_mbstowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbstowcs'>
       <!-- parameter of type 'wchar_t*' -->
@@ -13478,7 +13478,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (wchar_t*, const char*, typedef SIZE_T)* mbstowcs_f -->
-    <typedef-decl name='mbstowcs_f' type-id='type-id-814' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' id='type-id-990'/>
+    <typedef-decl name='mbstowcs_f' type-id='type-id-853' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1638' column='1' id='type-id-990'/>
     <!-- SIZE_T __interceptor_mbsrtowcs(wchar_t*, const char**, SIZE_T, void*) -->
     <function-decl name='__interceptor_mbsrtowcs' mangled-name='__interceptor_mbsrtowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbsrtowcs'>
       <!-- parameter of type 'wchar_t*' -->
@@ -13493,7 +13493,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, void*)* mbsrtowcs_f -->
-    <typedef-decl name='mbsrtowcs_f' type-id='type-id-812' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' id='type-id-991'/>
+    <typedef-decl name='mbsrtowcs_f' type-id='type-id-851' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1649' column='1' id='type-id-991'/>
     <!-- SIZE_T __interceptor_mbsnrtowcs(wchar_t*, const char**, SIZE_T, SIZE_T, void*) -->
     <function-decl name='__interceptor_mbsnrtowcs' mangled-name='__interceptor_mbsnrtowcs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_mbsnrtowcs'>
       <!-- parameter of type 'wchar_t*' -->
@@ -13510,7 +13510,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (wchar_t*, const char**, typedef SIZE_T, typedef SIZE_T, void*)* mbsnrtowcs_f -->
-    <typedef-decl name='mbsnrtowcs_f' type-id='type-id-810' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' id='type-id-992'/>
+    <typedef-decl name='mbsnrtowcs_f' type-id='type-id-849' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1673' column='1' id='type-id-992'/>
     <!-- SIZE_T __interceptor_wcstombs(char*, const wchar_t*, SIZE_T) -->
     <function-decl name='__interceptor_wcstombs' mangled-name='__interceptor_wcstombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcstombs'>
       <!-- parameter of type 'char*' -->
@@ -13523,7 +13523,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (char*, const wchar_t*, typedef SIZE_T)* wcstombs_f -->
-    <typedef-decl name='wcstombs_f' type-id='type-id-804' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' id='type-id-993'/>
+    <typedef-decl name='wcstombs_f' type-id='type-id-833' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1696' column='1' id='type-id-993'/>
     <!-- SIZE_T __interceptor_wcsrtombs(char*, const wchar_t**, SIZE_T, void*) -->
     <function-decl name='__interceptor_wcsrtombs' mangled-name='__interceptor_wcsrtombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcsrtombs'>
       <!-- parameter of type 'char*' -->
@@ -13538,7 +13538,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, void*)* wcsrtombs_f -->
-    <typedef-decl name='wcsrtombs_f' type-id='type-id-802' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' id='type-id-994'/>
+    <typedef-decl name='wcsrtombs_f' type-id='type-id-831' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1707' column='1' id='type-id-994'/>
     <!-- SIZE_T __interceptor_wcsnrtombs(char*, const wchar_t**, SIZE_T, SIZE_T, void*) -->
     <function-decl name='__interceptor_wcsnrtombs' mangled-name='__interceptor_wcsnrtombs' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_wcsnrtombs'>
       <!-- parameter of type 'char*' -->
@@ -13555,7 +13555,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (char*, const wchar_t**, typedef SIZE_T, typedef SIZE_T, void*)* wcsnrtombs_f -->
-    <typedef-decl name='wcsnrtombs_f' type-id='type-id-800' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' id='type-id-995'/>
+    <typedef-decl name='wcsnrtombs_f' type-id='type-id-829' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1729' column='1' id='type-id-995'/>
     <!-- int __interceptor_tcgetattr(int, void*) -->
     <function-decl name='__interceptor_tcgetattr' mangled-name='__interceptor_tcgetattr' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1752' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_tcgetattr'>
       <!-- parameter of type 'int' -->
@@ -13599,7 +13599,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (int, char*, typedef SIZE_T)* confstr_f -->
-    <typedef-decl name='confstr_f' type-id='type-id-806' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1806' column='1' id='type-id-999'/>
+    <typedef-decl name='confstr_f' type-id='type-id-837' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1806' column='1' id='type-id-999'/>
     <!-- int __interceptor_sched_getaffinity(int, SIZE_T, void*) -->
     <function-decl name='__interceptor_sched_getaffinity' mangled-name='__interceptor_sched_getaffinity' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='1820' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sched_getaffinity'>
       <!-- parameter of type 'int' -->
@@ -14275,7 +14275,7 @@
       <return type-id='type-id-24'/>
     </function-decl>
     <!-- typedef void (double, double*, double*)* sincos_f -->
-    <typedef-decl name='sincos_f' type-id='type-id-859' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2697' column='1' id='type-id-1059'/>
+    <typedef-decl name='sincos_f' type-id='type-id-857' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2697' column='1' id='type-id-1059'/>
     <!-- void __interceptor_sincosf(float, float*, float*) -->
     <function-decl name='__interceptor_sincosf' mangled-name='__interceptor_sincosf' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sincosf'>
       <!-- parameter of type 'float' -->
@@ -14288,7 +14288,7 @@
       <return type-id='type-id-24'/>
     </function-decl>
     <!-- typedef void (float, float*, float*)* sincosf_f -->
-    <typedef-decl name='sincosf_f' type-id='type-id-861' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' id='type-id-1060'/>
+    <typedef-decl name='sincosf_f' type-id='type-id-859' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2704' column='1' id='type-id-1060'/>
     <!-- void __interceptor_sincosl(long double, long double*, long double*) -->
     <function-decl name='__interceptor_sincosl' mangled-name='__interceptor_sincosl' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2711' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sincosl'>
       <!-- parameter of type 'long double' -->
@@ -14417,7 +14417,7 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='buffer' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
       <!-- parameter of type 'long int*' -->
-      <parameter type-id='type-id-791' name='result' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
+      <parameter type-id='type-id-817' name='result' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2825' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -14435,7 +14435,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (char**, SIZE_T*, void*)* getline_f -->
-    <typedef-decl name='getline_f' type-id='type-id-818' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2840' column='1' id='type-id-1073'/>
+    <typedef-decl name='getline_f' type-id='type-id-794' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2840' column='1' id='type-id-1073'/>
     <!-- SSIZE_T __interceptor_getdelim(char**, SIZE_T*, int, void*) -->
     <function-decl name='__interceptor_getdelim' mangled-name='__interceptor_getdelim' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_getdelim'>
       <!-- parameter of type 'char**' -->
@@ -14450,7 +14450,7 @@
       <return type-id='type-id-898'/>
     </function-decl>
     <!-- typedef typedef SSIZE_T (char**, SIZE_T*, int, void*)* getdelim_f -->
-    <typedef-decl name='getdelim_f' type-id='type-id-816' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' id='type-id-1074'/>
+    <typedef-decl name='getdelim_f' type-id='type-id-792' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2851' column='1' id='type-id-1074'/>
     <!-- SIZE_T __interceptor_iconv(void*, char**, SIZE_T*, char**, SIZE_T*) -->
     <function-decl name='__interceptor_iconv' mangled-name='__interceptor_iconv' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_iconv'>
       <!-- parameter of type 'void*' -->
@@ -14467,7 +14467,7 @@
       <return type-id='type-id-403'/>
     </function-decl>
     <!-- typedef typedef SIZE_T (void*, char**, SIZE_T*, char**, SIZE_T*)* iconv_f -->
-    <typedef-decl name='iconv_f' type-id='type-id-808' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' id='type-id-1075'/>
+    <typedef-decl name='iconv_f' type-id='type-id-845' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2871' column='1' id='type-id-1075'/>
     <!-- __sanitizer::__sanitizer_clock_t __interceptor_times(void*) -->
     <function-decl name='__interceptor_times' mangled-name='__interceptor_times' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_times'>
       <!-- parameter of type 'void*' -->
@@ -14476,7 +14476,7 @@
       <return type-id='type-id-1222'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::__sanitizer_clock_t (void*)* times_f -->
-    <typedef-decl name='times_f' type-id='type-id-836' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' id='type-id-1076'/>
+    <typedef-decl name='times_f' type-id='type-id-816' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='2896' column='1' id='type-id-1076'/>
     <!-- typedef void kernel_sigset_t -->
     <typedef-decl name='kernel_sigset_t' type-id='type-id-24' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='130' column='1' id='type-id-559'/>
     <!-- void __sanitizer_syscall_pre_impl_recvmsg(long int, sanitizer_kernel_msghdr*, long int) -->
@@ -14484,7 +14484,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='sockfd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_msghdr*' -->
-      <parameter type-id='type-id-794' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
+      <parameter type-id='type-id-822' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='153' column='1'/>
       <!-- void -->
@@ -14497,7 +14497,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='sockfd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_msghdr*' -->
-      <parameter type-id='type-id-794' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
+      <parameter type-id='type-id-822' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='157' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='158' column='1'/>
       <!-- void -->
@@ -14508,7 +14508,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_mmsghdr*' -->
-      <parameter type-id='type-id-793' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
+      <parameter type-id='type-id-821' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='vlen' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='169' column='1'/>
       <!-- parameter of type 'long int' -->
@@ -14525,7 +14525,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='fd' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_mmsghdr*' -->
-      <parameter type-id='type-id-793' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
+      <parameter type-id='type-id-821' name='msg' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='174' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='vlen' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='175' column='1'/>
       <!-- parameter of type 'long int' -->
@@ -18924,7 +18924,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1758' column='1'/>
       <!-- void -->
@@ -18937,7 +18937,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1760' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1761' column='1'/>
       <!-- void -->
@@ -18948,7 +18948,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1767' column='1'/>
       <!-- void -->
@@ -18961,7 +18961,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1769' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1770' column='1'/>
       <!-- void -->
@@ -18972,7 +18972,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1776' column='1'/>
       <!-- void -->
@@ -18985,7 +18985,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1778' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1779' column='1'/>
       <!-- void -->
@@ -18996,7 +18996,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1786' column='1'/>
       <!-- parameter of type 'long int' -->
@@ -19011,7 +19011,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1789' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1790' column='1'/>
       <!-- parameter of type 'long int' -->
@@ -19024,7 +19024,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1797' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1798' column='1'/>
       <!-- void -->
@@ -19037,7 +19037,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1800' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1801' column='1'/>
       <!-- void -->
@@ -19048,7 +19048,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1808' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1809' column='1'/>
       <!-- void -->
@@ -19061,7 +19061,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg0' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
+      <parameter type-id='type-id-823' name='arg1' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1811' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg2' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1812' column='1'/>
       <!-- void -->
@@ -19106,7 +19106,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1827' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1828' column='1'/>
       <!-- void -->
@@ -19125,7 +19125,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg3' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1830' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1831' column='1'/>
       <!-- void -->
@@ -19220,7 +19220,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1858' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1859' column='1'/>
       <!-- void -->
@@ -19239,7 +19239,7 @@
       <!-- parameter of type 'long int' -->
       <parameter type-id='type-id-41' name='flags' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1861' column='1'/>
       <!-- parameter of type 'sanitizer_kernel_sockaddr*' -->
-      <parameter type-id='type-id-795' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
+      <parameter type-id='type-id-823' name='arg4' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='arg5' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1862' column='1'/>
       <!-- void -->
@@ -23074,7 +23074,7 @@
       <return type-id='type-id-160'/>
     </function-decl>
     <!-- typedef unsigned int (unsigned int)* sleep_f -->
-    <typedef-decl name='sleep_f' type-id='type-id-853' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='238' column='1' id='type-id-1077'/>
+    <typedef-decl name='sleep_f' type-id='type-id-827' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='238' column='1' id='type-id-1077'/>
     <!-- int __interceptor_usleep(long_t) -->
     <function-decl name='__interceptor_usleep' mangled-name='__interceptor_usleep' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='245' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_usleep'>
       <!-- parameter of type 'typedef long_t' -->
@@ -23194,7 +23194,7 @@
       <return type-id='type-id-24'/>
     </function-decl>
     <!-- typedef void (__sanitizer::uptr*, int)* longjmp_f -->
-    <typedef-decl name='longjmp_f' type-id='type-id-857' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='459' column='1' id='type-id-1089'/>
+    <typedef-decl name='longjmp_f' type-id='type-id-855' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='459' column='1' id='type-id-1089'/>
     <!-- void __interceptor_siglongjmp(__sanitizer::uptr*, int) -->
     <function-decl name='__interceptor_siglongjmp' mangled-name='__interceptor_siglongjmp' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_siglongjmp'>
       <!-- parameter of type '__sanitizer::uptr*' -->
@@ -23205,7 +23205,7 @@
       <return type-id='type-id-24'/>
     </function-decl>
     <!-- typedef void (__sanitizer::uptr*, int)* siglongjmp_f -->
-    <typedef-decl name='siglongjmp_f' type-id='type-id-857' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' id='type-id-1090'/>
+    <typedef-decl name='siglongjmp_f' type-id='type-id-855' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='467' column='1' id='type-id-1090'/>
     <!-- void* __interceptor_malloc(__sanitizer::uptr) -->
     <function-decl name='__interceptor_malloc' mangled-name='__interceptor_malloc' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='475' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_malloc'>
       <!-- parameter of type 'typedef __sanitizer::uptr' -->
@@ -23274,7 +23274,7 @@
       <return type-id='type-id-91'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::uptr (void*)* malloc_usable_size_f -->
-    <typedef-decl name='malloc_usable_size_f' type-id='type-id-842' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='541' column='1' id='type-id-1097'/>
+    <typedef-decl name='malloc_usable_size_f' type-id='type-id-843' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='541' column='1' id='type-id-1097'/>
     <!-- void* operator new(__sanitizer::uptr) -->
     <function-decl name='operator new' mangled-name='_Znwm' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='559' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Znwm'>
       <!-- parameter of type 'typedef __sanitizer::uptr' -->
@@ -23347,7 +23347,7 @@
       <return type-id='type-id-91'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::uptr (const char*)* strlen_f -->
-    <typedef-decl name='strlen_f' type-id='type-id-838' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='613' column='1' id='type-id-1098'/>
+    <typedef-decl name='strlen_f' type-id='type-id-835' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='613' column='1' id='type-id-1098'/>
     <!-- void* __interceptor_memset(void*, int, __sanitizer::uptr) -->
     <function-decl name='__interceptor_memset' mangled-name='__interceptor_memset' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='620' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_memset'>
       <!-- parameter of type 'void*' -->
@@ -24372,7 +24372,7 @@
       <return type-id='type-id-1231'/>
     </function-decl>
     <!-- typedef typedef long_t (int, void*, typedef long_t, int)* send_f -->
-    <typedef-decl name='send_f' type-id='type-id-849' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1474' column='1' id='type-id-1188'/>
+    <typedef-decl name='send_f' type-id='type-id-814' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1474' column='1' id='type-id-1188'/>
     <!-- long_t __interceptor_sendmsg(int, void*, int) -->
     <function-decl name='__interceptor_sendmsg' mangled-name='__interceptor_sendmsg' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sendmsg'>
       <!-- parameter of type 'int' -->
@@ -24385,7 +24385,7 @@
       <return type-id='type-id-1231'/>
     </function-decl>
     <!-- typedef typedef long_t (int, void*, int)* sendmsg_f -->
-    <typedef-decl name='sendmsg_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' id='type-id-1189'/>
+    <typedef-decl name='sendmsg_f' type-id='type-id-804' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1484' column='1' id='type-id-1189'/>
     <!-- long_t __interceptor_recv(int, void*, long_t, int) -->
     <function-decl name='__interceptor_recv' mangled-name='__interceptor_recv' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_recv'>
       <!-- parameter of type 'int' -->
@@ -24400,7 +24400,7 @@
       <return type-id='type-id-1231'/>
     </function-decl>
     <!-- typedef typedef long_t (int, void*, typedef long_t, int)* recv_f -->
-    <typedef-decl name='recv_f' type-id='type-id-849' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' id='type-id-1190'/>
+    <typedef-decl name='recv_f' type-id='type-id-814' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1494' column='1' id='type-id-1190'/>
     <!-- int __interceptor_unlink(char*) -->
     <function-decl name='__interceptor_unlink' mangled-name='__interceptor_unlink' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1505' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_unlink'>
       <!-- parameter of type 'char*' -->
@@ -24457,7 +24457,7 @@
       <return type-id='type-id-91'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::uptr (void*, typedef __sanitizer::uptr, typedef __sanitizer::uptr, void*)* fread_f -->
-    <typedef-decl name='fread_f' type-id='type-id-844' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1554' column='1' id='type-id-1195'/>
+    <typedef-decl name='fread_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1554' column='1' id='type-id-1195'/>
     <!-- __sanitizer::uptr __interceptor_fwrite(void*, __sanitizer::uptr, __sanitizer::uptr, void*) -->
     <function-decl name='__interceptor_fwrite' mangled-name='__interceptor_fwrite' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_fwrite'>
       <!-- parameter of type 'void*' -->
@@ -24472,7 +24472,7 @@
       <return type-id='type-id-91'/>
     </function-decl>
     <!-- typedef typedef __sanitizer::uptr (void*, typedef __sanitizer::uptr, typedef __sanitizer::uptr, void*)* fwrite_f -->
-    <typedef-decl name='fwrite_f' type-id='type-id-844' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' id='type-id-1196'/>
+    <typedef-decl name='fwrite_f' type-id='type-id-847' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1563' column='1' id='type-id-1196'/>
     <!-- int __interceptor_fflush(void*) -->
     <function-decl name='__interceptor_fflush' mangled-name='__interceptor_fflush' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1572' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_fflush'>
       <!-- parameter of type 'void*' -->
@@ -24553,9 +24553,9 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-4' name='sig' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
       <!-- parameter of type 'sigaction_t*' -->
-      <parameter type-id='type-id-796' name='act' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
+      <parameter type-id='type-id-824' name='act' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
       <!-- parameter of type 'sigaction_t*' -->
-      <parameter type-id='type-id-796' name='old' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
+      <parameter type-id='type-id-824' name='old' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1678' column='1'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-decl>
@@ -24571,7 +24571,7 @@
       <return type-id='type-id-388'/>
     </function-decl>
     <!-- typedef typedef sighandler_t (int, typedef sighandler_t)* signal_f -->
-    <typedef-decl name='signal_f' type-id='type-id-851' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1698' column='1' id='type-id-1205'/>
+    <typedef-decl name='signal_f' type-id='type-id-861' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1698' column='1' id='type-id-1205'/>
     <!-- int __interceptor_sigsuspend(const __sanitizer::__sanitizer_sigset_t*) -->
     <function-decl name='__interceptor_sigsuspend' mangled-name='__interceptor_sigsuspend' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='1710' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__interceptor_sigsuspend'>
       <!-- parameter of type 'const __sanitizer::__sanitizer_sigset_t*' -->
@@ -25420,7 +25420,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
@@ -25459,7 +25459,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
@@ -25670,9 +25670,9 @@
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-4' name='sig'/>
       <!-- parameter of type 'sigaction_t*' -->
-      <parameter type-id='type-id-796' name='act'/>
+      <parameter type-id='type-id-824' name='act'/>
       <!-- parameter of type 'sigaction_t*' -->
-      <parameter type-id='type-id-796' name='old'/>
+      <parameter type-id='type-id-824' name='old'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
@@ -25933,7 +25933,7 @@
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='format'/>
       <!-- parameter of type 'typedef __va_list_tag __va_list_tag*' -->
-      <parameter type-id='type-id-845' name='ap'/>
+      <parameter type-id='type-id-825' name='ap'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
@@ -26011,7 +26011,7 @@
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='buffer'/>
       <!-- parameter of type 'long int*' -->
-      <parameter type-id='type-id-791' name='result'/>
+      <parameter type-id='type-id-817' name='result'/>
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
@@ -26168,8 +26168,161 @@
       <!-- long double -->
       <return type-id='type-id-361'/>
     </function-type>
-    <!-- INTMAX_T (const char*, char**, int) -->
+    <!-- SSIZE_T (char**, SIZE_T*, int, void*) -->
+    <function-type size-in-bits='64' id='type-id-791'>
+      <!-- parameter of type 'char**' -->
+      <parameter type-id='type-id-530' name='lineptr'/>
+      <!-- parameter of type 'SIZE_T*' -->
+      <parameter type-id='type-id-404' name='n'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='delim'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='stream'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (char**, SIZE_T*, void*) -->
+    <function-type size-in-bits='64' id='type-id-793'>
+      <!-- parameter of type 'char**' -->
+      <parameter type-id='type-id-530' name='lineptr'/>
+      <!-- parameter of type 'SIZE_T*' -->
+      <parameter type-id='type-id-404' name='n'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='stream'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int) -->
+    <function-type size-in-bits='64' id='type-id-795'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
+      <parameter type-id='type-id-465' name='iov'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, OFF64_T) -->
     <function-type size-in-bits='64' id='type-id-797'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
+      <parameter type-id='type-id-465' name='iov'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <!-- parameter of type 'typedef OFF64_T' -->
+      <parameter type-id='type-id-903' name='offset'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, OFF_T) -->
+    <function-type size-in-bits='64' id='type-id-799'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
+      <parameter type-id='type-id-465' name='iov'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='iovcnt'/>
+      <!-- parameter of type 'typedef OFF_T' -->
+      <parameter type-id='type-id-901' name='offset'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, __sanitizer::__sanitizer_msghdr*, int) -->
+    <function-type size-in-bits='64' id='type-id-801'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type '__sanitizer::__sanitizer_msghdr*' -->
+      <parameter type-id='type-id-474' name='msg'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='flags'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- long_t (int, void*, int) -->
+    <function-type size-in-bits='64' id='type-id-803'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='msg'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='flags'/>
+      <!-- typedef long_t -->
+      <return type-id='type-id-1231'/>
+    </function-type>
+    <!-- SSIZE_T (int, void*, OFF64_T, OFF64_T) -->
+    <function-type size-in-bits='64' id='type-id-805'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='ptr'/>
+      <!-- parameter of type 'typedef OFF64_T' -->
+      <parameter type-id='type-id-903' name='count'/>
+      <!-- parameter of type 'typedef OFF64_T' -->
+      <parameter type-id='type-id-903' name='offset'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, void*, SIZE_T) -->
+    <function-type size-in-bits='64' id='type-id-807'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='ptr'/>
+      <!-- parameter of type 'typedef SIZE_T' -->
+      <parameter type-id='type-id-403' name='count'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, void*, SIZE_T, OFF64_T) -->
+    <function-type size-in-bits='64' id='type-id-809'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='ptr'/>
+      <!-- parameter of type 'typedef SIZE_T' -->
+      <parameter type-id='type-id-403' name='count'/>
+      <!-- parameter of type 'typedef OFF64_T' -->
+      <parameter type-id='type-id-903' name='offset'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- SSIZE_T (int, void*, SIZE_T, OFF_T) -->
+    <function-type size-in-bits='64' id='type-id-811'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='ptr'/>
+      <!-- parameter of type 'typedef SIZE_T' -->
+      <parameter type-id='type-id-403' name='count'/>
+      <!-- parameter of type 'typedef OFF_T' -->
+      <parameter type-id='type-id-901' name='offset'/>
+      <!-- typedef SSIZE_T -->
+      <return type-id='type-id-898'/>
+    </function-type>
+    <!-- long_t (int, void*, long_t, int) -->
+    <function-type size-in-bits='64' id='type-id-813'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='fd'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='buf'/>
+      <!-- parameter of type 'typedef long_t' -->
+      <parameter type-id='type-id-1231' name='len'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='flags'/>
+      <!-- typedef long_t -->
+      <return type-id='type-id-1231'/>
+    </function-type>
+    <!-- __sanitizer::__sanitizer_clock_t (void*) -->
+    <function-type size-in-bits='64' id='type-id-815'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='tms'/>
+      <!-- typedef __sanitizer::__sanitizer_clock_t -->
+      <return type-id='type-id-1222'/>
+    </function-type>
+    <!-- INTMAX_T (const char*, char**, int) -->
+    <function-type size-in-bits='64' id='type-id-818'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='nptr'/>
       <!-- parameter of type 'char**' -->
@@ -26179,8 +26332,15 @@
       <!-- typedef INTMAX_T -->
       <return type-id='type-id-900'/>
     </function-type>
+    <!-- unsigned int (unsigned int) -->
+    <function-type size-in-bits='64' id='type-id-826'>
+      <!-- parameter of type 'unsigned int' -->
+      <parameter type-id='type-id-160' name='sec'/>
+      <!-- unsigned int -->
+      <return type-id='type-id-160'/>
+    </function-type>
     <!-- SIZE_T (char*, const wchar_t**, SIZE_T, SIZE_T, void*) -->
-    <function-type size-in-bits='64' id='type-id-799'>
+    <function-type size-in-bits='64' id='type-id-828'>
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-25' name='dest'/>
       <!-- parameter of type 'const wchar_t**' -->
@@ -26195,7 +26355,7 @@
       <return type-id='type-id-403'/>
     </function-type>
     <!-- SIZE_T (char*, const wchar_t**, SIZE_T, void*) -->
-    <function-type size-in-bits='64' id='type-id-801'>
+    <function-type size-in-bits='64' id='type-id-830'>
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-25' name='dest'/>
       <!-- parameter of type 'const wchar_t**' -->
@@ -26208,7 +26368,7 @@
       <return type-id='type-id-403'/>
     </function-type>
     <!-- SIZE_T (char*, const wchar_t*, SIZE_T) -->
-    <function-type size-in-bits='64' id='type-id-803'>
+    <function-type size-in-bits='64' id='type-id-832'>
       <!-- parameter of type 'char*' -->
       <parameter type-id='type-id-25' name='dest'/>
       <!-- parameter of type 'const wchar_t*' -->
@@ -26219,7 +26379,7 @@
       <return type-id='type-id-403'/>
     </function-type>
     <!-- SIZE_T (int, char*, SIZE_T) -->
-    <function-type size-in-bits='64' id='type-id-805'>
+    <function-type size-in-bits='64' id='type-id-836'>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-4' name='name'/>
       <!-- parameter of type 'char*' -->
@@ -26229,8 +26389,35 @@
       <!-- typedef SIZE_T -->
       <return type-id='type-id-403'/>
     </function-type>
+    <!-- __sanitizer::uptr (int, int, void*, void*) -->
+    <function-type size-in-bits='64' id='type-id-838'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='request'/>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='pid'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='addr'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='data'/>
+      <!-- typedef __sanitizer::uptr -->
+      <return type-id='type-id-91'/>
+    </function-type>
+    <!-- unsigned long int (unsigned long int*) -->
+    <function-type size-in-bits='64' id='type-id-840'>
+      <!-- parameter of type 'unsigned long int*' -->
+      <parameter type-id='type-id-127' name='t'/>
+      <!-- unsigned long int -->
+      <return type-id='type-id-105'/>
+    </function-type>
+    <!-- __sanitizer::uptr (void*) -->
+    <function-type size-in-bits='64' id='type-id-842'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='p'/>
+      <!-- typedef __sanitizer::uptr -->
+      <return type-id='type-id-91'/>
+    </function-type>
     <!-- SIZE_T (void*, char**, SIZE_T*, char**, SIZE_T*) -->
-    <function-type size-in-bits='64' id='type-id-807'>
+    <function-type size-in-bits='64' id='type-id-844'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1' name='cd'/>
       <!-- parameter of type 'char**' -->
@@ -26244,8 +26431,21 @@
       <!-- typedef SIZE_T -->
       <return type-id='type-id-403'/>
     </function-type>
+    <!-- __sanitizer::uptr (void*, __sanitizer::uptr, __sanitizer::uptr, void*) -->
+    <function-type size-in-bits='64' id='type-id-846'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='ptr'/>
+      <!-- parameter of type 'typedef __sanitizer::uptr' -->
+      <parameter type-id='type-id-91' name='size'/>
+      <!-- parameter of type 'typedef __sanitizer::uptr' -->
+      <parameter type-id='type-id-91' name='nmemb'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-1' name='f'/>
+      <!-- typedef __sanitizer::uptr -->
+      <return type-id='type-id-91'/>
+    </function-type>
     <!-- SIZE_T (wchar_t*, const char**, SIZE_T, SIZE_T, void*) -->
-    <function-type size-in-bits='64' id='type-id-809'>
+    <function-type size-in-bits='64' id='type-id-848'>
       <!-- parameter of type 'wchar_t*' -->
       <parameter type-id='type-id-896' name='dest'/>
       <!-- parameter of type 'const char**' -->
@@ -26260,7 +26460,7 @@
       <return type-id='type-id-403'/>
     </function-type>
     <!-- SIZE_T (wchar_t*, const char**, SIZE_T, void*) -->
-    <function-type size-in-bits='64' id='type-id-811'>
+    <function-type size-in-bits='64' id='type-id-850'>
       <!-- parameter of type 'wchar_t*' -->
       <parameter type-id='type-id-896' name='dest'/>
       <!-- parameter of type 'const char**' -->
@@ -26273,7 +26473,7 @@
       <return type-id='type-id-403'/>
     </function-type>
     <!-- SIZE_T (wchar_t*, const char*, SIZE_T) -->
-    <function-type size-in-bits='64' id='type-id-813'>
+    <function-type size-in-bits='64' id='type-id-852'>
       <!-- parameter of type 'wchar_t*' -->
       <parameter type-id='type-id-896' name='dest'/>
       <!-- parameter of type 'const char*' -->
@@ -26283,217 +26483,8 @@
       <!-- typedef SIZE_T -->
       <return type-id='type-id-403'/>
     </function-type>
-    <!-- SSIZE_T (char**, SIZE_T*, int, void*) -->
-    <function-type size-in-bits='64' id='type-id-815'>
-      <!-- parameter of type 'char**' -->
-      <parameter type-id='type-id-530' name='lineptr'/>
-      <!-- parameter of type 'SIZE_T*' -->
-      <parameter type-id='type-id-404' name='n'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='delim'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='stream'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (char**, SIZE_T*, void*) -->
-    <function-type size-in-bits='64' id='type-id-817'>
-      <!-- parameter of type 'char**' -->
-      <parameter type-id='type-id-530' name='lineptr'/>
-      <!-- parameter of type 'SIZE_T*' -->
-      <parameter type-id='type-id-404' name='n'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='stream'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int) -->
-    <function-type size-in-bits='64' id='type-id-819'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
-      <parameter type-id='type-id-465' name='iov'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, OFF64_T) -->
-    <function-type size-in-bits='64' id='type-id-821'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
-      <parameter type-id='type-id-465' name='iov'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <!-- parameter of type 'typedef OFF64_T' -->
-      <parameter type-id='type-id-903' name='offset'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, __sanitizer::__sanitizer_iovec*, int, OFF_T) -->
-    <function-type size-in-bits='64' id='type-id-823'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type '__sanitizer::__sanitizer_iovec*' -->
-      <parameter type-id='type-id-465' name='iov'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='iovcnt'/>
-      <!-- parameter of type 'typedef OFF_T' -->
-      <parameter type-id='type-id-901' name='offset'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, __sanitizer::__sanitizer_msghdr*, int) -->
-    <function-type size-in-bits='64' id='type-id-825'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type '__sanitizer::__sanitizer_msghdr*' -->
-      <parameter type-id='type-id-474' name='msg'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='flags'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, void*, OFF64_T, OFF64_T) -->
-    <function-type size-in-bits='64' id='type-id-827'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='ptr'/>
-      <!-- parameter of type 'typedef OFF64_T' -->
-      <parameter type-id='type-id-903' name='count'/>
-      <!-- parameter of type 'typedef OFF64_T' -->
-      <parameter type-id='type-id-903' name='offset'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, void*, SIZE_T) -->
-    <function-type size-in-bits='64' id='type-id-829'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='ptr'/>
-      <!-- parameter of type 'typedef SIZE_T' -->
-      <parameter type-id='type-id-403' name='count'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, void*, SIZE_T, OFF64_T) -->
-    <function-type size-in-bits='64' id='type-id-831'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='ptr'/>
-      <!-- parameter of type 'typedef SIZE_T' -->
-      <parameter type-id='type-id-403' name='count'/>
-      <!-- parameter of type 'typedef OFF64_T' -->
-      <parameter type-id='type-id-903' name='offset'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- SSIZE_T (int, void*, SIZE_T, OFF_T) -->
-    <function-type size-in-bits='64' id='type-id-833'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='ptr'/>
-      <!-- parameter of type 'typedef SIZE_T' -->
-      <parameter type-id='type-id-403' name='count'/>
-      <!-- parameter of type 'typedef OFF_T' -->
-      <parameter type-id='type-id-901' name='offset'/>
-      <!-- typedef SSIZE_T -->
-      <return type-id='type-id-898'/>
-    </function-type>
-    <!-- __sanitizer::__sanitizer_clock_t (void*) -->
-    <function-type size-in-bits='64' id='type-id-835'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='tms'/>
-      <!-- typedef __sanitizer::__sanitizer_clock_t -->
-      <return type-id='type-id-1222'/>
-    </function-type>
-    <!-- __sanitizer::uptr (int, int, void*, void*) -->
-    <function-type size-in-bits='64' id='type-id-839'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='request'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='pid'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='addr'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='data'/>
-      <!-- typedef __sanitizer::uptr -->
-      <return type-id='type-id-91'/>
-    </function-type>
-    <!-- __sanitizer::uptr (void*) -->
-    <function-type size-in-bits='64' id='type-id-841'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='p'/>
-      <!-- typedef __sanitizer::uptr -->
-      <return type-id='type-id-91'/>
-    </function-type>
-    <!-- __sanitizer::uptr (void*, __sanitizer::uptr, __sanitizer::uptr, void*) -->
-    <function-type size-in-bits='64' id='type-id-843'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='ptr'/>
-      <!-- parameter of type 'typedef __sanitizer::uptr' -->
-      <parameter type-id='type-id-91' name='size'/>
-      <!-- parameter of type 'typedef __sanitizer::uptr' -->
-      <parameter type-id='type-id-91' name='nmemb'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='f'/>
-      <!-- typedef __sanitizer::uptr -->
-      <return type-id='type-id-91'/>
-    </function-type>
-    <!-- long_t (int, void*, int) -->
-    <function-type size-in-bits='64' id='type-id-846'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='msg'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='flags'/>
-      <!-- typedef long_t -->
-      <return type-id='type-id-1231'/>
-    </function-type>
-    <!-- long_t (int, void*, long_t, int) -->
-    <function-type size-in-bits='64' id='type-id-848'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='fd'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-1' name='buf'/>
-      <!-- parameter of type 'typedef long_t' -->
-      <parameter type-id='type-id-1231' name='len'/>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='flags'/>
-      <!-- typedef long_t -->
-      <return type-id='type-id-1231'/>
-    </function-type>
-    <!-- sighandler_t (int, sighandler_t) -->
-    <function-type size-in-bits='64' id='type-id-850'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-4' name='sig'/>
-      <!-- parameter of type 'typedef sighandler_t' -->
-      <parameter type-id='type-id-388' name='h'/>
-      <!-- typedef sighandler_t -->
-      <return type-id='type-id-388'/>
-    </function-type>
-    <!-- unsigned int (unsigned int) -->
-    <function-type size-in-bits='64' id='type-id-852'>
-      <!-- parameter of type 'unsigned int' -->
-      <parameter type-id='type-id-160' name='sec'/>
-      <!-- unsigned int -->
-      <return type-id='type-id-160'/>
-    </function-type>
-    <!-- unsigned long int (unsigned long int*) -->
-    <function-type size-in-bits='64' id='type-id-854'>
-      <!-- parameter of type 'unsigned long int*' -->
-      <parameter type-id='type-id-127' name='t'/>
-      <!-- unsigned long int -->
-      <return type-id='type-id-105'/>
-    </function-type>
     <!-- void (__sanitizer::uptr*, int) -->
-    <function-type size-in-bits='64' id='type-id-856'>
+    <function-type size-in-bits='64' id='type-id-854'>
       <!-- parameter of type '__sanitizer::uptr*' -->
       <parameter type-id='type-id-221' name='env'/>
       <!-- parameter of type 'int' -->
@@ -26502,7 +26493,7 @@
       <return type-id='type-id-24'/>
     </function-type>
     <!-- void (double, double*, double*) -->
-    <function-type size-in-bits='64' id='type-id-858'>
+    <function-type size-in-bits='64' id='type-id-856'>
       <!-- parameter of type 'double' -->
       <parameter type-id='type-id-356' name='x'/>
       <!-- parameter of type 'double*' -->
@@ -26513,7 +26504,7 @@
       <return type-id='type-id-24'/>
     </function-type>
     <!-- void (float, float*, float*) -->
-    <function-type size-in-bits='64' id='type-id-860'>
+    <function-type size-in-bits='64' id='type-id-858'>
       <!-- parameter of type 'float' -->
       <parameter type-id='type-id-357' name='x'/>
       <!-- parameter of type 'float*' -->
@@ -26523,12 +26514,21 @@
       <!-- void -->
       <return type-id='type-id-24'/>
     </function-type>
+    <!-- sighandler_t (int, sighandler_t) -->
+    <function-type size-in-bits='64' id='type-id-860'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-4' name='sig'/>
+      <!-- parameter of type 'typedef sighandler_t' -->
+      <parameter type-id='type-id-388' name='h'/>
+      <!-- typedef sighandler_t -->
+      <return type-id='type-id-388'/>
+    </function-type>
     <!-- void (int, my_siginfo_t*, void*) -->
     <function-type size-in-bits='64' id='type-id-862'>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-4'/>
       <!-- parameter of type 'my_siginfo_t*' -->
-      <parameter type-id='type-id-792'/>
+      <parameter type-id='type-id-820'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-1'/>
       <!-- void -->
@@ -26686,7 +26686,7 @@
       <return type-id='type-id-25'/>
     </function-type>
     <!-- __sanitizer::uptr (const char*) -->
-    <function-type size-in-bits='64' id='type-id-837'>
+    <function-type size-in-bits='64' id='type-id-834'>
       <!-- parameter of type 'const char*' -->
       <parameter type-id='type-id-2' name='s'/>
       <!-- typedef __sanitizer::uptr -->

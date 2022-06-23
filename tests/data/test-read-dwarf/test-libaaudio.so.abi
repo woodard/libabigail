@@ -290,6 +290,7 @@
     <pointer-type-def type-id='f077d3f8' size-in-bits='64' id='5ea27396'/>
     <pointer-type-def type-id='a6c45d85' size-in-bits='64' id='361f7a7d'/>
     <pointer-type-def type-id='e322b6ef' size-in-bits='64' id='c5f12884'/>
+    <pointer-type-def type-id='add676f6' size-in-bits='64' id='ed274b28'/>
     <pointer-type-def type-id='96ee24a5' size-in-bits='64' id='585e1de9'/>
     <pointer-type-def type-id='95e97e5e' size-in-bits='64' id='7292109c'/>
     <pointer-type-def type-id='9da381c4' size-in-bits='64' id='cb785ebf'/>
@@ -297,7 +298,6 @@
     <pointer-type-def type-id='3d7d8cbf' size-in-bits='64' id='a68021ce'/>
     <pointer-type-def type-id='c9d12d66' size-in-bits='64' id='b2eb2c3f'/>
     <pointer-type-def type-id='dddf6ca2' size-in-bits='64' id='d915a820'/>
-    <pointer-type-def type-id='055f9de3' size-in-bits='64' id='d51a0d27'/>
     <pointer-type-def type-id='ee076206' size-in-bits='64' id='953b12f8'/>
     <pointer-type-def type-id='d024f83e' size-in-bits='64' id='8b51a308'/>
     <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e2f'/>
@@ -2032,7 +2032,7 @@
     <typedef-decl name='AAudioStream' type-id='119dbfcb' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='487' column='1' id='f41d1deb'/>
     <typedef-decl name='AAudioStreamBuilder' type-id='813682d4' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='488' column='1' id='122f757a'/>
     <typedef-decl name='aaudio_data_callback_result_t' type-id='3ff5601b' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='832' column='1' id='ae10ac8d'/>
-    <typedef-decl name='AAudioStream_dataCallback' type-id='d51a0d27' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='880' column='1' id='edb6186f'/>
+    <typedef-decl name='AAudioStream_dataCallback' type-id='ed274b28' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='880' column='1' id='edb6186f'/>
     <typedef-decl name='AAudioStream_errorCallback' type-id='8b51a308' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudio.h' line='966' column='1' id='2e91990d'/>
     <typedef-decl name='aaudio_policy_t' type-id='3ff5601b' filepath='frameworks/av/media/libaaudio/include/aaudio/AAudioTesting.h' line='50' column='1' id='d062bfb5'/>
     <function-decl name='AAudio_convertResultToText' mangled-name='AAudio_convertResultToText' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='48' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudio_convertResultToText@@LIBAAUDIO'>
@@ -2307,17 +2307,17 @@
     <typedef-decl name='va_list' type-id='7f896fb4' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stdarg.h' line='14' column='1' id='2aee9912'/>
     <typedef-decl name='size_t' type-id='7359adad' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stddef.h' line='46' column='1' id='b59d7dce'/>
     <typedef-decl name='audio_format_t' type-id='ff439793' filepath='system/media/audio/include/system/audio-hal-enums.h' line='616' column='1' id='aff86d3f'/>
-    <function-type size-in-bits='64' id='96ee24a5'>
-      <parameter type-id='eaa32e2f'/>
-      <parameter type-id='eaa32e2f'/>
-      <return type-id='95e97e5e'/>
-    </function-type>
-    <function-type size-in-bits='64' id='055f9de3'>
+    <function-type size-in-bits='64' id='add676f6'>
       <parameter type-id='b2a1b704'/>
       <parameter type-id='eaa32e2f'/>
       <parameter type-id='eaa32e2f'/>
       <parameter type-id='3ff5601b'/>
       <return type-id='ae10ac8d'/>
+    </function-type>
+    <function-type size-in-bits='64' id='96ee24a5'>
+      <parameter type-id='eaa32e2f'/>
+      <parameter type-id='eaa32e2f'/>
+      <return type-id='95e97e5e'/>
     </function-type>
     <function-type size-in-bits='64' id='ee076206'>
       <return type-id='48b5725f'/>

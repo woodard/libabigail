@@ -5662,16 +5662,16 @@
     <pointer-type-def type-id='type-id-288' size-in-bits='64' id='type-id-347'/>
     <pointer-type-def type-id='type-id-346' size-in-bits='64' id='type-id-381'/>
     <pointer-type-def type-id='type-id-140' size-in-bits='64' id='type-id-418'/>
-    <pointer-type-def type-id='type-id-419' size-in-bits='64' id='type-id-372'/>
-    <pointer-type-def type-id='type-id-420' size-in-bits='64' id='type-id-332'/>
+    <pointer-type-def type-id='type-id-419' size-in-bits='64' id='type-id-348'/>
+    <pointer-type-def type-id='type-id-420' size-in-bits='64' id='type-id-372'/>
+    <pointer-type-def type-id='type-id-421' size-in-bits='64' id='type-id-332'/>
     <pointer-type-def type-id='type-id-357' size-in-bits='64' id='type-id-364'/>
     <pointer-type-def type-id='type-id-263' size-in-bits='64' id='type-id-267'/>
-    <pointer-type-def type-id='type-id-421' size-in-bits='64' id='type-id-380'/>
-    <pointer-type-def type-id='type-id-403' size-in-bits='64' id='type-id-422'/>
-    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-423'/>
+    <pointer-type-def type-id='type-id-422' size-in-bits='64' id='type-id-380'/>
+    <pointer-type-def type-id='type-id-403' size-in-bits='64' id='type-id-423'/>
+    <pointer-type-def type-id='type-id-383' size-in-bits='64' id='type-id-424'/>
     <pointer-type-def type-id='type-id-355' size-in-bits='64' id='type-id-356'/>
     <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-295'/>
-    <pointer-type-def type-id='type-id-424' size-in-bits='64' id='type-id-348'/>
     <pointer-type-def type-id='type-id-408' size-in-bits='64' id='type-id-234'/>
     <pointer-type-def type-id='type-id-29' size-in-bits='64' id='type-id-259'/>
     <pointer-type-def type-id='type-id-262' size-in-bits='64' id='type-id-251'/>
@@ -5687,8 +5687,8 @@
     <class-decl name='cpp_savedstate' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-415'/>
     <class-decl name='directive' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-401'/>
     <class-decl name='file_hash_entry_pool' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-416'/>
-    <class-decl name='if_stack' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-419'/>
-    <class-decl name='pragma_entry' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-421'/>
+    <class-decl name='if_stack' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-420'/>
+    <class-decl name='pragma_entry' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-422'/>
     <typedef-decl name='uchar' type-id='type-id-29' filepath='../.././libcpp/include/cpp-id-data.h' line='22' column='1' id='type-id-408'/>
     <typedef-decl name='cpp_reader' type-id='type-id-375' filepath='../.././libcpp/include/cpplib.h' line='31' column='1' id='type-id-414'/>
     <typedef-decl name='cpp_buffer' type-id='type-id-369' filepath='../.././libcpp/include/cpplib.h' line='32' column='1' id='type-id-410'/>
@@ -5792,12 +5792,12 @@
     <typedef-decl name='dev_t' type-id='type-id-83' filepath='/usr/include/sys/types.h' line='61' column='1' id='type-id-342'/>
     <typedef-decl name='time_t' type-id='type-id-99' filepath='/usr/include/time.h' line='76' column='1' id='type-id-403'/>
     <function-decl name='time' filepath='/usr/include/time.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-422'/>
+      <parameter type-id='type-id-423'/>
       <return type-id='type-id-403'/>
     </function-decl>
     <function-decl name='localtime' filepath='/usr/include/time.h' line='237' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-405'/>
-      <return type-id='type-id-423'/>
+      <return type-id='type-id-424'/>
     </function-decl>
     <function-decl name='asctime' filepath='/usr/include/time.h' line='255' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-407'/>
@@ -5841,15 +5841,15 @@
       <parameter type-id='type-id-231'/>
       <return type-id='type-id-233'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-420'>
+    <function-type size-in-bits='64' id='type-id-419'>
+      <parameter type-id='type-id-285'/>
+      <return type-id='type-id-288'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-421'>
       <parameter type-id='type-id-225'/>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-2'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-424'>
-      <parameter type-id='type-id-285'/>
-      <return type-id='type-id-288'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-425'>
       <parameter type-id='type-id-225'/>
@@ -6938,10 +6938,10 @@
     <pointer-type-def type-id='type-id-504' size-in-bits='64' id='type-id-495'/>
     <pointer-type-def type-id='type-id-505' size-in-bits='64' id='type-id-497'/>
     <pointer-type-def type-id='type-id-506' size-in-bits='64' id='type-id-499'/>
+    <pointer-type-def type-id='type-id-507' size-in-bits='64' id='type-id-496'/>
+    <pointer-type-def type-id='type-id-508' size-in-bits='64' id='type-id-498'/>
     <pointer-type-def type-id='type-id-493' size-in-bits='64' id='type-id-144'/>
-    <pointer-type-def type-id='type-id-507' size-in-bits='64' id='type-id-143'/>
-    <pointer-type-def type-id='type-id-508' size-in-bits='64' id='type-id-496'/>
-    <pointer-type-def type-id='type-id-509' size-in-bits='64' id='type-id-498'/>
+    <pointer-type-def type-id='type-id-509' size-in-bits='64' id='type-id-143'/>
     <pointer-type-def type-id='type-id-510' size-in-bits='64' id='type-id-501'/>
     <function-decl name='pex_init_common' mangled-name='pex_init_common' filepath='../.././libiberty/pex-common.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='pex_init_common'>
       <parameter type-id='type-id-2' name='flags' filepath='../.././libiberty/pex-common.c' line='53' column='1'/>
@@ -6984,7 +6984,7 @@
       <return type-id='type-id-2'/>
     </function-decl>
     <typedef-decl name='__pid_t' type-id='type-id-2' filepath='/usr/include/bits/types.h' line='143' column='1' id='type-id-511'/>
-    <typedef-decl name='pid_t' type-id='type-id-511' filepath='/usr/include/sys/types.h' line='99' column='1' id='type-id-507'/>
+    <typedef-decl name='pid_t' type-id='type-id-511' filepath='/usr/include/sys/types.h' line='99' column='1' id='type-id-509'/>
     <function-type size-in-bits='64' id='type-id-502'>
       <parameter type-id='type-id-121'/>
       <parameter type-id='type-id-2'/>
@@ -7008,7 +7008,7 @@
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-2'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-508'>
+    <function-type size-in-bits='64' id='type-id-507'>
       <parameter type-id='type-id-121'/>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-1'/>
@@ -7020,17 +7020,17 @@
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-243'/>
       <parameter type-id='type-id-51'/>
-      <return type-id='type-id-507'/>
+      <return type-id='type-id-509'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-509'>
+    <function-type size-in-bits='64' id='type-id-508'>
       <parameter type-id='type-id-121'/>
-      <parameter type-id='type-id-507'/>
+      <parameter type-id='type-id-509'/>
       <parameter type-id='type-id-51'/>
       <parameter type-id='type-id-144'/>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-243'/>
       <parameter type-id='type-id-51'/>
-      <return type-id='type-id-507'/>
+      <return type-id='type-id-509'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-510'>
       <parameter type-id='type-id-121'/>
