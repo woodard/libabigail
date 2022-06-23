@@ -67,6 +67,13 @@ InOutSpec in_out_specs[] =
     "data/test-alt-dwarf-file/libstdc++/libstdc++-report.txt",
     "output/test-alt-dwarf-file/libstdc++/libstdc++-report.txt"
   },
+  {
+    "data/test-alt-dwarf-file/libstdc++/usr/lib64/libstdc++.so.6.0.30",
+    "data/test-alt-dwarf-file/libstdc++/usr/lib/debug",
+    "--check-alternate-debug-info-base-name",
+    "data/test-alt-dwarf-file/libstdc++/libstdc++-report-1.txt",
+    "output/test-alt-dwarf-file/libstdc++/libstdc++-report-1.txt"
+  },
 
   // This should always be the last entry
   {NULL, NULL, NULL, NULL, NULL}
