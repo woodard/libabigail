@@ -14,7 +14,6 @@
         <var-decl name='m0' type-id='8a34a235' visibility='default'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='POINTER' type-id='6e97a70c' id='8a34a235'/>
     <pointer-type-def type-id='109cd6fe' size-in-bits='64' alignment-in-bits='64' id='842ea234'/>
     <pointer-type-def type-id='119cd891' size-in-bits='64' alignment-in-bits='64' id='5e30a4f9'/>
     <qualified-type-def type-id='48b5725f' const='yes' id='8581546e'/>
@@ -28,6 +27,7 @@
       <parameter type-id='842ea234'/>
       <return type-id='48b5725f'/>
     </function-decl>
+    <typedef-decl name='POINTER' type-id='6e97a70c' id='8a34a235'/>
     <type-decl name='void' id='48b5725f'/>
   </abi-instr>
 </abi-corpus>

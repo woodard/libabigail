@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2020 Google, Inc.
+// Copyright (C) 2020-2022 Google, Inc.
 //
 // Author: Matthias Maennich
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -1715,6 +1715,9 @@ public:
 
   const base_diff_sptrs_type&
   changed_bases();
+
+  const vector<class_decl::base_spec_sptr>&
+  moved_bases() const;
 
   virtual bool
   has_changes() const;

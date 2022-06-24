@@ -24,7 +24,7 @@
         <var-decl name='m0' type-id='95e97e5e' visibility='default'/>
       </data-member>
     </class-decl>
-    <class-decl name='' size-in-bits='32' alignment-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' id='e7f43f72'>
+    <class-decl name='' size-in-bits='32' alignment-in-bits='8' is-struct='yes' is-anonymous='yes' visibility='default' id='b91ffdee'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='status0' type-id='811c9dc5' visibility='default'/>
       </data-member>
@@ -46,7 +46,7 @@
     <pointer-type-def type-id='bd54fe1a' size-in-bits='64' alignment-in-bits='64' id='3ccc2590'/>
     <qualified-type-def type-id='3ccc2590' restrict='yes' id='af4b1b38'/>
     <qualified-type-def type-id='a2185560' volatile='yes' id='ec67e496'/>
-    <var-decl name='status' type-id='e7f43f72' mangled-name='status' visibility='default' elf-symbol-id='status'/>
+    <var-decl name='status' type-id='b91ffdee' mangled-name='status' visibility='default' elf-symbol-id='status'/>
     <var-decl name='test_pointer' type-id='26a90f95' mangled-name='test_pointer' visibility='default' elf-symbol-id='test_pointer'/>
     <var-decl name='test_const' type-id='0fb3b55d' mangled-name='test_const' visibility='default' elf-symbol-id='test_const'/>
     <var-decl name='test_float' type-id='a6c45d85' mangled-name='test_float' visibility='default' elf-symbol-id='test_float'/>

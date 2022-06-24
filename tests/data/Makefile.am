@@ -98,12 +98,16 @@ test-abidiff/test-PR27985-v0.o.abi	 \
 test-abidiff/test-PR27985-v1.c		 \
 test-abidiff/test-PR27985-v1.o		 \
 test-abidiff/test-PR27985-v1.o.abi	 \
+test-abidiff/test-PR27616-squished-v0.abi \
+test-abidiff/test-PR27616-squished-v1.abi \
+test-abidiff/test-PR27616-v0.xml \
+test-abidiff/test-PR27616-v1.xml \
+\
 test-abidiff-exit/test-PR28316-v0.cc     \
 test-abidiff-exit/test-PR28316-v1.cc     \
 test-abidiff-exit/test-PR28316-v0.o      \
 test-abidiff-exit/test-PR28316-v1.o      \
 test-abidiff-exit/test-PR28316-report.txt \
-\
 test-abidiff-exit/test1-voffset-change-report0.txt \
 test-abidiff-exit/test1-voffset-change-report1.txt \
 test-abidiff-exit/test1-voffset-change.abignore \
@@ -218,10 +222,12 @@ test-abidiff-exit/test-crc-v1.abi \
 test-abidiff-exit/test-missing-alias-report.txt \
 test-abidiff-exit/test-missing-alias.abi \
 test-abidiff-exit/test-missing-alias.suppr \
-test-abidiff/test-PR27616-squished-v0.abi \
-test-abidiff/test-PR27616-squished-v1.abi \
-test-abidiff/test-PR27616-v0.xml \
-test-abidiff/test-PR27616-v1.xml \
+test-abidiff-exit/test-PR29144-report-2.txt \
+test-abidiff-exit/test-PR29144-report.txt \
+test-abidiff-exit/test-PR29144-v0.cc \
+test-abidiff-exit/test-PR29144-v0.o \
+test-abidiff-exit/test-PR29144-v1.cc \
+test-abidiff-exit/test-PR29144-v1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
@@ -1692,6 +1698,11 @@ test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt \
 test-alt-dwarf-file/rhbz1951526/usr/bin/gimp-2.10 \
 test-alt-dwarf-file/rhbz1951526/usr/lib/debug/.dwz/gimp-2.10.22-2.el9.1.aarch64 \
 test-alt-dwarf-file/rhbz1951526/usr/lib/debug/usr/bin/gimp-2.10-2.10.22-2.el9.1.aarch64.debug \
+test-alt-dwarf-file/libstdc++/libstdc++-report.txt \
+test-alt-dwarf-file/libstdc++/libstdc++-report-1.txt \
+test-alt-dwarf-file/libstdc++/usr/lib/debug/usr/lib64/libstdc++.so.6.0.30-12.1.1-1.fc37.x86_64.debug \
+test-alt-dwarf-file/libstdc++/usr/lib/debug/.dwz/gcc-12.1.1-1.fc37.x86_64 \
+test-alt-dwarf-file/libstdc++/usr/lib64/libstdc++.so.6.0.30 \
 \
 test-abicompat/libtest0-fn-changed-libapp-v0.so \
 test-abicompat/libtest0-fn-changed-libapp-v1.so \

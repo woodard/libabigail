@@ -184,6 +184,8 @@
     <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-15'/>
     <!-- void** -->
     <pointer-type-def type-id='type-id-15' size-in-bits='64' id='type-id-12'/>
+    <!-- void -->
+    <type-decl name='void' id='type-id-13'/>
     <!-- void foo(s0&) -->
     <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
       <!-- parameter of type 's0&' -->
@@ -196,7 +198,5 @@
       <!-- int -->
       <return type-id='type-id-3'/>
     </function-decl>
-    <!-- void -->
-    <type-decl name='void' id='type-id-13'/>
   </abi-instr>
 </abi-corpus>

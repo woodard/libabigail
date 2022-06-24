@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -238,9 +238,12 @@ maybe_report_interfaces_impacted_by_diff(const diff_sptr	&d,
 void
 maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
 					      ostream			&out,
-					      const string		indent);
+					      const string		&indent);
 
-
+void
+maybe_report_base_class_reordering(const class_diff	&d,
+				   ostream		&out,
+				   const string	&indent);
 } // end namespace comparison
 } // end namespace abigail
 

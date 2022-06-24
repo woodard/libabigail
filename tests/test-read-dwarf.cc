@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -26,6 +26,7 @@ using abigail::tests::read_common::InOutSpec;
 using abigail::tests::read_common::test_task;
 using abigail::tests::read_common::display_usage;
 using abigail::tests::read_common::options;
+using abigail::tests::get_build_dir;
 
 using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::dwarf_reader::read_context;
@@ -33,6 +34,7 @@ using abigail::dwarf_reader::read_context_sptr;
 using abigail::dwarf_reader::create_read_context;
 using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
 using abigail::xml_writer::HASH_TYPE_ID_STYLE;
+using abigail::xml_writer::type_id_style_kind;
 using abigail::tools_utils::emit_prefix;
 
 static InOutSpec in_out_specs[] =
@@ -494,46 +496,6 @@ using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 
-/// Set the suppression specification to use when reading the ELF binary.
-///
-/// @param read_ctxt the context used to read the ELF binary.
-///
-/// @param path the path to the suppression specification to read.
-static void
-set_suppressions(read_context& read_ctxt, const string& path)
-{
-  suppressions_type supprs;
-  read_suppressions(path, supprs);
-  add_read_context_suppressions(read_ctxt, supprs);
-}
-
-/// Define what headers contain public types definitions.
-///
-/// This automatically generates suppression specifications from the
-/// set of header files present under a given directory.  Those
-/// specifications actually suppress types that are *not* defined in
-/// the headers found at a given directory.
-///
-/// @param read_ctxt the context used to read the ELF binary.
-///
-/// @param path the path to a directory where header files are to be
-/// found.
-static void
-set_suppressions_from_headers(read_context& read_ctxt, const string& path)
-{
-  vector<string> files;
-  suppression_sptr suppr =
-    abigail::tools_utils::gen_suppr_spec_from_headers(path, files);
-
-  if (suppr)
-    {
-      suppr->set_drops_artifact_from_ir(true);
-      suppressions_type supprs;
-      supprs.push_back(suppr);
-      add_read_context_suppressions(read_ctxt, supprs);
-    }
-}
-
 /// Task specialization to perform DWARF tests.
 struct test_task_dwarf : public test_task
 {
@@ -577,52 +539,35 @@ test_task_dwarf::test_task_dwarf(const InOutSpec &s,
 void
 test_task_dwarf::perform()
 {
-  abigail::ir::environment_sptr env;
-
   set_in_elf_path();
   set_in_suppr_spec_path();
   set_in_public_headers_path();
 
-  env.reset(new abigail::ir::environment);
-  abigail::elf_reader::status status =
-    abigail::elf_reader::STATUS_UNKNOWN;
-  vector<char**> di_roots;
-  ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
-  read_context_sptr ctxt = create_read_context(in_elf_path,
-                                               di_roots,
-                                               env.get());
-  ABG_ASSERT(ctxt);
-  if (!in_suppr_spec_path.empty())
-    set_suppressions(*ctxt, in_suppr_spec_path);
+  if (!set_out_abi_path()
+      || in_elf_path.empty())
+    return;
 
+  string abidw = string(get_build_dir()) + "/tools/abidw";
+  string drop_private_types;
   if (!in_public_headers_path.empty())
-    set_suppressions_from_headers(*ctxt, in_public_headers_path);
+    drop_private_types += "--headers-dir " + in_public_headers_path +
+      " --drop-private-types";
+  string type_id_style = "sequence";
+  if (spec.type_id_style == HASH_TYPE_ID_STYLE)
+    type_id_style = "hash";
 
-  abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
-  // if there is no output and no input, assume that we do not care about the
-  // actual read result, just that it succeeded.
-  if (!spec.in_abi_path && !spec.out_abi_path)
+  string cmd = abidw + " --no-architecture "
+    + " --type-id-style " + type_id_style
+    + " --no-corpus-path "
+    + drop_private_types + " " + in_elf_path
+    +" > " + out_abi_path;
+
+  if (system(cmd.c_str()))
     {
-      // Phew! we made it here and we did not crash! yay!
+      error_message = string("abidw failed:\n")
+	+ "command was: '" + cmd + "'\n";
       return;
     }
-  if (!corp)
-    {
-      error_message = string("failed to read ") + in_elf_path  + "\n";
-      is_ok = false;
-      return;
-    }
-  corp->set_path(spec.in_elf_path);
-  // Do not take architecture names in comparison so that these
-  // test input binaries can come from whatever arch the
-  // programmer likes.
-  corp->set_architecture_name("");
-
-  if (!(is_ok = set_out_abi_path()))
-      return;
-
-  if (!(is_ok = serialize_corpus(out_abi_path, corp)))
-       return;
 
   if (!(is_ok = run_abidw()))
     return;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -59,6 +59,20 @@ InOutSpec in_out_specs[] =
     "--abidiff",
     "data/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt",
     "output/test-alt-dwarf-file/rhbz1951526/rhbz1951526-report-0.txt"
+  },
+  {
+    "data/test-alt-dwarf-file/libstdc++/usr/lib64/libstdc++.so.6.0.30",
+    "data/test-alt-dwarf-file/libstdc++/usr/lib/debug",
+    "--abidiff",
+    "data/test-alt-dwarf-file/libstdc++/libstdc++-report.txt",
+    "output/test-alt-dwarf-file/libstdc++/libstdc++-report.txt"
+  },
+  {
+    "data/test-alt-dwarf-file/libstdc++/usr/lib64/libstdc++.so.6.0.30",
+    "data/test-alt-dwarf-file/libstdc++/usr/lib/debug",
+    "--check-alternate-debug-info-base-name",
+    "data/test-alt-dwarf-file/libstdc++/libstdc++-report-1.txt",
+    "output/test-alt-dwarf-file/libstdc++/libstdc++-report-1.txt"
   },
 
   // This should always be the last entry
