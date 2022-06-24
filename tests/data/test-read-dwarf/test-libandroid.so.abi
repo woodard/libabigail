@@ -21357,6 +21357,7 @@
     <pointer-type-def type-id='67c862fe' size-in-bits='32' id='37fc1694'/>
     <pointer-type-def type-id='1471d4b9' size-in-bits='32' id='37fc1695'/>
     <class-decl name='ANativeActivity' is-struct='yes' visibility='default' is-declaration-only='yes' id='67c862fe'/>
+    <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='e7f43f7f'/>
     <function-decl name='ANativeActivity_finish' mangled-name='ANativeActivity_finish' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_finish@@LIBANDROID'>
       <parameter type-id='37fc1695' name='activity' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1'/>
       <return type-id='48b5725f'/>
@@ -22037,7 +22038,7 @@
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='368' column='1' id='ac5ab5a2'>
           <member-type access='public'>
-            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='370' column='1' id='e7f43f7f'>
+            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='370' column='1' id='e7f43f80'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='x' type-id='a6c45d85' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='371' column='1'/>
               </data-member>
@@ -22050,7 +22051,7 @@
             </class-decl>
           </member-type>
           <member-type access='public'>
-            <class-decl name='__anonymous_struct__1' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='375' column='1' id='e7f43f80'>
+            <class-decl name='__anonymous_struct__1' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='375' column='1' id='e7f43f81'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='azimuth' type-id='a6c45d85' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='376' column='1'/>
               </data-member>
@@ -22066,10 +22067,10 @@
             <var-decl name='v' type-id='c723f882' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='369' column='1'/>
           </data-member>
           <data-member access='public'>
-            <var-decl name='' type-id='e7f43f7f' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='370' column='1'/>
+            <var-decl name='' type-id='e7f43f80' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='370' column='1'/>
           </data-member>
           <data-member access='public'>
-            <var-decl name='' type-id='e7f43f80' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='375' column='1'/>
+            <var-decl name='' type-id='e7f43f81' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='375' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -22095,7 +22096,7 @@
       <member-type access='public'>
         <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='391' column='1' id='ac5ab5a3'>
           <member-type access='public'>
-            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='393' column='1' id='e7f43f81'>
+            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='393' column='1' id='e7f43f82'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='x_uncalib' type-id='a6c45d85' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='394' column='1'/>
               </data-member>
@@ -22111,14 +22112,14 @@
             <var-decl name='uncalib' type-id='c723f882' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='392' column='1'/>
           </data-member>
           <data-member access='public'>
-            <var-decl name='' type-id='e7f43f81' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='393' column='1'/>
+            <var-decl name='' type-id='e7f43f82' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='393' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
       <member-type access='public'>
         <union-decl name='__anonymous_union__1' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='399' column='1' id='ac5ab5a4'>
           <member-type access='public'>
-            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='401' column='1' id='e7f43f82'>
+            <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='401' column='1' id='e7f43f83'>
               <data-member access='public' layout-offset-in-bits='0'>
                 <var-decl name='x_bias' type-id='a6c45d85' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='402' column='1'/>
               </data-member>
@@ -22134,7 +22135,7 @@
             <var-decl name='bias' type-id='c723f882' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='400' column='1'/>
           </data-member>
           <data-member access='public'>
-            <var-decl name='' type-id='e7f43f82' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='401' column='1'/>
+            <var-decl name='' type-id='e7f43f83' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='401' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -22533,7 +22534,7 @@
     <typedef-decl name='ASensorList' type-id='fffe71bc' filepath='frameworks/native/include/android/sensor.h' line='537' column='1' id='310273a5'/>
   </abi-instr>
   <abi-instr address-size='32' path='frameworks/base/native/android/sharedmem.cpp' language='LANG_C_plus_plus_14'>
-    <class-decl name='__anonymous_struct__4' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='frameworks/base/native/android/sharedmem.cpp' line='37' column='1' id='e7f43f83'>
+    <class-decl name='__anonymous_struct__4' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='frameworks/base/native/android/sharedmem.cpp' line='37' column='1' id='e7f43f84'>
       <member-function access='public'>
         <function-decl name='operator()' mangled-name='_ZZL7jniInitP7_JNIEnvENK3$_0clES0_' filepath='frameworks/base/native/android/sharedmem.cpp' line='37' column='1' visibility='default' binding='global' size-in-bits='32'>
           <parameter type-id='8e8a1547' is-artificial='yes'/>
@@ -22543,9 +22544,9 @@
       </member-function>
     </class-decl>
     <reference-type-def kind='lvalue' type-id='71bed232' size-in-bits='32' id='2364b57c'/>
-    <reference-type-def kind='lvalue' type-id='e7f43f83' size-in-bits='32' id='9167eb94'/>
-    <reference-type-def kind='rvalue' type-id='e7f43f83' size-in-bits='32' id='98980936'/>
-    <qualified-type-def type-id='e7f43f83' const='yes' id='a585bdd7'/>
+    <reference-type-def kind='lvalue' type-id='e7f43f84' size-in-bits='32' id='9167eb94'/>
+    <reference-type-def kind='rvalue' type-id='e7f43f84' size-in-bits='32' id='98980936'/>
+    <qualified-type-def type-id='e7f43f84' const='yes' id='a585bdd7'/>
     <pointer-type-def type-id='a585bdd7' size-in-bits='32' id='8e8a1547'/>
     <qualified-type-def type-id='0e01d3be' const='yes' id='7bd176f7'/>
     <reference-type-def kind='lvalue' type-id='7bd176f7' size-in-bits='32' id='bbbe0b03'/>
@@ -28435,7 +28436,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='65' column='1' id='ac5ab5aa'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1' id='e7f43f84'>
+                <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1' id='e7f43f85'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='x' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1'/>
                   </data-member>
@@ -28451,7 +28452,7 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f84' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1'/>
+                <var-decl name='' type-id='e7f43f85' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1'/>
               </data-member>
               <data-member access='public'>
                 <var-decl name='xyzw' type-id='3702b69c' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='67' column='1'/>
@@ -28510,7 +28511,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5ab'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1' id='e7f43f85'>
+                <class-decl name='__anonymous_struct__' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1' id='e7f43f86'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='x' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
                   </data-member>
@@ -28520,7 +28521,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1' id='e7f43f86'>
+                <class-decl name='__anonymous_struct__1' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1' id='e7f43f87'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='s' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
                   </data-member>
@@ -28530,7 +28531,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__2' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f87'>
+                <class-decl name='__anonymous_struct__2' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f88'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='r' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
                   </data-member>
@@ -28540,13 +28541,13 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
+                <var-decl name='' type-id='e7f43f86' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f86' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
+                <var-decl name='' type-id='e7f43f87' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f87' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
+                <var-decl name='' type-id='e7f43f88' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
               </data-member>
             </union-decl>
           </member-type>
@@ -28599,7 +28600,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5ac'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1' id='e7f43f88'>
+                <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1' id='e7f43f89'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='x' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
                   </data-member>
@@ -28609,7 +28610,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1' id='e7f43f89'>
+                <class-decl name='__anonymous_struct__1' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1' id='e7f43f8a'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='s' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
                   </data-member>
@@ -28619,7 +28620,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f8a'>
+                <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f8b'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='r' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
                   </data-member>
@@ -28629,13 +28630,13 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f88' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
+                <var-decl name='' type-id='e7f43f89' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='50' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f89' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
+                <var-decl name='' type-id='e7f43f8a' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='51' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8a' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
+                <var-decl name='' type-id='e7f43f8b' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1'/>
               </data-member>
             </union-decl>
           </member-type>
@@ -28688,7 +28689,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='48' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ad'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1' id='e7f43f8b'>
+                <class-decl name='__anonymous_struct__' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1' id='e7f43f8c'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='x' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1'/>
                   </data-member>
@@ -28701,7 +28702,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__1' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1' id='e7f43f8c'>
+                <class-decl name='__anonymous_struct__1' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1' id='e7f43f8d'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='s' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
                   </data-member>
@@ -28714,7 +28715,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__2' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f8d'>
+                <class-decl name='__anonymous_struct__2' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f8e'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='r' type-id='8060d039' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
                   </data-member>
@@ -28727,13 +28728,13 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8b' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1'/>
+                <var-decl name='' type-id='e7f43f8c' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8c' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
+                <var-decl name='' type-id='e7f43f8d' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8d' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
+                <var-decl name='' type-id='e7f43f8e' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
               </data-member>
               <data-member access='public'>
                 <var-decl name='xy' type-id='36acd966' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='51' column='1'/>
@@ -28795,7 +28796,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ae'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__1' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1' id='e7f43f8e'>
+                <class-decl name='__anonymous_struct__1' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1' id='e7f43f8f'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='s' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
                   </data-member>
@@ -28808,7 +28809,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__2' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f8f'>
+                <class-decl name='__anonymous_struct__2' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f90'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='r' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
                   </data-member>
@@ -28821,13 +28822,13 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f7f' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1'/>
+                <var-decl name='' type-id='e7f43f80' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='48' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8e' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
+                <var-decl name='' type-id='e7f43f8f' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='49' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f8f' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
+                <var-decl name='' type-id='e7f43f90' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1'/>
               </data-member>
               <data-member access='public'>
                 <var-decl name='xy' type-id='adb150ce' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='51' column='1'/>
@@ -28889,7 +28890,7 @@
           <member-type access='private'>
             <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='47' column='1' id='ac5ab5af'>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='49' column='1' id='e7f43f90'>
+                <class-decl name='__anonymous_struct__1' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='49' column='1' id='e7f43f91'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='s' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='49' column='1'/>
                   </data-member>
@@ -28905,7 +28906,7 @@
                 </class-decl>
               </member-type>
               <member-type access='public'>
-                <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1' id='e7f43f91'>
+                <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1' id='e7f43f92'>
                   <data-member access='public' layout-offset-in-bits='0'>
                     <var-decl name='r' type-id='a6c45d85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1'/>
                   </data-member>
@@ -28921,13 +28922,13 @@
                 </class-decl>
               </member-type>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f84' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='48' column='1'/>
+                <var-decl name='' type-id='e7f43f85' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='48' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f90' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='49' column='1'/>
+                <var-decl name='' type-id='e7f43f91' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='49' column='1'/>
               </data-member>
               <data-member access='public'>
-                <var-decl name='' type-id='e7f43f91' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1'/>
+                <var-decl name='' type-id='e7f43f92' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1'/>
               </data-member>
               <data-member access='public'>
                 <var-decl name='xy' type-id='adb150ce' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='51' column='1'/>

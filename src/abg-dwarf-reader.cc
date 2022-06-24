@@ -4271,7 +4271,19 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
-		    else if (per_tu_class_map.size() > 1)
+		    else if (per_tu_class_map.size() > 1
+			     // If we are looking at ODR-relevant
+			     // (e.g. C++) classes, let's not bother
+			     // trying to compare them against each
+			     // other.  The ODR supposes that they all
+			     // must be the same class.  If they are
+			     // not, this is not the place to catch
+			     // it.  Besides, comparing them without
+			     // type canonicalization in place might
+			     // just take forever.
+			     && !odr_is_relevant(per_tu_class_map.begin()->
+						 second->get_translation_unit()->
+						 get_language()))
 		      {
 			// We are in case where there are more than
 			// one definition for the declaration.  Let's
