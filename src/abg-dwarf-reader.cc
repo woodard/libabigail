@@ -4271,7 +4271,19 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
-		    else if (per_tu_class_map.size() > 1)
+		    else if (per_tu_class_map.size() > 1
+			     // If we are looking at ODR-relevant
+			     // (e.g. C++) classes, let's not bother
+			     // trying to compare them against each
+			     // other.  The ODR supposes that they all
+			     // must be the same class.  If they are
+			     // not, this is not the place to catch
+			     // it.  Besides, comparing them without
+			     // type canonicalization in place might
+			     // just take forever.
+			     && !odr_is_relevant(per_tu_class_map.begin()->
+						 second->get_translation_unit()->
+						 get_language()))
 		      {
 			// We are in case where there are more than
 			// one definition for the declaration.  Let's
@@ -6746,8 +6758,23 @@ die_access_specifier(Dwarf_Die * die, access_specifier& access)
 static bool
 die_is_public_decl(const Dwarf_Die* die)
 {
+  if (!die)
+    return false;
   bool is_public = false;
-  die_flag_attribute(die, DW_AT_external, is_public);
+
+  // If this is a DW_TAG_subprogram DIE, look for the
+  // DW_AT_external attribute on it.  Otherwise, if it's a non-anonymous namespace,
+  // then it's public.  In all other cases, this should return false.
+
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  if (tag == DW_TAG_subprogram || tag == DW_TAG_variable)
+    die_flag_attribute(die, DW_AT_external, is_public);
+  else if (tag == DW_TAG_namespace)
+    {
+      string name = die_name(die);
+      is_public = !name.empty();
+    }
+
   return is_public;
 }
 
@@ -12119,7 +12146,12 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   ctxt.scope_stack().push(result.get());
   do
     build_ir_node_from_die(ctxt, &child,
-			   /*called_from_public_decl=*/false,
+			   // If this namespace DIE is private
+			   // (anonymous) then all its content is
+			   // considered private.  Otherwise, its
+			   // public decls are considered public.
+			   /*called_from_public_decl=*/
+			   die_is_public_decl(die) && die_is_public_decl(&child),
 			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
   ctxt.scope_stack().pop();
