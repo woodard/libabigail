@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2020 Red Hat, Inc.
+// Copyright (C) 2017-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -1387,7 +1387,7 @@ reporter_base::diff_to_be_reported(const diff *d) const
 void
 maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
 					      ostream			&out,
-					      const string		indent)
+					      const string		&indent)
 {
   const diff_context_sptr& ctxt = d.context();
 
@@ -1451,5 +1451,53 @@ maybe_report_data_members_replaced_by_anon_dm(const class_or_union_diff &d,
     }
 }
 
+/// Report about the base classes of a class having been re-ordered.
+///
+/// @param d the class diff to consider.
+///
+/// @param out the output stream to report the change to.
+///
+/// @param indent the indentation string to use.
+void
+maybe_report_base_class_reordering(const class_diff	&d,
+				   ostream		&out,
+				   const string	&indent)
+{
+  if (d.moved_bases().empty())
+    return;
+
+  class_decl_sptr first = d.first_class_decl(),
+    second = d.second_class_decl();
+
+  ABG_ASSERT(!first->get_base_specifiers().empty());
+  ABG_ASSERT(!second->get_base_specifiers().empty());
+
+  out << indent << "base classes of '"
+      << first->get_pretty_representation()
+      << "' are re-ordered from: ";
+
+  vector<class_decl_sptr> classes = {first, second};
+  unsigned nb_classes_seen = 0;
+  for (auto &klass : classes)
+    {
+      if (nb_classes_seen >= 1)
+	out << " to: ";
+      out << "'";
+      bool needs_comma = false;
+      for (auto &b : klass->get_base_specifiers())
+	{
+	  if (needs_comma)
+	    out << ", ";
+	  if (b->get_is_virtual())
+	    out << "virtual ";
+	  out << b->get_base_class()->get_qualified_name();
+	  needs_comma = true;
+	}
+      out << "'";
+      nb_classes_seen++;
+    }
+  if (nb_classes_seen)
+    out << "\n";
+}
 } // Namespace comparison
 } // end namespace abigail

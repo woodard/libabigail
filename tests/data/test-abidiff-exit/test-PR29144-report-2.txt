@@ -1,0 +1,8 @@
+Leaf changes summary: 1 artifact changed
+Changed leaf types summary: 1 leaf type changed
+Removed/Changed/Added functions summary: 0 Removed, 0 Changed, 0 Added function
+Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
+
+'struct D at 1.cc:13:1' changed:
+  type size hasn't changed
+  base classes of 'struct D' are re-ordered from: 'A, B, C' to: 'B, A, C'

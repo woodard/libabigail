@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -902,6 +902,9 @@ struct test_task : public abigail::workers::task
       }
     else
       is_ok = false;
+
+    if (!abidiff_ok)
+      error_message += "cmd failed: " + cmd;
   }
 }; //end struct test_task.
 

@@ -15,11 +15,11 @@
       <parameter type-id='type-id-4'/>
       <return type-id='type-id-5'/>
     </function-decl>
+    <type-decl name='void' id='type-id-5'/>
     <function-type size-in-bits='64' alignment-in-bits='8' id='type-id-3'>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-5'/>
     </function-type>
-    <type-decl name='void' id='type-id-5'/>
   </abi-instr>
 </abi-corpus>

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -108,6 +108,7 @@ struct options
 #endif
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
   bool			debug_type_canonicalization;
+  bool			debug_die_canonicalization;
 #endif
   bool			annotate;
   bool			do_log;
@@ -145,6 +146,7 @@ struct options
 #endif
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
       debug_type_canonicalization(),
+      debug_die_canonicalization(),
 #endif
       annotate(),
       do_log(),
@@ -212,6 +214,7 @@ display_usage(const string& prog_name, ostream& out)
 #endif
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
     << "  --debug-tc  debug the type canonicalization process\n"
+    << "  --debug-dc  debug the DIE canonicalization process\n"
 #endif
 #ifdef WITH_CTF
     << "  --ctf use CTF instead of DWARF in ELF files\n"
@@ -380,6 +383,9 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--debug-tc")
 	       || !strcmp(argv[i], "debug-type-canonicalization"))
 	opts.debug_type_canonicalization = true;
+      else if (!strcmp(argv[i], "--debug-dc")
+	       || !strcmp(argv[i], "debug-die-canonicalization"))
+	opts.debug_die_canonicalization = true;
 #endif
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
@@ -530,6 +536,8 @@ load_corpus_and_write_abixml(char* argv[],
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
   if (opts.debug_type_canonicalization)
     env->debug_type_canonicalization_is_on(true);
+  if (opts.debug_die_canonicalization)
+    env->debug_die_canonicalization_is_on(true);
 #endif
 
   // First of all, read a libabigail IR corpus from the file specified

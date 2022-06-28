@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2020 Red Hat, Inc.
+// Copyright (C) 2013-2022 Red Hat, Inc.
 
 #ifndef __TEST_UTILS_H__
 #define __TEST_UTILS_H__

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2020 Red Hat, Inc.
+// Copyright (C) 2017-2022 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -690,6 +690,8 @@ leaf_reporter::report(const class_diff& d,
   maybe_report_diff_for_member(first, second, ctxt, out, indent);
 
   d.class_or_union_diff::report(out, indent);
+
+  maybe_report_base_class_reordering(d, out, indent);
 
   maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 
