@@ -1,6 +1,33 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+dnl Libabigail version number is handled here with the major and minor
+dnl version numbers.
 m4_define([version_major],   [2])
 m4_define([version_minor],   [1])
+
+dnl Below are the numbers to handle libabigail.so's versionning
+dnl following the libtool's versionning scheme to handle shared
+dnl libraries' compatibility.
+dnl
+dnl Below are the rules to follow to update the three numbers
+dnl (LIBABIGAIL_SO_CURRENT, LIBABIGAIL_SO_REVISION and LIBABIGAIL_SO_AGE):
+dnl
+dnl 1. If the library source code has changed at all since the last
+dnl    update, then increment LIBABIGAIL_SO_REVISION ('C:R:A' becomes
+dnl    'C:R+1:A').
+dnl 
+dnl 2. If any interfaces have been added, removed, or changed since
+dnl    the last update, increment LIBABIGAIL_SO_CURRENT, and set
+dnl    LIBABIGAIL_REVISION to 0.
+dnl 
+dnl 3. If any interfaces have been added since the last public release,
+dnl    then increment LIBABIGAIL_SO_AGE.
+dnl 
+dnl 4. If any interfaces have been removed or changed since the last
+dnl     public release, then set LIBABIGAIL_SO_AGE to 0.
+m4_define([libabigail_so_current],  [1])
+m4_define([libabigail_so_revision], [0])
+m4_define([libabigail_so_age],      [0])
 
 AC_INIT([libabigail],
 	[version_major.version_minor],
@@ -40,12 +67,18 @@ VERSION_MINOR=version_minor
 VERSION_REVISION=0
 ABIXML_VERSION_MAJOR=2
 ABIXML_VERSION_MINOR=1
+LIBABIGAIL_SO_CURRENT=libabigail_so_current
+LIBABIGAIL_SO_REVISION=libabigail_so_revision
+LIBABIGAIL_SO_AGE=libabigail_so_age
 
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_SUBST(ABIXML_VERSION_MAJOR)
 AC_SUBST(ABIXML_VERSION_MINOR)
+AC_SUBST(LIBABIGAIL_SO_CURRENT)
+AC_SUBST(LIBABIGAIL_SO_REVISION)
+AC_SUBST(LIBABIGAIL_SO_AGE)
 
 dnl This VERSION_SUFFIX environment variable is to allow appending
 dnl arbitrary text to the libabigail version string representation.

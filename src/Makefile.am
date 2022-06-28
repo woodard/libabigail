@@ -47,7 +47,7 @@ libabigail_la_SOURCES += abg-ctf-reader.cc
 endif
 
 libabigail_la_LIBADD = $(DEPS_LIBS) $(FTS_LIBS)
-libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined
+libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined -version-info $(LIBABIGAIL_SO_CURRENT):$(LIBABIGAIL_SO_REVISION):$(LIBABIGAIL_SO_AGE)
 
 CUSTOM_MACROS = -DABIGAIL_ROOT_SYSTEM_LIBDIR=\"${libdir}\"
 
