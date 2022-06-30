@@ -301,6 +301,31 @@ struct type_base::priv
 }; // end struct type_base::priv
 
 // <environment definitions>
+
+/// The hashing functor for a pair of uint64_t.
+struct uint64_t_pair_hash
+{
+  /// Hashing function for a pair of uint64_t.
+  ///
+  /// @param p the pair to hash.
+  uint64_t
+  operator()(const std::pair<uint64_t, uint64_t>& p) const
+  {return abigail::hashing::combine_hashes(p.first, p.second);}
+};
+
+/// A convenience typedef for a pair of uint64_t which is initially
+/// intended to store a pair of pointer values.
+typedef std::pair<uint64_t, uint64_t> uint64_t_pair_type;
+
+/// A convenience typedef for a set of @ref uint64_t_pair
+typedef unordered_set<uint64_t_pair_type,
+		      uint64_t_pair_hash> uint64_t_pairs_set_type;
+/// A convenience typedef for a map which key is a pair of uint64_t
+/// and which value is a boolean.  This is initially intended to cache
+/// the result of comparing two (sub-)types.
+typedef unordered_map<uint64_t_pair_type, bool,
+		      uint64_t_pair_hash> type_comparison_result_type;
+
 /// The private data of the @ref environment type.
 struct environment::priv
 {
@@ -309,8 +334,20 @@ struct environment::priv
   mutable vector<type_base_sptr>	sorted_canonical_types_;
   type_base_sptr			void_type_;
   type_base_sptr			variadic_marker_type_;
-  unordered_set<const class_or_union*>	classes_being_compared_;
-  unordered_set<const function_type*>	fn_types_being_compared_;
+  // The set of pairs of class types being currently compared.  It's
+  // used to avoid endless loops while recursively comparing types.
+  // This should be empty when none of the 'equal' overloads are
+  // currently being invoked.
+  uint64_t_pairs_set_type		classes_being_compared_;
+  // The set of pairs of function types being currently compared.  It's used
+  // to avoid endless loops while recursively comparing types.  This
+  // should be empty when none of the 'equal' overloads are currently
+  // being invoked.
+  uint64_t_pairs_set_type		fn_types_being_compared_;
+  // This is a cache for the result of comparing two sub-types (of
+  // either class or function types) that are designated by their
+  // memory address in the IR.
+  type_comparison_result_type		type_comparison_results_cache_;
   vector<type_base_sptr>		extra_live_types_;
   interned_string_pool			string_pool_;
   // The two vectors below represent the stack of left and right
@@ -386,6 +423,7 @@ struct environment::priv
   bool					do_on_the_fly_canonicalization_;
   bool					decl_only_class_equals_definition_;
   bool					use_enum_binary_only_equality_;
+  bool					allow_type_comparison_results_caching_;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool					self_comparison_debug_on_;
 #endif
@@ -410,7 +448,8 @@ struct environment::priv
     : canonicalization_is_done_(),
       do_on_the_fly_canonicalization_(true),
       decl_only_class_equals_definition_(false),
-      use_enum_binary_only_equality_(true)
+      use_enum_binary_only_equality_(true),
+      allow_type_comparison_results_caching_(false)
 #ifdef WITH_DEBUG_SELF_COMPARISON
     ,
       self_comparison_debug_on_(false)
@@ -422,6 +461,90 @@ struct environment::priv
       debug_die_canonicalization_(false)
 #endif
   {}
+
+  /// Allow caching of the sub-types comparison results during the
+  /// invocation of the @ref equal overloads for class and function
+  /// types.
+  ///
+  /// @param f if true, allow type comparison result caching.
+  void
+  allow_type_comparison_results_caching(bool f)
+  {allow_type_comparison_results_caching_ = f;}
+
+  /// Check whether if caching of the sub-types comparison results during the
+  /// invocation of the @ref equal overloads for class and function
+  /// types is in effect.
+  ///
+  /// @return true iff caching of the sub-types comparison results
+  /// during the invocation of the @ref equal overloads for class and
+  /// function types is in effect.
+  bool
+  allow_type_comparison_results_caching() const
+  {return allow_type_comparison_results_caching_;}
+
+  /// Cache the result of comparing two sub-types.
+  ///
+  /// @param first the first sub-type that has been compared. Its
+  /// address is going to be stored in the cache.
+  ///
+  /// @param second the second sub-type that has been compared. Its
+  /// address is going to be stored in the cache.
+  ///
+  /// @param r the result of comparing @p first and @p second.  This
+  /// is going to be stored in the cache, as well as the addresses of
+  /// @p first and @p second.
+  template<typename T>
+  void
+  cache_type_comparison_result(T& first, T& second, bool r)
+  {
+    if (allow_type_comparison_results_caching())
+      type_comparison_results_cache_.emplace
+	(std::make_pair(reinterpret_cast<uint64_t>(&first),
+			reinterpret_cast<uint64_t>(&second)),
+	 r);
+  }
+
+  /// Retrieve the result of comparing two sub-types from the cache,
+  /// if it was previously stored.
+  ///
+  /// @param first the first sub-type to consider.
+  ///
+  /// @param second the second sub-type to consider.  The pair of
+  /// addresses of {@p first, @p second} is going to be looked up in
+  /// the cache.  If it's present, then the associated result of the
+  /// comparison of @p first against @p second is present as well, and
+  /// is returned.
+  ///
+  /// @param r this is an out parameter which is set to the result of
+  /// the comparison of @p first against @p second if the pair of
+  /// addresses of {@p first, @p second} is present in the cache.
+  ///
+  /// @return true iff the pair of addresses of {@p first, @p second}
+  /// is present in the cache.  In that case, the associated result of
+  /// the comparison of @p first against @p second is returned in the
+  /// argument of @p r.
+  template<typename T>
+  bool
+  is_type_comparison_cached(T& first, T& second, bool& r)
+  {
+    if (!allow_type_comparison_results_caching())
+      return false;
+
+    type_comparison_result_type::const_iterator it =
+      type_comparison_results_cache_.find
+	 (std::make_pair(reinterpret_cast<uint64_t>(&first),
+			 reinterpret_cast<uint64_t>(&second)));
+    if (it == type_comparison_results_cache_.end())
+      return false;
+
+    r = it->second;
+    return true;
+  }
+
+  /// Clear the cache type comparison results.
+  void
+  clear_type_comparison_results_cache()
+  {type_comparison_results_cache_.clear();}
 
   /// Push a pair of operands on the stack of operands of the current
   /// type comparison, during type canonicalization.
@@ -808,56 +931,70 @@ struct class_or_union::priv
 	non_static_data_members_.push_back(*i);
   }
 
-  /// Mark a class or union or union as being currently compared using
-  /// the class_or_union== operator.
+  /// Mark a pair of classes or unions as being currently compared
+  /// using the class_or_union== operator.
   ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union or union. If via the comparison of a
-  /// data member or a member function a recursive re-comparison of
-  /// the class or union is attempted, the marking business help to
+  /// Note that this marking business is to avoid infinite loop when
+  /// comparing a pair of classes or unions. If via the comparison of
+  /// a data member or a member function a recursive re-comparison of
+  /// the class or union is attempted, the marking process helps to
   /// detect that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class or union or union to mark as being
+  /// @param first the class or union (of the pair) to mark as being
   /// currently compared.
+  ///
+  /// @param second the second class or union (of the pair) to mark as
+  /// being currently compared.
   void
-  mark_as_being_compared(const class_or_union& klass) const
+  mark_as_being_compared(const class_or_union& first,
+			 const class_or_union& second) const
   {
-    const environment* env = klass.get_environment();
+    const environment* env = first.get_environment();
     ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.insert(&klass);
+    env->priv_->classes_being_compared_.insert
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>(&second)));
   }
 
-  /// Mark a class or union as being currently compared using the
-  /// class_or_union== operator.
+  /// Mark a pair of classes or unions as being currently compared
+  /// using the class_or_union== operator.
   ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union. If via the comparison of a data
-  /// member or a member function a recursive re-comparison of the
-  /// class or union is attempted, the marking business help to detect
-  /// that infinite loop possibility and avoid it.
+  /// Note that this marking business is to avoid infinite loop when
+  /// comparing a pair of classes or unions. If via the comparison of
+  /// a data member or a member function a recursive re-comparison of
+  /// the class or union is attempted, the marking process helps to
+  /// detect that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class or union to mark as being currently
-  /// compared.
+  /// @param first the class or union (of the pair) to mark as being
+  /// currently compared.
+  ///
+  /// @param second the second class or union (of the pair) to mark as
+  /// being currently compared.
   void
-  mark_as_being_compared(const class_or_union* klass) const
-  {mark_as_being_compared(*klass);}
+  mark_as_being_compared(const class_or_union* first,
+			 const class_or_union* second) const
+  {mark_as_being_compared(*first, *second);}
 
-  /// Mark a class or union as being currently compared using the
-  /// class_or_union== operator.
+  /// Mark a pair of classes or unions as being currently compared
+  /// using the class_or_union== operator.
   ///
-  /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class or union. If via the comparison of a data
-  /// member or a member function a recursive re-comparison of the
-  /// class or union is attempted, the marking business help to detect
-  /// that infinite loop possibility and avoid it.
+  /// Note that this marking business is to avoid infinite loop when
+  /// comparing a pair of classes or unions. If via the comparison of
+  /// a data member or a member function a recursive re-comparison of
+  /// the class or union is attempted, the marking process helps to
+  /// detect that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class or union to mark as being currently
-  /// compared.
+  /// @param first the class or union (of the pair) to mark as being
+  /// currently compared.
+  ///
+  /// @param second the second class or union (of the pair) to mark as
+  /// being currently compared.
   void
-  mark_as_being_compared(const class_or_union_sptr& klass) const
-  {mark_as_being_compared(*klass);}
+  mark_as_being_compared(const class_or_union_sptr& first,
+			 const class_or_union_sptr& second) const
+  {mark_as_being_compared(*first, *second);}
 
-  /// If the instance of class_or_union has been previously marked as
+  /// If a pair of class_or_union has been previously marked as
   /// being compared -- via an invocation of mark_as_being_compared()
   /// this method unmarks it.  Otherwise is has no effect.
   ///
@@ -866,59 +1003,164 @@ struct class_or_union::priv
   /// multi-threaded environment you should probably protect the
   /// access to that static data member with a mutex or somesuch.
   ///
-  /// @param klass the instance of class_or_union to unmark.
+  /// @param first the first instance of class_or_union (of the pair)
+  /// to unmark.
+  ///
+  /// @param second the second instance of class_or_union (of the
+  /// pair) to unmark.
   void
-  unmark_as_being_compared(const class_or_union& klass) const
+  unmark_as_being_compared(const class_or_union& first,
+			   const class_or_union& second) const
   {
-    const environment* env = klass.get_environment();
+    const environment* env = first.get_environment();
     ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.erase(&klass);
+    env->priv_->classes_being_compared_.erase
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>(&second)));
   }
 
-  /// If the instance of class_or_union has been previously marked as
+  /// If a pair of class_or_union has been previously marked as
   /// being compared -- via an invocation of mark_as_being_compared()
   /// this method unmarks it.  Otherwise is has no effect.
   ///
-  /// @param klass the instance of class_or_union to unmark.
+  /// This method is not thread safe because it uses the static data
+  /// member classes_being_compared_.  If you wish to use it in a
+  /// multi-threaded environment you should probably protect the
+  /// access to that static data member with a mutex or somesuch.
+  ///
+  /// @param first the first instance of class_or_union (of the pair)
+  /// to unmark.
+  ///
+  /// @param second the second instance of class_or_union (of the
+  /// pair) to unmark.
   void
-  unmark_as_being_compared(const class_or_union* klass) const
+  unmark_as_being_compared(const class_or_union* first,
+			   const class_or_union* second) const
   {
-    if (klass)
-      return unmark_as_being_compared(*klass);
+    if (!first || !second)
+      return;
+    unmark_as_being_compared(*first, *second);
   }
 
-  /// Test if a given instance of class_or_union is being currently
-  /// compared.
+  /// Test if a pair of class_or_union is being currently compared.
   ///
-  ///@param klass the class or union to test.
+  ///@param first the first class or union (of the pair) to test for.
   ///
-  /// @return true if @p klass is being compared, false otherwise.
+  ///@param second the second class or union (of the pair) to test for.
+  ///
+  /// @return true if the pair {@p first, @p second} is being
+  /// compared, false otherwise.
   bool
-  comparison_started(const class_or_union& klass) const
+  comparison_started(const class_or_union& first,
+		     const class_or_union& second) const
   {
-    const environment* env = klass.get_environment();
+    const environment* env = first.get_environment();
     ABG_ASSERT(env);
-    return env->priv_->classes_being_compared_.count(&klass);
+    return env->priv_->
+      classes_being_compared_.count
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>((&second))));
   }
 
-  /// Test if a given instance of class_or_union is being currently
-  /// compared.
+  /// Test if a pair of class_or_union is being currently compared.
   ///
-  ///@param klass the class or union to test.
+  ///@param first the first class or union (of the pair) to test for.
   ///
-  /// @return true if @p klass is being compared, false otherwise.
+  ///@param second the second class or union (of the pair) to test for.
+  ///
+  /// @return true if the pair {@p first, @p second} is being
+  /// compared, false otherwise.
   bool
-  comparison_started(const class_or_union* klass) const
+  comparison_started(const class_or_union* first,
+		     const class_or_union* second) const
   {
-    if (klass)
-      return comparison_started(*klass);
+    if (first && second)
+      return comparison_started(*first, *second);
     return false;
   }
 }; // end struct class_or_union::priv
+
+// <function_type::priv definitions>
+
+/// The type of the private data of the @ref function_type type.
+struct function_type::priv
+{
+  parameters parms_;
+  type_base_wptr return_type_;
+  interned_string cached_name_;
+  interned_string internal_cached_name_;
+  interned_string temp_internal_cached_name_;
+
+  priv()
+  {}
+
+  priv(const parameters&	parms,
+       type_base_sptr		return_type)
+    : parms_(parms),
+      return_type_(return_type)
+  {}
+
+  priv(type_base_sptr return_type)
+    : return_type_(return_type)
+  {}
+
+  /// Mark a given pair of @ref function_type as being compared.
+  ///
+  /// @param first the first @ref function_type of the pair being
+  /// compared, to mark.
+  ///
+  /// @param second the second @ref function_type of the pair being
+  /// compared, to mark.
+  void
+  mark_as_being_compared(const function_type& first,
+			 const function_type& second) const
+  {
+    const environment* env = first.get_environment();
+    ABG_ASSERT(env);
+    env->priv_->fn_types_being_compared_.insert
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>(&second)));
+  }
+
+  /// Mark a given pair of @ref function_type as being compared.
+  ///
+  /// @param first the first @ref function_type of the pair being
+  /// compared, to mark.
+  ///
+  /// @param second the second @ref function_type of the pair being
+  /// compared, to mark.
+  void
+  unmark_as_being_compared(const function_type& first,
+			   const function_type& second) const
+  {
+    const environment* env = first.get_environment();
+    ABG_ASSERT(env);
+    env->priv_->fn_types_being_compared_.erase
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>(&second)));
+  }
+
+  /// Tests if a @ref function_type is currently being compared.
+  ///
+  /// @param type the function type to take into account.
+  ///
+  /// @return true if @p type is being compared.
+  bool
+  comparison_started(const function_type& first,
+		     const function_type& second) const
+  {
+    const environment* env = first.get_environment();
+    ABG_ASSERT(env);
+    return env->priv_->fn_types_being_compared_.count
+      (std::make_pair(reinterpret_cast<uint64_t>(&first),
+		      reinterpret_cast<uint64_t>(&second)));
+  }
+};// end struc function_type::priv
+
+// </function_type::priv definitions>
 
 } // end namespace ir
 
 } // end namespace abigail
 
 #endif // __ABG_IR_PRIV_H__
-

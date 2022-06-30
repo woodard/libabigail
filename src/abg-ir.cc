@@ -913,8 +913,7 @@ template<typename T>
 bool
 is_comparison_cycle_detected(T& l, T& r)
 {
-  bool result = (l.priv_->comparison_started(l)
-		 || l.priv_->comparison_started(r));
+  bool result = l.priv_->comparison_started(l, r);
   return result ;
 }
 
@@ -962,8 +961,7 @@ template<typename T>
 void
 mark_types_as_being_compared(T& l, T&r)
 {
-  l.priv_->mark_as_being_compared(l);
-  l.priv_->mark_as_being_compared(r);
+  l.priv_->mark_as_being_compared(l, r);
   push_composite_type_comparison_operands(l, r);
 }
 
@@ -982,8 +980,7 @@ template<typename T>
 void
 unmark_types_as_being_compared(T& l, T&r)
 {
-  l.priv_->unmark_as_being_compared(l);
-  l.priv_->unmark_as_being_compared(r);
+  l.priv_->unmark_as_being_compared(l, r);
   pop_composite_type_comparison_operands(l, r);
 }
 
@@ -13907,11 +13904,14 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // Compare types by considering that decl-only classes don't
 	  // equal their definition.
 	  env->decl_only_class_equals_definition(false);
+	  env->priv_->allow_type_comparison_results_caching(true);
 	  bool equal = (types_defined_same_linux_kernel_corpus_public(**it, *t)
 			|| compare_types_during_canonicalization(*it, t));
 	  // Restore the state of the on-the-fly-canonicalization and
 	  // the decl-only-class-being-equal-to-a-matching-definition
 	  // flags.
+	  env->priv_->allow_type_comparison_results_caching(false);
+	  env->priv_->clear_type_comparison_results_cache();
 	  env->do_on_the_fly_canonicalization(false);
 	  env->decl_only_class_equals_definition
 	    (saved_decl_only_class_equals_definition);
@@ -18754,68 +18754,6 @@ var_decl::~var_decl()
 
 // </var_decl definitions>
 
-// <function_type>
-
-/// The type of the private data of the @ref function_type type.
-struct function_type::priv
-{
-  parameters parms_;
-  type_base_wptr return_type_;
-  interned_string cached_name_;
-  interned_string internal_cached_name_;
-  interned_string temp_internal_cached_name_;
-
-  priv()
-  {}
-
-  priv(const parameters&	parms,
-       type_base_sptr		return_type)
-    : parms_(parms),
-      return_type_(return_type)
-  {}
-
-  priv(type_base_sptr return_type)
-    : return_type_(return_type)
-  {}
-
-  /// Mark a given @ref function_type as being compared.
-  ///
-  /// @param type the @ref function_type to mark as being compared.
-  void
-  mark_as_being_compared(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.insert(&type);
-  }
-
-  /// If a given @ref function_type was marked as being compared, this
-  /// function unmarks it.
-  ///
-  /// @param type the @ref function_type to mark as *NOT* being
-  /// compared.
-  void
-  unmark_as_being_compared(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.erase(&type);
-  }
-
-  /// Tests if a @ref function_type is currently being compared.
-  ///
-  /// @param type the function type to take into account.
-  ///
-  /// @return true if @p type is being compared.
-  bool
-  comparison_started(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->fn_types_being_compared_.count(&type);
-  }
-};// end struc function_type::priv
-
 /// This function is automatically invoked whenever an instance of
 /// this type is canonicalized.
 ///
@@ -19050,6 +18988,18 @@ equals(const function_type& l,
 #define RETURN(value) return return_comparison_result(l, r, value)
 
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+
+  {
+    // First of all, let's see if these two function types haven't
+    // already been compared.  If so, and if the result of the
+    // comparison has been cached, let's just re-use it, rather than
+    // comparing them all over again.
+    bool cached_result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r,
+							      cached_result))
+      return cached_result;
+  }
+
   mark_types_as_being_compared(l, r);
 
   bool result = true;
@@ -19177,6 +19127,17 @@ equals(const function_type& l,
       else
 	RETURN(result);
     }
+
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -21583,6 +21544,16 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       RETURN(val);
     }
 
+  {
+    // First of all, let's see if these two types haven't already been
+    // compared.  If so, and if the result of the comparison has been
+    // cached, let's just re-use it, rather than comparing them all
+    // over again.
+    bool result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
+      return result;
+  }
+
   // No need to go further if the classes have different names or
   // different size / alignment.
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
@@ -21703,6 +21674,17 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    RETURN(result);
 	}
   }
+
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -23117,6 +23099,16 @@ maybe_cancel_propagated_canonical_type(const class_or_union& t)
 bool
 equals(const class_decl& l, const class_decl& r, change_kind* k)
 {
+  {
+    // First of all, let's see if these two types haven't already been
+    // compared.  If so, and if the result of the comparison has been
+    // cached, let's just re-use it, rather than comparing them all
+    // over again.
+    bool result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
+      return result;
+  }
+
   // if one of the classes is declaration-only then we take a fast
   // path here.
   if (l.get_is_declaration_only() || r.get_is_declaration_only())
@@ -23263,7 +23255,18 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  }
       }
 
-  RETURN(result);
+    // We are done comparing these two types and we have a full
+    // understanding of how they might be different, if they are.  Let's
+    // cache the result of this comparison -- in case we are asked in a
+    // very near future to compare them again.
+    //
+    // TODO: If further profiling shows its necessity, maybe we should
+    // perform this caching also on the earlier return points of this
+    // function.  That would basically mean to redefine the RETURN macro
+    // to make it perform this caching for us.
+    l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
+
+    RETURN(result);
 #undef RETURN
 }
 

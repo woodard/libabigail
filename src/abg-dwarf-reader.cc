@@ -4156,10 +4156,13 @@ public:
     const environment* e = l->get_environment();
     ABG_ASSERT(!e->canonicalization_is_done());
 
+    e->priv_->allow_type_comparison_results_caching(true);
     bool s0 = e->decl_only_class_equals_definition();
     e->decl_only_class_equals_definition(true);
     bool equal = l == r;
     e->decl_only_class_equals_definition(s0);
+    e->priv_->clear_type_comparison_results_cache();
+    e->priv_->allow_type_comparison_results_caching(false);
     return equal;
   }
 
