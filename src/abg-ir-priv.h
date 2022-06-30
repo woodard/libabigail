@@ -14,6 +14,7 @@
 #define __ABG_IR_PRIV_H__
 
 #include <string>
+#include <iostream>
 
 #include "abg-ir.h"
 #include "abg-corpus.h"
@@ -545,6 +546,48 @@ struct environment::priv
   void
   clear_type_comparison_results_cache()
   {type_comparison_results_cache_.clear();}
+
+  /// Dumps a textual representation (to the standard error output) of
+  /// the content of the set of classes being currently compared using
+  /// the @ref equal overloads.
+  ///
+  /// This function is for debugging purposes.
+  void
+  dump_classes_being_compared()
+  {
+    std::cerr << "classes being compared: " << classes_being_compared_.size()
+	      << "\n"
+	      << "=====================================\n";
+    for (auto& p : classes_being_compared_)
+      {
+	class_or_union* c = reinterpret_cast<class_or_union*>(p.first);
+	std::cerr << "'" << c->get_pretty_representation()
+		  << " / (" << std::hex << p.first << "," << p.second << ")"
+		  << "'\n";
+      }
+    std::cerr << "=====================================\n";
+  }
+
+  /// Dumps a textual representation (to the standard error output) of
+  /// the content of the set of classes being currently compared using
+  /// the @ref equal overloads.
+  ///
+  /// This function is for debugging purposes.
+  void
+  dump_fn_types_being_compared()
+  {
+    std::cerr << "fn_types being compared: " << fn_types_being_compared_.size()
+	      << "\n"
+	      << "=====================================\n";
+    for (auto& p : fn_types_being_compared_)
+      {
+	function_type* c = reinterpret_cast<function_type*>(p.first);
+	std::cerr << "'" << c->get_pretty_representation()
+		  << " / (" << std::hex << p.first << "," << p.second << ")"
+		  << "'\n";
+      }
+    std::cerr << "=====================================\n";
+  }
 
   /// Push a pair of operands on the stack of operands of the current
   /// type comparison, during type canonicalization.
