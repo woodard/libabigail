@@ -9,6 +9,7 @@
 ///
 /// The source code of the Kernel Module Interface Diff tool.
 
+#include "config.h"
 #include <sys/types.h>
 #include <dirent.h>
 #include <cstring>
@@ -59,6 +60,9 @@ struct options
   bool			show_hexadecimal_values;
   bool			show_offsets_sizes_in_bits;
   bool			show_impacted_interfaces;
+#ifdef WITH_CTF
+  bool			use_ctf;
+#endif
   string		wrong_option;
   string		kernel_dist_root1;
   string		kernel_dist_root2;
@@ -80,6 +84,10 @@ struct options
       show_hexadecimal_values(true),
       show_offsets_sizes_in_bits(false),
       show_impacted_interfaces(false)
+#ifdef WITH_CTF
+      ,
+      use_ctf(false)
+#endif
   {}
 }; // end struct options.
 
@@ -106,6 +114,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --suppressions|--suppr <path>  specify a suppression file\n"
     << " --kmi-whitelist|-w <path>  path to a kernel module interface "
     "whitelist\n"
+#ifdef WITH_CTF
+    << " --ctf use CTF instead of DWARF in ELF files\n"
+#endif
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
 	 "interfaces\n"
@@ -241,6 +252,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
+#ifdef WITH_CTF
+      else if (!strcmp(argv[i], "--ctf"))
+	opts.use_ctf = true;
+#endif
       else if (!strcmp(argv[i], "--impacted-interfaces")
 	       || !strcmp(argv[i], "-i"))
 	opts.show_impacted_interfaces = true;
@@ -395,6 +410,12 @@ main(int argc, char* argv[])
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;
+  corpus::origin origin =
+#ifdef WITH_CTF
+   opts.use_ctf ? corpus::CTF_ORIGIN :
+#endif
+   corpus::DWARF_ORIGIN;
+
   if (!opts.kernel_dist_root1.empty())
     {
       file_type ftype = guess_file_type(opts.kernel_dist_root1);
@@ -412,7 +433,7 @@ main(int argc, char* argv[])
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
 						      opts.verbose,
-						      env);
+						      env, origin);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
@@ -438,7 +459,7 @@ main(int argc, char* argv[])
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
 						      opts.verbose,
-						      env);
+						      env, origin);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
