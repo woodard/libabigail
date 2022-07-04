@@ -15288,6 +15288,7 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
       || is_qualified_type(peeled_type)
+      || is_enum_type(peeled_type)
       || is_typedef(t))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
@@ -15344,6 +15345,7 @@ maybe_canonicalize_type(const type_base_sptr& t,
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
       || is_qualified_type(peeled_type)
+      || is_enum_type(peeled_type)
       ||(is_decl(peeled_type) && is_decl(peeled_type)->get_is_anonymous()))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is

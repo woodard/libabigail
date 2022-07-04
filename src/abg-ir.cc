@@ -13830,28 +13830,27 @@ type_base::get_canonical_type_for(type_base_sptr t)
     // This type should not be canonicalized!
     return type_base_sptr();
 
+  if (is_decl(t))
+    t = is_type(look_through_decl_only(is_decl(t)));
+
+  // Look through decl-only types (classes, unions and enums)
   bool decl_only_class_equals_definition =
     (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
 
   class_or_union_sptr class_or_union = is_class_or_union_type(t);
 
-  // Look through declaration-only classes when we are dealing with
-  // C++ or languages where we assume the "One Definition Rule".  In
-  // that context, we assume that a declaration-only non-anonymous
-  // class equals all fully defined classes of the same name.
+  // In the context of types from C++ or languages where we assume the
+  // "One Definition Rule", we assume that a declaration-only
+  // non-anonymous class equals all fully defined classes of the same
+  // name.
   //
   // Otherwise, all classes, including declaration-only classes are
   // canonicalized and only canonical comparison is going to be used
   // in the system.
   if (decl_only_class_equals_definition)
     if (class_or_union)
-      {
-	class_or_union = look_through_decl_only_class(class_or_union);
-	if (class_or_union->get_is_declaration_only())
-	  return type_base_sptr();
-	else
-	  t = class_or_union;
-      }
+      if (class_or_union->get_is_declaration_only())
+	return type_base_sptr();
 
   class_decl_sptr is_class = is_class_type(t);
   if (t->get_canonical_type())
@@ -17694,7 +17693,43 @@ bool
 equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 {
   bool result = true;
-  if (*l.get_underlying_type() != *r.get_underlying_type())
+
+  //
+  // Look through decl-only-enum.
+  //
+
+  const enum_type_decl *def1 =
+    l.get_is_declaration_only()
+    ? is_enum_type(l.get_naked_definition_of_declaration())
+    : &l;
+
+  const enum_type_decl *def2 =
+    r.get_is_declaration_only()
+    ? is_enum_type(r.get_naked_definition_of_declaration())
+    : &r;
+
+  if (!!def1 != !!def2)
+    {
+      // One enum is decl-only while the other is not.
+      // So the two enums are different.
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	ABG_RETURN_FALSE;
+    }
+
+  //
+  // At this point, both enums have the same state of decl-only-ness.
+  // So we can compare oranges to oranges.
+  //
+
+  if (!def1)
+    def1 = &l;
+  if (!def2)
+    def2 = &r;
+
+  if (def1->get_underlying_type() != def2->get_underlying_type())
     {
       result = false;
       if (k)
@@ -17703,14 +17738,15 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	ABG_RETURN_FALSE;
     }
 
-  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+  if (!(def1->decl_base::operator==(*def2)
+	&& def1->type_base::operator==(*def2)))
     {
       result = false;
       if (k)
 	{
-	  if (!l.decl_base::operator==(r))
+	  if (!def1->decl_base::operator==(*def2))
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
-	  if (!l.type_base::operator==(r))
+	  if (!def1->type_base::operator==(*def2))
 	    *k |= LOCAL_TYPE_CHANGE_KIND;
 	}
       else
@@ -17741,11 +17777,28 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
   //                    //     of the enumerator e1.
   //     };
   //
+  //     Note however that in the case below, the enums are different.
+  //
+  // enum foo
+  // {
+  //   e0 = 0;
+  //   e1 = 1;
+  // };
+  //
+  // enum foo
+  // {
+  //   e0 = 0;
+  //   e2 = 1;  // <-- this enum value is present in the first version
+  //            // of foo, but is not redundant with any enumerator
+  //            // in the second version of of enum foo.
+  // };
+  //
   // These two enums are considered equal.
 
-  for(const auto &e : l.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, r)
-	&& !is_enumerator_value_redundant(e, r))
+  for(const auto &e : def1->get_enumerators())
+    if (!is_enumerator_present_in_enum(e, *def2)
+	&& (!is_enumerator_value_redundant(e, *def2)
+	    || !is_enumerator_value_redundant(e, *def1)))
       {
 	result = false;
 	if (k)
@@ -17757,9 +17810,10 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	  ABG_RETURN_FALSE;
       }
 
-  for(const auto &e : r.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, l)
-	&& !is_enumerator_value_redundant(e, r))
+  for(const auto &e : def2->get_enumerators())
+    if (!is_enumerator_present_in_enum(e, *def1)
+	&& (!is_enumerator_value_redundant(e, *def1)
+	    || !is_enumerator_value_redundant(e, *def2)))
       {
 	result = false;
 	if (k)
