@@ -764,6 +764,327 @@ static InOutSpec in_out_specs[] =
     "output/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt"
   },
 #endif // WITH_DEB
+#ifdef WITH_CTF
+  // Specific test entries for CTF.
+
+  // dir1 contains a suppr spec - it should be ignored.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-0-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-0-dir2",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-0-report-0.txt",
+    "output/test-diff-pkg-ctf/dirpkg-0-report-0.txt"
+  },
+  // dir2 contains a suppr spec - it should be recognized.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-1-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-1-dir2",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-1-report-0.txt",
+    "output/test-diff-pkg-ctf/dirpkg-1-report-0.txt"
+  },
+  // dir2 contains a suppr spec but --no-abignore is specified,
+  // the file should be ignored.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-1-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-1-dir2",
+    "--ctf --no-default-suppression --no-abignore",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-1-report-1.txt",
+    "output/test-diff-pkg-ctf/dirpkg-1-report-1.txt"
+  },
+  // dir2 contains several suppr spec files, ".abignore" and
+  // "dir.abignore", so the specs should be merged.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-2-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-2-dir2",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-2-report-0.txt",
+    "output/test-diff-pkg-ctf/dirpkg-2-report-0.txt"
+  },
+  // dir2 contains a suppr spec file, ".abignore" and
+  // an additional suppr file is specified on the command line,
+  // so the specs should be merged.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-3-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-3-dir2",
+    "--ctf --no-default-suppression",
+    "data/test-diff-pkg-ctf/dirpkg-3.suppr",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-3-report-0.txt",
+    "output/test-diff-pkg-ctf/dirpkg-3-report-0.txt"
+  },
+  // dir2 contains a suppr spec file, ".abignore", which should
+  // be ignored because of the program options  and
+  // an additional suppr file is specified on the command line,
+  // which should be recognized.
+  {
+    "data/test-diff-pkg-ctf/dirpkg-3-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-3-dir2",
+    "--ctf --no-default-suppression --no-abignore",
+    "data/test-diff-pkg-ctf/dirpkg-3.suppr",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-3-report-1.txt",
+    "output/test-diff-pkg-ctf/dirpkg-3-report-1.txt"
+  },
+  { // Just like the previous tests, but loc info is emitted.
+    "data/test-diff-pkg-ctf/dirpkg-3-dir1",
+    "data/test-diff-pkg-ctf/dirpkg-3-dir2",
+    "--no-default-suppression --no-abignore",
+    "data/test-diff-pkg-ctf/dirpkg-3.suppr",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/dirpkg-3-report-2.txt",
+    "output/test-diff-pkg-ctf/dirpkg-3-report-2.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/symlink-dir-test1/dir1/symlinks",
+    "data/test-diff-pkg-ctf/symlink-dir-test1/dir2/symlinks",
+    "--ctf --no-default-suppression ",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/symlink-dir-test1-report0.txt ",
+    "output/test-diff-pkg-ctf/symlink-dir-test1-report0.txt "
+  },
+#if WITH_TAR
+  {
+    "data/test-diff-pkg-ctf/tarpkg-0-dir1.tar",
+    "data/test-diff-pkg-ctf/tarpkg-0-dir2.tar",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg-ctf/tarpkg-0-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/tarpkg-0-dir1.ta",
+    "data/test-diff-pkg-ctf/tarpkg-0-dir2.ta",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg-ctf/tarpkg-0-report-01.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/tarpkg-0-dir1.tar.gz",
+    "data/test-diff-pkg-ctf/tarpkg-0-dir2.tar.gz",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg-ctf/tarpkg-0-report-02.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/tarpkg-0-dir1.tar.bz2",
+    "data/test-diff-pkg-ctf/tarpkg-0-dir2.tar.bz2",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg-ctf/tarpkg-0-report-03.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/tarpkg-1-dir1.tar.gz",
+    "data/test-diff-pkg-ctf/tarpkg-1-dir2.tar.gz",
+    "--ctf --no-default-suppression --dso-only",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/tarpkg-1-report-0.txt",
+    "output/test-diff-pkg-ctf/tarpkg-1-report-0.txt"
+  },
+#endif //WITH_TAR
+#ifdef WITH_RPM
+  // Two RPM packages with CTF debuginfo available and have ABI changes
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-5.x86_64.rpm",
+    "--ctf --no-default-suppression --private-dso",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-0.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-0.txt"
+  },
+  // Two RPM packages with 2nd package debuginfo missing (no -gctf)
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-5-no-ctf.x86_64.rpm",
+    "--ctf --no-default-suppression --private-dso",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-1.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-1.txt"
+  },
+
+  // Two RPM packages with first package debuginfo missing (no -gctf)
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-5-no-ctf.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "--ctf --no-default-suppression --private-dso",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-2.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-2.txt"
+  },
+
+  // Two RPM packages with missing debuginfo
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-5-no-ctf.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4-no-ctf.x86_64.rpm",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-3.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-3.txt"
+  },
+
+  // Two RPM packages with no ABI change
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-4.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-4.txt"
+  },
+  // Two RPM packages with debuginfo available and we don't want to
+  // see added symbols.
+  {
+    "data/test-diff-pkg-ctf/libdwarf-20180129-4.x86_64.rpm",
+    "data/test-diff-pkg-ctf/libdwarf-20180129-5.x86_64.rpm",
+    "--ctf --no-default-suppression --no-added-syms",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/test-rpm-report-5.txt",
+    "output/test-diff-pkg-ctf/test-rpm-report-5.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-1.x86_64.rpm",
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-2.x86_64.rpm",
+    "--ctf --no-default-suppression --no-added-syms",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-report-0.txt",
+    "output/test-diff-pkg-ctf/elfutils-libelf-0.186-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-1.x86_64.rpm",
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-2.x86_64.rpm",
+    "--ctf",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/elfutils-libelf-0.186-report-1.txt",
+    "output/test-diff-pkg-ctf/elfutils-libelf-0.186-report-1.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/cracklib-2.9.6-15-ol8u0.x86_64.rpm",
+    "data/test-diff-pkg-ctf/cracklib-2.9.6-15-ol8u6.x86_64.rpm",
+    "--ctf",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/cracklib-2.9.6-15-ol8.x86_64-report-0.txt",
+    "output/test-diff-pkg-ctf/cracklib-2.9.6-15-ol8.x86_64-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg-ctf/gmp-6.1.2-8-ol8u0.x86_64.rpm",
+    "data/test-diff-pkg-ctf/gmp-6.2.0-10-ol9u0.x86_64.rpm",
+    "--ctf --no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/gmp-6.x.x86_64-report-0.txt",
+    "output/test-diff-pkg-ctf/gmp-6.x.x86_64-report-0.txt"
+  },
+  // Even when CTF is thinking to be resided along with binary
+  // files, it could be stripped out in an external location.
+  {
+    "data/test-diff-pkg-ctf/isl-0.16.1-6.x86_64.rpm",
+    "data/test-diff-pkg-ctf/isl-0.16.1-7.x86_64.rpm",
+    "--ctf --no-default-suppression",
+    "",
+    "data/test-diff-pkg-ctf/isl-debuginfo-0.16.1-6.x86_64.rpm",
+    "data/test-diff-pkg-ctf/isl-debuginfo-0.16.1-7.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg-ctf/isl-0.16.1-report-0.txt",
+    "output/test-diff-pkg-ctf/isl-0.16.1-report-0.txt"
+  },
+#endif //WITH_RPM
+#endif //WITH_CTF
   // This should be the last entry.
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };

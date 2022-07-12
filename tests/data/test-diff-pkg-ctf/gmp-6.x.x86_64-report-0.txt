@@ -1,0 +1,176 @@
+================ changes of 'libgmp.so.10.3.2'===============
+  Functions changes summary: 25 Removed, 0 Changed (1 filtered out), 85 Added functions
+  Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
+  Function symbols changes summary: 3 Removed, 21 Added function symbols not referenced by debug info
+  Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
+
+  25 Removed functions:
+
+    [D] 'function mp_limb_t __gmpn_add_n_bobcat(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_bobcat}
+    [D] 'function mp_limb_t __gmpn_addmul_1_bobcat(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_bobcat}
+    [D] 'function mp_limb_t __gmpn_addmul_2_x86_64(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr)'    {__gmpn_addmul_2_x86_64}
+    [D] 'function void __gmpn_copyd_bobcat(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyd_bobcat}
+    [D] 'function void __gmpn_copyi_bobcat(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyi_bobcat}
+    [D] 'function void __gmpn_dcpi1_bdiv_q_n(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_limb_t, mp_ptr)'    {__gmpn_dcpi1_bdiv_q_n}
+    [D] 'function mp_size_t __gmpn_dcpi1_bdiv_q_n_itch(mp_size_t)'    {__gmpn_dcpi1_bdiv_q_n_itch}
+    [D] 'function mp_limb_t __gmpn_dcpi1_divappr_q_n(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, gmp_pi1_t*, mp_ptr)'    {__gmpn_dcpi1_divappr_q_n}
+    [D] 'function mp_limb_t __gmpn_gcd_1_bd1(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_bd1}
+    [D] 'function mp_limb_t __gmpn_gcd_1_core2(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_core2}
+    [D] 'function mp_limb_t __gmpn_gcd_1_init(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_init}
+    [D] 'function mp_limb_t __gmpn_gcd_1_k10(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_k10}
+    [D] 'function mp_limb_t __gmpn_gcd_1_nano(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_nano}
+    [D] 'function mp_limb_t __gmpn_gcd_1_x86_64(mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_gcd_1_x86_64}
+    [D] 'function void __gmpn_matrix22_mul_strassen(mp_ptr, mp_ptr, mp_ptr, mp_ptr, mp_size_t, mp_srcptr, mp_srcptr, mp_srcptr, mp_srcptr, mp_size_t, mp_ptr)'    {__gmpn_matrix22_mul_strassen}
+    [D] 'function mp_size_t __gmpn_mu_div_qr_choose_in(mp_size_t, mp_size_t, int)'    {__gmpn_mu_div_qr_choose_in}
+    [D] 'function mp_size_t __gmpn_mu_divappr_q_choose_in(mp_size_t, mp_size_t, int)'    {__gmpn_mu_divappr_q_choose_in}
+    [D] 'function mp_limb_t __gmpn_mul_1_bobcat(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_bobcat}
+    [D] 'function void __gmpn_mul_basecase_bobcat(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_mul_basecase_bobcat}
+    [D] 'function mp_limb_t __gmpn_preinv_mu_divappr_q(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t, mp_ptr)'    {__gmpn_preinv_mu_divappr_q}
+    [D] 'function mp_limb_t __gmpn_redc_1_bobcat(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_redc_1_bobcat}
+    [D] 'function void __gmpn_set_str_compute_powtab(powers_t*, mp_ptr, mp_size_t, int)'    {__gmpn_set_str_compute_powtab}
+    [D] 'function void __gmpn_sqr_basecase_bobcat(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_sqr_basecase_bobcat}
+    [D] 'function mp_limb_t __gmpn_sub_n_bobcat(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_bobcat}
+    [D] 'function mp_limb_t __gmpn_submul_1_bobcat(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_bobcat}
+
+  85 Added functions:
+
+    [A] 'function void __gmp_default_reallocate2(void*, size_t, size_t)'    {__gmp_default_reallocate2}
+    [A] 'function mp_limb_t __gmpn_add_n_bd1(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_bd1}
+    [A] 'function mp_limb_t __gmpn_add_n_bt1(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_bt1}
+    [A] 'function mp_limb_t __gmpn_add_n_coreihwl(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_coreihwl}
+    [A] 'function mp_limb_t __gmpn_add_n_goldmont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_goldmont}
+    [A] 'function mp_limb_t __gmpn_add_n_silvermont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_add_n_silvermont}
+    [A] 'function mp_limb_t __gmpn_addlsh1_n_silvermont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_addlsh1_n_silvermont}
+    [A] 'function mp_limb_t __gmpn_addlsh1_n_zen(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_addlsh1_n_zen}
+    [A] 'function mp_limb_t __gmpn_addlsh2_n_silvermont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_addlsh2_n_silvermont}
+    [A] 'function mp_limb_t __gmpn_addmul_1_bt1(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_bt1}
+    [A] 'function mp_limb_t __gmpn_addmul_1_goldmont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_goldmont}
+    [A] 'function mp_limb_t __gmpn_addmul_1_pentium4(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_pentium4}
+    [A] 'function mp_limb_t __gmpn_addmul_1_silvermont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_silvermont}
+    [A] 'function mp_limb_t __gmpn_addmul_1_zen(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_addmul_1_zen}
+    [A] 'function mp_limb_t __gmpn_addmul_2_bd1(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr)'    {__gmpn_addmul_2_bd1}
+    [A] 'function mp_limb_t __gmpn_addmul_2_fat(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr)'    {__gmpn_addmul_2_fat}
+    [A] 'function mp_limb_t __gmpn_addmul_2_k8(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr)'    {__gmpn_addmul_2_k8}
+    [A] 'function mp_limb_t __gmpn_addmul_2_pentium4(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr)'    {__gmpn_addmul_2_pentium4}
+    [A] 'function mp_limb_t __gmpn_cnd_add_n_atom(mp_limb_t, mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_cnd_add_n_atom}
+    [A] 'function mp_limb_t __gmpn_cnd_add_n_coreisbr(mp_limb_t, mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_cnd_add_n_coreisbr}
+    [A] 'function mp_limb_t __gmpn_cnd_sub_n_atom(mp_limb_t, mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_cnd_sub_n_atom}
+    [A] 'function mp_limb_t __gmpn_cnd_sub_n_coreisbr(mp_limb_t, mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_cnd_sub_n_coreisbr}
+    [A] 'function void __gmpn_com_bt2(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_com_bt2}
+    [A] 'function void __gmpn_com_core2(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_com_core2}
+    [A] 'function void __gmpn_com_zen(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_com_zen}
+    [A] 'function size_t __gmpn_compute_powtab(powers_t*, mp_ptr, mp_size_t, int)'    {__gmpn_compute_powtab}
+    [A] 'function void __gmpn_copyd_bt1(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyd_bt1}
+    [A] 'function void __gmpn_copyd_bt2(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyd_bt2}
+    [A] 'function void __gmpn_copyd_zen(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyd_zen}
+    [A] 'function void __gmpn_copyi_bt1(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyi_bt1}
+    [A] 'function void __gmpn_copyi_bt2(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyi_bt2}
+    [A] 'function void __gmpn_copyi_zen(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_copyi_zen}
+    [A] 'function int __gmpn_fib2m(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_fib2m}
+    [A] 'function mp_limb_t __gmpn_gcd_11_bd1(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_bd1}
+    [A] 'function mp_limb_t __gmpn_gcd_11_bt1(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_bt1}
+    [A] 'function mp_limb_t __gmpn_gcd_11_bt2(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_bt2}
+    [A] 'function mp_limb_t __gmpn_gcd_11_core2(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_core2}
+    [A] 'function mp_limb_t __gmpn_gcd_11_coreisbr(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_coreisbr}
+    [A] 'function mp_limb_t __gmpn_gcd_11_init(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_init}
+    [A] 'function mp_limb_t __gmpn_gcd_11_k10(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_k10}
+    [A] 'function mp_limb_t __gmpn_gcd_11_nano(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_nano}
+    [A] 'function mp_limb_t __gmpn_gcd_11_x86_64(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_x86_64}
+    [A] 'function mp_limb_t __gmpn_gcd_11_zen(mp_limb_t, mp_limb_t)'    {__gmpn_gcd_11_zen}
+    [A] 'function mp_double_limb_t __gmpn_gcd_22(mp_limb_t, mp_limb_t, mp_limb_t, mp_limb_t)'    {__gmpn_gcd_22}
+    [A] 'function mp_limb_t __gmpn_lshift_silvermont(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_lshift_silvermont}
+    [A] 'function mp_limb_t __gmpn_lshift_zen(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_lshift_zen}
+    [A] 'function mp_limb_t __gmpn_lshiftc_silvermont(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_lshiftc_silvermont}
+    [A] 'function mp_limb_t __gmpn_lshiftc_zen(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_lshiftc_zen}
+    [A] 'function mp_limb_t __gmpn_mul_1_bt1(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_bt1}
+    [A] 'function mp_limb_t __gmpn_mul_1_goldmont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_goldmont}
+    [A] 'function mp_limb_t __gmpn_mul_1_pentium4(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_pentium4}
+    [A] 'function mp_limb_t __gmpn_mul_1_silvermont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_silvermont}
+    [A] 'function mp_limb_t __gmpn_mul_1_zen(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_mul_1_zen}
+    [A] 'function void __gmpn_mul_basecase_bt1(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_mul_basecase_bt1}
+    [A] 'function void __gmpn_mul_basecase_pentium4(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_mul_basecase_pentium4}
+    [A] 'function void __gmpn_mul_basecase_silvermont(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_mul_basecase_silvermont}
+    [A] 'function void __gmpn_mul_basecase_zen(mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t)'    {__gmpn_mul_basecase_zen}
+    [A] 'function void __gmpn_mullo_basecase_coreibwl(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_mullo_basecase_coreibwl}
+    [A] 'function void __gmpn_mullo_basecase_pentium4(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_mullo_basecase_pentium4}
+    [A] 'function void __gmpn_mullo_basecase_silvermont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_mullo_basecase_silvermont}
+    [A] 'function void __gmpn_mullo_basecase_zen(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_mullo_basecase_zen}
+    [A] 'function mp_limb_t __gmpn_redc_1_bt1(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_redc_1_bt1}
+    [A] 'function mp_limb_t __gmpn_redc_1_goldmont(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_redc_1_goldmont}
+    [A] 'function mp_limb_t __gmpn_redc_1_pentium4(mp_ptr, mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_redc_1_pentium4}
+    [A] 'function mp_limb_t __gmpn_rshift_silvermont(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_rshift_silvermont}
+    [A] 'function mp_limb_t __gmpn_rshift_zen(mp_ptr, mp_srcptr, mp_size_t, unsigned int)'    {__gmpn_rshift_zen}
+    [A] 'function mp_limb_t __gmpn_sbpi1_bdiv_r(mp_ptr, mp_size_t, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_sbpi1_bdiv_r}
+    [A] 'function void __gmpn_sqr_basecase_bt1(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_sqr_basecase_bt1}
+    [A] 'function void __gmpn_sqr_basecase_pentium4(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_sqr_basecase_pentium4}
+    [A] 'function void __gmpn_sqr_basecase_silvermont(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_sqr_basecase_silvermont}
+    [A] 'function void __gmpn_sqr_basecase_zen(mp_ptr, mp_srcptr, mp_size_t)'    {__gmpn_sqr_basecase_zen}
+    [A] 'function int __gmpn_strongfibo(mp_srcptr, mp_size_t, mp_ptr)'    {__gmpn_strongfibo}
+    [A] 'function mp_limb_t __gmpn_sub_n_bd1(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_bd1}
+    [A] 'function mp_limb_t __gmpn_sub_n_bt1(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_bt1}
+    [A] 'function mp_limb_t __gmpn_sub_n_coreihwl(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_coreihwl}
+    [A] 'function mp_limb_t __gmpn_sub_n_goldmont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_goldmont}
+    [A] 'function mp_limb_t __gmpn_sub_n_silvermont(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sub_n_silvermont}
+    [A] 'function mp_limb_t __gmpn_sublsh1_n_zen(mp_ptr, mp_srcptr, mp_srcptr, mp_size_t)'    {__gmpn_sublsh1_n_zen}
+    [A] 'function mp_limb_t __gmpn_submul_1_bt1(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_bt1}
+    [A] 'function mp_limb_t __gmpn_submul_1_goldmont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_goldmont}
+    [A] 'function mp_limb_t __gmpn_submul_1_pentium4(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_pentium4}
+    [A] 'function mp_limb_t __gmpn_submul_1_silvermont(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_silvermont}
+    [A] 'function mp_limb_t __gmpn_submul_1_zen(mp_ptr, mp_srcptr, mp_size_t, mp_limb_t)'    {__gmpn_submul_1_zen}
+    [A] 'function int __gmpz_lucas_mod(mpz_ptr, mpz_ptr, long int, mp_bitcnt_t, mpz_srcptr, mpz_ptr, mpz_ptr)'    {__gmpz_lucas_mod}
+    [A] 'function int __gmpz_stronglucas(mpz_srcptr, mpz_ptr, mpz_ptr)'    {__gmpz_stronglucas}
+
+  1 Changed variable:
+
+    [C] 'cpuvec_t __gmpn_cpuvec' was changed:
+      type of variable changed:
+        type size hasn't changed
+        1 data member change:
+          type of 'typedef mp_limb_t (typedef mp_srcptr, typedef mp_size_t, typedef mp_limb_t)* gcd_1' changed:
+            in pointed to type 'function type typedef mp_limb_t (typedef mp_srcptr, typedef mp_size_t, typedef mp_limb_t)':
+              parameter 1 of type 'typedef mp_srcptr' changed:
+                typedef name changed from mp_srcptr to mp_limb_t
+                underlying type 'const mp_limb_t*' changed:
+                  entity changed from 'const mp_limb_t*' to 'unsigned long int'
+                  type size hasn't changed
+              parameter 2 of type 'typedef mp_size_t' changed:
+                typedef name changed from mp_size_t to mp_limb_t
+                underlying type 'long int' changed:
+                  type name changed from 'long int' to 'unsigned long int'
+                  type size hasn't changed
+                  mangled name changed from 'long int' to unsigned long int
+              parameter 3 of type 'typedef mp_limb_t' was removed
+          and name of 'cpuvec_t::gcd_1' changed to 'cpuvec_t::gcd_11'
+
+  3 Removed function symbols not referenced by debug info:
+
+    [D] __gmpn_add_nc_bobcat
+    [D] __gmpn_mul_1c_bobcat
+    [D] __gmpn_sub_nc_bobcat
+
+  21 Added function symbols not referenced by debug info:
+
+    [A] __gmpn_add_nc_bd1
+    [A] __gmpn_add_nc_bt1
+    [A] __gmpn_add_nc_coreihwl
+    [A] __gmpn_add_nc_goldmont
+    [A] __gmpn_add_nc_silvermont
+    [A] __gmpn_addlsh1_nc_zen
+    [A] __gmpn_addmul_1c_silvermont
+    [A] __gmpn_gcd_11
+    [A] __gmpn_mul_1c_bt1
+    [A] __gmpn_mul_1c_coreisbr
+    [A] __gmpn_mul_1c_goldmont
+    [A] __gmpn_mul_1c_pentium4
+    [A] __gmpn_mul_1c_silvermont
+    [A] __gmpn_mul_1c_zen
+    [A] __gmpn_sub_nc_bd1
+    [A] __gmpn_sub_nc_bt1
+    [A] __gmpn_sub_nc_coreihwl
+    [A] __gmpn_sub_nc_goldmont
+    [A] __gmpn_sub_nc_silvermont
+    [A] __gmpn_sublsh1_nc_zen
+    [A] __gmpn_submul_1c_silvermont
+
+================ end of changes of 'libgmp.so.10.3.2'===============
+

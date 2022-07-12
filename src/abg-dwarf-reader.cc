@@ -14986,8 +14986,7 @@ build_function_decl(read_context&	ctxt,
 	{
 	  result->set_symbol(fn_sym);
 	  string linkage_name = result->get_linkage_name();
-	  if (linkage_name.empty()
-	      || !fn_sym->get_alias_from_name(linkage_name))
+	  if (linkage_name.empty())
 	    result->set_linkage_name(fn_sym->get_name());
 	  result->set_is_in_public_symbol_table(true);
 	}
