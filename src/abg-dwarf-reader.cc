@@ -4156,10 +4156,13 @@ public:
     const environment* e = l->get_environment();
     ABG_ASSERT(!e->canonicalization_is_done());
 
+    e->priv_->allow_type_comparison_results_caching(true);
     bool s0 = e->decl_only_class_equals_definition();
     e->decl_only_class_equals_definition(true);
     bool equal = l == r;
     e->decl_only_class_equals_definition(s0);
+    e->priv_->clear_type_comparison_results_cache();
+    e->priv_->allow_type_comparison_results_caching(false);
     return equal;
   }
 
@@ -14983,8 +14986,7 @@ build_function_decl(read_context&	ctxt,
 	{
 	  result->set_symbol(fn_sym);
 	  string linkage_name = result->get_linkage_name();
-	  if (linkage_name.empty()
-	      || !fn_sym->get_alias_from_name(linkage_name))
+	  if (linkage_name.empty())
 	    result->set_linkage_name(fn_sym->get_name());
 	  result->set_is_in_public_symbol_table(true);
 	}
@@ -15285,6 +15287,7 @@ maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
       || is_qualified_type(peeled_type)
+      || is_enum_type(peeled_type)
       || is_typedef(t))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is
@@ -15341,6 +15344,7 @@ maybe_canonicalize_type(const type_base_sptr& t,
       || is_function_type(peeled_type)
       || is_array_type(peeled_type)
       || is_qualified_type(peeled_type)
+      || is_enum_type(peeled_type)
       ||(is_decl(peeled_type) && is_decl(peeled_type)->get_is_anonymous()))
     // We delay canonicalization of classes/unions or typedef,
     // pointers, references and array to classes/unions.  This is

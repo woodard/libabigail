@@ -13,7 +13,11 @@ binaries.
 For a comprehensive ABI change report that includes changes about
 function and variable sub-types, the two input packages must be
 accompanied with their debug information packages that contain debug
-information in `DWARF`_ format.
+information either in `DWARF`_ or in `CTF` formats.  Please note
+however that some packages contain binaries that embed the debug
+information directly in a section of said binaries.  In those cases,
+obviously, no separate debug information package is needed as the tool
+will find the debug information inside the binaries.
 
 
 .. _abipkgdiff_invocation_label:
@@ -470,7 +474,8 @@ Options
 
   * ``--ctf``
 
-     This is used to compare packages with CTF debug information, if present.
+     This is used to compare packages with CTF debug information, if
+     present.
 
 .. _abipkgdiff_return_value_label:
 

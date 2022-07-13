@@ -165,6 +165,10 @@ Options
     the :ref:`default suppression specification files
     <abidiff_default_supprs_label>` are loaded .
 
+  * ``--ctf``
+
+    Extract ABI information from CTF debug information, if present in
+    the Kernel and Modules.
 
   * ``--impacted-interfaces | -i``
 

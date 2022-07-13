@@ -43,6 +43,8 @@ namespace abigail
 namespace ctf_reader
 {
 using std::dynamic_pointer_cast;
+using abigail::tools_utils::dir_name;
+using abigail::tools_utils::file_exists;
 
 class read_context
 {
@@ -1515,6 +1517,42 @@ slurp_elf_info(read_context *ctxt,
   status |= elf_reader::STATUS_OK;
 }
 
+/// Looks for vmlinux.ctfa file in default directory or in
+/// directories provided by debug-info-dir command line option,
+/// it stores location path in @ref ctfa_file.
+///
+/// @param ctxt the read context.
+/// @param ctfa_file file name found.
+/// @return true if file is found.
+static bool
+find_ctfa_file(read_context *ctxt, std::string& ctfa_file)
+{
+  std::string ctfa_dirname;
+  dir_name(ctxt->filename, ctfa_dirname, false);
+
+  // In corpus group we assume vmlinux as first file to
+  // be processed, so default location for vmlinux.cfa
+  // is vmlinux dirname.
+  ctfa_file = ctfa_dirname + "/vmlinux.ctfa";
+  if (file_exists(ctfa_file))
+    return true;
+
+  // If it's proccessing a module, then location directory
+  // for vmlinux.ctfa should be provided with --debug-info-dir
+  // option.
+  for (vector<char**>::const_iterator i = ctxt->debug_info_root_paths_.begin();
+       i != ctxt->debug_info_root_paths_.end();
+       ++i)
+    {
+      ctfa_dirname = **i;
+      ctfa_file = ctfa_dirname + "/vmlinux.ctfa";
+      if (file_exists(ctfa_file))
+        return true;
+    }
+
+  return false;
+}
+
 /// Create and return a new read context to process CTF information
 /// from a given ELF file.
 ///
@@ -1577,12 +1615,11 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
   int errp;
   if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
     {
-      std::string filename;
-      if (tools_utils::base_name(ctxt->filename, filename)
-          && filename == "vmlinux")
+      if (ctxt->ctfa == NULL)
         {
-          std::string vmlinux_ctfa_path = ctxt->filename + ".ctfa";
-          ctxt->ctfa = ctf_arc_open(vmlinux_ctfa_path.c_str(), &errp);
+          std::string ctfa_filename;
+          if (find_ctfa_file(ctxt, ctfa_filename))
+            ctxt->ctfa = ctf_arc_open(ctfa_filename.c_str(), &errp);
         }
     }
   else

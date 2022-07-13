@@ -204,6 +204,13 @@ symtab::load_(Elf*	       elf_handle,
 	      ir::environment* env,
 	      symbol_predicate is_suppressed)
 {
+  GElf_Ehdr ehdr_mem;
+  GElf_Ehdr* header = gelf_getehdr(elf_handle, &ehdr_mem);
+  if (!header)
+    {
+      std::cerr << "Could not get ELF header: Skipping symtab load.\n";
+      return false;
+    }
 
   Elf_Scn* symtab_section = elf_helpers::find_symbol_table_section(elf_handle);
   if (!symtab_section)
@@ -232,9 +239,34 @@ symtab::load_(Elf*	       elf_handle,
       return false;
     }
 
+  // The __kstrtab_strings sections is basically an ELF strtab but does not
+  // support elf_strptr lookups. A single call to elf_getdata gives a handle to
+  // washed section data.
+  //
+  // The value of a __kstrtabns_FOO (or other similar) symbol is an address
+  // within the __kstrtab_strings section. To look up the string value, we need
+  // to translate from vmlinux load address to section offset by subtracting the
+  // base address of the section. This adjustment is not needed for loadable
+  // modules which are relocatable and so identifiable by ELF type ET_REL.
+  Elf_Scn* strings_section = elf_helpers::find_ksymtab_strings_section(elf_handle);
+  size_t strings_offset = 0;
+  const char* strings_data = nullptr;
+  size_t strings_size = 0;
+  if (strings_section)
+    {
+      GElf_Shdr strings_sheader;
+      gelf_getshdr(strings_section, &strings_sheader);
+      strings_offset = header->e_type == ET_REL ? 0 : strings_sheader.sh_addr;
+      Elf_Data* data = elf_getdata(strings_section, nullptr);
+      ABG_ASSERT(data->d_off == 0);
+      strings_data = reinterpret_cast<const char *>(data->d_buf);
+      strings_size = data->d_size;
+    }
+
   const bool is_kernel = elf_helpers::is_linux_kernel(elf_handle);
   std::unordered_set<std::string> exported_kernel_symbols;
   std::unordered_map<std::string, uint64_t> crc_values;
+  std::unordered_map<std::string, std::string> namespaces;
 
   for (size_t i = 0; i < number_syms; ++i)
     {
@@ -283,6 +315,27 @@ symtab::load_(Elf*	       elf_handle,
       if (is_kernel && name.rfind("__crc_", 0) == 0)
 	{
 	  ABG_ASSERT(crc_values.emplace(name.substr(6), sym->st_value).second);
+	  continue;
+	}
+      if (strings_section && is_kernel && name.rfind("__kstrtabns_", 0) == 0)
+	{
+	  // This symbol lives in the __ksymtab_strings section but st_value may
+	  // be a vmlinux load address so we need to subtract the offset before
+	  // looking it up in that section.
+	  const size_t value = sym->st_value;
+	  const size_t offset = value - strings_offset;
+	  // check offset
+	  ABG_ASSERT(offset < strings_size);
+	  // find the terminating NULL
+	  const char* first = strings_data + offset;
+	  const char* last = strings_data + strings_size;
+	  const char* limit = std::find(first, last, 0);
+	  // check NULL found
+	  ABG_ASSERT(limit < last);
+	  // interpret the empty namespace name as no namespace name
+	  if (first < limit)
+	    ABG_ASSERT(namespaces.emplace(
+		name.substr(12), std::string(first, limit - first)).second);
 	  continue;
 	}
 
@@ -372,6 +425,17 @@ symtab::load_(Elf*	       elf_handle,
 
       for (const auto& symbol : r->second)
 	symbol->set_crc(crc_entry.second);
+    }
+
+  // Now add the namespaces
+  for (const auto& namespace_entry : namespaces)
+    {
+      const auto r = name_symbol_map_.find(namespace_entry.first);
+      if (r == name_symbol_map_.end())
+	continue;
+
+      for (const auto& symbol : r->second)
+	symbol->set_namespace(namespace_entry.second);
     }
 
   // sort the symbols for deterministic output

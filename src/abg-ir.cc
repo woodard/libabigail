@@ -913,8 +913,7 @@ template<typename T>
 bool
 is_comparison_cycle_detected(T& l, T& r)
 {
-  bool result = (l.priv_->comparison_started(l)
-		 || l.priv_->comparison_started(r));
+  bool result = l.priv_->comparison_started(l, r);
   return result ;
 }
 
@@ -962,8 +961,7 @@ template<typename T>
 void
 mark_types_as_being_compared(T& l, T&r)
 {
-  l.priv_->mark_as_being_compared(l);
-  l.priv_->mark_as_being_compared(r);
+  l.priv_->mark_as_being_compared(l, r);
   push_composite_type_comparison_operands(l, r);
 }
 
@@ -982,8 +980,7 @@ template<typename T>
 void
 unmark_types_as_being_compared(T& l, T&r)
 {
-  l.priv_->unmark_as_being_compared(l);
-  l.priv_->unmark_as_being_compared(r);
+  l.priv_->unmark_as_being_compared(l, r);
   pop_composite_type_comparison_operands(l, r);
 }
 
@@ -1727,7 +1724,8 @@ struct elf_symbol::priv
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
   bool			is_in_ksymtab_;
-  uint64_t		crc_;
+  abg_compat::optional<uint64_t>	crc_;
+  abg_compat::optional<std::string>	namespace_;
   bool			is_suppressed_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
@@ -1744,7 +1742,8 @@ struct elf_symbol::priv
       is_defined_(false),
       is_common_(false),
       is_in_ksymtab_(false),
-      crc_(0),
+      crc_(),
+      namespace_(),
       is_suppressed_(false)
   {}
 
@@ -1759,7 +1758,8 @@ struct elf_symbol::priv
        const elf_symbol::version& ve,
        elf_symbol::visibility	  vi,
        bool			  is_in_ksymtab,
-       uint64_t			  crc,
+       const abg_compat::optional<uint64_t>&	crc,
+       const abg_compat::optional<std::string>&	ns,
        bool			  is_suppressed)
     : env_(e),
       index_(i),
@@ -1773,6 +1773,7 @@ struct elf_symbol::priv
       is_common_(c),
       is_in_ksymtab_(is_in_ksymtab),
       crc_(crc),
+      namespace_(ns),
       is_suppressed_(is_suppressed)
   {
     if (!is_common_)
@@ -1818,6 +1819,8 @@ elf_symbol::elf_symbol()
 /// @param vi the visibility of the symbol.
 ///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
+///
+/// @param ns the namespace of Linux Kernel symbols, if any
 elf_symbol::elf_symbol(const environment* e,
 		       size_t		  i,
 		       size_t		  s,
@@ -1829,7 +1832,8 @@ elf_symbol::elf_symbol(const environment* e,
 		       const version&	  ve,
 		       visibility	  vi,
 		       bool		  is_in_ksymtab,
-		       uint64_t		  crc,
+		       const abg_compat::optional<uint64_t>&	crc,
+		       const abg_compat::optional<std::string>&	ns,
 		       bool		  is_suppressed)
   : priv_(new priv(e,
 		   i,
@@ -1843,6 +1847,7 @@ elf_symbol::elf_symbol(const environment* e,
 		   vi,
 		   is_in_ksymtab,
 		   crc,
+		   ns,
 		   is_suppressed))
 {}
 
@@ -1886,6 +1891,8 @@ elf_symbol::create()
 ///
 /// @param crc the CRC (modversions) value of Linux Kernel symbols
 ///
+/// @param ns the namespace of Linux Kernel symbols, if any
+///
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
 elf_symbol_sptr
@@ -1900,11 +1907,12 @@ elf_symbol::create(const environment* e,
 		   const version&     ve,
 		   visibility	      vi,
 		   bool		      is_in_ksymtab,
-		   uint64_t	      crc,
+		   const abg_compat::optional<uint64_t>&	crc,
+		   const abg_compat::optional<std::string>&	ns,
 		   bool		      is_suppressed)
 {
   elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, ve, vi,
-				     is_in_ksymtab, crc, is_suppressed));
+				     is_in_ksymtab, crc, ns, is_suppressed));
   sym->priv_->main_symbol_ = sym;
   return sym;
 }
@@ -1926,8 +1934,8 @@ textually_equals(const elf_symbol&l,
 		 && l.is_defined() == r.is_defined()
 		 && l.is_common_symbol() == r.is_common_symbol()
 		 && l.get_version() == r.get_version()
-		 && (l.get_crc() == 0 || r.get_crc() == 0
-		     || l.get_crc() == r.get_crc()));
+		 && l.get_crc() == r.get_crc()
+		 && l.get_namespace() == r.get_namespace());
 
   if (equals && l.is_variable())
     // These are variable symbols.  Let's compare their symbol size.
@@ -2135,8 +2143,8 @@ elf_symbol::set_is_in_ksymtab(bool is_in_ksymtab)
 
 /// Getter of the 'crc' property.
 ///
-/// @return the CRC (modversions) value for Linux Kernel symbols (if present)
-uint64_t
+/// @return the CRC (modversions) value for Linux Kernel symbols, if any
+const abg_compat::optional<uint64_t>&
 elf_symbol::get_crc() const
 {return priv_->crc_;}
 
@@ -2144,8 +2152,22 @@ elf_symbol::get_crc() const
 ///
 /// @param crc the new CRC (modversions) value for Linux Kernel symbols
 void
-elf_symbol::set_crc(uint64_t crc)
+elf_symbol::set_crc(const abg_compat::optional<uint64_t>& crc)
 {priv_->crc_ = crc;}
+
+/// Getter of the 'namespace' property.
+///
+/// @return the namespace for Linux Kernel symbols, if any
+const abg_compat::optional<std::string>&
+elf_symbol::get_namespace() const
+{return priv_->namespace_;}
+
+/// Setter of the 'namespace' property.
+///
+/// @param ns the new namespace for Linux Kernel symbols, if any
+void
+elf_symbol::set_namespace(const abg_compat::optional<std::string>& ns)
+{priv_->namespace_ = ns;}
 
 /// Getter for the 'is-suppressed' property.
 ///
@@ -13808,28 +13830,27 @@ type_base::get_canonical_type_for(type_base_sptr t)
     // This type should not be canonicalized!
     return type_base_sptr();
 
+  if (is_decl(t))
+    t = is_type(look_through_decl_only(is_decl(t)));
+
+  // Look through decl-only types (classes, unions and enums)
   bool decl_only_class_equals_definition =
     (odr_is_relevant(*t) || env->decl_only_class_equals_definition());
 
   class_or_union_sptr class_or_union = is_class_or_union_type(t);
 
-  // Look through declaration-only classes when we are dealing with
-  // C++ or languages where we assume the "One Definition Rule".  In
-  // that context, we assume that a declaration-only non-anonymous
-  // class equals all fully defined classes of the same name.
+  // In the context of types from C++ or languages where we assume the
+  // "One Definition Rule", we assume that a declaration-only
+  // non-anonymous class equals all fully defined classes of the same
+  // name.
   //
   // Otherwise, all classes, including declaration-only classes are
   // canonicalized and only canonical comparison is going to be used
   // in the system.
   if (decl_only_class_equals_definition)
     if (class_or_union)
-      {
-	class_or_union = look_through_decl_only_class(class_or_union);
-	if (class_or_union->get_is_declaration_only())
-	  return type_base_sptr();
-	else
-	  t = class_or_union;
-      }
+      if (class_or_union->get_is_declaration_only())
+	return type_base_sptr();
 
   class_decl_sptr is_class = is_class_type(t);
   if (t->get_canonical_type())
@@ -13907,11 +13928,14 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // Compare types by considering that decl-only classes don't
 	  // equal their definition.
 	  env->decl_only_class_equals_definition(false);
+	  env->priv_->allow_type_comparison_results_caching(true);
 	  bool equal = (types_defined_same_linux_kernel_corpus_public(**it, *t)
 			|| compare_types_during_canonicalization(*it, t));
 	  // Restore the state of the on-the-fly-canonicalization and
 	  // the decl-only-class-being-equal-to-a-matching-definition
 	  // flags.
+	  env->priv_->allow_type_comparison_results_caching(false);
+	  env->priv_->clear_type_comparison_results_cache();
 	  env->do_on_the_fly_canonicalization(false);
 	  env->decl_only_class_equals_definition
 	    (saved_decl_only_class_equals_definition);
@@ -17669,7 +17693,43 @@ bool
 equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 {
   bool result = true;
-  if (*l.get_underlying_type() != *r.get_underlying_type())
+
+  //
+  // Look through decl-only-enum.
+  //
+
+  const enum_type_decl *def1 =
+    l.get_is_declaration_only()
+    ? is_enum_type(l.get_naked_definition_of_declaration())
+    : &l;
+
+  const enum_type_decl *def2 =
+    r.get_is_declaration_only()
+    ? is_enum_type(r.get_naked_definition_of_declaration())
+    : &r;
+
+  if (!!def1 != !!def2)
+    {
+      // One enum is decl-only while the other is not.
+      // So the two enums are different.
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	ABG_RETURN_FALSE;
+    }
+
+  //
+  // At this point, both enums have the same state of decl-only-ness.
+  // So we can compare oranges to oranges.
+  //
+
+  if (!def1)
+    def1 = &l;
+  if (!def2)
+    def2 = &r;
+
+  if (def1->get_underlying_type() != def2->get_underlying_type())
     {
       result = false;
       if (k)
@@ -17678,14 +17738,15 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	ABG_RETURN_FALSE;
     }
 
-  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+  if (!(def1->decl_base::operator==(*def2)
+	&& def1->type_base::operator==(*def2)))
     {
       result = false;
       if (k)
 	{
-	  if (!l.decl_base::operator==(r))
+	  if (!def1->decl_base::operator==(*def2))
 	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
-	  if (!l.type_base::operator==(r))
+	  if (!def1->type_base::operator==(*def2))
 	    *k |= LOCAL_TYPE_CHANGE_KIND;
 	}
       else
@@ -17716,11 +17777,28 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
   //                    //     of the enumerator e1.
   //     };
   //
+  //     Note however that in the case below, the enums are different.
+  //
+  // enum foo
+  // {
+  //   e0 = 0;
+  //   e1 = 1;
+  // };
+  //
+  // enum foo
+  // {
+  //   e0 = 0;
+  //   e2 = 1;  // <-- this enum value is present in the first version
+  //            // of foo, but is not redundant with any enumerator
+  //            // in the second version of of enum foo.
+  // };
+  //
   // These two enums are considered equal.
 
-  for(const auto &e : l.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, r)
-	&& !is_enumerator_value_redundant(e, r))
+  for(const auto &e : def1->get_enumerators())
+    if (!is_enumerator_present_in_enum(e, *def2)
+	&& (!is_enumerator_value_redundant(e, *def2)
+	    || !is_enumerator_value_redundant(e, *def1)))
       {
 	result = false;
 	if (k)
@@ -17732,9 +17810,10 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 	  ABG_RETURN_FALSE;
       }
 
-  for(const auto &e : r.get_enumerators())
-    if (!is_enumerator_present_in_enum(e, l)
-	&& !is_enumerator_value_redundant(e, r))
+  for(const auto &e : def2->get_enumerators())
+    if (!is_enumerator_present_in_enum(e, *def1)
+	&& (!is_enumerator_value_redundant(e, *def1)
+	    || !is_enumerator_value_redundant(e, *def2)))
       {
 	result = false;
 	if (k)
@@ -18754,68 +18833,6 @@ var_decl::~var_decl()
 
 // </var_decl definitions>
 
-// <function_type>
-
-/// The type of the private data of the @ref function_type type.
-struct function_type::priv
-{
-  parameters parms_;
-  type_base_wptr return_type_;
-  interned_string cached_name_;
-  interned_string internal_cached_name_;
-  interned_string temp_internal_cached_name_;
-
-  priv()
-  {}
-
-  priv(const parameters&	parms,
-       type_base_sptr		return_type)
-    : parms_(parms),
-      return_type_(return_type)
-  {}
-
-  priv(type_base_sptr return_type)
-    : return_type_(return_type)
-  {}
-
-  /// Mark a given @ref function_type as being compared.
-  ///
-  /// @param type the @ref function_type to mark as being compared.
-  void
-  mark_as_being_compared(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.insert(&type);
-  }
-
-  /// If a given @ref function_type was marked as being compared, this
-  /// function unmarks it.
-  ///
-  /// @param type the @ref function_type to mark as *NOT* being
-  /// compared.
-  void
-  unmark_as_being_compared(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.erase(&type);
-  }
-
-  /// Tests if a @ref function_type is currently being compared.
-  ///
-  /// @param type the function type to take into account.
-  ///
-  /// @return true if @p type is being compared.
-  bool
-  comparison_started(const function_type& type) const
-  {
-    const environment* env = type.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->fn_types_being_compared_.count(&type);
-  }
-};// end struc function_type::priv
-
 /// This function is automatically invoked whenever an instance of
 /// this type is canonicalized.
 ///
@@ -19050,6 +19067,18 @@ equals(const function_type& l,
 #define RETURN(value) return return_comparison_result(l, r, value)
 
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+
+  {
+    // First of all, let's see if these two function types haven't
+    // already been compared.  If so, and if the result of the
+    // comparison has been cached, let's just re-use it, rather than
+    // comparing them all over again.
+    bool cached_result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r,
+							      cached_result))
+      return cached_result;
+  }
+
   mark_types_as_being_compared(l, r);
 
   bool result = true;
@@ -19177,6 +19206,17 @@ equals(const function_type& l,
       else
 	RETURN(result);
     }
+
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -21468,6 +21508,30 @@ class_or_union::operator==(const class_or_union& other) const
   return class_or_union::operator==(o);
 }
 
+/// Dumps a textual representation (to the standard error output) of
+/// the content of the set of classes being currently compared using
+/// the @ref equal overloads.
+///
+/// This function is for debugging purposes.
+///
+/// @param c an artifact that belongs to the environment in which the
+/// classes of interest are being compared.
+void
+dump_classes_being_compared(const type_or_decl_base& c)
+{c.get_environment()->priv_->dump_classes_being_compared();}
+
+/// Dumps a textual representation (to the standard error output) of
+/// the content of the set of function types being currently compared
+/// using the @ref equal overloads.
+///
+/// This function is for debugging purposes.
+///
+/// @param c an artifact that belongs to the environment in which the
+/// function types of interest are being compared.
+void
+dump_fn_types_being_compared(const type_or_decl_base& t)
+{t.get_environment()->priv_->dump_fn_types_being_compared();}
+
 /// Compares two instances of @ref class_or_union.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -21582,6 +21646,16 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	  *k |= LOCAL_TYPE_CHANGE_KIND;
       RETURN(val);
     }
+
+  {
+    // First of all, let's see if these two types haven't already been
+    // compared.  If so, and if the result of the comparison has been
+    // cached, let's just re-use it, rather than comparing them all
+    // over again.
+    bool result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
+      return result;
+  }
 
   // No need to go further if the classes have different names or
   // different size / alignment.
@@ -21703,6 +21777,17 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    RETURN(result);
 	}
   }
+
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -23117,6 +23202,16 @@ maybe_cancel_propagated_canonical_type(const class_or_union& t)
 bool
 equals(const class_decl& l, const class_decl& r, change_kind* k)
 {
+  {
+    // First of all, let's see if these two types haven't already been
+    // compared.  If so, and if the result of the comparison has been
+    // cached, let's just re-use it, rather than comparing them all
+    // over again.
+    bool result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
+      return result;
+  }
+
   // if one of the classes is declaration-only then we take a fast
   // path here.
   if (l.get_is_declaration_only() || r.get_is_declaration_only())
@@ -23263,7 +23358,18 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  }
       }
 
-  RETURN(result);
+    // We are done comparing these two types and we have a full
+    // understanding of how they might be different, if they are.  Let's
+    // cache the result of this comparison -- in case we are asked in a
+    // very near future to compare them again.
+    //
+    // TODO: If further profiling shows its necessity, maybe we should
+    // perform this caching also on the earlier return points of this
+    // function.  That would basically mean to redefine the RETURN macro
+    // to make it perform this caching for us.
+    l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
+
+    RETURN(result);
 #undef RETURN
 }
 
