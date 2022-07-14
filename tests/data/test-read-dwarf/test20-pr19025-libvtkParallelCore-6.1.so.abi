@@ -3073,6 +3073,60 @@
         <member-type access='public'>
           <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
         </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='239' column='1' id='type-id-284'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='int_type' type-id='type-id-19' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='240' column='1' id='type-id-288'/>
+        </member-type>
         <member-function access='public' static='yes'>
           <function-decl name='length' mangled-name='_ZNSt11char_traitsIcE6lengthEPKc' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/char_traits.h' line='262' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-287'/>
@@ -4629,6 +4683,39 @@
         <member-type access='public'>
           <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
         </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
+        <member-type access='public'>
+          <typedef-decl name='fmtflags' type-id='type-id-436' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='263' column='1' id='type-id-211'/>
+        </member-type>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_mask' type-id='type-id-211' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip' line='49' column='1'/>
         </data-member>
@@ -4644,6 +4731,72 @@
         </data-member>
       </class-decl>
       <class-decl name='__basic_file&lt;char&gt;' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/basic_file.h' line='53' column='1' id='type-id-219'>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
+        </member-type>
+        <member-type access='private'>
+          <typedef-decl name='seekdir' type-id='type-id-439' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='401' column='1' id='type-id-224'/>
+        </member-type>
         <member-type access='private'>
           <typedef-decl name='openmode' type-id='type-id-437' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='369' column='1' id='type-id-222'/>
         </member-type>
