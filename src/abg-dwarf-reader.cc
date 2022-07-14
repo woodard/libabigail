@@ -14283,16 +14283,6 @@ build_typedef_type(read_context&	ctxt,
       if (!utype)
 	return result;
 
-      // The call to build_ir_node_from_die() could have triggered the
-      // creation of the type for this DIE.  In that case, just return
-      // it.
-      if (type_base_sptr t = ctxt.lookup_type_from_die(die))
-	{
-	  result = is_typedef(t);
-	  ABG_ASSERT(result);
-	  return result;
-	}
-
       ABG_ASSERT(utype);
       result.reset(new typedef_decl(name, utype, loc, linkage_name));
 
