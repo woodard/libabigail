@@ -15831,7 +15831,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		      }
 		    ABG_ASSERT(m->get_scope());
 		    ctxt.maybe_add_var_to_exported_decls(m.get());
-		    return m;
+		    result = m;
 		  }
 	      }
 	  }
