@@ -8591,6 +8591,7 @@ get_function_type_name(const function_type& fn_type,
   o <<  get_pretty_representation(return_type, internal);
 
   o << " (";
+  type_base_sptr type;
   for (function_type::parameters::const_iterator i =
 	 fn_type.get_parameters().begin();
        i != fn_type.get_parameters().end();
@@ -8598,7 +8599,10 @@ get_function_type_name(const function_type& fn_type,
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
-      o << get_pretty_representation((*i)->get_type(), internal);
+      type = (*i)->get_type();
+      if (internal)
+	type = peel_typedef_type(type);
+      o << get_pretty_representation(type, internal);
     }
   o <<")";
 
@@ -8679,6 +8683,7 @@ get_method_type_name(const method_type& fn_type,
   o << " (" << class_type->get_qualified_name(internal) << "::*)"
     << " (";
 
+  type_base_sptr type;
   for (function_type::parameters::const_iterator i =
 	 fn_type.get_parameters().begin();
        i != fn_type.get_parameters().end();
@@ -8686,8 +8691,11 @@ get_method_type_name(const method_type& fn_type,
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
+      type = (*i)->get_type();
+      if (internal)
+	type = peel_typedef_type(type);
       if (*i)
-	o << (*i)->get_type()->get_cached_pretty_representation(internal);
+	o << type->get_cached_pretty_representation(internal);
       else
 	// There are still some abixml files out there in which "void"
 	// can be expressed as an empty type.
@@ -19799,7 +19807,10 @@ function_decl::get_pretty_representation_of_declarator (bool internal) const
 	result += "...";
       else
 	{
-	  decl_base_sptr type_decl = get_type_declaration(parm->get_type());
+	  type_base_sptr type = parm->get_type();
+	  if (internal)
+	    type = peel_typedef_type(type);
+	  decl_base_sptr type_decl = get_type_declaration(type);
 	  result += type_decl->get_qualified_name(internal);
 	}
     }
@@ -20473,8 +20484,8 @@ equals(const function_decl::parameter& l,
 	ABG_RETURN_FALSE;
     }
 
-  type_base_sptr l_type = l.get_type();
-  type_base_sptr r_type = r.get_type();
+  type_base_sptr l_type = peel_typedef_type(l.get_type());
+  type_base_sptr r_type = peel_typedef_type(r.get_type());
   if (l_type != r_type)
     {
       result = false;
