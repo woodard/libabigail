@@ -1,5 +1,5 @@
 ================ changes of 'libgmp.so.10.3.2'===============
-  Functions changes summary: 25 Removed, 0 Changed (1 filtered out), 85 Added functions
+  Functions changes summary: 25 Removed, 0 Changed, 85 Added functions
   Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
   Function symbols changes summary: 3 Removed, 21 Added function symbols not referenced by debug info
   Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
