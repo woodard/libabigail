@@ -1027,7 +1027,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb3'/>
       <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343a'/>
       <class-decl name='IMountServiceListener' visibility='default' is-declaration-only='yes' id='748cb1b7'/>
       <class-decl name='IMountShutdownObserver' visibility='default' is-declaration-only='yes' id='60976dc0'/>
@@ -3147,6 +3146,7 @@
           </function-decl>
         </member-function>
       </class-decl>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb3'/>
       <class-decl name='RefBase' visibility='default' is-declaration-only='yes' id='12f619c0'/>
       <namespace-decl name='base'>
       </namespace-decl>
@@ -29019,26 +29019,7 @@
       </class-decl>
       <class-decl name='GraphicBuffer' visibility='default' is-declaration-only='yes' id='8eea5426'/>
       <class-decl name='IGraphicBufferProducer' visibility='default' is-declaration-only='yes' id='b24794a9'/>
-      <class-decl name='ISurfaceComposerClient' visibility='default' is-declaration-only='yes' id='e381e1eb'>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='frameworks/native/libs/gui/include/gui/ISurfaceComposerClient.h' line='36' column='1' id='08f5ca1e'>
-            <underlying-type type-id='9cac1fee'/>
-            <enumerator name='eHidden' value='4'/>
-            <enumerator name='eDestroyBackbuffer' value='32'/>
-            <enumerator name='eSecure' value='128'/>
-            <enumerator name='eNonPremultiplied' value='256'/>
-            <enumerator name='eOpaque' value='1024'/>
-            <enumerator name='eProtectedByApp' value='2048'/>
-            <enumerator name='eProtectedByDRM' value='4096'/>
-            <enumerator name='eCursorWindow' value='8192'/>
-            <enumerator name='eFXSurfaceBufferQueue' value='0'/>
-            <enumerator name='eFXSurfaceColor' value='131072'/>
-            <enumerator name='eFXSurfaceBufferState' value='262144'/>
-            <enumerator name='eFXSurfaceContainer' value='524288'/>
-            <enumerator name='eFXSurfaceMask' value='983040'/>
-          </enum-decl>
-        </member-type>
-      </class-decl>
+      <class-decl name='ISurfaceComposerClient' visibility='default' is-declaration-only='yes' id='e381e1eb'/>
       <class-decl name='ITransactionCompletedListener' visibility='default' is-declaration-only='yes' id='870c9206'/>
       <class-decl name='LayerMetadata' is-struct='yes' visibility='default' is-declaration-only='yes' id='9b578bd0'/>
       <class-decl name='ReferenceRenamer' visibility='default' is-declaration-only='yes' id='fe4eabab'/>

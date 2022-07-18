@@ -513,14 +513,6 @@
         </member-function>
       </class-decl>
       <class-decl name='AudioStreamBuilder' visibility='default' is-declaration-only='yes' id='c1fdb0b3'>
-        <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' is-anonymous='yes' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='131' column='1' id='08f5ca17'>
-            <underlying-type type-id='9cac1fee'/>
-            <enumerator name='PRIVACY_SENSITIVE_DEFAULT' value='-1'/>
-            <enumerator name='PRIVACY_SENSITIVE_DISABLED' value='0'/>
-            <enumerator name='PRIVACY_SENSITIVE_ENABLED' value='1'/>
-          </enum-decl>
-        </member-type>
         <member-function access='public'>
           <function-decl name='setPerformanceMode' mangled-name='_ZN6aaudio18AudioStreamBuilder18setPerformanceModeEi' filepath='frameworks/av/media/libaaudio/src/core/AudioStreamBuilder.h' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='b01a1663' is-artificial='yes'/>

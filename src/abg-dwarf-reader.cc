@@ -4274,19 +4274,7 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
-		    else if (per_tu_class_map.size() > 1
-			     // If we are looking at ODR-relevant
-			     // (e.g. C++) classes, let's not bother
-			     // trying to compare them against each
-			     // other.  The ODR supposes that they all
-			     // must be the same class.  If they are
-			     // not, this is not the place to catch
-			     // it.  Besides, comparing them without
-			     // type canonicalization in place might
-			     // just take forever.
-			     && !odr_is_relevant(per_tu_class_map.begin()->
-						 second->get_translation_unit()->
-						 get_language()))
+		    else if (per_tu_class_map.size() > 1)
 		      {
 			// We are in case where there are more than
 			// one definition for the declaration.  Let's
@@ -12940,12 +12928,27 @@ add_or_update_class_type(read_context&	 ctxt,
 
   ctxt.die_wip_classes_map(source)[dwarf_dieoffset(die)] = result;
 
+  bool is_incomplete_type = false;
+  if (is_declaration_only && size == 0 && has_child)
+    // this is an incomplete DWARF type as defined by [5.7.1]
+    //
+    // An incomplete structure, union or class type is represented by
+    // a structure, union or class entry that does not have a byte
+    // size attribute and that has a DW_AT_declaration attribute.
+    //
+    // Let's consider that it's thus a decl-only class, likely
+    // referred to by a pointer.  If we later encounter a definition
+    // for this decl-only class type, then this decl-only class will
+    // be resolved to it by the code in
+    // read_context::resolve_declaration_only_classes.
+    is_incomplete_type = true;
+
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
   ABG_ASSERT(scop);
   ctxt.scope_stack().push(scop.get());
 
-  if (has_child)
+  if (has_child && !is_incomplete_type)
     {
       int anonymous_member_class_index = -1;
       int anonymous_member_union_index = -1;

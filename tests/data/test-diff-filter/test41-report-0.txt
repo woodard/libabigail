@@ -52,7 +52,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
       in pointed to type 'const abigail::xml_writer::write_context':
         in unqualified underlying type 'class abigail::xml_writer::write_context' at abg-writer.cc:155:1:
           type size hasn't changed
-          5 data member changes (4 filtered):
+          5 data member changes (3 filtered):
             type of 'abigail::config m_config' changed:
               type size hasn't changed
               no data member changes (4 filtered);
