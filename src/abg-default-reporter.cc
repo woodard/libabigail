@@ -518,9 +518,7 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
     {
       diff_sptr type_diff = d.type_diff();
       ABG_ASSERT(type_diff->has_changes());
-      diff_category saved_category = type_diff->get_category();
-      // Parameter type changes are never redundants.
-      type_diff->set_category(saved_category & ~REDUNDANT_CATEGORY);
+
       out << indent;
       if (f->get_is_artificial())
 	out << "implicit ";
@@ -535,7 +533,6 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
 	out << "' changed:\n";
 
       type_diff->report(out, indent + "  ");
-      type_diff->set_category(saved_category);
     }
 }
 

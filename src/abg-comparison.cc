@@ -12424,6 +12424,21 @@ peel_qualified_diff(const diff* dif)
   return dif;
 }
 
+/// If a diff node is about changes between two function parameters
+/// get the diff node about changes between the types of the parameters.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the diff of the types of the parameters.
+const diff*
+peel_fn_parm_diff(const diff* dif)
+{
+  const fn_parm_diff *d = 0;
+  while ((d = is_fn_parm_diff(dif)))
+    dif = d->type_diff().get();
+  return dif;
+}
+
 /// If a diff node is about changes between two pointer, reference or
 /// qualified types, get the diff node about changes between the
 /// underlying types.
@@ -12480,6 +12495,34 @@ peel_typedef_or_qualified_type_diff(const diff *dif)
   return dif;
 }
 
+/// If a diff node is about changes between two typedefs or qualified
+/// types, get the diff node about changes between the underlying
+/// types.
+///
+/// Note that this function walks the tree of underlying diff nodes
+/// returns the first diff node about types that are neither typedef,
+/// qualified type nor parameters.
+///
+/// @param dif the dif node to consider.
+///
+/// @return the diff node about changes between the underlying types.
+const diff*
+peel_typedef_qualified_type_or_parameter_diff(const diff *dif)
+{
+  while (true)
+    {
+      if (const typedef_diff *d = is_typedef_diff(dif))
+	dif = peel_typedef_diff(d);
+      else if (const qualified_type_diff *d = is_qualified_type_diff(dif))
+	dif = peel_qualified_diff(d);
+      else if (const fn_parm_diff *d = is_fn_parm_diff(dif))
+	dif = peel_fn_parm_diff(d);
+      else
+	break;
+    }
+  return dif;
+}
+
 /// Test if a diff node represents a diff between two class or union
 /// types.
 ///
@@ -12522,6 +12565,8 @@ has_local_type_change_only(const diff *d)
 bool
 has_basic_type_change_only(const diff *d)
 {
+  d = peel_typedef_qualified_type_or_parameter_diff(d);
+
   if (is_diff_of_basic_type(d, true) && d->has_changes())
     return true;
   else if (const var_diff * v = dynamic_cast<const var_diff*>(d))
