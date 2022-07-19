@@ -10318,6 +10318,38 @@ look_through_decl_only(const decl_base_sptr& d)
   return result;
 }
 
+/// If a type is is decl-only, then get its definition.  Otherwise,
+/// just return the initial type.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or the initial type.
+type_base*
+look_through_decl_only(type_base* t)
+{
+  decl_base* d = is_decl(t);
+  if (!d)
+    return t;
+  d = look_through_decl_only(d);
+  return is_type(d);
+}
+
+/// If a type is is decl-only, then get its definition.  Otherwise,
+/// just return the initial type.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or the initial type.
+type_base_sptr
+look_through_decl_only(const type_base_sptr& t)
+{
+  decl_base_sptr d = is_decl(t);
+  if (!d)
+    return t;
+  d = look_through_decl_only(d);
+  return is_type(d);
+}
+
 /// Tests if a declaration is a variable declaration.
 ///
 /// @param decl the decl to test.
@@ -11008,7 +11040,8 @@ pointer_type_def_sptr
 lookup_pointer_type(const type_base_sptr& pointed_to_type,
 		    const translation_unit& tu)
 {
-  interned_string type_name = get_name_of_pointer_to_type(*pointed_to_type);
+  type_base_sptr t = look_through_decl_only(pointed_to_type);
+  interned_string type_name = get_name_of_pointer_to_type(*t);
   return lookup_pointer_type(type_name, tu);
 }
 
@@ -11052,7 +11085,8 @@ lookup_reference_type(const type_base_sptr& pointed_to_type,
 		      const translation_unit& tu)
 {
   interned_string type_name =
-    get_name_of_reference_to_type(*pointed_to_type, lvalue_reference);
+    get_name_of_reference_to_type(*look_through_decl_only(pointed_to_type),
+				  lvalue_reference);
   return lookup_reference_type(type_name, tu);
 }
 
@@ -15909,6 +15943,7 @@ const interned_string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
   type_base* pointed_to_type = get_naked_pointed_to_type();
+  pointed_to_type = look_through_decl_only(pointed_to_type);
 
   if (internal)
     {
@@ -16289,10 +16324,11 @@ reference_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
-    set_qualified_name(get_name_of_reference_to_type(*get_pointed_to_type(),
-						     is_lvalue(),
-						     /*qualified_name=*/true,
-						     internal));
+    set_qualified_name(get_name_of_reference_to_type
+		       (*look_through_decl_only(get_pointed_to_type()),
+			is_lvalue(),
+			/*qualified_name=*/true,
+			internal));
   return peek_qualified_name();
 }
 
@@ -16317,10 +16353,12 @@ string
 reference_type_def::get_pretty_representation(bool internal,
 					      bool qualified_name) const
 {
-  string result = get_name_of_reference_to_type(*get_pointed_to_type(),
-						is_lvalue(),
-						qualified_name,
-						internal);
+  string result =
+    get_name_of_reference_to_type(*look_through_decl_only
+				  (get_pointed_to_type()),
+				  is_lvalue(),
+				  qualified_name,
+				  internal);
 
   return result;
 }
