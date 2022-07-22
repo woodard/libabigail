@@ -2841,7 +2841,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr address-size='64' path='src/base/low_level_alloc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-    <!-- AllocList*[30] -->
+    <!-- low_level_alloc_internal::AllocList*[30] -->
     <array-type-def dimensions='1' type-id='type-id-92' size-in-bits='1920' id='type-id-93'>
       <!-- <anonymous range>[30] -->
       <subrange length='30' type-id='type-id-23' id='type-id-94'/>
@@ -22310,12 +22310,12 @@
   <abi-instr address-size='64' path='src/profiledata.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
   </abi-instr>
   <abi-instr address-size='64' path='src/profiler.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-kFgaKP/gperftools-2.4' language='LANG_C_plus_plus'>
-    <!-- Slot[64] -->
+    <!-- ProfileData::Entry::Slot[64] -->
     <array-type-def dimensions='1' type-id='type-id-1229' size-in-bits='4096' id='type-id-1230'>
       <!-- <anonymous range>[64] -->
       <subrange length='64' type-id='type-id-23' id='type-id-1231'/>
     </array-type-def>
-    <!-- Entry[4] -->
+    <!-- ProfileData::Entry[4] -->
     <array-type-def dimensions='1' type-id='type-id-1232' size-in-bits='16896' id='type-id-1233'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-23' id='type-id-188'/>
@@ -25418,22 +25418,22 @@
       <!-- <anonymous range>[88] -->
       <subrange length='88' type-id='type-id-23' id='type-id-1359'/>
     </array-type-def>
-    <!-- TCEntry[64] -->
+    <!-- tcmalloc::CentralFreeList::TCEntry[64] -->
     <array-type-def dimensions='1' type-id='type-id-1361' size-in-bits='8192' id='type-id-1362'>
       <!-- <anonymous range>[64] -->
       <subrange length='64' type-id='type-id-23' id='type-id-1231'/>
     </array-type-def>
-    <!-- CentralFreeListPadded[88] -->
+    <!-- tcmalloc::CentralFreeListPadded[88] -->
     <array-type-def dimensions='1' type-id='type-id-1363' id='type-id-1364'>
       <!-- <anonymous range>[88] -->
       <subrange length='88' type-id='type-id-23' id='type-id-1359'/>
     </array-type-def>
-    <!-- SpanList[128] -->
+    <!-- tcmalloc::PageHeap::SpanList[128] -->
     <array-type-def dimensions='1' type-id='type-id-1365' size-in-bits='98304' id='type-id-1366'>
       <!-- <anonymous range>[128] -->
       <subrange length='128' type-id='type-id-23' id='type-id-1357'/>
     </array-type-def>
-    <!-- FreeList[88] -->
+    <!-- tcmalloc::ThreadCache::FreeList[88] -->
     <array-type-def dimensions='1' type-id='type-id-1367' size-in-bits='16896' id='type-id-1368'>
       <!-- <anonymous range>[88] -->
       <subrange length='88' type-id='type-id-23' id='type-id-1359'/>

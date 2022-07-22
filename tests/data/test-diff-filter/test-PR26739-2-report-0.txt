@@ -12,6 +12,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             entity changed from 'const volatile const int[5]' to compatible type 'typedef array_type1' at test-PR26739-2-v1.c:3:1
               array element type 'const volatile const int' changed:
                 'const volatile const int' changed to 'const int'
-              type name changed from 'volatile const int[5]' to 'const int[5]'
+              type name changed from 'const volatile const int[5]' to 'const int[5]'
               type size hasn't changed
 

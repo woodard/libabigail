@@ -17066,7 +17066,7 @@ get_type_representation(const array_type_def& a, bool internal)
 	  + a.get_subrange_representation();
       else
 	r = (e_type
-	     ? get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+	     ? get_type_name(e_type, /*qualified=*/true, /*internal=*/false)
 	     : string("void"))
 	  + a.get_subrange_representation();
     }

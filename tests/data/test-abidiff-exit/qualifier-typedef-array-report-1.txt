@@ -50,36 +50,36 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             entity changed from 'typedef C' to compatible type 'const volatile void* const[7]'
               array element type 'void* const' changed:
                 'void* const' changed to 'const volatile void* const'
-              type name changed from 'void* const[7]' to 'volatile void* const[7]'
+              type name changed from 'void* const[7]' to 'const volatile void* const[7]'
               type size hasn't changed
           type of 'C r_c' changed:
-            entity changed from 'typedef C' to compatible type 'restrict void* const[7]'
+            entity changed from 'typedef C' to compatible type 'restrict const void* const[7]'
               array element type 'void* const' changed:
                 'void* const' changed to 'restrict const void* const'
-              type name changed from 'void* const[7]' to 'restrict void* const[7]'
+              type name changed from 'void* const[7]' to 'restrict const void* const[7]'
               type size hasn't changed
           type of 'D v_d' changed:
             entity changed from 'typedef D' to compatible type 'const volatile void* const[7]'
               array element type 'void* const' changed:
                 'void* const' changed to 'const volatile void* const'
-              type name changed from 'void* const[7]' to 'volatile void* const[7]'
+              type name changed from 'void* const[7]' to 'const volatile void* const[7]'
               type size hasn't changed
           type of 'D r_d' changed:
-            entity changed from 'typedef D' to compatible type 'restrict void* const[7]'
+            entity changed from 'typedef D' to compatible type 'restrict const void* const[7]'
               array element type 'void* const' changed:
                 'void* const' changed to 'restrict const void* const'
-              type name changed from 'void* const[7]' to 'restrict void* const[7]'
+              type name changed from 'void* const[7]' to 'restrict const void* const[7]'
               type size hasn't changed
           type of 'E r_e' changed:
-            entity changed from 'typedef E' to compatible type 'restrict const volatile void* const[7]'
+            entity changed from 'typedef E' to compatible type 'restrict const volatile volatile void* const[7]'
               array element type 'const volatile void* const' changed:
                 'const volatile void* const' changed to 'restrict const volatile volatile void* const'
-              type name changed from 'volatile void* const[7]' to 'restrict const volatile void* const[7]'
+              type name changed from 'const volatile void* const[7]' to 'restrict const volatile volatile void* const[7]'
               type size hasn't changed
           type of 'F r_f' changed:
-            entity changed from 'typedef F' to compatible type 'restrict const volatile void* const[7]'
+            entity changed from 'typedef F' to compatible type 'restrict const volatile volatile void* const[7]'
               array element type 'const volatile void* const' changed:
                 'const volatile void* const' changed to 'restrict const volatile volatile void* const'
-              type name changed from 'volatile void* const[7]' to 'restrict const volatile void* const[7]'
+              type name changed from 'const volatile void* const[7]' to 'restrict const volatile volatile void* const[7]'
               type size hasn't changed
 

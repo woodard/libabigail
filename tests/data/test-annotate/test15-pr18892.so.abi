@@ -4588,7 +4588,7 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
-    <!-- AddressRange[6] -->
+    <!-- __sanitizer::LoadedModule::AddressRange[6] -->
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='768' id='type-id-122'>
       <!-- <anonymous range>[6] -->
       <subrange length='6' type-id='type-id-49' id='type-id-123'/>
@@ -10820,17 +10820,17 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interceptors.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
-    <!-- LibCodeRange[128] -->
+    <!-- __sanitizer::LibIgnore::LibCodeRange[128] -->
     <array-type-def dimensions='1' type-id='type-id-361' size-in-bits='16384' id='type-id-362'>
       <!-- <anonymous range>[128] -->
       <subrange length='128' type-id='type-id-49' id='type-id-363'/>
     </array-type-def>
-    <!-- Lib[128] -->
+    <!-- __sanitizer::LibIgnore::Lib[128] -->
     <array-type-def dimensions='1' type-id='type-id-364' size-in-bits='32768' id='type-id-365'>
       <!-- <anonymous range>[128] -->
       <subrange length='128' type-id='type-id-49' id='type-id-363'/>
     </array-type-def>
-    <!-- SignalDesc[64] -->
+    <!-- __tsan::SignalDesc[64] -->
     <array-type-def dimensions='1' type-id='type-id-366' size-in-bits='552960' id='type-id-367'>
       <!-- <anonymous range>[64] -->
       <subrange length='64' type-id='type-id-49' id='type-id-368'/>
@@ -10907,7 +10907,7 @@
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-49' id='type-id-388'/>
     </array-type-def>
-    <!-- void*[128] -->
+    <!-- void ()*[128] -->
     <array-type-def dimensions='1' type-id='type-id-153' size-in-bits='8192' id='type-id-389'>
       <!-- <anonymous range>[128] -->
       <subrange length='128' type-id='type-id-49' id='type-id-363'/>
@@ -27650,42 +27650,42 @@
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <!-- __int128 -->
     <type-decl name='__int128' size-in-bits='128' id='type-id-1270'/>
-    <!-- SizeClassInfo[53] -->
+    <!-- __sanitizer::SizeClassAllocator32<0ul, 140737488355328ull, 16ul, __sanitizer::SizeClassMap<17ul, 64ul, 14ul>, 24ul, __sanitizer::TwoLevelByteMap<2048ull, 4096ull, __sanitizer::NoOpMapUnmapCallback>, __sanitizer::NoOpMapUnmapCallback>::SizeClassInfo[53] -->
     <array-type-def dimensions='1' type-id='type-id-1271' size-in-bits='27136' id='type-id-1272'>
       <!-- <anonymous range>[53] -->
       <subrange length='53' type-id='type-id-49' id='type-id-1273'/>
     </array-type-def>
-    <!-- PerClass[53] -->
+    <!-- __sanitizer::SizeClassAllocatorLocalCache<__sanitizer::SizeClassAllocator32<0ul, 140737488355328ull, 16ul, __sanitizer::SizeClassMap<17ul, 64ul, 14ul>, 24ul, __sanitizer::TwoLevelByteMap<2048ull, 4096ull, __sanitizer::NoOpMapUnmapCallback>, __sanitizer::NoOpMapUnmapCallback> >::PerClass[53] -->
     <array-type-def dimensions='1' type-id='type-id-185' size-in-bits='440960' id='type-id-189'>
       <!-- <anonymous range>[53] -->
       <subrange length='53' type-id='type-id-49' id='type-id-1273'/>
     </array-type-def>
-    <!-- PerClass[53] -->
+    <!-- __sanitizer::SizeClassAllocatorLocalCache<__sanitizer::SizeClassAllocator64<137438953472000ul, 1099511627776ul, 16ul, __sanitizer::SizeClassMap<17ul, 128ul, 16ul>, __tsan::MapUnmapCallback> >::PerClass[53] -->
     <array-type-def dimensions='1' type-id='type-id-1274' size-in-bits='875136' id='type-id-1275'>
       <!-- <anonymous range>[53] -->
       <subrange length='53' type-id='type-id-49' id='type-id-1273'/>
     </array-type-def>
-    <!-- atomic_uint64_t[4] -->
+    <!-- __sanitizer::atomic_uint64_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-1276' size-in-bits='256' id='type-id-1277'>
       <!-- <anonymous range>[4] -->
       <subrange length='4' type-id='type-id-49' id='type-id-388'/>
     </array-type-def>
-    <!-- atomic_uintptr_t[2048] -->
+    <!-- __sanitizer::atomic_uintptr_t[2048] -->
     <array-type-def dimensions='1' type-id='type-id-1232' size-in-bits='131072' id='type-id-1278'>
       <!-- <anonymous range>[2048] -->
       <subrange length='2048' type-id='type-id-49' id='type-id-1279'/>
     </array-type-def>
-    <!-- MD5Hash[2] -->
+    <!-- __tsan::MD5Hash[2] -->
     <array-type-def dimensions='1' type-id='type-id-1280' size-in-bits='256' id='type-id-1281'>
       <!-- <anonymous range>[2] -->
       <subrange length='2' type-id='type-id-49' id='type-id-1282'/>
     </array-type-def>
-    <!-- Desc[16] -->
+    <!-- __tsan::MutexSet::Desc[16] -->
     <array-type-def dimensions='1' type-id='type-id-1283' size-in-bits='3072' id='type-id-1284'>
       <!-- <anonymous range>[16] -->
       <subrange length='16' type-id='type-id-49' id='type-id-382'/>
     </array-type-def>
-    <!-- Part[1009] -->
+    <!-- __tsan::SyncTab::Part[1009] -->
     <array-type-def dimensions='1' type-id='type-id-1285' size-in-bits='516608' id='type-id-1286'>
       <!-- <anonymous range>[1009] -->
       <subrange length='1009' type-id='type-id-49' id='type-id-1287'/>
@@ -35556,12 +35556,12 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mman.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
-    <!-- Header*[262144] -->
+    <!-- __sanitizer::LargeMmapAllocator<__sanitizer::CrashOnMapUnmap>::Header*[262144] -->
     <array-type-def dimensions='1' type-id='type-id-1518' size-in-bits='16777216' id='type-id-1519'>
       <!-- <anonymous range>[262144] -->
       <subrange length='262144' type-id='type-id-49' id='type-id-1520'/>
     </array-type-def>
-    <!-- Header*[262144] -->
+    <!-- __sanitizer::LargeMmapAllocator<__tsan::MapUnmapCallback>::Header*[262144] -->
     <array-type-def dimensions='1' type-id='type-id-1521' size-in-bits='16777216' id='type-id-1522'>
       <!-- <anonymous range>[262144] -->
       <subrange length='262144' type-id='type-id-49' id='type-id-1520'/>
@@ -40807,7 +40807,7 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_thread.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
-    <!-- TraceHeader[256] -->
+    <!-- __tsan::TraceHeader[256] -->
     <array-type-def dimensions='1' type-id='type-id-1690' size-in-bits='5062656' id='type-id-1691'>
       <!-- <anonymous range>[256] -->
       <subrange length='256' type-id='type-id-49' id='type-id-202'/>
