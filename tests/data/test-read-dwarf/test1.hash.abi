@@ -38,11 +38,11 @@
     <type-decl name='char' size-in-bits='8' id='a84c031d'/>
     <type-decl name='double' size-in-bits='64' id='a0eb0f08'/>
     <type-decl name='int' size-in-bits='32' id='95e97e5e'/>
-    <type-decl name='long long int' size-in-bits='64' id='1eb56b1e'/>
+    <type-decl name='long long int' size-in-bits='64' id='95e97e5f'/>
     <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <class-decl name='b0' size-in-bits='128' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='1' column='1' id='96c6f7f7'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='m0' type-id='1eb56b1e' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='3' column='1'/>
+        <var-decl name='m0' type-id='95e97e5f' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='3' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='m1' type-id='a84c031d' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='4' column='1'/>

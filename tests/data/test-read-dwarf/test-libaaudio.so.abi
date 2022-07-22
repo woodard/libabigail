@@ -84,17 +84,15 @@
     <type-decl name='double' size-in-bits='64' id='a0eb0f08'/>
     <type-decl name='float' size-in-bits='32' id='a6c45d85'/>
     <type-decl name='int' size-in-bits='32' id='95e97e5e'/>
-    <type-decl name='long double' size-in-bits='128' id='e095c704'/>
-    <type-decl name='long int' size-in-bits='64' id='bd54fe1a'/>
-    <type-decl name='long long int' size-in-bits='64' id='1eb56b1e'/>
-    <type-decl name='long long unsigned int' size-in-bits='64' id='3a47d82b'/>
+    <type-decl name='long double' size-in-bits='128' id='a0eb0f09'/>
+    <type-decl name='long int' size-in-bits='64' id='95e97e5f'/>
     <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='9cac1fee'/>
     <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <array-type-def dimensions='1' type-id='002ac4a6' size-in-bits='32' id='09001d3c'>
       <subrange length='4' type-id='7ff19f0f' id='16fe7105'/>
     </array-type-def>
     <type-decl name='unsigned int' size-in-bits='32' id='f0981eeb'/>
-    <type-decl name='unsigned long int' size-in-bits='64' id='7359adad'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='f0981eec'/>
     <type-decl name='wchar_t' size-in-bits='32' id='c523b9f1'/>
     <class-decl name='mbstate_t' size-in-bits='64' is-struct='yes' naming-typedef-id='3d7d8cbf' visibility='default' filepath='bionic/libc/include/bits/mbstate_t.h' line='42' column='1' id='a76d8e48'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -106,18 +104,18 @@
     </class-decl>
     <class-decl name='ldiv_t' size-in-bits='128' is-struct='yes' naming-typedef-id='30397bf8' visibility='default' filepath='bionic/libc/include/stdlib.h' line='136' column='1' id='9b5926fd'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='bd54fe1a' visibility='default' filepath='bionic/libc/include/stdlib.h' line='137' column='1'/>
+        <var-decl name='quot' type-id='95e97e5f' visibility='default' filepath='bionic/libc/include/stdlib.h' line='137' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='bd54fe1a' visibility='default' filepath='bionic/libc/include/stdlib.h' line='138' column='1'/>
+        <var-decl name='rem' type-id='95e97e5f' visibility='default' filepath='bionic/libc/include/stdlib.h' line='138' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='lldiv_t' size-in-bits='128' is-struct='yes' naming-typedef-id='f5fa3b34' visibility='default' filepath='bionic/libc/include/stdlib.h' line='143' column='1' id='649cba4b'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='1eb56b1e' visibility='default' filepath='bionic/libc/include/stdlib.h' line='144' column='1'/>
+        <var-decl name='quot' type-id='95e97e5f' visibility='default' filepath='bionic/libc/include/stdlib.h' line='144' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='1eb56b1e' visibility='default' filepath='bionic/libc/include/stdlib.h' line='145' column='1'/>
+        <var-decl name='rem' type-id='95e97e5f' visibility='default' filepath='bionic/libc/include/stdlib.h' line='145' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' filepath='bionic/libc/include/time.h' line='46' column='1' id='dddf6ca2'>
@@ -149,7 +147,7 @@
         <var-decl name='tm_isdst' type-id='95e97e5e' visibility='default' filepath='bionic/libc/include/time.h' line='55' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='tm_gmtoff' type-id='bd54fe1a' visibility='default' filepath='bionic/libc/include/time.h' line='56' column='1'/>
+        <var-decl name='tm_gmtoff' type-id='95e97e5f' visibility='default' filepath='bionic/libc/include/time.h' line='56' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
         <var-decl name='tm_zone' type-id='80f4b756' visibility='default' filepath='bionic/libc/include/time.h' line='57' column='1'/>
@@ -290,22 +288,19 @@
     <pointer-type-def type-id='f077d3f8' size-in-bits='64' id='5ea27396'/>
     <pointer-type-def type-id='a6c45d85' size-in-bits='64' id='361f7a7d'/>
     <pointer-type-def type-id='e322b6ef' size-in-bits='64' id='c5f12884'/>
-    <pointer-type-def type-id='4ea6ed15' size-in-bits='64' id='3405aa89'/>
     <pointer-type-def type-id='96ee24a5' size-in-bits='64' id='585e1de9'/>
     <pointer-type-def type-id='95e97e5e' size-in-bits='64' id='7292109c'/>
     <pointer-type-def type-id='9da381c4' size-in-bits='64' id='cb785ebf'/>
-    <pointer-type-def type-id='e095c704' size-in-bits='64' id='b9c88d6a'/>
+    <pointer-type-def type-id='a0eb0f09' size-in-bits='64' id='7408d286'/>
     <pointer-type-def type-id='3d7d8cbf' size-in-bits='64' id='a68021ce'/>
     <pointer-type-def type-id='c9d12d66' size-in-bits='64' id='b2eb2c3f'/>
     <pointer-type-def type-id='dddf6ca2' size-in-bits='64' id='d915a820'/>
+    <pointer-type-def type-id='4ea6ed15' size-in-bits='64' id='3405aa89'/>
     <pointer-type-def type-id='ee076206' size-in-bits='64' id='953b12f8'/>
     <pointer-type-def type-id='513cf94a' size-in-bits='64' id='ea545054'/>
     <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e2f'/>
     <pointer-type-def type-id='c523b9f1' size-in-bits='64' id='323d93c1'/>
     <pointer-type-def type-id='323d93c1' size-in-bits='64' id='01efdaf1'/>
-    <class-decl name='AAudioStreamBuilderStruct' is-struct='yes' visibility='default' is-declaration-only='yes' id='813682d4'/>
-    <class-decl name='AAudioStreamStruct' is-struct='yes' visibility='default' is-declaration-only='yes' id='119dbfcb'/>
-    <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
     <namespace-decl name='aaudio'>
       <class-decl name='AAudioStreamParameters' visibility='default' is-declaration-only='yes' id='84aa4341'>
         <member-function access='public'>
@@ -674,6 +669,9 @@
         </data-member>
       </class-decl>
     </namespace-decl>
+    <class-decl name='AAudioStreamBuilderStruct' is-struct='yes' visibility='default' is-declaration-only='yes' id='813682d4'/>
+    <class-decl name='AAudioStreamStruct' is-struct='yes' visibility='default' is-declaration-only='yes' id='119dbfcb'/>
+    <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
     <typedef-decl name='__builtin_va_list' type-id='30357e0a' id='7f896fb4'/>
     <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='void' id='48b5725f'/>
@@ -735,7 +733,7 @@
       <parameter type-id='6dd37369'/>
       <return type-id='6dd37369'/>
     </function-decl>
-    <typedef-decl name='wctype_t' type-id='bd54fe1a' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
+    <typedef-decl name='wctype_t' type-id='95e97e5f' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
     <function-decl name='wctype' filepath='bionic/libc/include/bits/wctype.h' line='57' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
       <return type-id='ba50424d'/>
@@ -778,24 +776,24 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='acosl' filepath='bionic/libc/include/math.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='asinf' filepath='bionic/libc/include/math.h' line='81' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='asinl' filepath='bionic/libc/include/math.h' line='82' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='atanf' filepath='bionic/libc/include/math.h' line='85' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='atanl' filepath='bionic/libc/include/math.h' line='86' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='atan2f' filepath='bionic/libc/include/math.h' line='89' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -803,105 +801,105 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='atan2l' filepath='bionic/libc/include/math.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='cosf' filepath='bionic/libc/include/math.h' line='93' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='cosl' filepath='bionic/libc/include/math.h' line='94' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='sinf' filepath='bionic/libc/include/math.h' line='97' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='sinl' filepath='bionic/libc/include/math.h' line='98' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='tanf' filepath='bionic/libc/include/math.h' line='101' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='tanl' filepath='bionic/libc/include/math.h' line='102' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='acoshf' filepath='bionic/libc/include/math.h' line='105' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='acoshl' filepath='bionic/libc/include/math.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='asinhf' filepath='bionic/libc/include/math.h' line='109' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='asinhl' filepath='bionic/libc/include/math.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='atanhf' filepath='bionic/libc/include/math.h' line='113' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='atanhl' filepath='bionic/libc/include/math.h' line='114' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='coshf' filepath='bionic/libc/include/math.h' line='117' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='coshl' filepath='bionic/libc/include/math.h' line='118' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='sinhf' filepath='bionic/libc/include/math.h' line='121' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='sinhl' filepath='bionic/libc/include/math.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='tanhf' filepath='bionic/libc/include/math.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='tanhl' filepath='bionic/libc/include/math.h' line='126' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='expf' filepath='bionic/libc/include/math.h' line='129' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='expl' filepath='bionic/libc/include/math.h' line='130' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='exp2f' filepath='bionic/libc/include/math.h' line='133' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='exp2l' filepath='bionic/libc/include/math.h' line='134' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='expm1f' filepath='bionic/libc/include/math.h' line='137' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='expm1l' filepath='bionic/libc/include/math.h' line='138' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='frexpf' filepath='bionic/libc/include/math.h' line='141' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -909,16 +907,16 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='frexpl' filepath='bionic/libc/include/math.h' line='142' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
       <parameter type-id='7292109c'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='ilogbf' filepath='bionic/libc/include/math.h' line='145' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='ilogbl' filepath='bionic/libc/include/math.h' line='146' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='ldexpf' filepath='bionic/libc/include/math.h' line='149' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -927,49 +925,49 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='ldexpl' filepath='bionic/libc/include/math.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='logf' filepath='bionic/libc/include/math.h' line='153' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='logl' filepath='bionic/libc/include/math.h' line='154' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='log10f' filepath='bionic/libc/include/math.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='log10l' filepath='bionic/libc/include/math.h' line='158' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='log1pf' filepath='bionic/libc/include/math.h' line='161' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='log1pl' filepath='bionic/libc/include/math.h' line='162' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='log2f' filepath='bionic/libc/include/math.h' line='165' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='log2l' filepath='bionic/libc/include/math.h' line='166' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='logbf' filepath='bionic/libc/include/math.h' line='169' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='logbl' filepath='bionic/libc/include/math.h' line='170' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='modff' filepath='bionic/libc/include/math.h' line='173' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -977,9 +975,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='modfl' filepath='bionic/libc/include/math.h' line='174' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='b9c88d6a'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='7408d286'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='scalbnf' filepath='bionic/libc/include/math.h' line='177' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -987,35 +985,35 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='scalbnl' filepath='bionic/libc/include/math.h' line='178' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='scalblnf' filepath='bionic/libc/include/math.h' line='182' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <parameter type-id='bd54fe1a'/>
+      <parameter type-id='95e97e5f'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='scalblnl' filepath='bionic/libc/include/math.h' line='183' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='bd54fe1a'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='95e97e5f'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='cbrtf' filepath='bionic/libc/include/math.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='cbrtl' filepath='bionic/libc/include/math.h' line='187' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fabsf' filepath='bionic/libc/include/math.h' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fabsl' filepath='bionic/libc/include/math.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='hypotf' filepath='bionic/libc/include/math.h' line='194' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1023,9 +1021,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='hypotl' filepath='bionic/libc/include/math.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='powf' filepath='bionic/libc/include/math.h' line='198' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1033,129 +1031,129 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='powl' filepath='bionic/libc/include/math.h' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='sqrtf' filepath='bionic/libc/include/math.h' line='202' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='sqrtl' filepath='bionic/libc/include/math.h' line='203' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='erff' filepath='bionic/libc/include/math.h' line='206' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='erfl' filepath='bionic/libc/include/math.h' line='207' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='erfcf' filepath='bionic/libc/include/math.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='erfcl' filepath='bionic/libc/include/math.h' line='211' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='lgammaf' filepath='bionic/libc/include/math.h' line='214' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='lgammal' filepath='bionic/libc/include/math.h' line='215' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='tgammaf' filepath='bionic/libc/include/math.h' line='218' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='tgammal' filepath='bionic/libc/include/math.h' line='219' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='ceilf' filepath='bionic/libc/include/math.h' line='222' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='ceill' filepath='bionic/libc/include/math.h' line='223' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='floorf' filepath='bionic/libc/include/math.h' line='226' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='floorl' filepath='bionic/libc/include/math.h' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='nearbyintf' filepath='bionic/libc/include/math.h' line='230' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='nearbyintl' filepath='bionic/libc/include/math.h' line='231' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='rintf' filepath='bionic/libc/include/math.h' line='234' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='rintl' filepath='bionic/libc/include/math.h' line='235' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='lrintf' filepath='bionic/libc/include/math.h' line='238' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='lrintl' filepath='bionic/libc/include/math.h' line='239' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='bd54fe1a'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='llrintf' filepath='bionic/libc/include/math.h' line='242' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <return type-id='1eb56b1e'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='llrintl' filepath='bionic/libc/include/math.h' line='243' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='1eb56b1e'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='roundf' filepath='bionic/libc/include/math.h' line='246' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='roundl' filepath='bionic/libc/include/math.h' line='247' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='lroundf' filepath='bionic/libc/include/math.h' line='250' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='lroundl' filepath='bionic/libc/include/math.h' line='251' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='bd54fe1a'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='llroundf' filepath='bionic/libc/include/math.h' line='254' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <return type-id='1eb56b1e'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='llroundl' filepath='bionic/libc/include/math.h' line='255' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='1eb56b1e'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='truncf' filepath='bionic/libc/include/math.h' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='truncl' filepath='bionic/libc/include/math.h' line='259' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fmodf' filepath='bionic/libc/include/math.h' line='262' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1163,9 +1161,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fmodl' filepath='bionic/libc/include/math.h' line='263' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='remainderf' filepath='bionic/libc/include/math.h' line='266' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1173,9 +1171,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='remainderl' filepath='bionic/libc/include/math.h' line='267' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='remquof' filepath='bionic/libc/include/math.h' line='270' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1184,10 +1182,10 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='remquol' filepath='bionic/libc/include/math.h' line='271' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
       <parameter type-id='7292109c'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='copysignf' filepath='bionic/libc/include/math.h' line='274' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1195,9 +1193,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='copysignl' filepath='bionic/libc/include/math.h' line='275' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='nan' filepath='bionic/libc/include/math.h' line='277' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
@@ -1209,7 +1207,7 @@
     </function-decl>
     <function-decl name='nanl' filepath='bionic/libc/include/math.h' line='279' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='nextafterf' filepath='bionic/libc/include/math.h' line='282' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1217,19 +1215,19 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='nextafterl' filepath='bionic/libc/include/math.h' line='283' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='nexttowardf' filepath='bionic/libc/include/math.h' line='286' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
-      <parameter type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='nexttowardl' filepath='bionic/libc/include/math.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fdimf' filepath='bionic/libc/include/math.h' line='290' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1237,9 +1235,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fdiml' filepath='bionic/libc/include/math.h' line='291' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fmaxf' filepath='bionic/libc/include/math.h' line='294' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1247,9 +1245,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fmaxl' filepath='bionic/libc/include/math.h' line='295' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fminf' filepath='bionic/libc/include/math.h' line='298' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1257,9 +1255,9 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fminl' filepath='bionic/libc/include/math.h' line='299' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='fmaf' filepath='bionic/libc/include/math.h' line='302' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='a6c45d85'/>
@@ -1268,14 +1266,14 @@
       <return type-id='a6c45d85'/>
     </function-decl>
     <function-decl name='fmal' filepath='bionic/libc/include/math.h' line='303' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <parameter type-id='e095c704'/>
-      <return type-id='e095c704'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <parameter type-id='a0eb0f09'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <typedef-decl name='__int32_t' type-id='95e97e5e' filepath='bionic/libc/include/stdint.h' line='40' column='1' id='33f57a65'/>
     <typedef-decl name='__uint32_t' type-id='f0981eeb' filepath='bionic/libc/include/stdint.h' line='41' column='1' id='62f1140c'/>
-    <typedef-decl name='__int64_t' type-id='bd54fe1a' filepath='bionic/libc/include/stdint.h' line='43' column='1' id='0c9942d2'/>
+    <typedef-decl name='__int64_t' type-id='95e97e5f' filepath='bionic/libc/include/stdint.h' line='43' column='1' id='0c9942d2'/>
     <typedef-decl name='int32_t' type-id='33f57a65' filepath='bionic/libc/include/stdint.h' line='64' column='1' id='3ff5601b'/>
     <typedef-decl name='uint32_t' type-id='62f1140c' filepath='bionic/libc/include/stdint.h' line='65' column='1' id='8f92235e'/>
     <typedef-decl name='int64_t' type-id='0c9942d2' filepath='bionic/libc/include/stdint.h' line='67' column='1' id='9da381c4'/>
@@ -1414,13 +1412,13 @@
     </function-decl>
     <function-decl name='fseek' filepath='bionic/libc/include/stdio.h' line='215' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='822cd80b'/>
-      <parameter type-id='bd54fe1a'/>
+      <parameter type-id='95e97e5f'/>
       <parameter type-id='95e97e5e'/>
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='ftell' filepath='bionic/libc/include/stdio.h' line='216' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='822cd80b'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='fgetpos' filepath='bionic/libc/include/stdio.h' line='232' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='822cd80b'/>
@@ -1494,25 +1492,25 @@
       <parameter type-id='80f4b756'/>
       <parameter type-id='9b23c9ad'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='strtoll' filepath='bionic/libc/include/stdlib.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
       <parameter type-id='9b23c9ad'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='1eb56b1e'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='strtoul' filepath='bionic/libc/include/stdlib.h' line='77' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
       <parameter type-id='9b23c9ad'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='7359adad'/>
+      <return type-id='f0981eec'/>
     </function-decl>
     <function-decl name='strtoull' filepath='bionic/libc/include/stdlib.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
       <parameter type-id='9b23c9ad'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='3a47d82b'/>
+      <return type-id='f0981eec'/>
     </function-decl>
     <function-decl name='strtod' filepath='bionic/libc/include/stdlib.h' line='84' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
@@ -1522,7 +1520,7 @@
     <function-decl name='strtold' filepath='bionic/libc/include/stdlib.h' line='85' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
       <parameter type-id='9b23c9ad'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='atoi' filepath='bionic/libc/include/stdlib.h' line='89' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
@@ -1530,11 +1528,11 @@
     </function-decl>
     <function-decl name='atol' filepath='bionic/libc/include/stdlib.h' line='90' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='atoll' filepath='bionic/libc/include/stdlib.h' line='91' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
-      <return type-id='1eb56b1e'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='system' filepath='bionic/libc/include/stdlib.h' line='94' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
@@ -1557,14 +1555,14 @@
     </function-decl>
     <typedef-decl name='ldiv_t' type-id='9b5926fd' filepath='bionic/libc/include/stdlib.h' line='139' column='1' id='30397bf8'/>
     <function-decl name='ldiv' filepath='bionic/libc/include/stdlib.h' line='141' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='bd54fe1a'/>
-      <parameter type-id='bd54fe1a'/>
+      <parameter type-id='95e97e5f'/>
+      <parameter type-id='95e97e5f'/>
       <return type-id='30397bf8'/>
     </function-decl>
     <typedef-decl name='lldiv_t' type-id='649cba4b' filepath='bionic/libc/include/stdlib.h' line='146' column='1' id='f5fa3b34'/>
     <function-decl name='lldiv' filepath='bionic/libc/include/stdlib.h' line='148' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='1eb56b1e'/>
-      <parameter type-id='1eb56b1e'/>
+      <parameter type-id='95e97e5f'/>
+      <parameter type-id='95e97e5f'/>
       <return type-id='f5fa3b34'/>
     </function-decl>
     <function-decl name='mblen' filepath='bionic/libc/include/stdlib.h' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -1596,12 +1594,12 @@
       <return type-id='b59d7dce'/>
     </function-decl>
     <function-decl name='labs' filepath='bionic/libc/include/stdlib.h' line='188' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='bd54fe1a'/>
-      <return type-id='bd54fe1a'/>
+      <parameter type-id='95e97e5f'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='llabs' filepath='bionic/libc/include/stdlib.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='1eb56b1e'/>
-      <return type-id='1eb56b1e'/>
+      <parameter type-id='95e97e5f'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='strtof' filepath='bionic/libc/include/stdlib.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='80f4b756'/>
@@ -1937,30 +1935,30 @@
       <parameter type-id='f077d3f8'/>
       <parameter type-id='01efdaf1'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='bd54fe1a'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='wcstoll' filepath='bionic/libc/include/wchar.h' line='104' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='f077d3f8'/>
       <parameter type-id='01efdaf1'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='1eb56b1e'/>
+      <return type-id='95e97e5f'/>
     </function-decl>
     <function-decl name='wcstold' filepath='bionic/libc/include/wchar.h' line='105' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='f077d3f8'/>
       <parameter type-id='01efdaf1'/>
-      <return type-id='e095c704'/>
+      <return type-id='a0eb0f09'/>
     </function-decl>
     <function-decl name='wcstoul' filepath='bionic/libc/include/wchar.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='f077d3f8'/>
       <parameter type-id='01efdaf1'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='7359adad'/>
+      <return type-id='f0981eec'/>
     </function-decl>
     <function-decl name='wcstoull' filepath='bionic/libc/include/wchar.h' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='f077d3f8'/>
       <parameter type-id='01efdaf1'/>
       <parameter type-id='95e97e5e'/>
-      <return type-id='3a47d82b'/>
+      <return type-id='f0981eec'/>
     </function-decl>
     <function-decl name='wcsxfrm' filepath='bionic/libc/include/wchar.h' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='323d93c1'/>
@@ -2006,7 +2004,7 @@
       <parameter is-variadic='yes'/>
       <return type-id='95e97e5e'/>
     </function-decl>
-    <typedef-decl name='__kernel_long_t' type-id='bd54fe1a' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='23' column='1' id='6a11bd61'/>
+    <typedef-decl name='__kernel_long_t' type-id='95e97e5f' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='23' column='1' id='6a11bd61'/>
     <typedef-decl name='__kernel_time_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='78' column='1' id='f7d92306'/>
     <typedef-decl name='__kernel_clock_t' type-id='6a11bd61' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='80' column='1' id='880ebc01'/>
     <typedef-decl name='__kernel_clockid_t' type-id='95e97e5e' filepath='bionic/libc/kernel/uapi/asm-generic/posix_types.h' line='82' column='1' id='7eb128d4'/>
@@ -2297,7 +2295,7 @@
       <return type-id='c894953d'/>
     </function-decl>
     <typedef-decl name='va_list' type-id='7f896fb4' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stdarg.h' line='14' column='1' id='2aee9912'/>
-    <typedef-decl name='size_t' type-id='7359adad' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stddef.h' line='46' column='1' id='b59d7dce'/>
+    <typedef-decl name='size_t' type-id='f0981eec' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stddef.h' line='46' column='1' id='b59d7dce'/>
     <typedef-decl name='audio_format_t' type-id='ff439793' filepath='system/media/audio/include/system/audio-hal-enums.h' line='616' column='1' id='aff86d3f'/>
     <function-type size-in-bits='64' id='4ea6ed15'>
       <parameter type-id='b2a1b704'/>

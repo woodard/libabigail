@@ -2088,6 +2088,13 @@ public:
 
   bool operator!=(const type_decl&)const;
 
+  virtual void
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
+
+  virtual const interned_string&
+  get_qualified_name(bool internal = false) const;
+
   virtual string
   get_pretty_representation(bool internal = false,
 			    bool qualified_name = true) const;
