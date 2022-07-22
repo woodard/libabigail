@@ -13544,6 +13544,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
   decl_base_sptr result = t;
   type_base_sptr u = t->get_underlying_type();
 
+  strip_redundant_quals_from_underyling_types(t);
   result = strip_useless_const_qualification(t);
   if (result.get() != t.get())
     return result;
@@ -13590,6 +13591,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	  qualified_type_def::CV quals = qualified->get_cv_quals();
 	  quals |= t->get_cv_quals();
 	  qualified->set_cv_quals(quals);
+	  strip_redundant_quals_from_underyling_types(qualified);
 	  result = is_decl(u);
 	}
       else
@@ -13598,6 +13600,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	    (new qualified_type_def(element_type,
 				    t->get_cv_quals(),
 				    t->get_location()));
+	  strip_redundant_quals_from_underyling_types(qual_type);
 	  add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
 	  array->set_element_type(qual_type);
 	  ctxt.schedule_type_for_late_canonicalization(is_type(qual_type));
@@ -15584,7 +15587,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    ctxt.associate_die_to_type(die, ty, where_offset);
 	    result =
 	      add_decl_to_scope(d, ctxt.cur_transl_unit()->get_global_scope());
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(is_type(result), ctxt);
 	  }
       }
       break;

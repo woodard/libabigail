@@ -2243,6 +2243,9 @@ operator|(qualified_type_def::CV, qualified_type_def::CV);
 qualified_type_def::CV&
 operator|=(qualified_type_def::CV&, qualified_type_def::CV);
 
+qualified_type_def::CV&
+operator&=(qualified_type_def::CV&, qualified_type_def::CV);
+
 qualified_type_def::CV
 operator&(qualified_type_def::CV, qualified_type_def::CV);
 

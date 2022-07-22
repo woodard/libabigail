@@ -6715,6 +6715,113 @@ strip_useless_const_qualification(const qualified_type_def_sptr t)
   return result;
 }
 
+/// Merge redundant qualifiers from a tree of qualified types.
+///
+/// Suppose a tree of qualified types leads to:
+///
+///     const virtual const restrict const int;
+///
+/// Suppose the IR tree of qualified types ressembles (with C meaning
+/// const, V meaning virtual and R meaning restrict):
+///
+///     [C|V]-->[C|R] -->[C] --> [int].
+///
+/// This function walks the IR and remove the redundant CV qualifiers
+/// so the IR becomes:
+///
+///     [C|V] --> [R] --> []  -->[int].
+///
+/// Note that the empty qualified type (noted []) represents a
+/// qualified type with no qualifier.  It's rare, but it can exist.
+/// I've put it here just for the sake of example.
+///
+/// The resulting IR thus represents the (merged) type:
+///
+///    const virtual restrict int.
+///
+/// This function is a sub-routine of the overload @ref
+/// strip_useless_const_qualification which doesn't return any value.
+///
+/// @param t the qualified type to consider.
+///
+/// @param redundant_quals the (redundant) qualifiers to be removed
+/// from the qualifiers of the underlying types of @p t.
+///
+/// @return the underlying type of @p t which might have had its
+/// redundant qualifiers removed.
+static qualified_type_def_sptr
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr& t,
+					    qualified_type_def::CV redundant_quals)
+{
+  if (!t)
+    return t;
+
+  // We must NOT edit canonicalized types.
+  ABG_ASSERT(!t->get_canonical_type());
+
+  qualified_type_def_sptr underlying_qualified_type =
+    is_qualified_type(t->get_underlying_type());
+
+  // Let's build 'currated qualifiers' that are the qualifiers of the
+  // current type from which redundant qualifiers are removed.
+  qualified_type_def::CV currated_quals = t->get_cv_quals();
+
+  // Remove the redundant qualifiers from these currated qualifiers
+  currated_quals &= ~redundant_quals;
+  t->set_cv_quals(currated_quals);
+
+  // The redundant qualifiers, moving forward, is now the union of the
+  // previous set of redundant qualifiers and the currated qualifiers.
+  redundant_quals |= currated_quals;
+
+  qualified_type_def_sptr result = t;
+  if (underlying_qualified_type)
+    // Now remove the redundant qualifiers from the qualified types
+    // potentially carried by the underlying type.
+    result =
+      strip_redundant_quals_from_underyling_types(underlying_qualified_type,
+						  redundant_quals);
+
+  return result;
+}
+
+/// Merge redundant qualifiers from a tree of qualified types.
+///
+/// Suppose a tree of qualified types leads to:
+///
+///     const virtual const restrict const int;
+///
+/// Suppose the IR tree of qualified types ressembles (with C meaning
+/// const, V meaning virtual and R meaning restrict):
+///
+///     [C|V]-->[C|R] -->[C] --> [int].
+///
+/// This function walks the IR and remove the redundant CV qualifiers
+/// so the IR becomes:
+///
+///     [C|V] --> [R] --> []  -->[int].
+///
+/// Note that the empty qualified type (noted []) represents a
+/// qualified type with no qualifier.  It's rare, but it can exist.
+/// I've put it here just for the sake of example.
+///
+/// The resulting IR thus represents the (merged) type:
+///
+///    const virtual restrict int.
+///
+/// @param t the qualified type to consider.  The IR below the
+/// argument to this parameter will be edited to remove redundant
+/// qualifiers where applicable.
+void
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr& t)
+{
+  if (!t)
+    return;
+
+  qualified_type_def::CV redundant_quals = qualified_type_def::CV_NONE;
+  strip_redundant_quals_from_underyling_types(t, redundant_quals);
+}
+
 /// Return the leaf underlying type node of a @ref typedef_decl node.
 ///
 /// If the underlying type of a @ref typedef_decl node is itself a
@@ -15650,6 +15757,14 @@ qualified_type_def::CV&
 operator|=(qualified_type_def::CV& l, qualified_type_def::CV r)
 {
   l = l | r;
+  return l;
+}
+
+/// Overloaded bitwise &= operator for cv qualifiers.
+qualified_type_def::CV&
+operator&=(qualified_type_def::CV& l, qualified_type_def::CV r)
+{
+  l = l & r;
   return l;
 }
 

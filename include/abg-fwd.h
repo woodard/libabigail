@@ -827,6 +827,9 @@ strip_typedef(const type_base_sptr);
 decl_base_sptr
 strip_useless_const_qualification(const qualified_type_def_sptr t);
 
+void
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr&);
+
 type_base_sptr
 peel_typedef_type(const type_base_sptr&);
 
