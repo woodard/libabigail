@@ -7592,12 +7592,12 @@
     </class-decl>
     <class-decl name='vtkPixelTransfer' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='35' column='1' id='type-id-63'>
       <member-type access='private'>
-        <typedef-decl name='VTK_TT' type-id='type-id-15' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='138' column='1' id='type-id-419'/>
+        <typedef-decl name='VTK_TT' type-id='type-id-12' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='138' column='1' id='type-id-417'/>
       </member-type>
     </class-decl>
     <class-decl name='vtkPixelTransfer' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='35' column='1' id='type-id-63'>
       <member-type access='private'>
-        <typedef-decl name='VTK_TT' type-id='type-id-12' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='138' column='1' id='type-id-417'/>
+        <typedef-decl name='VTK_TT' type-id='type-id-15' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='138' column='1' id='type-id-419'/>
       </member-type>
     </class-decl>
     <class-decl name='vtkPixelTransfer' size-in-bits='8' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkPixelTransfer.h' line='35' column='1' id='type-id-63'>
