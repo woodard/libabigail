@@ -3877,7 +3877,8 @@ build_type_decl(read_context&		ctxt,
       // several times.  Hugh.
       type_decl_sptr ty = dynamic_pointer_cast<type_decl>(d);
       ABG_ASSERT(ty);
-      ABG_ASSERT(name == ty->get_name());
+      ABG_ASSERT(!name.empty());
+      ABG_ASSERT(!ty->get_name().empty());
       ABG_ASSERT(ty->get_size_in_bits() == size_in_bits);
       ABG_ASSERT(ty->get_alignment_in_bits() == alignment_in_bits);
       return ty;

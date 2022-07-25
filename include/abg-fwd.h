@@ -409,6 +409,12 @@ is_type_decl(const type_or_decl_base*);
 type_decl_sptr
 is_type_decl(const type_or_decl_base_sptr&);
 
+type_decl*
+is_integral_type(const type_or_decl_base*);
+
+type_decl_sptr
+is_integral_type(const type_or_decl_base_sptr&);
+
 typedef_decl_sptr
 is_typedef(const type_or_decl_base_sptr);
 
@@ -826,6 +832,9 @@ strip_typedef(const type_base_sptr);
 
 decl_base_sptr
 strip_useless_const_qualification(const qualified_type_def_sptr t);
+
+void
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr&);
 
 type_base_sptr
 peel_typedef_type(const type_base_sptr&);

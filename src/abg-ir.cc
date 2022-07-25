@@ -264,6 +264,9 @@ has_generic_anonymous_internal_type_name(const decl_base *d);
 static interned_string
 get_generic_anonymous_internal_type_name(const decl_base *d);
 
+static string
+get_internal_integral_type_name(const type_base*);
+
 static void
 update_qualified_name(decl_base * d);
 
@@ -3282,12 +3285,12 @@ struct decl_topo_comp
     // We reach this point if location data is useless.
     if (f->get_is_anonymous()
 	&& s->get_is_anonymous()
-	&& (get_pretty_representation(f, true)
-	    == get_pretty_representation(s, true)))
+	&& (get_pretty_representation(f, /*internal=*/false)
+	    == get_pretty_representation(s, /*internal=*/false)))
       return f->get_name() < s->get_name();
 
-    return (get_pretty_representation(f, true)
-	    < get_pretty_representation(s, true));
+    return (get_pretty_representation(f, /*internal=*/false)
+	    < get_pretty_representation(s, /*internal=*/false));
   }
 
   /// The "Less Than" comparison operator of this functor.
@@ -3368,8 +3371,8 @@ struct type_topo_comp
 	&& !has_artificial_or_natural_location(f)
 	&& !has_artificial_or_natural_location(s))
       {
-	string s1 = get_pretty_representation(f, true);
-	string s2 = get_pretty_representation(s, true);
+	string s1 = get_pretty_representation(f, /*internal=*/false);
+	string s2 = get_pretty_representation(s, /*internal=*/false);
 	if (s1 == s2)
 	  {
 	    if (qualified_type_def * q = is_qualified_type(f))
@@ -3411,8 +3414,8 @@ struct type_topo_comp
 	    type_base *peeled_s =
 	      peel_pointer_or_reference_type(s, true);
 
-	    s1 = get_pretty_representation(peeled_f, true);
-	    s2 = get_pretty_representation(peeled_s, true);
+	    s1 = get_pretty_representation(peeled_f, /*internal=*/false);
+	    s2 = get_pretty_representation(peeled_s, /*internal=*/false);
 	    if (s1 != s2)
 	      return s1 < s2;
 
@@ -3422,8 +3425,8 @@ struct type_topo_comp
 	    peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
 	    peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
 
-	    s1 = get_pretty_representation(peeled_f, true);
-	    s2 = get_pretty_representation(peeled_s, true);
+	    s1 = get_pretty_representation(peeled_f, false);
+	    s2 = get_pretty_representation(peeled_s, false);
 	    if (s1 != s2)
 	      return s1 < s2;
 	  }
@@ -3446,8 +3449,8 @@ struct type_topo_comp
 	if (!!fd != !!sd)
 	  return fd && !sd;
 
-	string s1 = get_pretty_representation(peeled_f, true);
-	string s2 = get_pretty_representation(peeled_s, true);
+	string s1 = get_pretty_representation(peeled_f, false);
+	string s2 = get_pretty_representation(peeled_s, false);
 
 	if (!fd || s1 != s2)
 	  return (s1 < s2);
@@ -3455,8 +3458,8 @@ struct type_topo_comp
 	peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
 	peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
 
-	s1 = get_pretty_representation(peeled_f, true);
-	s2 = get_pretty_representation(peeled_s, true);
+	s1 = get_pretty_representation(peeled_f, false);
+	s2 = get_pretty_representation(peeled_s, false);
 
 	if (s1 != s2)
 	  return s1 < s2;
@@ -4382,6 +4385,8 @@ struct decl_base::priv
   // __anonymous_struct__ string, even if the anonymous struct is not
   // the direct containing scope of this decl.
   interned_string	qualified_name_;
+  interned_string	temporary_internal_qualified_name_;
+  interned_string	internal_qualified_name_;
   // Unline qualified_name_, scoped_name_ contains the name of the
   // decl and the name of its scope; not the qualified name of the
   // scope.
@@ -6715,6 +6720,113 @@ strip_useless_const_qualification(const qualified_type_def_sptr t)
   return result;
 }
 
+/// Merge redundant qualifiers from a tree of qualified types.
+///
+/// Suppose a tree of qualified types leads to:
+///
+///     const virtual const restrict const int;
+///
+/// Suppose the IR tree of qualified types ressembles (with C meaning
+/// const, V meaning virtual and R meaning restrict):
+///
+///     [C|V]-->[C|R] -->[C] --> [int].
+///
+/// This function walks the IR and remove the redundant CV qualifiers
+/// so the IR becomes:
+///
+///     [C|V] --> [R] --> []  -->[int].
+///
+/// Note that the empty qualified type (noted []) represents a
+/// qualified type with no qualifier.  It's rare, but it can exist.
+/// I've put it here just for the sake of example.
+///
+/// The resulting IR thus represents the (merged) type:
+///
+///    const virtual restrict int.
+///
+/// This function is a sub-routine of the overload @ref
+/// strip_useless_const_qualification which doesn't return any value.
+///
+/// @param t the qualified type to consider.
+///
+/// @param redundant_quals the (redundant) qualifiers to be removed
+/// from the qualifiers of the underlying types of @p t.
+///
+/// @return the underlying type of @p t which might have had its
+/// redundant qualifiers removed.
+static qualified_type_def_sptr
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr& t,
+					    qualified_type_def::CV redundant_quals)
+{
+  if (!t)
+    return t;
+
+  // We must NOT edit canonicalized types.
+  ABG_ASSERT(!t->get_canonical_type());
+
+  qualified_type_def_sptr underlying_qualified_type =
+    is_qualified_type(t->get_underlying_type());
+
+  // Let's build 'currated qualifiers' that are the qualifiers of the
+  // current type from which redundant qualifiers are removed.
+  qualified_type_def::CV currated_quals = t->get_cv_quals();
+
+  // Remove the redundant qualifiers from these currated qualifiers
+  currated_quals &= ~redundant_quals;
+  t->set_cv_quals(currated_quals);
+
+  // The redundant qualifiers, moving forward, is now the union of the
+  // previous set of redundant qualifiers and the currated qualifiers.
+  redundant_quals |= currated_quals;
+
+  qualified_type_def_sptr result = t;
+  if (underlying_qualified_type)
+    // Now remove the redundant qualifiers from the qualified types
+    // potentially carried by the underlying type.
+    result =
+      strip_redundant_quals_from_underyling_types(underlying_qualified_type,
+						  redundant_quals);
+
+  return result;
+}
+
+/// Merge redundant qualifiers from a tree of qualified types.
+///
+/// Suppose a tree of qualified types leads to:
+///
+///     const virtual const restrict const int;
+///
+/// Suppose the IR tree of qualified types ressembles (with C meaning
+/// const, V meaning virtual and R meaning restrict):
+///
+///     [C|V]-->[C|R] -->[C] --> [int].
+///
+/// This function walks the IR and remove the redundant CV qualifiers
+/// so the IR becomes:
+///
+///     [C|V] --> [R] --> []  -->[int].
+///
+/// Note that the empty qualified type (noted []) represents a
+/// qualified type with no qualifier.  It's rare, but it can exist.
+/// I've put it here just for the sake of example.
+///
+/// The resulting IR thus represents the (merged) type:
+///
+///    const virtual restrict int.
+///
+/// @param t the qualified type to consider.  The IR below the
+/// argument to this parameter will be edited to remove redundant
+/// qualifiers where applicable.
+void
+strip_redundant_quals_from_underyling_types(const qualified_type_def_sptr& t)
+{
+  if (!t)
+    return;
+
+  qualified_type_def::CV redundant_quals = qualified_type_def::CV_NONE;
+  strip_redundant_quals_from_underyling_types(t, redundant_quals);
+}
+
 /// Return the leaf underlying type node of a @ref typedef_decl node.
 ///
 /// If the underlying type of a @ref typedef_decl node is itself a
@@ -8362,6 +8474,35 @@ get_generic_anonymous_internal_type_name(const decl_base *d)
   return result;
 }
 
+/// Get the internal name for a given integral type.
+///
+/// All integral types that have the modifiers 'short, long or long
+/// long' have the same internal name.  This is so that they can all
+/// have the same canonical type if they are of the same size.
+/// Otherwise, 'long int' and 'long long int' would have different
+/// canonical types even though they are equivalent from an ABI point
+/// of view.
+///
+/// @param t the integral type to consider
+///
+/// @return the internal name for @p t if it's an integral type, or
+/// the empty string if @p t is not an integral type.
+static string
+get_internal_integral_type_name(const type_base* t)
+{
+  string name;
+  type_decl *type = is_integral_type(t);
+
+  if (!type)
+    return name;
+
+  integral_type int_type;
+  if (parse_integral_type(type->get_name(), int_type))
+    name = int_type.to_string(/*internal=*/true);
+
+  return name;
+}
+
 /// Get the name of a given type and return a copy of it.
 ///
 /// @param t the type to consider.
@@ -8390,11 +8531,21 @@ get_type_name(const type_base* t, bool qualified, bool internal)
   // All anonymous types of a given kind get to have the same internal
   // name for internal purpose.  This to allow them to be compared
   // among themselves during type canonicalization.
-  if (internal && d->get_is_anonymous())
+  if (internal)
     {
-      string r;
-      r += get_generic_anonymous_internal_type_name(d);
-      return t->get_environment()->intern(r);
+      if (d->get_is_anonymous())
+	{
+	  string r;
+	  r += get_generic_anonymous_internal_type_name(d);
+	  return t->get_environment()->intern(r);
+	}
+
+      if (qualified)
+	return d->get_qualified_name(internal);
+
+      const environment *env = d->get_environment();
+      ABG_ASSERT(env);
+      return env->intern(get_internal_integral_type_name(t));
     }
 
   if (qualified)
@@ -8591,6 +8742,7 @@ get_function_type_name(const function_type& fn_type,
   o <<  get_pretty_representation(return_type, internal);
 
   o << " (";
+  type_base_sptr type;
   for (function_type::parameters::const_iterator i =
 	 fn_type.get_parameters().begin();
        i != fn_type.get_parameters().end();
@@ -8598,7 +8750,10 @@ get_function_type_name(const function_type& fn_type,
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
-      o << get_pretty_representation((*i)->get_type(), internal);
+      type = (*i)->get_type();
+      if (internal)
+	type = peel_typedef_type(type);
+      o << get_pretty_representation(type, internal);
     }
   o <<")";
 
@@ -8679,6 +8834,7 @@ get_method_type_name(const method_type& fn_type,
   o << " (" << class_type->get_qualified_name(internal) << "::*)"
     << " (";
 
+  type_base_sptr type;
   for (function_type::parameters::const_iterator i =
 	 fn_type.get_parameters().begin();
        i != fn_type.get_parameters().end();
@@ -8686,8 +8842,11 @@ get_method_type_name(const method_type& fn_type,
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
+      type = (*i)->get_type();
+      if (internal)
+	type = peel_typedef_type(type);
       if (*i)
-	o << (*i)->get_type()->get_cached_pretty_representation(internal);
+	o << type->get_cached_pretty_representation(internal);
       else
 	// There are still some abixml files out there in which "void"
 	// can be expressed as an empty type.
@@ -9801,6 +9960,46 @@ type_decl_sptr
 is_type_decl(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<type_decl>(t);}
 
+/// Test if a type is an integral type.
+///
+/// @param t the type to test.
+///
+/// @return the integral type @p t can be converted to, or nil if @p
+/// is not an integral type.
+type_decl*
+is_integral_type(const type_or_decl_base* t)
+{
+  type_decl *type = const_cast<type_decl*>(is_type_decl(t));
+  if (!type)
+    return nullptr;
+
+  integral_type int_type;
+  if (!parse_integral_type(type->get_name(), int_type))
+    return nullptr;
+
+  return type;
+}
+
+/// Test if a type is an integral type.
+///
+/// @param t the type to test.
+///
+/// @return the integral type @p t can be converted to, or nil if @p
+/// is not an integral type.
+type_decl_sptr
+is_integral_type(const type_or_decl_base_sptr& t)
+{
+  const type_decl_sptr type = is_type_decl(t);
+  if (!type)
+    return type_decl_sptr();
+
+  integral_type int_type;
+  if (!parse_integral_type(type->get_name(), int_type))
+    return type_decl_sptr();
+
+  return type;
+}
+
 /// Test whether a type is a typedef.
 ///
 /// @param t the type to test for.
@@ -10308,6 +10507,38 @@ look_through_decl_only(const decl_base_sptr& d)
     result = d;
 
   return result;
+}
+
+/// If a type is is decl-only, then get its definition.  Otherwise,
+/// just return the initial type.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or the initial type.
+type_base*
+look_through_decl_only(type_base* t)
+{
+  decl_base* d = is_decl(t);
+  if (!d)
+    return t;
+  d = look_through_decl_only(d);
+  return is_type(d);
+}
+
+/// If a type is is decl-only, then get its definition.  Otherwise,
+/// just return the initial type.
+///
+/// @param d the decl to consider.
+///
+/// @return either the definition of the decl, or the initial type.
+type_base_sptr
+look_through_decl_only(const type_base_sptr& t)
+{
+  decl_base_sptr d = is_decl(t);
+  if (!d)
+    return t;
+  d = look_through_decl_only(d);
+  return is_type(d);
 }
 
 /// Tests if a declaration is a variable declaration.
@@ -11000,7 +11231,8 @@ pointer_type_def_sptr
 lookup_pointer_type(const type_base_sptr& pointed_to_type,
 		    const translation_unit& tu)
 {
-  interned_string type_name = get_name_of_pointer_to_type(*pointed_to_type);
+  type_base_sptr t = look_through_decl_only(pointed_to_type);
+  interned_string type_name = get_name_of_pointer_to_type(*t);
   return lookup_pointer_type(type_name, tu);
 }
 
@@ -11044,7 +11276,8 @@ lookup_reference_type(const type_base_sptr& pointed_to_type,
 		      const translation_unit& tu)
 {
   interned_string type_name =
-    get_name_of_reference_to_type(*pointed_to_type, lvalue_reference);
+    get_name_of_reference_to_type(*look_through_decl_only(pointed_to_type),
+				  lvalue_reference);
   return lookup_reference_type(type_name, tu);
 }
 
@@ -14368,7 +14601,8 @@ integral_type::modifiers_type
 operator|(integral_type::modifiers_type l, integral_type::modifiers_type r)
 {
   return static_cast<integral_type::modifiers_type>(static_cast<unsigned>(l)
-						    |static_cast<unsigned>(r));
+						    |
+						    static_cast<unsigned>(r));
 }
 
 /// Bitwise AND operator for integral_type::modifiers_type.
@@ -14382,7 +14616,21 @@ integral_type::modifiers_type
 operator&(integral_type::modifiers_type l, integral_type::modifiers_type r)
 {
   return static_cast<integral_type::modifiers_type>(static_cast<unsigned>(l)
-						    &static_cast<unsigned>(r));
+						    &
+						    static_cast<unsigned>(r));
+}
+
+/// Bitwise one's complement operator for integral_type::modifiers_type.
+///
+/// @param l the left-hand side operand.
+///
+/// @param r the right-hand side operand.
+///
+/// @return the result of the bitwise one's complement operator.
+integral_type::modifiers_type
+operator~(integral_type::modifiers_type l)
+{
+  return static_cast<integral_type::modifiers_type>(~static_cast<unsigned>(l));
 }
 
 /// Bitwise |= operator for integral_type::modifiers_type.
@@ -14396,6 +14644,20 @@ integral_type::modifiers_type&
 operator|=(integral_type::modifiers_type& l, integral_type::modifiers_type r)
 {
   l = l | r;
+  return l;
+}
+
+/// Bitwise &= operator for integral_type::modifiers_type.
+///
+/// @param l the left-hand side operand.
+///
+/// @param r the right-hand side operand.
+///
+/// @return the result of the bitwise &=.
+integral_type::modifiers_type&
+operator&=(integral_type::modifiers_type& l, integral_type::modifiers_type r)
+{
+  l = l & r;
   return l;
 }
 
@@ -14491,21 +14753,26 @@ parse_integral_type(const string&			type_name,
 
   while (cur_pos < len)
     {
-      prev_pos = cur_pos;
-      cur_pos = input.find(' ', prev_pos);
-      prev_word = cur_word;
-      cur_word = input.substr(prev_pos, cur_pos - prev_pos);
-
       if (cur_pos < len && isspace(input[cur_pos]))
 	do
 	  ++cur_pos;
 	while (cur_pos < len && isspace(input[cur_pos]));
 
+      prev_pos = cur_pos;
+      cur_pos = input.find(' ', prev_pos);
+      prev_word = cur_word;
+      cur_word = input.substr(prev_pos, cur_pos - prev_pos);
+
       if (cur_pos < len
 	  && cur_word == "long"
 	  && prev_word != "long")
 	{
+	  if (cur_pos < len && isspace(input[cur_pos]))
+	    do
+	      ++cur_pos;
+	    while (cur_pos < len && isspace(input[cur_pos]));
 	  prev_pos = cur_pos;
+
 	  cur_pos = input.find(' ', prev_pos);
 	  string saved_prev_word = prev_word;
 	  prev_word = cur_word;
@@ -14599,6 +14866,13 @@ integral_type::modifiers_type
 integral_type::get_modifiers() const
 {return modifiers_;}
 
+/// Setter of the modifiers bitmap of the @ref integral_type.
+///
+/// @param m the new modifiers.
+void
+integral_type::set_modifiers(modifiers_type m)
+{modifiers_ = m;}
+
 /// Equality operator for the @ref integral_type.
 ///
 /// @param other the other integral type to compare against.
@@ -14612,10 +14886,14 @@ integral_type::operator==(const integral_type&other) const
 /// Return the string representation of the current instance of @ref
 /// integral_type.
 ///
+/// @param internal if true the string representation is to be used
+/// for internal purposes.  In general, it means it's for type
+/// canonicalization purposes.
+///
 /// @return the string representation of the current instance of @ref
 /// integral_type.
 string
-integral_type::to_string() const
+integral_type::to_string(bool internal) const
 {
   string result;
 
@@ -14624,12 +14902,22 @@ integral_type::to_string() const
     result += "signed ";
   if (modifiers_ & UNSIGNED_MODIFIER)
     result += "unsigned ";
-  if (modifiers_ & SHORT_MODIFIER)
-    result += "short ";
-  if (modifiers_ & LONG_MODIFIER)
-    result += "long ";
-  if (modifiers_ & LONG_LONG_MODIFIER)
-    result += "long long ";
+  if (!internal)
+    {
+      // For canonicalization purposes, we won't emit the "short, long, or
+      // long long" modifiers.  This is because on some platforms, "long
+      // int" and "long long int" might have the same size.  In those
+      // cases, we want the two types to be equivalent if they have the
+      // same size.  If they don't have the same internal string
+      // representation, they'd automatically have different canonical
+      // types and thus be canonically different.
+      if (modifiers_ & SHORT_MODIFIER)
+	result += "short ";
+      if (modifiers_ & LONG_MODIFIER)
+	result += "long ";
+      if (modifiers_ & LONG_LONG_MODIFIER)
+	result += "long long ";
+    }
 
   // ... and look at base types.
   if (base_ == INT_BASE_TYPE)
@@ -14738,9 +15026,46 @@ type_decl::type_decl(const environment* env,
 bool
 equals(const type_decl& l, const type_decl& r, change_kind* k)
 {
-  bool result = equals(static_cast<const decl_base&>(l),
-		       static_cast<const decl_base&>(r),
-		       k);
+  bool result = false;
+  if (is_integral_type(&l) && is_integral_type(&r))
+    {
+      result = equals(static_cast<const type_base&>(l),
+		      static_cast<const type_base&>(r),
+		      k);
+      if (!result)
+	ABG_RETURN(result);
+
+      // Compare the two integral types without taking modifiers 'short,
+      // long and long long' into account as the two types have the same
+      // size.
+
+      integral_type l_int_type, r_int_type;
+      ABG_ASSERT(parse_integral_type(l.get_name(), l_int_type));
+      ABG_ASSERT(parse_integral_type(r.get_name(), r_int_type));
+
+      // So really turn off the modifiers 'short, long and long long"
+      // before comparing the two integral types.
+
+      integral_type::modifiers_type m = l_int_type.get_modifiers();
+      m &= ~(integral_type::SHORT_MODIFIER
+	     | integral_type::LONG_MODIFIER
+	     | integral_type::LONG_LONG_MODIFIER);
+      l_int_type.set_modifiers(m);
+
+      m = r_int_type.get_modifiers();
+      m &=  ~(integral_type::SHORT_MODIFIER
+	      | integral_type::LONG_MODIFIER
+	      | integral_type::LONG_LONG_MODIFIER);
+      r_int_type.set_modifiers(m);
+
+      // Now perform the comparison.
+      result = l_int_type == r_int_type;
+      ABG_RETURN(result);
+    }
+
+  result = equals(static_cast<const decl_base&>(l),
+		  static_cast<const decl_base&>(r),
+		  k);
   if (!k && !result)
     ABG_RETURN_FALSE;
 
@@ -14831,6 +15156,58 @@ bool
 operator!=(const type_decl_sptr& l, const type_decl_sptr& r)
 {return !operator==(l, r);}
 
+/// Implementation for the virtual qualified name builder for @ref
+/// type_decl.
+///
+/// @param qualified_name the output parameter to hold the resulting
+/// qualified name.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+void
+type_decl::get_qualified_name(interned_string& qualified_name,
+			      bool internal) const
+{qualified_name = get_qualified_name(internal);}
+
+/// Implementation for the virtual qualified name builder for @ref
+/// type_decl.
+///
+/// @param qualified_name the output parameter to hold the resulting
+/// qualified name.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+const interned_string&
+type_decl::get_qualified_name(bool internal) const
+{
+  const environment* env = get_environment();
+  ABG_ASSERT(env);
+
+  if (internal)
+    if (is_integral_type(this))
+      {
+	if (get_naked_canonical_type())
+	  {
+	    if (decl_base::priv_->internal_qualified_name_.empty())
+	      decl_base::priv_->internal_qualified_name_ =
+		env->intern(get_internal_integral_type_name(this));
+	    return decl_base::priv_->internal_qualified_name_;
+	  }
+	else
+	  {
+	    decl_base::priv_->temporary_internal_qualified_name_ =
+	      env->intern(get_internal_integral_type_name(this));
+	    return decl_base::priv_->temporary_internal_qualified_name_;
+	  }
+      }
+
+  return decl_base::get_qualified_name(/*internal=*/false);
+}
+
 /// Get the pretty representation of the current instance of @ref
 /// type_decl.
 ///
@@ -14852,6 +15229,10 @@ string
 type_decl::get_pretty_representation(bool internal,
 				     bool qualified_name) const
 {
+  if (internal)
+    if (is_integral_type(this))
+      return get_internal_integral_type_name(this);
+
   if (qualified_name)
     return get_qualified_name(internal);
   return get_name();
@@ -15611,6 +15992,14 @@ operator|=(qualified_type_def::CV& l, qualified_type_def::CV r)
   return l;
 }
 
+/// Overloaded bitwise &= operator for cv qualifiers.
+qualified_type_def::CV&
+operator&=(qualified_type_def::CV& l, qualified_type_def::CV r)
+{
+  l = l & r;
+  return l;
+}
+
 /// Overloaded bitwise AND operator for CV qualifiers.
 qualified_type_def::CV
 operator&(qualified_type_def::CV lhs, qualified_type_def::CV rhs)
@@ -15901,6 +16290,7 @@ const interned_string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
   type_base* pointed_to_type = get_naked_pointed_to_type();
+  pointed_to_type = look_through_decl_only(pointed_to_type);
 
   if (internal)
     {
@@ -16281,10 +16671,11 @@ reference_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
-    set_qualified_name(get_name_of_reference_to_type(*get_pointed_to_type(),
-						     is_lvalue(),
-						     /*qualified_name=*/true,
-						     internal));
+    set_qualified_name(get_name_of_reference_to_type
+		       (*look_through_decl_only(get_pointed_to_type()),
+			is_lvalue(),
+			/*qualified_name=*/true,
+			internal));
   return peek_qualified_name();
 }
 
@@ -16309,10 +16700,12 @@ string
 reference_type_def::get_pretty_representation(bool internal,
 					      bool qualified_name) const
 {
-  string result = get_name_of_reference_to_type(*get_pointed_to_type(),
-						is_lvalue(),
-						qualified_name,
-						internal);
+  string result =
+    get_name_of_reference_to_type(*look_through_decl_only
+				  (get_pointed_to_type()),
+				  is_lvalue(),
+				  qualified_name,
+				  internal);
 
   return result;
 }
@@ -17020,7 +17413,7 @@ get_type_representation(const array_type_def& a, bool internal)
 	  + a.get_subrange_representation();
       else
 	r = (e_type
-	     ? get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+	     ? get_type_name(e_type, /*qualified=*/true, /*internal=*/false)
 	     : string("void"))
 	  + a.get_subrange_representation();
     }
@@ -19799,7 +20192,10 @@ function_decl::get_pretty_representation_of_declarator (bool internal) const
 	result += "...";
       else
 	{
-	  decl_base_sptr type_decl = get_type_declaration(parm->get_type());
+	  type_base_sptr type = parm->get_type();
+	  if (internal)
+	    type = peel_typedef_type(type);
+	  decl_base_sptr type_decl = get_type_declaration(type);
 	  result += type_decl->get_qualified_name(internal);
 	}
     }
@@ -20473,8 +20869,8 @@ equals(const function_decl::parameter& l,
 	ABG_RETURN_FALSE;
     }
 
-  type_base_sptr l_type = l.get_type();
-  type_base_sptr r_type = r.get_type();
+  type_base_sptr l_type = peel_typedef_type(l.get_type());
+  type_base_sptr r_type = peel_typedef_type(r.get_type());
   if (l_type != r_type)
     {
       result = false;

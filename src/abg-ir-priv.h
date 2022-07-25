@@ -97,11 +97,14 @@ public:
   modifiers_type
   get_modifiers() const;
 
+  void
+  set_modifiers(modifiers_type);
+
   bool
   operator==(const integral_type&) const;
 
   string
-  to_string() const;
+  to_string(bool internal=false) const;
 
   operator string() const;
 }; // end class integral_type
@@ -112,8 +115,14 @@ operator|(integral_type::modifiers_type l, integral_type::modifiers_type r);
 integral_type::modifiers_type
 operator&(integral_type::modifiers_type l, integral_type::modifiers_type r);
 
+integral_type::modifiers_type
+operator~(integral_type::modifiers_type l);
+
 integral_type::modifiers_type&
 operator|=(integral_type::modifiers_type& l, integral_type::modifiers_type r);
+
+integral_type::modifiers_type&
+operator &=(integral_type::modifiers_type& l, integral_type::modifiers_type r);
 
 bool
 parse_integral_type(const string& type_name,

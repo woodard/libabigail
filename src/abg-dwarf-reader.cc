@@ -4274,19 +4274,7 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
-		    else if (per_tu_class_map.size() > 1
-			     // If we are looking at ODR-relevant
-			     // (e.g. C++) classes, let's not bother
-			     // trying to compare them against each
-			     // other.  The ODR supposes that they all
-			     // must be the same class.  If they are
-			     // not, this is not the place to catch
-			     // it.  Besides, comparing them without
-			     // type canonicalization in place might
-			     // just take forever.
-			     && !odr_is_relevant(per_tu_class_map.begin()->
-						 second->get_translation_unit()->
-						 get_language()))
+		    else if (per_tu_class_map.size() > 1)
 		      {
 			// We are in case where there are more than
 			// one definition for the declaration.  Let's
@@ -12940,12 +12928,27 @@ add_or_update_class_type(read_context&	 ctxt,
 
   ctxt.die_wip_classes_map(source)[dwarf_dieoffset(die)] = result;
 
+  bool is_incomplete_type = false;
+  if (is_declaration_only && size == 0 && has_child)
+    // this is an incomplete DWARF type as defined by [5.7.1]
+    //
+    // An incomplete structure, union or class type is represented by
+    // a structure, union or class entry that does not have a byte
+    // size attribute and that has a DW_AT_declaration attribute.
+    //
+    // Let's consider that it's thus a decl-only class, likely
+    // referred to by a pointer.  If we later encounter a definition
+    // for this decl-only class type, then this decl-only class will
+    // be resolved to it by the code in
+    // read_context::resolve_declaration_only_classes.
+    is_incomplete_type = true;
+
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
   ABG_ASSERT(scop);
   ctxt.scope_stack().push(scop.get());
 
-  if (has_child)
+  if (has_child && !is_incomplete_type)
     {
       int anonymous_member_class_index = -1;
       int anonymous_member_union_index = -1;
@@ -13541,6 +13544,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
   decl_base_sptr result = t;
   type_base_sptr u = t->get_underlying_type();
 
+  strip_redundant_quals_from_underyling_types(t);
   result = strip_useless_const_qualification(t);
   if (result.get() != t.get())
     return result;
@@ -13587,6 +13591,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	  qualified_type_def::CV quals = qualified->get_cv_quals();
 	  quals |= t->get_cv_quals();
 	  qualified->set_cv_quals(quals);
+	  strip_redundant_quals_from_underyling_types(qualified);
 	  result = is_decl(u);
 	}
       else
@@ -13595,6 +13600,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t,
 	    (new qualified_type_def(element_type,
 				    t->get_cv_quals(),
 				    t->get_location()));
+	  strip_redundant_quals_from_underyling_types(qual_type);
 	  add_decl_to_scope(qual_type, is_decl(element_type)->get_scope());
 	  array->set_element_type(qual_type);
 	  ctxt.schedule_type_for_late_canonicalization(is_type(qual_type));
@@ -14282,16 +14288,6 @@ build_typedef_type(read_context&	ctxt,
 					 where_offset));
       if (!utype)
 	return result;
-
-      // The call to build_ir_node_from_die() could have triggered the
-      // creation of the type for this DIE.  In that case, just return
-      // it.
-      if (type_base_sptr t = ctxt.lookup_type_from_die(die))
-	{
-	  result = is_typedef(t);
-	  ABG_ASSERT(result);
-	  return result;
-	}
 
       ABG_ASSERT(utype);
       result.reset(new typedef_decl(name, utype, loc, linkage_name));
@@ -15591,7 +15587,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    ctxt.associate_die_to_type(die, ty, where_offset);
 	    result =
 	      add_decl_to_scope(d, ctxt.cur_transl_unit()->get_global_scope());
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(is_type(result), ctxt);
 	  }
       }
       break;
@@ -15831,7 +15827,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		      }
 		    ABG_ASSERT(m->get_scope());
 		    ctxt.maybe_add_var_to_exported_decls(m.get());
-		    return m;
+		    result = m;
 		  }
 	      }
 	  }

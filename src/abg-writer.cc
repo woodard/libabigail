@@ -693,8 +693,8 @@ public:
 	      l = peel_typedef_type(l);
 	      r = peel_typedef_type(r);
 
-	      r1 = ir::get_pretty_representation(l, true),
-		r2 = ir::get_pretty_representation(r, true);
+	      r1 = ir::get_pretty_representation(l, /*internal=*/false),
+		r2 = ir::get_pretty_representation(r, /*internal=*/false);
 
 	      if (r1 != r2)
 		return r1 < r2;
