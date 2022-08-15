@@ -1228,7 +1228,8 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
   filter.set_public_symbols();
   std::string dict_name;
 
-  if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+  if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+      && ctxt->cur_corpus_group_)
     {
       tools_utils::base_name(ctxt->filename, dict_name);
 
@@ -1472,7 +1473,8 @@ slurp_elf_info(read_context *ctxt,
   ABG_ASSERT(ctxt->symtab);
   corp->set_symtab(ctxt->symtab);
 
-  if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+  if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+      && ctxt->cur_corpus_group_)
     {
       status |= elf_reader::STATUS_OK;
       return;
@@ -1613,7 +1615,8 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
    (ctxt->cur_corpus_->get_exported_decls_builder().get());
 
   int errp;
-  if (corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+  if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+      && ctxt->cur_corpus_group_)
     {
       if (ctxt->ctfa == NULL)
         {

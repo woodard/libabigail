@@ -683,6 +683,9 @@ test-read-ctf/test-callback2.abi	\
 test-read-ctf/test-anonymous-fields.c	\
 test-read-ctf/test-anonymous-fields.o	\
 test-read-ctf/test-anonymous-fields.o.abi	\
+test-read-ctf/test-linux-module.abi		\
+test-read-ctf/test-linux-module.c		\
+test-read-ctf/test-linux-module.ko		\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
