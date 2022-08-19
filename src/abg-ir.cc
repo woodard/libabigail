@@ -15027,48 +15027,17 @@ bool
 equals(const type_decl& l, const type_decl& r, change_kind* k)
 {
   bool result = false;
-  if (is_integral_type(&l) && is_integral_type(&r))
-    {
-      result = equals(static_cast<const type_base&>(l),
-		      static_cast<const type_base&>(r),
-		      k);
-      if (!result)
-	ABG_RETURN(result);
 
-      // Compare the two integral types without taking modifiers 'short,
-      // long and long long' into account as the two types have the same
-      // size.
-
-      integral_type l_int_type, r_int_type;
-      ABG_ASSERT(parse_integral_type(l.get_name(), l_int_type));
-      ABG_ASSERT(parse_integral_type(r.get_name(), r_int_type));
-
-      // So really turn off the modifiers 'short, long and long long"
-      // before comparing the two integral types.
-
-      integral_type::modifiers_type m = l_int_type.get_modifiers();
-      m &= ~(integral_type::SHORT_MODIFIER
-	     | integral_type::LONG_MODIFIER
-	     | integral_type::LONG_LONG_MODIFIER);
-      l_int_type.set_modifiers(m);
-
-      m = r_int_type.get_modifiers();
-      m &=  ~(integral_type::SHORT_MODIFIER
-	      | integral_type::LONG_MODIFIER
-	      | integral_type::LONG_LONG_MODIFIER);
-      r_int_type.set_modifiers(m);
-
-      // Now perform the comparison.
-      result = l_int_type == r_int_type;
-      ABG_RETURN(result);
-    }
-
+  // Consider the types as decls to compare their decls-related
+  // properties.
   result = equals(static_cast<const decl_base&>(l),
 		  static_cast<const decl_base&>(r),
 		  k);
   if (!k && !result)
     ABG_RETURN_FALSE;
 
+  // Now consider the types a "types' to compare their size-related
+  // properties.
   result &= equals(static_cast<const type_base&>(l),
 		   static_cast<const type_base&>(r),
 		   k);
