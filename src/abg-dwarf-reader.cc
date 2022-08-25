@@ -4274,7 +4274,7 @@ public:
 		    else if (per_tu_class_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_class_map.begin()->second);
-		    else if (per_tu_class_map.size() > 1)
+		    else
 		      {
 			// We are in case where there are more than
 			// one definition for the declaration.  Let's
