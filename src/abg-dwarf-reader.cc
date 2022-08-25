@@ -4325,19 +4325,15 @@ public:
 	 ++i)
       declaration_only_classes().erase(*i);
 
-    for (string_classes_map::iterator i = declaration_only_classes().begin();
-	 i != declaration_only_classes().end();
-	 ++i)
+    if (show_stats() && !declaration_only_classes().empty())
       {
-	if (show_stats())
-	  {
-	    if (i == declaration_only_classes().begin())
-	      cerr << "Here are the "
-		   << num_decl_only_classes - num_resolved
-		   << " unresolved class declarations:\n";
-	    else
-	      cerr << "    " << i->first << "\n";
-	  }
+	cerr << "Here are the "
+	     << num_decl_only_classes - num_resolved
+	     << " unresolved class declarations:\n";
+	for (string_classes_map::iterator i = declaration_only_classes().begin();
+	     i != declaration_only_classes().end();
+	     ++i)
+	  cerr << "    " << i->first << "\n";
       }
   }
 
@@ -4527,19 +4523,15 @@ public:
 	 ++i)
       declaration_only_enums().erase(*i);
 
-    for (string_enums_map::iterator i = declaration_only_enums().begin();
-	 i != declaration_only_enums().end();
-	 ++i)
+    if (show_stats() && !declaration_only_enums().empty())
       {
-	if (show_stats())
-	  {
-	    if (i == declaration_only_enums().begin())
-	      cerr << "Here are the "
-		   << num_decl_only_enums - num_resolved
-		   << " unresolved enum declarations:\n";
-	    else
-	      cerr << "    " << i->first << "\n";
-	  }
+	cerr << "Here are the "
+	     << num_decl_only_enums - num_resolved
+	     << " unresolved enum declarations:\n";
+	for (string_enums_map::iterator i = declaration_only_enums().begin();
+	     i != declaration_only_enums().end();
+	     ++i)
+	  cerr << "    " << i->first << "\n";
       }
   }
 
