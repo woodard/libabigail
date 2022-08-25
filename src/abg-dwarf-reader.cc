@@ -4460,7 +4460,13 @@ public:
 	if (!enums)
 	  continue;
 
-	unordered_map<string, enum_type_decl_sptr> per_tu_enum_map;
+	// This is a map that associates the translation unit path to
+	// the enum (that potentially defines the declarations that
+	// we consider) that are defined in that translation unit.  It
+	// should stay ordered by using the TU path as key to ensure
+	// stability of the order of enum definitions in ABIXML
+	// output.
+	map<string, enum_type_decl_sptr> per_tu_enum_map;
 	for (type_base_wptrs_type::const_iterator c = enums->begin();
 	     c != enums->end();
 	     ++c)
@@ -4497,13 +4503,45 @@ public:
 		  {
 		    string tu_path =
 		      (*j)->get_translation_unit()->get_absolute_path();
-		    unordered_map<string, enum_type_decl_sptr>::const_iterator e =
+		    map<string, enum_type_decl_sptr>::const_iterator e =
 		      per_tu_enum_map.find(tu_path);
 		    if (e != per_tu_enum_map.end())
 		      (*j)->set_definition_of_declaration(e->second);
 		    else if (per_tu_enum_map.size() == 1)
 		      (*j)->set_definition_of_declaration
 			(per_tu_enum_map.begin()->second);
+		    else
+		      {
+			// We are in case where there are more than
+			// one definition for the declaration.  Let's
+			// see if they are all equal.  If they are,
+			// then the declaration resolves to the
+			// definition.  Otherwise, we are in the case
+			// 3/ described above.
+			map<string,
+			    enum_type_decl_sptr>::const_iterator it;
+			enum_type_decl_sptr first_enum =
+			  per_tu_enum_map.begin()->second;
+			bool all_enum_definitions_are_equal = true;
+			for (it = per_tu_enum_map.begin();
+			     it != per_tu_enum_map.end();
+			     ++it)
+			  {
+			    if (it == per_tu_enum_map.begin())
+			      continue;
+			    else
+			      {
+				if (!compare_before_canonicalisation(it->second,
+								     first_enum))
+				  {
+				    all_enum_definitions_are_equal = false;
+				    break;
+				  }
+			      }
+			  }
+			if (all_enum_definitions_are_equal)
+			  (*j)->set_definition_of_declaration(first_enum);
+		      }
 		  }
 	      }
 	    resolved_enums.push_back(i->first);
