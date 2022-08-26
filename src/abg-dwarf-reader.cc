@@ -11648,8 +11648,12 @@ get_scope_for_die(read_context& ctxt,
 
   translation_unit::language die_lang = translation_unit::LANG_UNKNOWN;
   ctxt.get_die_language(die, die_lang);
-  if (is_c_language(die_lang))
+  if (is_c_language(die_lang)
+      || ctxt.die_parent_map(source_of_die).empty())
     {
+      // In units for the C languages all decls belong to the global
+      // namespace.  This is generally the case if Libabigail
+      // determined that no DIE -> parent map was needed.
       ABG_ASSERT(dwarf_tag(die) != DW_TAG_member);
       return ctxt.global_scope();
     }

@@ -449,6 +449,17 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-PR29144-report-2.txt",
     "output/test-abidiff-exit/test-PR29144-report-2.txt"
   },
+    {
+    "data/test-abidiff-exit/ld-2.28-210.so",
+    "data/test-abidiff-exit/ld-2.28-211.so",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt",
+    "output/test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt"
+  },
   {0, 0, 0 ,0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
