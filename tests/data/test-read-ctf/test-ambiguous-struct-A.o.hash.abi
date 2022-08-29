@@ -4,17 +4,18 @@
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
     <array-type-def dimensions='1' type-id='3ed987a4' size-in-bits='12800' alignment-in-bits='64' id='e022be37'>
-      <subrange length='50' type-id='7359adad' id='3c1860ce'/>
+      <subrange length='50' type-id='f0981eeb' id='3c1860ce'/>
     </array-type-def>
+    <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='95e97e5e'/>
     <class-decl name='A' size-in-bits='256' alignment-in-bits='64' is-struct='yes' visibility='default' id='3ed987a4'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='b' type-id='41d98c5d' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='foo' type-id='bd54fe1a' visibility='default'/>
+        <var-decl name='foo' type-id='95e97e5e' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='bar' type-id='bd54fe1a' visibility='default'/>
+        <var-decl name='bar' type-id='95e97e5e' visibility='default'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='b2' type-id='41d98c5d' visibility='default'/>
@@ -25,8 +26,7 @@
         <var-decl name='a' type-id='84d5ac12' visibility='default'/>
       </data-member>
     </class-decl>
-    <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='bd54fe1a'/>
-    <type-decl name='unsigned long int' size-in-bits='64' alignment-in-bits='64' id='7359adad'/>
+    <type-decl name='unsigned long int' size-in-bits='64' alignment-in-bits='64' id='f0981eeb'/>
     <pointer-type-def type-id='3ed987a4' size-in-bits='64' alignment-in-bits='64' id='84d5ac12'/>
     <pointer-type-def type-id='1c12b755' size-in-bits='64' alignment-in-bits='64' id='55cd64e8'/>
     <var-decl name='foo' type-id='55cd64e8' mangled-name='foo' visibility='default' elf-symbol-id='foo'/>

@@ -3,6 +3,7 @@
     <elf-symbol name='a' size='24' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
+    <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='95e97e5e'/>
     <class-decl name='A' size-in-bits='192' alignment-in-bits='64' is-struct='yes' visibility='default' id='3ed987a4'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='b' type-id='41d98c5d' visibility='default'/>
@@ -19,7 +20,6 @@
         <var-decl name='a' type-id='84d5ac12' visibility='default'/>
       </data-member>
     </class-decl>
-    <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='95e97e5e'/>
     <pointer-type-def type-id='3ed987a4' size-in-bits='64' alignment-in-bits='64' id='84d5ac12'/>
     <var-decl name='a' type-id='3ed987a4' mangled-name='a' visibility='default' elf-symbol-id='a'/>
   </abi-instr>

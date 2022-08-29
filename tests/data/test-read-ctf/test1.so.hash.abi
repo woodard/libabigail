@@ -4,16 +4,16 @@
   </elf-function-symbols>
   <abi-instr address-size='64' language='LANG_C'>
     <type-decl name='' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='811c9dc5'/>
-    <class-decl name='opaque_struct' size-in-bits='32' alignment-in-bits='32' is-struct='yes' visibility='default' id='6cde5052'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='m0' type-id='99fcd3a5' visibility='default'/>
-      </data-member>
-    </class-decl>
     <enum-decl name='opaque_enum' linkage-name='opaque_enum' id='55763a91'>
       <underlying-type type-id='811c9dc5'/>
       <enumerator name='e0' value='0'/>
       <enumerator name='e1' value='1'/>
     </enum-decl>
+    <class-decl name='opaque_struct' size-in-bits='32' alignment-in-bits='32' is-struct='yes' visibility='default' id='6cde5052'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='m0' type-id='99fcd3a5' visibility='default'/>
+      </data-member>
+    </class-decl>
     <pointer-type-def type-id='99fcd3a5' size-in-bits='64' alignment-in-bits='64' id='0e0526e0'/>
     <pointer-type-def type-id='dae69ca1' size-in-bits='64' alignment-in-bits='64' id='3f6e71d0'/>
     <function-decl name='fn' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='fn'>
