@@ -27,6 +27,15 @@ namespace ir
 
 using std::string;
 
+/// The result of structural comparison of type ABI artifacts.
+enum comparison_result
+{
+  COMPARISON_RESULT_DIFFERENT = 0,
+  COMPARISON_RESULT_EQUAL = 1,
+  COMPARISON_RESULT_CYCLE_DETECTED = 2,
+  COMPARISON_RESULT_UNKNOWN = 3,
+}; //end enum comparison_result
+
 /// The internal representation of an integral type.
 ///
 /// This is a "utility type" used internally to canonicalize the name

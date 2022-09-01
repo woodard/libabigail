@@ -22320,6 +22320,9 @@
   <abi-instr address-size='32' path='frameworks/base/native/android/native_activity.cpp' language='LANG_C_plus_plus_14'>
     <pointer-type-def type-id='67c862fe' size-in-bits='32' id='37fc1694'/>
     <pointer-type-def type-id='1471d4b9' size-in-bits='32' id='37fc1695'/>
+    <qualified-type-def type-id='3d7d8cc0' const='yes' id='7411c990'/>
+    <pointer-type-def type-id='7411c990' size-in-bits='32' id='5d006ec0'/>
+    <pointer-type-def type-id='3d7d8cc0' size-in-bits='32' id='a68021cf'/>
     <class-decl name='ANativeActivity' is-struct='yes' visibility='default' is-declaration-only='yes' id='67c862fe'/>
     <typedef-decl name='mbstate_t' type-id='9b5926fd' filepath='bionic/libc/include/bits/mbstate_t.h' line='47' column='1' id='3d7d8cc0'/>
     <function-decl name='ANativeActivity_finish' mangled-name='ANativeActivity_finish' filepath='frameworks/base/native/android/native_activity.cpp' line='24' column='1' visibility='default' binding='global' size-in-bits='32' elf-symbol-id='ANativeActivity_finish@@LIBANDROID'>
@@ -23507,8 +23510,12 @@
     <reference-type-def kind='lvalue' type-id='71bed232' size-in-bits='32' id='2364b57c'/>
     <reference-type-def kind='lvalue' type-id='e7f43f80' size-in-bits='32' id='9167eb94'/>
     <reference-type-def kind='rvalue' type-id='e7f43f80' size-in-bits='32' id='98980936'/>
+    <qualified-type-def type-id='b7b5d51e' const='yes' id='f62c522e'/>
+    <pointer-type-def type-id='f62c522e' size-in-bits='32' id='8ec52106'/>
     <qualified-type-def type-id='e7f43f80' const='yes' id='a585bdd7'/>
     <pointer-type-def type-id='a585bdd7' size-in-bits='32' id='8e8a1547'/>
+    <qualified-type-def type-id='3d7d8cc1' const='yes' id='7411c991'/>
+    <pointer-type-def type-id='7411c991' size-in-bits='32' id='5d006ec1'/>
     <qualified-type-def type-id='0e01d3be' const='yes' id='7bd176f7'/>
     <reference-type-def kind='lvalue' type-id='7bd176f7' size-in-bits='32' id='bbbe0b03'/>
     <qualified-type-def type-id='049c4c7d' const='yes' id='a2945ebe'/>
@@ -23521,6 +23528,7 @@
     <reference-type-def kind='lvalue' type-id='8451ada3' size-in-bits='32' id='d194285f'/>
     <qualified-type-def type-id='291e95f0' const='yes' id='328840d1'/>
     <reference-type-def kind='lvalue' type-id='328840d1' size-in-bits='32' id='837e44d5'/>
+    <pointer-type-def type-id='3d7d8cc1' size-in-bits='32' id='a68021d0'/>
     <pointer-type-def type-id='56e4e1e0' size-in-bits='32' id='50f48546'/>
     <reference-type-def kind='lvalue' type-id='0e01d3be' size-in-bits='32' id='e1e5a8c0'/>
     <reference-type-def kind='rvalue' type-id='0e01d3be' size-in-bits='32' id='8288e212'/>
