@@ -91,17 +91,6 @@ enum die_source
 				// enumerator
 };
 
-/// Prefix increment operator for @ref die_source.
-///
-/// @param source the die_source to increment.
-/// @return the incremented source.
-static die_source&
-operator++(die_source& source)
-{
-  source = static_cast<die_source>(source + 1);
-  return source;
-}
-
 /// A functor used by @ref dwfl_sptr.
 struct dwfl_deleter
 {
@@ -518,10 +507,6 @@ static string
 die_pretty_print(read_context& ctxt,
 		 const Dwarf_Die* die,
 		 size_t where_offset);
-
-static void
-maybe_canonicalize_type(const Dwarf_Die* die,
-			read_context& ctxt);
 
 static void
 maybe_canonicalize_type(const type_base_sptr&	t,
@@ -2125,10 +2110,7 @@ public:
   die_function_type_map_type	alternate_die_wip_function_types_map_;
   die_function_type_map_type	type_unit_die_wip_function_types_map_;
   die_function_decl_map_type	die_function_with_no_symbol_map_;
-  vector<Dwarf_Off>		types_to_canonicalize_;
-  vector<Dwarf_Off>		alt_types_to_canonicalize_;
-  vector<Dwarf_Off>		type_unit_types_to_canonicalize_;
-  vector<type_base_sptr>	extra_types_to_canonicalize_;
+  vector<type_base_sptr>	types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
   string_enums_map		decl_only_enums_map_;
   die_tu_map_type		die_tu_map_;
@@ -2274,9 +2256,6 @@ public:
     type_unit_die_wip_function_types_map_.clear();
     die_function_with_no_symbol_map_.clear();
     types_to_canonicalize_.clear();
-    alt_types_to_canonicalize_.clear();
-    type_unit_types_to_canonicalize_.clear();
-    extra_types_to_canonicalize_.clear();
     decl_only_classes_map_.clear();
     die_tu_map_.clear();
     cur_corpus_group_.reset();
@@ -4677,38 +4656,6 @@ public:
     fns_with_no_symbol.clear();
   }
 
-  /// Return a reference to the vector containing the offsets of the
-  /// types that need late canonicalizing.
-  ///
-  /// @param source whe DIEs referred to by the offsets contained in
-  /// the vector to return are from.
-  vector<Dwarf_Off>&
-  types_to_canonicalize(die_source source)
-  {
-    switch (source)
-      {
-      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
-	break;
-      case ALT_DEBUG_INFO_DIE_SOURCE:
-	return alt_types_to_canonicalize_;
-      case TYPE_UNIT_DIE_SOURCE:
-	return type_unit_types_to_canonicalize_;
-      case NO_DEBUG_INFO_DIE_SOURCE:
-      case NUMBER_OF_DIE_SOURCES:
-	ABG_ASSERT_NOT_REACHED;
-      }
-    return types_to_canonicalize_;
-  }
-
-  /// Return a reference to the vector containing the offsets of the
-  /// types that need late canonicalizing.
-  ///
-  /// @param source where the DIEs referred to by the offset in the
-  /// returned vector are from.
-  const vector<Dwarf_Off>&
-  types_to_canonicalize(die_source source) const
-  {return const_cast<read_context*>(this)->types_to_canonicalize(source);}
-
   /// Return a reference to the vector containing the types created
   /// during the binary analysis but that are not tied to a given
   /// DWARF DIE.
@@ -4717,48 +4664,14 @@ public:
   /// during the binary analysis but that are not tied to a given
   /// DWARF DIE.
   const vector<type_base_sptr>&
-  extra_types_to_canonicalize() const
-  {return extra_types_to_canonicalize_;}
+  types_to_canonicalize() const
+  {return types_to_canonicalize_;}
 
   /// Clear the containers holding types to canonicalize.
   void
   clear_types_to_canonicalize()
   {
     types_to_canonicalize_.clear();
-    alt_types_to_canonicalize_.clear();
-    type_unit_types_to_canonicalize_.clear();
-    extra_types_to_canonicalize_.clear();
-  }
-
-  /// Put the offset of a DIE representing a type on a side vector so
-  /// that when the reading of the debug info of the current
-  /// translation unit is done, we can get back to the type DIE and
-  /// from there, to the type it's associated to, and then
-  /// canonicalize it.  This what we call late canonicalization.
-  ///
-  /// @param die the type DIE to schedule for late type
-  /// canonicalization.
-  void
-  schedule_type_for_late_canonicalization(const Dwarf_Die *die)
-  {
-    Dwarf_Off o;
-
-    Dwarf_Die equiv_die;
-    ABG_ASSERT(get_canonical_die(die, equiv_die,
-				  /*where=*/0,
-				 /*die_as_type=*/true));
-
-    const die_source source = get_die_source(&equiv_die);
-    o = dwarf_dieoffset(&equiv_die);
-
-    const die_artefact_map_type& m =
-      type_die_artefact_maps().get_container(*this, die);
-
-    die_artefact_map_type::const_iterator i = m.find(o);
-    ABG_ASSERT(i != m.end());
-
-    // Then really do the scheduling.
-    types_to_canonicalize(source).push_back(o);
   }
 
   /// Types that were created but not tied to a particular DIE, must
@@ -4768,7 +4681,7 @@ public:
   void
   schedule_type_for_late_canonicalization(const type_base_sptr &t)
   {
-    extra_types_to_canonicalize_.push_back(t);
+    types_to_canonicalize_.push_back(t);
   }
 
   /// Canonicalize types which DIE offsets are stored in vectors on
@@ -4778,7 +4691,7 @@ public:
   /// @param source where the DIE of the types to canonicalize are
   /// from.
   void
-  canonicalize_types_scheduled(die_source source)
+  canonicalize_types_scheduled()
   {
     tools_utils::timer cn_timer;
     if (do_log())
@@ -4787,74 +4700,38 @@ public:
 	corpus_sptr c = current_corpus();
 	if (c)
 	  cerr << " of corpus " << current_corpus()->get_path();
-	cerr << " (DIEs source: " << source << ")\n";
 	cn_timer.start();
       }
 
-    if (!types_to_canonicalize(source).empty()
-	|| !extra_types_to_canonicalize().empty())
+    if (!types_to_canonicalize().empty())
       {
 	tools_utils::timer single_type_cn_timer;
-	size_t total = types_to_canonicalize(source).size();
+	size_t total = types_to_canonicalize().size();
 	if (do_log())
-	  cerr << total << " types to canonicalize\n";
-	for (size_t i = 0; i < total; ++i)
+	  cerr << total << " Types to canonicalize\n";
+	size_t i = 1;
+	for (vector<type_base_sptr>::const_iterator it =
+	       types_to_canonicalize().begin();
+	     it != types_to_canonicalize().end();
+	     ++it, ++i)
 	  {
-	    Dwarf_Off element = types_to_canonicalize(source)[i];
-	    type_base_sptr t =
-	      lookup_type_from_die_offset(element, source);
-	    ABG_ASSERT(t);
 	    if (do_log())
 	      {
 		cerr << "canonicalizing type "
-		     << get_pretty_representation(t, false)
-		     << " [" << i + 1 << "/" << total << "]";
+		     << get_pretty_representation(*it, false)
+		     << " [" << i << "/" << total << "]";
 		if (corpus_sptr c = current_corpus())
 		  cerr << "@" << c->get_path();
 		cerr << " ...";
 		single_type_cn_timer.start();
 	      }
-	    canonicalize(t);
+	    canonicalize(*it);
 	    if (do_log())
 	      {
-		cerr << " DONE";
 		single_type_cn_timer.stop();
-		cerr << ":" <<single_type_cn_timer << "\n";
-	      }
-	  }
-
-	// Now canonicalize types that were created but not tied to
-	// any DIE.
-	if (!extra_types_to_canonicalize().empty())
-	  {
-	    tools_utils::timer single_type_cn_timer;
-	    size_t total = extra_types_to_canonicalize().size();
-	    if (do_log())
-	      cerr << total << " extra types to canonicalize\n";
-	    size_t i = 1;
-	    for (vector<type_base_sptr>::const_iterator it =
-		   extra_types_to_canonicalize().begin();
-		 it != extra_types_to_canonicalize().end();
-		 ++it, ++i)
-	      {
-		if (do_log())
-		  {
-		    cerr << "canonicalizing extra type "
-			 << get_pretty_representation(*it, false)
-			 << " [" << i << "/" << total << "]";
-		    if (corpus_sptr c = current_corpus())
-		      cerr << "@" << c->get_path();
-		    cerr << " ...";
-		    single_type_cn_timer.start();
-		  }
-		canonicalize(*it);
-		if (do_log())
-		  {
-		    single_type_cn_timer.stop();
-		    cerr << "DONE:"
-			 << single_type_cn_timer
-			 << "\n";
-		  }
+		cerr << "DONE:"
+		     << single_type_cn_timer
+		     << "\n";
 	      }
 	  }
       }
@@ -4866,10 +4743,7 @@ public:
 	corpus_sptr c = current_corpus();
 	if (c)
 	  cerr << " of corpus " << current_corpus()->get_path();
-	cerr << " (DIEs source: "
-	     << source << "):"
-	     << cn_timer
-	     << "\n";
+	cerr << ": (" << cn_timer << ")\n";
       }
   }
 
@@ -4886,16 +4760,11 @@ public:
   /// canonicalization and which couldn't be canonicalized (for a
   /// reason) is added to the value already present in this parameter.
   void
-  add_late_canonicalized_types_stats(die_source	source,
-				     size_t&		canonicalized,
+  add_late_canonicalized_types_stats(size_t&		canonicalized,
 				     size_t&		missed) const
   {
-    for (vector<Dwarf_Off>::const_iterator i =
-	   types_to_canonicalize(source).begin();
-	 i != types_to_canonicalize(source).end();
-	 ++i)
+    for (auto t : types_to_canonicalize())
       {
-        type_base_sptr t = lookup_type_from_die_offset(*i, source);
 	if (t->get_canonical_type())
 	  ++canonicalized;
 	else
@@ -4903,34 +4772,12 @@ public:
       }
   }
 
-  /// Compute the number of canonicalized and missed types in the late
-  /// canonicalization phase.
-  ///
-  /// @param canonicalized the number of types that got canonicalized
-  /// is added to the value already present in this parameter.
-  ///
-  /// @param missed the number of types scheduled for late
-  /// canonicalization and which couldn't be canonicalized (for a
-  /// reason) is added to the value already present in this parameter.
-  void
-  add_late_canonicalized_types_stats(size_t& canonicalized,
-				     size_t& missed) const
-  {
-    for (die_source source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
-	 source < NUMBER_OF_DIE_SOURCES;
-	 ++source)
-      add_late_canonicalized_types_stats(source, canonicalized, missed);
-  }
-
   // Look at the types that need to be canonicalized after the
   // translation unit has been constructed and canonicalize them.
   void
   perform_late_type_canonicalizing()
   {
-    for (die_source source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
-	 source < NUMBER_OF_DIE_SOURCES;
-	 ++source)
-      canonicalize_types_scheduled(source);
+    canonicalize_types_scheduled();
 
     if (show_stats())
       {
@@ -15270,93 +15117,8 @@ read_debug_info_into_corpus(read_context& ctxt)
 /// all of its sub-types are canonicalized themselve.  Non composite
 /// types are always deemed suitable for early canonicalization.
 ///
-/// Note that this function doesn't work on *ANONYMOUS* classes,
-/// structs, unions or enums because it first does some
-/// canonicalization of the DWARF DIE @p die.  That canonicalization
-/// is done by looking up @p die by name; and because these are
-/// anonymous types, they don't have names! and so that
-/// canonicalization fails.  So the type artifact associated to @p
-/// die often ends being *NOT* canonicalized.  This later leads to
-/// extreme slowness of operation, especially when comparisons are
-/// later performed on these anonymous types.
-///
-/// So when you have classes, structs, unions, or enums that can be
-/// anonymous, please use this overload instead:
-///
-///     void
-///     maybe_canonicalize_type(const Dwarf_Die*	die,
-///				const type_base_sptr&	t,
-///				read_context&		ctxt);
-///
-/// It knows how to deal with anonymous types.
-///
-/// @p looks up the type artifact
-/// associated to @p die.  During that lookup, ; but then those types don't have
-/// names because they are anonymous.
-///
-/// @param die the type DIE to consider for canonicalization.  Note
-/// that this DIE must have been associated with its type using the
-/// function read_context::associate_die_to_type() prior to calling
-/// this function.
-///
-/// @param ctxt the @ref read_context to use.
-static void
-maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
-{
-  const die_source source = ctxt.get_die_source(die);
-
-  size_t die_offset = dwarf_dieoffset(const_cast<Dwarf_Die*>(die));
-  type_base_sptr t = ctxt.lookup_type_from_die(die);
-
-  if (!t)
-    return;
-
-  type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
-  if (is_class_type(peeled_type)
-      || is_union_type(peeled_type)
-      || is_function_type(peeled_type)
-      || is_array_type(peeled_type)
-      || is_qualified_type(peeled_type)
-      || is_enum_type(peeled_type)
-      || is_typedef(t))
-    // We delay canonicalization of classes/unions or typedef,
-    // pointers, references and array to classes/unions.  This is
-    // because the (underlying) class might not be finished yet and we
-    // might not be able to able detect it here (thinking about
-    // classes that are work-in-progress, or classes that might be
-    // later amended by some DWARF construct).  So we err on the safe
-    // side.  We also delay canonicalization for array and qualified
-    // types because they can be edited (in particular by
-    // maybe_strip_qualification) after they are initially built.
-    ctxt.schedule_type_for_late_canonicalization(die);
-  else if (is_decl(t) && is_decl(t)->get_is_anonymous())
-    ctxt.schedule_type_for_late_canonicalization(t);
-  else if ((is_function_type(t)
-	    && ctxt.is_wip_function_type_die_offset(die_offset, source))
-	   || type_has_non_canonicalized_subtype(t))
-    ctxt.schedule_type_for_late_canonicalization(die);
-  else
-    canonicalize(t);
-}
-
-/// Canonicalize a type if it's suitable for early canonicalizing, or,
-/// if it's not, schedule it for late canonicalization, after the
-/// debug info of the current translation unit has been fully read.
-///
-/// A (composite) type is deemed suitable for early canonicalizing iff
-/// all of its sub-types are canonicalized themselve.  Non composite
-/// types are always deemed suitable for early canonicalization.
-///
-/// Note that this function nows how to deal with anonymous classes,
+/// Note that this function knows how to deal with anonymous classes,
 /// structs and enums, unlike the overload below:
-///
-///     void maybe_canonicalize_type(const Dwarf_Die *die, read_context& ctxt)
-///
-/// The problem, though is that this function is much slower that that
-/// overload above because of how the types that are meant for later
-/// canonicalization are stored.  So the idea is that this function
-/// should be used only for the smallest possible subset of types that
-/// are anonymous and thus cannot be handled by the overload above.
 ///
 /// @param t the type DIE to consider for canonicalization.
 ///
@@ -15558,7 +15320,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (result)
 	  {
 	    maybe_set_member_type_access_specifier(is_decl(result), die);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(t, ctxt);
 	  }
       }
       break;
@@ -15574,7 +15336,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    result =
 	      add_decl_to_scope(p, ctxt.cur_transl_unit()->get_global_scope());
 	    ABG_ASSERT(result->get_translation_unit());
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(p, ctxt);
 	  }
       }
       break;
@@ -15592,7 +15354,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	      add_decl_to_scope(r, ctxt.cur_transl_unit()->get_global_scope());
 
 	    ctxt.associate_die_to_type(die, r, where_offset);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(r, ctxt);
 	  }
       }
       break;
@@ -15752,7 +15514,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    result = f;
 	    result->set_is_artificial(false);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(f, ctxt);
 	  }
       }
       break;
@@ -15767,7 +15529,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    result =
 	      add_decl_to_scope(a, ctxt.cur_transl_unit()->get_global_scope());
 	    ctxt.associate_die_to_type(die, a, where_offset);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(a, ctxt);
 	  }
 	break;
       }
@@ -15783,7 +15545,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    result =
 	      add_decl_to_scope(s, ctxt.cur_transl_unit()->get_global_scope());
 	    ctxt.associate_die_to_type(die, s, where_offset);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(s, ctxt);
 	  }
       }
       break;
@@ -15981,7 +15743,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    ctxt.maybe_add_fn_to_exported_decls(fn.get());
 	    ctxt.associate_die_to_decl(die, fn, where_offset,
 				       /*associate_by_repr=*/false);
-	    maybe_canonicalize_type(die, ctxt);
+	    maybe_canonicalize_type(fn->get_type(), ctxt);
 	  }
 
 	ctxt.scope_stack().pop();

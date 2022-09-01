@@ -1696,6 +1696,14 @@
       <parameter type-id='type-id-33'/>
       <return type-id='type-id-3'/>
     </function-decl>
+    <function-type size-in-bits='64' id='type-id-20'>
+      <parameter type-id='type-id-28'/>
+      <parameter type-id='type-id-29'/>
+      <parameter type-id='type-id-27'/>
+      <parameter type-id='type-id-23'/>
+      <parameter type-id='type-id-3'/>
+      <return type-id='type-id-31'/>
+    </function-type>
     <function-type size-in-bits='64' id='type-id-18'>
       <parameter type-id='type-id-28'/>
       <parameter type-id='type-id-29'/>
@@ -1716,14 +1724,6 @@
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-6'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-20'>
-      <parameter type-id='type-id-28'/>
-      <parameter type-id='type-id-29'/>
-      <parameter type-id='type-id-27'/>
-      <parameter type-id='type-id-23'/>
-      <parameter type-id='type-id-3'/>
-      <return type-id='type-id-31'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-36'>
       <parameter type-id='type-id-3'/>
@@ -3906,9 +3906,10 @@
     <typedef-decl name='Elf64_Dyn' type-id='type-id-205' filepath='/usr/include/elf.h' line='650' column='1' id='type-id-204'/>
     <typedef-decl name='uint64_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='56' column='1' id='type-id-245'/>
     <typedef-decl name='int64_t' type-id='type-id-42' filepath='/usr/include/sys/types.h' line='198' column='1' id='type-id-246'/>
-    <function-type size-in-bits='64' id='type-id-230'>
+    <function-type size-in-bits='64' id='type-id-228'>
+      <parameter type-id='type-id-6'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-90'/>
+      <parameter type-id='type-id-3'/>
       <return type-id='type-id-31'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-247'>
@@ -3919,10 +3920,9 @@
       <parameter type-id='type-id-6'/>
       <return type-id='type-id-31'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-228'>
-      <parameter type-id='type-id-6'/>
+    <function-type size-in-bits='64' id='type-id-230'>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-3'/>
+      <parameter type-id='type-id-90'/>
       <return type-id='type-id-31'/>
     </function-type>
   </abi-instr>
@@ -14984,7 +14984,7 @@
       <return type-id='type-id-419'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-852'>
-      <parameter type-id='type-id-3' name='ptr'/>
+      <parameter type-id='type-id-3' name='p'/>
       <parameter type-id='type-id-90' name='size'/>
       <parameter type-id='type-id-90' name='nmemb'/>
       <parameter type-id='type-id-3' name='f'/>
@@ -15112,12 +15112,6 @@
       <parameter type-id='type-id-90' name='size'/>
       <return type-id='type-id-3'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-902'>
-      <parameter type-id='type-id-3' name='dst'/>
-      <parameter type-id='type-id-3' name='src'/>
-      <parameter type-id='type-id-90' name='size'/>
-      <return type-id='type-id-3'/>
-    </function-type>
     <function-type size-in-bits='64' id='type-id-529'>
       <parameter type-id='type-id-4' name='str'/>
       <return type-id='type-id-32'/>
@@ -15138,6 +15132,12 @@
     <function-type size-in-bits='64' id='type-id-894'>
       <parameter type-id='type-id-3' name='dst'/>
       <parameter type-id='type-id-6' name='v'/>
+      <parameter type-id='type-id-90' name='size'/>
+      <return type-id='type-id-3'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-902'>
+      <parameter type-id='type-id-3' name='dst'/>
+      <parameter type-id='type-id-3' name='src'/>
       <parameter type-id='type-id-90' name='size'/>
       <return type-id='type-id-3'/>
     </function-type>

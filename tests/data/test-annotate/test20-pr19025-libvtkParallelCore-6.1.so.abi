@@ -9691,17 +9691,17 @@
       <!-- int -->
       <return type-id='type-id-14'/>
     </function-type>
-    <!-- void () -->
-    <function-type size-in-bits='64' id='type-id-370'>
-      <!-- void -->
-      <return type-id='type-id-30'/>
-    </function-type>
     <!-- std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&) -->
     <function-type size-in-bits='64' id='type-id-348'>
       <!-- parameter of type 'std::basic_ostream<char, std::char_traits<char> >&' -->
       <parameter type-id='type-id-347'/>
       <!-- std::basic_ostream<char, std::char_traits<char> >& -->
       <return type-id='type-id-347'/>
+    </function-type>
+    <!-- void () -->
+    <function-type size-in-bits='64' id='type-id-370'>
+      <!-- void -->
+      <return type-id='type-id-30'/>
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>

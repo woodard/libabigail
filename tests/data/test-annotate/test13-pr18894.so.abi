@@ -2259,6 +2259,24 @@
       <!-- typedef dbus_bool_t -->
       <return type-id='type-id-24'/>
     </function-type>
+    <!-- dbus_bool_t (DBusTimeout*, void*) -->
+    <function-type size-in-bits='64' id='type-id-103'>
+      <!-- parameter of type 'DBusTimeout*' -->
+      <parameter type-id='type-id-84'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-6'/>
+      <!-- typedef dbus_bool_t -->
+      <return type-id='type-id-24'/>
+    </function-type>
+    <!-- dbus_bool_t (DBusWatch*, void*) -->
+    <function-type size-in-bits='64' id='type-id-105'>
+      <!-- parameter of type 'DBusWatch*' -->
+      <parameter type-id='type-id-88'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-6'/>
+      <!-- typedef dbus_bool_t -->
+      <return type-id='type-id-24'/>
+    </function-type>
     <!-- void (DBusConnection*, DBusDispatchStatus, void*) -->
     <function-type size-in-bits='64' id='type-id-108'>
       <!-- parameter of type 'DBusConnection*' -->
@@ -2278,24 +2296,6 @@
       <parameter type-id='type-id-6'/>
       <!-- void -->
       <return type-id='type-id-22'/>
-    </function-type>
-    <!-- dbus_bool_t (DBusTimeout*, void*) -->
-    <function-type size-in-bits='64' id='type-id-103'>
-      <!-- parameter of type 'DBusTimeout*' -->
-      <parameter type-id='type-id-84'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-6'/>
-      <!-- typedef dbus_bool_t -->
-      <return type-id='type-id-24'/>
-    </function-type>
-    <!-- dbus_bool_t (DBusWatch*, void*) -->
-    <function-type size-in-bits='64' id='type-id-105'>
-      <!-- parameter of type 'DBusWatch*' -->
-      <parameter type-id='type-id-88'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-6'/>
-      <!-- typedef dbus_bool_t -->
-      <return type-id='type-id-24'/>
     </function-type>
     <!-- void (DBusTimeout*, void*) -->
     <function-type size-in-bits='64' id='type-id-112'>

@@ -5891,12 +5891,12 @@
       <parameter type-id='type-id-22'/>
       <return type-id='type-id-14'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-370'>
-      <return type-id='type-id-30'/>
-    </function-type>
     <function-type size-in-bits='64' id='type-id-348'>
       <parameter type-id='type-id-347'/>
       <return type-id='type-id-347'/>
+    </function-type>
+    <function-type size-in-bits='64' id='type-id-370'>
+      <return type-id='type-id-30'/>
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Parallel/Core' language='LANG_C_plus_plus'>

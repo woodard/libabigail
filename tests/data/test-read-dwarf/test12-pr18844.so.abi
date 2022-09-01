@@ -25568,6 +25568,9 @@
       <parameter type-id='type-id-2295'/>
       <return type-id='type-id-2295'/>
     </function-type>
+    <function-type size-in-bits='64' id='type-id-2693'>
+      <return type-id='type-id-2727'/>
+    </function-type>
     <function-type size-in-bits='64' id='type-id-2695'>
       <parameter type-id='type-id-381'/>
       <parameter type-id='type-id-1211'/>
@@ -25602,9 +25605,6 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-2720'>
       <parameter type-id='type-id-1199'/>
-      <return type-id='type-id-2727'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-2693'>
       <return type-id='type-id-2727'/>
     </function-type>
   </abi-instr>

@@ -3326,6 +3326,21 @@
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-decl>
+    <!-- void (backtrace_state*, uintptr_t, backtrace_syminfo_callback, backtrace_error_callback, void*) -->
+    <function-type size-in-bits='64' id='type-id-20'>
+      <!-- parameter of type 'backtrace_state*' -->
+      <parameter type-id='type-id-28'/>
+      <!-- parameter of type 'typedef uintptr_t' -->
+      <parameter type-id='type-id-29'/>
+      <!-- parameter of type 'typedef backtrace_syminfo_callback' -->
+      <parameter type-id='type-id-27'/>
+      <!-- parameter of type 'typedef backtrace_error_callback' -->
+      <parameter type-id='type-id-23'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-3'/>
+      <!-- void -->
+      <return type-id='type-id-31'/>
+    </function-type>
     <!-- int (backtrace_state*, uintptr_t, backtrace_full_callback, backtrace_error_callback, void*) -->
     <function-type size-in-bits='64' id='type-id-18'>
       <!-- parameter of type 'backtrace_state*' -->
@@ -3364,21 +3379,6 @@
       <parameter type-id='type-id-3'/>
       <!-- int -->
       <return type-id='type-id-6'/>
-    </function-type>
-    <!-- void (backtrace_state*, uintptr_t, backtrace_syminfo_callback, backtrace_error_callback, void*) -->
-    <function-type size-in-bits='64' id='type-id-20'>
-      <!-- parameter of type 'backtrace_state*' -->
-      <parameter type-id='type-id-28'/>
-      <!-- parameter of type 'typedef uintptr_t' -->
-      <parameter type-id='type-id-29'/>
-      <!-- parameter of type 'typedef backtrace_syminfo_callback' -->
-      <parameter type-id='type-id-27'/>
-      <!-- parameter of type 'typedef backtrace_error_callback' -->
-      <parameter type-id='type-id-23'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-3'/>
-      <!-- void -->
-      <return type-id='type-id-31'/>
     </function-type>
     <!-- void (void*, const char*, int) -->
     <function-type size-in-bits='64' id='type-id-36'>
@@ -6799,12 +6799,14 @@
     <typedef-decl name='uint64_t' type-id='type-id-1' filepath='/usr/include/stdint.h' line='56' column='1' id='type-id-245'/>
     <!-- typedef long int int64_t -->
     <typedef-decl name='int64_t' type-id='type-id-42' filepath='/usr/include/sys/types.h' line='198' column='1' id='type-id-246'/>
-    <!-- void (void*, __sanitizer::uptr) -->
-    <function-type size-in-bits='64' id='type-id-230'>
+    <!-- void (int, void*, void*) -->
+    <function-type size-in-bits='64' id='type-id-228'>
+      <!-- parameter of type 'int' -->
+      <parameter type-id='type-id-6'/>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
-      <!-- parameter of type 'typedef __sanitizer::uptr' -->
-      <parameter type-id='type-id-90'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-3'/>
       <!-- void -->
       <return type-id='type-id-31'/>
     </function-type>
@@ -6822,14 +6824,12 @@
       <!-- void -->
       <return type-id='type-id-31'/>
     </function-type>
-    <!-- void (int, void*, void*) -->
-    <function-type size-in-bits='64' id='type-id-228'>
-      <!-- parameter of type 'int' -->
-      <parameter type-id='type-id-6'/>
+    <!-- void (void*, __sanitizer::uptr) -->
+    <function-type size-in-bits='64' id='type-id-230'>
       <!-- parameter of type 'void*' -->
       <parameter type-id='type-id-3'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-3'/>
+      <!-- parameter of type 'typedef __sanitizer::uptr' -->
+      <parameter type-id='type-id-90'/>
       <!-- void -->
       <return type-id='type-id-31'/>
     </function-type>
@@ -26505,7 +26505,7 @@
     <!-- __sanitizer::uptr (void*, __sanitizer::uptr, __sanitizer::uptr, void*) -->
     <function-type size-in-bits='64' id='type-id-852'>
       <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-3' name='ptr'/>
+      <parameter type-id='type-id-3' name='p'/>
       <!-- parameter of type 'typedef __sanitizer::uptr' -->
       <parameter type-id='type-id-90' name='size'/>
       <!-- parameter of type 'typedef __sanitizer::uptr' -->
@@ -26738,17 +26738,6 @@
       <!-- void* -->
       <return type-id='type-id-3'/>
     </function-type>
-    <!-- void* (void*, void*, __sanitizer::uptr) -->
-    <function-type size-in-bits='64' id='type-id-902'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-3' name='dst'/>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-3' name='src'/>
-      <!-- parameter of type 'typedef __sanitizer::uptr' -->
-      <parameter type-id='type-id-90' name='size'/>
-      <!-- void* -->
-      <return type-id='type-id-3'/>
-    </function-type>
     <!-- char* (const char*) -->
     <function-type size-in-bits='64' id='type-id-529'>
       <!-- parameter of type 'const char*' -->
@@ -26785,6 +26774,17 @@
       <parameter type-id='type-id-3' name='dst'/>
       <!-- parameter of type 'int' -->
       <parameter type-id='type-id-6' name='v'/>
+      <!-- parameter of type 'typedef __sanitizer::uptr' -->
+      <parameter type-id='type-id-90' name='size'/>
+      <!-- void* -->
+      <return type-id='type-id-3'/>
+    </function-type>
+    <!-- void* (void*, void*, __sanitizer::uptr) -->
+    <function-type size-in-bits='64' id='type-id-902'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-3' name='dst'/>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-3' name='src'/>
       <!-- parameter of type 'typedef __sanitizer::uptr' -->
       <parameter type-id='type-id-90' name='size'/>
       <!-- void* -->

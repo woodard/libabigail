@@ -2854,6 +2854,9 @@
       <parameter type-id='type-id-113'/>
       <return type-id='type-id-16'/>
     </function-type>
+    <function-type size-in-bits='64' id='type-id-110'>
+      <return type-id='type-id-112'/>
+    </function-type>
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='__anonymous_struct__2' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-133'>
         <member-type access='public'>
@@ -2924,9 +2927,6 @@
         </member-type>
       </class-decl>
     </namespace-decl>
-    <function-type size-in-bits='64' id='type-id-110'>
-      <return type-id='type-id-112'/>
-    </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='src/mongo/db/ftdc/collector.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
     <reference-type-def kind='lvalue' type-id='type-id-168' size-in-bits='64' id='type-id-169'/>
@@ -3921,18 +3921,21 @@
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='280' id='type-id-328'>
       <subrange length='35' type-id='type-id-4' id='type-id-329'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='152' id='type-id-330'>
+    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='128' id='type-id-330'>
+      <subrange length='16' type-id='type-id-4' id='type-id-325'/>
+    </array-type-def>
+    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='152' id='type-id-331'>
       <subrange length='19' type-id='type-id-4' id='type-id-327'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='280' id='type-id-331'>
+    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='280' id='type-id-332'>
       <subrange length='35' type-id='type-id-4' id='type-id-329'/>
     </array-type-def>
-    <pointer-type-def type-id='type-id-332' size-in-bits='64' id='type-id-333'/>
-    <qualified-type-def type-id='type-id-334' const='yes' id='type-id-335'/>
-    <pointer-type-def type-id='type-id-335' size-in-bits='64' id='type-id-336'/>
-    <reference-type-def kind='lvalue' type-id='type-id-337' size-in-bits='64' id='type-id-338'/>
-    <reference-type-def kind='lvalue' type-id='type-id-330' size-in-bits='64' id='type-id-339'/>
-    <reference-type-def kind='lvalue' type-id='type-id-331' size-in-bits='64' id='type-id-340'/>
+    <pointer-type-def type-id='type-id-333' size-in-bits='64' id='type-id-334'/>
+    <qualified-type-def type-id='type-id-335' const='yes' id='type-id-336'/>
+    <pointer-type-def type-id='type-id-336' size-in-bits='64' id='type-id-337'/>
+    <reference-type-def kind='lvalue' type-id='type-id-330' size-in-bits='64' id='type-id-338'/>
+    <reference-type-def kind='lvalue' type-id='type-id-331' size-in-bits='64' id='type-id-339'/>
+    <reference-type-def kind='lvalue' type-id='type-id-332' size-in-bits='64' id='type-id-340'/>
     <qualified-type-def type-id='type-id-341' const='yes' id='type-id-342'/>
     <pointer-type-def type-id='type-id-342' size-in-bits='64' id='type-id-343'/>
     <qualified-type-def type-id='type-id-101' const='yes' id='type-id-344'/>
@@ -4190,7 +4193,7 @@
       <namespace-decl name='filesystem'>
         <class-decl name='__anonymous_struct__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-39'>
           <member-type access='private'>
-            <typedef-decl name='value_type' type-id='type-id-2' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='67' column='1' id='type-id-334'/>
+            <typedef-decl name='value_type' type-id='type-id-2' filepath='src/third_party/boost-1.60.0/boost/filesystem/path.hpp' line='67' column='1' id='type-id-335'/>
           </member-type>
         </class-decl>
       </namespace-decl>
@@ -4199,7 +4202,7 @@
       <namespace-decl name='optional_detail'>
         <class-decl name='__anonymous_struct__8' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-39'>
           <member-type access='private'>
-            <typedef-decl name='internal_type' type-id='type-id-275' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='205' column='1' id='type-id-332'/>
+            <typedef-decl name='internal_type' type-id='type-id-275' filepath='src/third_party/boost-1.60.0/boost/optional/optional.hpp' line='205' column='1' id='type-id-333'/>
           </member-type>
         </class-decl>
       </namespace-decl>
@@ -4273,9 +4276,6 @@
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-368'>
       <subrange length='8' type-id='type-id-4' id='type-id-369'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='128' id='type-id-337'>
-      <subrange length='16' type-id='type-id-4' id='type-id-325'/>
-    </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-10' size-in-bits='32' id='type-id-370'>
       <subrange length='4' type-id='type-id-4' id='type-id-371'/>
     </array-type-def>
@@ -4316,7 +4316,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='mongo'>
-      <var-decl name='kFTDCInterimFile' type-id='type-id-337' mangled-name='_ZN5mongo16kFTDCInterimFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='51' column='1' elf-symbol-id='_ZN5mongo16kFTDCInterimFileE'/>
+      <var-decl name='kFTDCInterimFile' type-id='type-id-330' mangled-name='_ZN5mongo16kFTDCInterimFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='51' column='1' elf-symbol-id='_ZN5mongo16kFTDCInterimFileE'/>
       <var-decl name='kFTDCArchiveFile' type-id='type-id-377' mangled-name='_ZN5mongo16kFTDCArchiveFileE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='53' column='1' elf-symbol-id='_ZN5mongo16kFTDCArchiveFileE'/>
       <var-decl name='kFTDCIdField' type-id='type-id-370' mangled-name='_ZN5mongo12kFTDCIdFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='55' column='1' elf-symbol-id='_ZN5mongo12kFTDCIdFieldE'/>
       <var-decl name='kFTDCTypeField' type-id='type-id-372' mangled-name='_ZN5mongo14kFTDCTypeFieldE' visibility='default' filepath='src/mongo/db/ftdc/util.cpp' line='56' column='1' elf-symbol-id='_ZN5mongo14kFTDCTypeFieldE'/>

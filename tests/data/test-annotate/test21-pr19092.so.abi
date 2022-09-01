@@ -2541,6 +2541,11 @@
       <!-- int -->
       <return type-id='type-id-4'/>
     </function-type>
+    <!-- void () -->
+    <function-type size-in-bits='64' id='type-id-127'>
+      <!-- void -->
+      <return type-id='type-id-137'/>
+    </function-type>
     <!-- void (diagnostic_context*, const char*, va_list*) -->
     <function-type size-in-bits='64' id='type-id-129'>
       <!-- parameter of type 'diagnostic_context*' -->
@@ -2568,6 +2573,13 @@
       <!-- void -->
       <return type-id='type-id-137'/>
     </function-type>
+    <!-- void (void*) -->
+    <function-type size-in-bits='64' id='type-id-134'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-27'/>
+      <!-- void -->
+      <return type-id='type-id-137'/>
+    </function-type>
     <!-- void (void*, _obstack_chunk*) -->
     <function-type size-in-bits='64' id='type-id-136'>
       <!-- parameter of type 'void*' -->
@@ -2583,18 +2595,6 @@
       <parameter type-id='type-id-21'/>
       <!-- void* -->
       <return type-id='type-id-27'/>
-    </function-type>
-    <!-- void () -->
-    <function-type size-in-bits='64' id='type-id-127'>
-      <!-- void -->
-      <return type-id='type-id-137'/>
-    </function-type>
-    <!-- void (void*) -->
-    <function-type size-in-bits='64' id='type-id-134'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-27'/>
-      <!-- void -->
-      <return type-id='type-id-137'/>
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../.././gcc/diagnostic.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/gcc' language='LANG_C_plus_plus'>
@@ -4566,8 +4566,10 @@
       <!-- void -->
       <return type-id='type-id-137'/>
     </function-type>
-    <!-- void* (size_t, size_t) -->
-    <function-type size-in-bits='64' id='type-id-205'>
+    <!-- void* (void*, size_t, size_t) -->
+    <function-type size-in-bits='64' id='type-id-207'>
+      <!-- parameter of type 'void*' -->
+      <parameter type-id='type-id-27'/>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-2'/>
       <!-- parameter of type 'typedef size_t' -->
@@ -4575,10 +4577,8 @@
       <!-- void* -->
       <return type-id='type-id-27'/>
     </function-type>
-    <!-- void* (void*, size_t, size_t) -->
-    <function-type size-in-bits='64' id='type-id-207'>
-      <!-- parameter of type 'void*' -->
-      <parameter type-id='type-id-27'/>
+    <!-- void* (size_t, size_t) -->
+    <function-type size-in-bits='64' id='type-id-205'>
       <!-- parameter of type 'typedef size_t' -->
       <parameter type-id='type-id-2'/>
       <!-- parameter of type 'typedef size_t' -->
