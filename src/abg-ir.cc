@@ -23587,6 +23587,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(static_cast<const class_or_union&>(l),
 					   static_cast<const class_or_union&>(r));
 
+  bool had_canonical_type = !!r.get_naked_canonical_type();
   bool result = true;
   if (!equals(static_cast<const class_or_union&>(l),
 	      static_cast<const class_or_union&>(r),
@@ -23609,7 +23610,8 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   // canonical type propagation, then cancel that because it's too
   // early to do that at this point.  We still need to compare bases
   // virtual members.
-  maybe_cancel_propagated_canonical_type(r);
+  if (!had_canonical_type)
+    maybe_cancel_propagated_canonical_type(r);
 
   // Compare bases.
     if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
