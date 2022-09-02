@@ -29,6 +29,7 @@ using std::vector;
 using std::ostream;
 using std::cout;
 using std::cerr;
+using abg_compat::optional;
 
 using namespace abigail::tools_utils;
 using namespace abigail::dwarf_reader;
@@ -60,6 +61,7 @@ struct options
   bool			show_hexadecimal_values;
   bool			show_offsets_sizes_in_bits;
   bool			show_impacted_interfaces;
+  optional<bool>	exported_interfaces_only;
 #ifdef WITH_CTF
   bool			use_ctf;
 #endif
@@ -120,6 +122,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
 	 "interfaces\n"
+    << "  --exported-interfaces-only  analyze exported interfaces only\n"
+    << "  --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << " --show-bytes  show size and offsets in bytes\n"
     << " --show-bits  show size and offsets in bits\n"
     << " --show-hex  show size and offset in hexadecimal\n"
@@ -262,6 +267,10 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--full-impact")
 	       || !strcmp(argv[i], "-f"))
 	opts.leaf_changes_only = false;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--show-bytes"))
 	opts.show_offsets_sizes_in_bits = false;
       else if (!strcmp(argv[i], "--show-bits"))
@@ -407,6 +416,9 @@ main(int argc, char* argv[])
     }
 
   environment_sptr env(new environment);
+
+  if (opts.exported_interfaces_only.has_value())
+    env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;

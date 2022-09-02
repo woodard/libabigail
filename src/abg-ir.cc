@@ -3674,6 +3674,42 @@ const config&
 environment::get_config() const
 {return priv_->config_;}
 
+/// Getter for a property that says if the user actually did set the
+/// analyze_exported_interfaces_only() property.  If not, it means
+/// the default behaviour prevails.
+///
+/// @return tru iff the user did set the
+/// analyze_exported_interfaces_only() property.
+bool
+environment::user_set_analyze_exported_interfaces_only() const
+{return priv_->analyze_exported_interfaces_only_.has_value();}
+
+/// Setter for the property that controls if we are to restrict the
+/// analysis to the types that are only reachable from the exported
+/// interfaces only, or if the set of types should be more broad than
+/// that.  Typically, we'd restrict the analysis to types reachable
+/// from exported interfaces only (stricto sensu, that would really be
+/// only the types that are part of the ABI of well designed
+/// libraries) for performance reasons.
+///
+/// @param f the value of the flag.
+void
+environment::analyze_exported_interfaces_only(bool f)
+{priv_->analyze_exported_interfaces_only_ = f;}
+
+/// Getter for the property that controls if we are to restrict the
+/// analysis to the types that are only reachable from the exported
+/// interfaces only, or if the set of types should be more broad than
+/// that.  Typically, we'd restrict the analysis to types reachable
+/// from exported interfaces only (stricto sensu, that would really be
+/// only the types that are part of the ABI of well designed
+/// libraries) for performance reasons.
+///
+/// @param f the value of the flag.
+bool
+environment::analyze_exported_interfaces_only() const
+{return priv_->analyze_exported_interfaces_only_.value_or(false);}
+
 #ifdef WITH_DEBUG_SELF_COMPARISON
 /// Setter of the corpus of the input corpus of the self comparison
 /// that takes place when doing "abidw --debug-abidiff <binary>".

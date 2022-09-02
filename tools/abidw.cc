@@ -40,6 +40,7 @@ using std::ostream;
 using std::ofstream;
 using std::vector;
 using std::shared_ptr;
+using abg_compat::optional;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
@@ -114,6 +115,7 @@ struct options
   bool			do_log;
   bool			drop_private_types;
   bool			drop_undefined_syms;
+  optional<bool>	exported_interfaces_only;
   type_id_style_kind	type_id_style;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   string		type_id_file_path;
@@ -187,6 +189,9 @@ display_usage(const string& prog_name, ostream& out)
     << "  --short-locs  only print filenames rather than paths\n"
     << "  --drop-private-types  drop private types from representation\n"
     << "  --drop-undefined-syms  drop undefined symbols from representation\n"
+    << "  --exported-interfaces-only  analyze exported interfaces only\n"
+    << "  --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --no-elf-needed  do not show the DT_NEEDED information\n"
     << "  --no-write-default-sizes  do not emit pointer size when it equals"
@@ -368,6 +373,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--drop-undefined-syms"))
 	opts.drop_undefined_syms = true;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
@@ -606,6 +615,9 @@ load_corpus_and_write_abixml(char* argv[],
             }
         }
 
+      if (opts.exported_interfaces_only.has_value())
+	env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+
       t.start();
       corp = dwarf_reader::read_corpus_from_elf(ctxt, s);
       t.stop();
@@ -812,6 +824,9 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 
   timer t, global_timer;
   suppressions_type supprs;
+
+  if (opts.exported_interfaces_only.has_value())
+    env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   if (opts.do_log)
     emit_prefix(argv[0], cerr)

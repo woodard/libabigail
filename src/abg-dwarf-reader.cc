@@ -403,6 +403,12 @@ static bool
 die_is_declaration_only(Dwarf_Die* die);
 
 static bool
+die_is_variable_decl(const Dwarf_Die *die);
+
+static bool
+die_is_function_decl(const Dwarf_Die *die);
+
+static bool
 die_has_size_attribute(const Dwarf_Die *die);
 
 static bool
@@ -5303,6 +5309,44 @@ public:
     return symbol;
   }
 
+  /// Test if a DIE represents a decl (function or variable) that has
+  /// a symbol that is exported, whatever that means.  This is
+  /// supposed to work for Linux Kernel binaries as well.
+  ///
+  /// This is useful to limit the amount of DIEs taken into account to
+  /// the strict limit of what an ABI actually means.  Limiting the
+  /// volume of DIEs analyzed this way is an important optimization to
+  /// keep big binaries "manageable" by libabigail.
+  ///
+  /// @param DIE the die to consider.
+  bool
+  is_decl_die_with_exported_symbol(const Dwarf_Die *die)
+  {
+    if (!die || !die_is_decl(die))
+      return false;
+
+    bool result = false, address_found = false, symbol_is_exported = false;;
+    Dwarf_Addr decl_symbol_address = 0;
+
+    if (die_is_variable_decl(die))
+      {
+	if ((address_found = get_variable_address(die, decl_symbol_address)))
+	  symbol_is_exported =
+	    !!variable_symbol_is_exported(decl_symbol_address);
+      }
+    else if (die_is_function_decl(die))
+      {
+	if ((address_found = get_function_address(die, decl_symbol_address)))
+	  symbol_is_exported =
+	    !!function_symbol_is_exported(decl_symbol_address);
+      }
+
+    if (address_found)
+      result = symbol_is_exported;
+
+    return result;
+  }
+
   /// Getter for the symtab reader. Will load the symtab from the elf handle if
   /// not yet set.
   ///
@@ -5580,16 +5624,18 @@ public:
   ///
   /// @return true if the function address was found.
   bool
-  get_function_address(Dwarf_Die* function_die, Dwarf_Addr& address) const
+  get_function_address(const Dwarf_Die* function_die, Dwarf_Addr& address) const
   {
-    if (!die_address_attribute(function_die, DW_AT_low_pc, address))
+    if (!die_address_attribute(const_cast<Dwarf_Die*>(function_die),
+			       DW_AT_low_pc, address))
       // So no DW_AT_low_pc was found.  Let's see if the function DIE
       // has got a DW_AT_ranges attribute instead.  If it does, the
       // first address of the set of addresses represented by the
       // value of that DW_AT_ranges represents the function (symbol)
       // address we are looking for.
-      if (!get_first_exported_fn_address_from_DW_AT_ranges(function_die,
-							   address))
+      if (!get_first_exported_fn_address_from_DW_AT_ranges
+	  (const_cast<Dwarf_Die*>(function_die),
+	   address))
 	return false;
 
     address = maybe_adjust_fn_sym_address(address);
@@ -5611,11 +5657,12 @@ public:
   ///
   /// @return true if the variable address was found.
   bool
-  get_variable_address(Dwarf_Die*	variable_die,
+  get_variable_address(const Dwarf_Die* variable_die,
 		       Dwarf_Addr&	address) const
   {
     bool is_tls_address = false;
-    if (!die_location_address(variable_die, address, is_tls_address))
+    if (!die_location_address(const_cast<Dwarf_Die*>(variable_die),
+			      address, is_tls_address))
       return false;
     if (!is_tls_address)
       address = maybe_adjust_var_sym_address(address);
@@ -7151,6 +7198,40 @@ die_is_declaration_only(Dwarf_Die* die)
   bool is_declaration = false;
   die_flag_attribute(die, DW_AT_declaration, is_declaration, false);
   if (is_declaration && !die_has_size_attribute(die))
+    return true;
+  return false;
+}
+
+/// Test if a DIE is for a function decl.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die represents a function decl.
+static bool
+die_is_function_decl(const Dwarf_Die *die)
+{
+  if (!die)
+    return false;
+
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  if (tag == DW_TAG_subprogram)
+    return true;
+  return false;
+}
+
+/// Test if a DIE is for a variable decl.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die represents a variable decl.
+static bool
+die_is_variable_decl(const Dwarf_Die *die)
+{
+    if (!die)
+    return false;
+
+  int tag = dwarf_tag(const_cast<Dwarf_Die*>(die));
+  if (tag == DW_TAG_variable)
     return true;
   return false;
 }
@@ -12696,9 +12777,13 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   result->set_is_constructed(false);
 
   do
-    build_ir_node_from_die(ctxt, &child,
-			   die_is_public_decl(&child),
-			   dwarf_dieoffset(&child));
+    // Analyze all the DIEs we encounter unless we are asked to only
+    // analyze exported interfaces and the types reachables from them.
+    if (!ctxt.env()->analyze_exported_interfaces_only()
+	|| ctxt.is_decl_die_with_exported_symbol(&child))
+      build_ir_node_from_die(ctxt, &child,
+			     die_is_public_decl(&child),
+			     dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
 
   if (!ctxt.var_decls_to_re_add_to_tree().empty())
@@ -15704,6 +15789,16 @@ read_debug_info_into_corpus(read_context& ctxt)
   if (is_linux_kernel(ctxt.elf_handle()))
     origin |= corpus::LINUX_KERNEL_BINARY_ORIGIN;
   ctxt.current_corpus()->set_origin(origin);
+
+  if (origin & corpus::LINUX_KERNEL_BINARY_ORIGIN
+      && !ctxt.env()->user_set_analyze_exported_interfaces_only())
+    // So we are looking at the Linux Kernel and the user has not set
+    // any particular option regarding the amount of types to analyse.
+    // In that case, we need to only analyze types that are reachable
+    // from exported interfaces otherwise we get such a massive amount
+    // of type DIEs to look at that things are just too slow down the
+    // road.
+    ctxt.env()->analyze_exported_interfaces_only(true);
 
   ctxt.current_corpus()->set_soname(ctxt.dt_soname());
   ctxt.current_corpus()->set_needed(ctxt.dt_needed());

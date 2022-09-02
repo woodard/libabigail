@@ -106,6 +106,7 @@ using std::set;
 using std::ostringstream;
 using std::shared_ptr;
 using std::dynamic_pointer_cast;
+using abg_compat::optional;
 using abigail::workers::task;
 using abigail::workers::task_sptr;
 using abigail::workers::queue;
@@ -205,6 +206,7 @@ public:
   bool		fail_if_no_debug_info;
   bool		show_identical_binaries;
   bool		self_check;
+  optional<bool> exported_interfaces_only;
 #ifdef WITH_CTF
   bool		use_ctf;
 #endif
@@ -868,6 +870,9 @@ display_usage(const string& prog_name, ostream& out)
     "full impact analysis report rather than the default leaf changes reports\n"
     << " --non-reachable-types|-t  consider types non reachable"
     " from public interfaces\n"
+    << "  --exported-interfaces-only  analyze exported interfaces only\n"
+    << "  --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << " --no-linkage-name		do not display linkage names of "
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
@@ -2076,6 +2081,10 @@ public:
     abigail::elf_reader::status detailed_status =
       abigail::elf_reader::STATUS_UNKNOWN;
 
+    if (args->opts.exported_interfaces_only.has_value())
+      env->analyze_exported_interfaces_only
+	(*args->opts.exported_interfaces_only);
+
     status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
 		      args->elf2, args->debug_dir2, args->private_types_suppr2,
 		      args->opts, env, diff, ctxt, &detailed_status);
@@ -2141,6 +2150,10 @@ public:
     abigail::ir::environment_sptr env(new abigail::ir::environment);
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
+
+    if (args->opts.exported_interfaces_only.has_value())
+      env->analyze_exported_interfaces_only
+	(*args->opts.exported_interfaces_only);
 
     abigail::elf_reader::status detailed_status =
       abigail::elf_reader::STATUS_UNKNOWN;
@@ -3024,6 +3037,10 @@ compare_prepared_linux_kernel_packages(package& first_package,
   string dist_root2 = second_package.extracted_dir_path();
 
   abigail::ir::environment_sptr env(new abigail::ir::environment);
+  if (opts.exported_interfaces_only.has_value())
+    env->analyze_exported_interfaces_only
+      (*opts.exported_interfaces_only);
+
   suppressions_type supprs;
   corpus_group_sptr corpus1, corpus2;
   corpus1 = build_corpus_group_from_kernel_dist_under(dist_root1,
@@ -3326,6 +3343,10 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--full-impact")
 	       ||!strcmp(argv[i], "-f"))
 	opts.show_full_impact_report = true;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-linkage-name"))
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))

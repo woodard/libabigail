@@ -55,6 +55,10 @@ command line looks like: ::
 		       linux/v4.5/build/modules \
 		       linux/v4.6/build/modules
 
+
+.. include:: tools-use-libabigail.txt
+
+
 Invocation
 ==========
 
@@ -67,8 +71,8 @@ Environment
 
 By default, ``kmidiff`` compares all the interfaces (exported
 functions and variables) between the Kernel and its modules.  In
-practice, though, users want to compare a subset of the those
-interfaces.
+practice, though, some users might want to compare a subset of the
+those interfaces.
 
 Users can then define a "white list" of the interfaces to compare.
 Such a white list is a just a file in the "INI" format that looks
@@ -91,8 +95,11 @@ function or variable.  Only those interfaces along with the types
 reachable from their signatures are going to be compared by
 ``kmidiff`` recursively.
 
-Note that kmidiff compares the interfaces exported by the ``vmlinux``
-binary and by the all of the compiled modules.
+Note that by default kmidiff analyzes the types reachable from the
+interfaces associated with `ELF`_ symbols that are defined and
+exported by the `Linux Kernel`_ as being the union of the ``vmlinux``
+binary and all its compiled modules.  It then compares those
+interfaces (along with their types).
 
 Options
 =======
@@ -180,6 +187,38 @@ Options
     exported interfaces.  This is the default kind of report emitted
     by tools like ``abidiff`` or ``abipkgdiff``.
 
+  * ``--exported-interfaces-only``
+
+    When using this option, this tool analyzes the descriptions of the
+    types reachable by the interfaces (functions and variables)
+    associated with `ELF`_ symbols that are defined and exported by
+    the `Linux Kernel`_.
+
+    Otherwise, the tool also has the ability to analyze the
+    descriptions of the types reachable by the interfaces associated
+    with `ELF`_ symbols that are visible outside their translation
+    unit.  This later possibility is however much more resource
+    intensive and results in much slower operations.
+
+    That is why this option is enabled by default.
+
+
+  * ``--allow-non-exported-interfaces``
+
+    When using this option, this tool analyzes the descriptions of the
+    types reachable by the interfaces (functions and variables) that
+    are visible outside of their translation unit.  Once that analysis
+    is done, an ABI Corpus is constructed by only considering the
+    subset of types reachable from interfaces associated to `ELF`_
+    symbols that are defined and exported by the binary.  It's that
+    final ABI corpus which is compared against another one.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, leading to very slow operations.
+
+    Note that this option is turned off by default.
+
   * ``--show-bytes``
 
     Show sizes and offsets in bytes, not bits.  This option is
@@ -198,3 +237,8 @@ Options
   * ``--show-dec``
 
     Show sizes and offsets in decimal base.
+
+
+.. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+.. _ksymtab: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+.. _Linux Kernel: https://kernel.org

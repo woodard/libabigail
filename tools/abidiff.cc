@@ -29,6 +29,7 @@ using std::ostream;
 using std::cout;
 using std::cerr;
 using std::shared_ptr;
+using abg_compat::optional;
 using abigail::ir::environment;
 using abigail::ir::environment_sptr;
 using abigail::translation_unit;
@@ -74,6 +75,7 @@ struct options
   vector<string>	headers_dirs2;
   vector<string>        header_files2;
   bool			drop_private_types;
+  optional<bool>	exported_interfaces_only;
   bool			linux_kernel_mode;
   bool			no_default_supprs;
   bool			no_arch;
@@ -197,6 +199,9 @@ display_usage(const string& prog_name, ostream& out)
     << " --header-file2|--hf2 <path>  the path to one header of file2\n"
     << " --drop-private-types  drop private types from "
     "internal representation\n"
+    << "  --exported-interfaces-only  analyze exported interfaces only\n"
+    << "  --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << " --no-linux-kernel-mode  don't consider the input binaries as "
        "linux kernel binaries\n"
     << " --kmi-whitelist|-w  path to a "
@@ -403,6 +408,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--drop-private-types"))
 	opts.drop_private_types = true;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -1130,6 +1139,9 @@ main(int argc, char* argv[])
       t2_type = guess_file_type(opts.file2);
 
       environment_sptr env(new environment);
+      if (opts.exported_interfaces_only.has_value())
+	env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+
 #ifdef WITH_DEBUG_SELF_COMPARISON
 	    if (opts.do_debug)
 	      env->self_comparison_debug_is_on(true);

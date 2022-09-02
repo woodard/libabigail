@@ -197,6 +197,15 @@ public:
   const config&
   get_config() const;
 
+  bool
+  user_set_analyze_exported_interfaces_only() const;
+
+  void
+  analyze_exported_interfaces_only(bool f);
+
+  bool
+  analyze_exported_interfaces_only() const;
+
 #ifdef WITH_DEBUG_SELF_COMPARISON
   void
   set_self_comparison_debug_input(const corpus_sptr& corpus);

@@ -26,6 +26,7 @@ namespace ir
 {
 
 using std::string;
+using abg_compat::optional;
 
 /// The result of structural comparison of type ABI artifacts.
 enum comparison_result
@@ -443,6 +444,7 @@ struct environment::priv
   bool					decl_only_class_equals_definition_;
   bool					use_enum_binary_only_equality_;
   bool					allow_type_comparison_results_caching_;
+  optional<bool>			analyze_exported_interfaces_only_;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool					self_comparison_debug_on_;
 #endif
