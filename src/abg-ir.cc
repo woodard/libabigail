@@ -1353,7 +1353,11 @@ translation_unit::get_loc_mgr() const
 /// @return true iff the current translation unit is empty.
 bool
 translation_unit::is_empty() const
-{return get_global_scope()->is_empty();}
+{
+  if (!priv_->global_scope_)
+    return true;
+  return get_global_scope()->is_empty();
+}
 
 /// Getter of the address size in this translation unit.
 ///
