@@ -233,6 +233,10 @@ test-abidiff-exit/test-PR29144-v0.cc \
 test-abidiff-exit/test-PR29144-v0.o \
 test-abidiff-exit/test-PR29144-v1.cc \
 test-abidiff-exit/test-PR29144-v1.o \
+test-abidiff-exit/ld-2.28-210.so \
+test-abidiff-exit/ld-2.28-211.so \
+test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt \
+test-abidiff-exit/ld-2.28-21x.so.sources.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
