@@ -1204,6 +1204,61 @@ lookup_type(read_context *ctxt, corpus_sptr corp,
   return result;
 }
 
+/// Given a symbol name, lookup the corresponding CTF information in
+/// the default dictionary (CTF archive member provided by the caller)
+/// If the search is not success, the  looks for the symbol name
+/// in _all_ archive members.
+///
+/// @param ctfa the CTF archive.
+/// @param dict the default dictionary to looks for.
+/// @param sym_name the symbol name.
+/// @param corp the IR corpus.
+///
+/// Note that if @ref sym_name is found in other than its default dictionary
+/// @ref ctf_dict will be updated and it must be explicitly closed by its
+/// caller.
+///
+/// @return a valid CTF type id, if @ref sym_name was found, CTF_ERR otherwise.
+
+static ctf_id_t
+lookup_symbol_in_ctf_archive(ctf_archive_t *ctfa, ctf_dict_t **ctf_dict,
+                             const char *sym_name)
+{
+  int ctf_err;
+  ctf_dict_t *dict = *ctf_dict;
+  ctf_id_t ctf_type = ctf_lookup_by_symbol_name(dict, sym_name);
+
+  if (ctf_type != CTF_ERR)
+    return ctf_type;
+
+  /* Probably --ctf-variables option was used by ld, so symbol type
+     definition must be found in the CTF Variable section. */
+  ctf_type = ctf_lookup_variable(dict, sym_name);
+
+  /* Not lucky, then, search in whole archive */
+  if (ctf_type == CTF_ERR)
+    {
+      ctf_dict_t *fp;
+      ctf_next_t *i = NULL;
+      const char *arcname;
+
+      while ((fp = ctf_archive_next(ctfa, &i, &arcname, 1, &ctf_err)) != NULL)
+        {
+          if ((ctf_type = ctf_lookup_by_symbol_name (fp, sym_name)) == CTF_ERR)
+            ctf_type = ctf_lookup_variable(fp, sym_name);
+
+          if (ctf_type != CTF_ERR)
+            {
+              *ctf_dict = fp;
+              break;
+            }
+          ctf_dict_close(fp);
+        }
+    }
+
+  return ctf_type;
+}
+
 /// Process a CTF archive and create libabigail IR for the types,
 /// variables and function declarations found in the archive, iterating
 /// over public symbols.  The IR is added to the given corpus.
@@ -1222,7 +1277,7 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
   corp->add(ir_translation_unit);
 
   int ctf_err;
-  ctf_dict_t *ctf_dict;
+  ctf_dict_t *ctf_dict, *dict_tmp;
   const auto symtab = ctxt->symtab;
   symtab_reader::symtab_filter filter = symtab->make_filter();
   filter.set_public_symbols();
@@ -1248,19 +1303,17 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
       abort();
     }
 
+  dict_tmp = ctf_dict;
+
   for (const auto& symbol : symtab_reader::filtered_symtab(*symtab, filter))
     {
       std::string sym_name = symbol->get_name();
       ctf_id_t ctf_sym_type;
 
-      ctf_sym_type = ctf_lookup_variable(ctf_dict, sym_name.c_str());
-      if (ctf_sym_type == (ctf_id_t) -1
-          && !(corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN))
-        // lookup in function objects
-        ctf_sym_type = ctf_lookup_by_symbol_name(ctf_dict, sym_name.c_str());
-
-      if (ctf_sym_type == (ctf_id_t) -1)
-        continue;
+      ctf_sym_type = lookup_symbol_in_ctf_archive(ctxt->ctfa, &ctf_dict,
+                                                  sym_name.c_str());
+      if (ctf_sym_type == CTF_ERR)
+          continue;
 
       if (ctf_type_kind(ctf_dict, ctf_sym_type) != CTF_K_FUNCTION)
         {
@@ -1298,13 +1351,14 @@ process_ctf_archive(read_context *ctxt, corpus_sptr corp)
                                                    func_type,
                                                    0 /* is_inline */,
                                                    location()));
-
           func_declaration->set_symbol(symbol);
           add_decl_to_scope(func_declaration,
                             ir_translation_unit->get_global_scope());
           func_declaration->set_is_in_public_symbol_table(true);
           ctxt->maybe_add_fn_to_exported_decls(func_declaration.get());
         }
+
+      ctf_dict = dict_tmp;
     }
 
   ctf_dict_close(ctf_dict);
