@@ -382,7 +382,9 @@ bool
 mark_dependant_types_compared_until(const type_base &r)
 {
   const environment * env = r.get_environment();
-  return env->priv_->mark_dependant_types_compared_until(&r);
+  if (env->do_on_the_fly_canonicalization())
+    return env->priv_->mark_dependant_types_compared_until(&r);
+  return false;
 }
 
 /// @brief the location of a token represented in its simplest form.
@@ -920,6 +922,22 @@ is_comparison_cycle_detected(T& l, T& r)
   return result ;
 }
 
+/// Detect if a recursive comparison cycle is detected while
+/// structurally comparing two @ref class_decl types.
+///
+/// @param l the left-hand-side operand of the current comparison.
+///
+/// @param r the right-hand-side operand of the current comparison.
+///
+/// @return true iff a comparison cycle is detected.
+template<>
+bool
+is_comparison_cycle_detected(const class_decl& l, const class_decl& r)
+{
+  return is_comparison_cycle_detected(static_cast<const class_or_union&>(l),
+				      static_cast<const class_or_union&>(r));
+}
+
 /// This macro is to be used while comparing composite types that
 /// might recursively refer to themselves.  Comparing two such types
 /// might get us into a cyle.
@@ -968,6 +986,22 @@ mark_types_as_being_compared(T& l, T&r)
   push_composite_type_comparison_operands(l, r);
 }
 
+/// Mark a pair of @ref class_decl types as being compared.
+///
+/// This is helpful to later detect recursive cycles in the comparison
+/// stack.
+///
+/// @param l the left-hand-side operand of the comparison.
+///
+/// @parm r the right-hand-side operand of the comparison.
+template<>
+void
+mark_types_as_being_compared(const class_decl& l, const class_decl &r)
+{
+  return mark_types_as_being_compared(static_cast<const class_or_union&>(l),
+				      static_cast<const class_or_union&>(r));
+}
+
 /// Mark a pair of types as being not compared anymore.
 ///
 /// This is helpful to later detect recursive cycles in the comparison
@@ -985,6 +1019,26 @@ unmark_types_as_being_compared(T& l, T&r)
 {
   l.priv_->unmark_as_being_compared(l, r);
   pop_composite_type_comparison_operands(l, r);
+}
+
+/// Mark a pair of @ref class_decl types as being not compared
+/// anymore.
+///
+/// This is helpful to later detect recursive cycles in the comparison
+/// stack.
+///
+/// Note that the types must have been passed to
+/// mark_types_as_being_compared prior to calling this function.
+///
+/// @param l the left-hand-side operand of the comparison.
+///
+/// @parm r the right-hand-side operand of the comparison.
+template<>
+void
+unmark_types_as_being_compared(const class_decl& l, const class_decl &r)
+{
+  return unmark_types_as_being_compared(static_cast<const class_or_union&>(l),
+					static_cast<const class_or_union&>(r));
 }
 
 /// Return the result of the comparison of two (sub) types.
@@ -1020,7 +1074,7 @@ return_comparison_result(T& l, T& r, bool value,
   unmark_types_as_being_compared(l, r);
 
   const environment* env = l.get_environment();
-  if (propagate_canonical_type && env->do_on_the_fly_canonicalization())
+  if (env->do_on_the_fly_canonicalization())
     // We are instructed to perform the "canonical type propagation"
     // optimization, making 'r' to possibly get the canonical type of
     // 'l' if it has one.  This mostly means that we are currently
@@ -1028,8 +1082,8 @@ return_comparison_result(T& l, T& r, bool value,
     // the 'r' argument.
     {
       if (value == true
-	  && is_type(&r)->priv_->depends_on_recursive_type()
-	  && !env->priv_->right_type_comp_operands_.empty()
+	  && (is_type(&r)->priv_->depends_on_recursive_type()
+	      || env->priv_->is_recursive_type(&r))
 	  && is_type(&r)->priv_->canonical_type_propagated())
 	{
 	  // Track the object 'r' for which the propagated canonical
@@ -1048,10 +1102,12 @@ return_comparison_result(T& l, T& r, bool value,
 	  // sub-types that were compared during the comparison of
 	  // 'r'.
 	  env->priv_->confirm_ct_propagation(&r);
-	  if (is_type(&r)->priv_->depends_on_recursive_type())
+	  if (is_type(&r)->priv_->depends_on_recursive_type()
+	      || env->priv_->is_recursive_type(&r))
 	    {
 	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
 	      env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&r);
+	      env->priv_->set_is_not_recursive(&r);
 	    }
 	}
       else if (value == false)
@@ -1062,7 +1118,8 @@ return_comparison_result(T& l, T& r, bool value,
 	  // should see their tentatively propagated canonical type
 	  // cancelled.
 	  env->priv_->cancel_ct_propagation(&r);
-	  if (is_type(&r)->priv_->depends_on_recursive_type())
+	  if (is_type(&r)->priv_->depends_on_recursive_type()
+	      || env->priv_->is_recursive_type(&r))
 	    {
 	      // The right-hand-side operand cannot carry any tentative
 	      // canonical type at this point.
@@ -14051,10 +14108,10 @@ compare_types_during_canonicalization(const type_base_sptr& canonical_type,
   if (env->debug_type_canonicalization_is_on())
     {
       bool canonical_equality = false, structural_equality = false;
-      env->priv_->use_canonical_type_comparison_ = true;
-      canonical_equality = canonical_type == candidate_type;
       env->priv_->use_canonical_type_comparison_ = false;
       structural_equality = canonical_type == candidate_type;
+      env->priv_->use_canonical_type_comparison_ = true;
+      canonical_equality = canonical_type == candidate_type;
       if (canonical_equality != structural_equality)
 	{
 	  std::cerr << "structural & canonical equality different for type: "
@@ -14208,7 +14265,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // the decl-only-class-being-equal-to-a-matching-definition
 	  // flags.
 	  env->priv_->allow_type_comparison_results_caching(false);
-	  env->priv_->clear_type_comparison_results_cache();
 	  env->do_on_the_fly_canonicalization(false);
 	  env->decl_only_class_equals_definition
 	    (saved_decl_only_class_equals_definition);
@@ -23626,8 +23682,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 		      static_cast<const class_or_union&>(r),
 		      k));
 
-  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(static_cast<const class_or_union&>(l),
-					   static_cast<const class_or_union&>(r));
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
 
   bool had_canonical_type = !!r.get_naked_canonical_type();
   bool result = true;
@@ -23640,13 +23695,9 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	ABG_RETURN(result);
     }
 
-  mark_types_as_being_compared(static_cast<const class_or_union&>(l),
-			       static_cast<const class_or_union&>(r));
+  mark_types_as_being_compared(l, r);
 
-#define RETURN(value)							 \
-  return return_comparison_result(static_cast<const class_or_union&>(l), \
-				  static_cast<const class_or_union&>(r), \
-				  value);
+#define RETURN(value) return return_comparison_result(l, r, value);
 
   // If comparing the class_or_union 'part' of the type led to
   // canonical type propagation, then cancel that because it's too
@@ -24768,10 +24819,19 @@ union_decl::~union_decl()
 bool
 equals(const union_decl& l, const union_decl& r, change_kind* k)
 {
+
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+
+#define RETURN(value)				\
+  return return_comparison_result(l, r, value);
+
   bool result = equals(static_cast<const class_or_union&>(l),
 		       static_cast<const class_or_union&>(r),
 		       k);
-  ABG_RETURN(result);
+
+  mark_types_as_being_compared(l, r);
+
+  RETURN(result);
 }
 
 /// Copy a method of a @ref union_decl into a new @ref

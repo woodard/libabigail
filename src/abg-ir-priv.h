@@ -419,6 +419,7 @@ struct environment::priv
   // the canonical type propagation is cancelled, the canonical types
   // must be cleared.
   pointer_set		types_with_non_confirmed_propagated_ct_;
+  pointer_set		recursive_types_;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   // This is used for debugging purposes.
   // When abidw is used with the option --debug-abidiff, some
@@ -518,11 +519,19 @@ struct environment::priv
   void
   cache_type_comparison_result(T& first, T& second, bool r)
   {
-    if (allow_type_comparison_results_caching())
-      type_comparison_results_cache_.emplace
-	(std::make_pair(reinterpret_cast<uint64_t>(&first),
-			reinterpret_cast<uint64_t>(&second)),
-	 r);
+    if (allow_type_comparison_results_caching()
+	&& (r == false
+	    ||
+	    (!is_recursive_type(&first)
+	     && !is_recursive_type(&second)
+	     && !is_type(&first)->priv_->depends_on_recursive_type()
+	     && !is_type(&second)->priv_->depends_on_recursive_type())))
+      {
+	type_comparison_results_cache_.emplace
+	  (std::make_pair(reinterpret_cast<uint64_t>(&first),
+			  reinterpret_cast<uint64_t>(&second)),
+	   r);
+      }
   }
 
   /// Retrieve the result of comparing two sub-types from the cache,
@@ -749,8 +758,29 @@ struct environment::priv
     result |=
       mark_dependant_types(right,
 			   right_type_comp_operands_);
+    recursive_types_.insert(reinterpret_cast<uintptr_t>(right));
     return result;
   }
+
+  /// Test if a type is a recursive one.
+  ///
+  /// @param t the type to consider.
+  ///
+  /// @return true iff @p t is recursive.
+  bool
+  is_recursive_type(const type_base* t)
+  {
+    return (recursive_types_.find(reinterpret_cast<uintptr_t>(t))
+	    != recursive_types_.end());
+  }
+
+
+  /// Unflag a type as being recursive
+  ///
+  /// @param t the type to unflag
+  void
+  set_is_not_recursive(const type_base* t)
+  {recursive_types_.erase(reinterpret_cast<uintptr_t>(t));}
 
   /// Propagate the canonical type of a type to another one.
   ///
@@ -786,7 +816,8 @@ struct environment::priv
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->priv_->depends_on_recursive_type());
+	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type(dependant_type);
 	if (!t->priv_->depends_on_recursive_type())
 	  to_remove.insert(i);
@@ -858,7 +889,8 @@ struct environment::priv
     for (auto i : to_remove)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->priv_->depends_on_recursive_type());
+	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
 	type_base_sptr canonical = t->priv_->canonical_type.lock();
 	if (canonical)
 	  {
