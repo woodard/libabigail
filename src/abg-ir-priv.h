@@ -997,7 +997,6 @@ struct environment::priv
 struct class_or_union::priv
 {
   typedef_decl_wptr		naming_typedef_;
-  member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
   member_functions		member_functions_;
@@ -1012,11 +1011,9 @@ struct class_or_union::priv
   priv()
   {}
 
-  priv(class_or_union::member_types& mbr_types,
-       class_or_union::data_members& data_mbrs,
+  priv(class_or_union::data_members& data_mbrs,
        class_or_union::member_functions& mbr_fns)
-    : member_types_(mbr_types),
-      data_members_(data_mbrs),
+    : data_members_(data_mbrs),
       member_functions_(mbr_fns)
   {
     for (data_members::const_iterator i = data_members_.begin();

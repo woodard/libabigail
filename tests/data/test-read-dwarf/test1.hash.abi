@@ -39,7 +39,6 @@
     <type-decl name='double' size-in-bits='64' id='a0eb0f08'/>
     <type-decl name='int' size-in-bits='32' id='95e97e5e'/>
     <type-decl name='long long int' size-in-bits='64' id='95e97e5f'/>
-    <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <class-decl name='b0' size-in-bits='128' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='1' column='1' id='96c6f7f7'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='m0' type-id='95e97e5f' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='3' column='1'/>
@@ -60,10 +59,10 @@
       <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='96c6f7f7'/>
       <base-class access='public' layout-offset-in-bits='256' is-virtual='yes' type-id='95c6f664'/>
       <member-type access='public'>
-        <typedef-decl name='integer' type-id='95e97e5e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='61814d27'/>
+        <typedef-decl name='byte' type-id='002ac4a6' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='16' column='1' id='92bf8355'/>
       </member-type>
       <member-type access='public'>
-        <typedef-decl name='byte' type-id='002ac4a6' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='16' column='1' id='92bf8355'/>
+        <typedef-decl name='integer' type-id='95e97e5e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='61814d27'/>
       </member-type>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='m0' type-id='61814d27' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='18' column='1'/>
@@ -110,6 +109,7 @@
         </function-decl>
       </member-function>
     </class-decl>
+    <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <reference-type-def kind='lvalue' type-id='10ec88de' size-in-bits='64' id='95a32e30'/>
     <pointer-type-def type-id='10ec88de' size-in-bits='64' id='a1a34114'/>
     <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e2f'/>

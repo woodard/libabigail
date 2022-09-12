@@ -222,16 +222,12 @@ class write_context
   type_id_style_kind			m_type_id_style;
   mutable type_ptr_map			m_type_id_map;
   // type id map for non-canonicalized types.
-  mutable nc_type_ptr_istr_map_type	m_nc_type_id_map;
   mutable unordered_set<uint32_t>	m_used_type_id_hashes;
   mutable type_ptr_set_type		m_emitted_type_set;
-  // a set of non-canonicalized types that are emitted.
-  nc_type_ptr_set_type	m_emitted_non_canonicalized_type_set;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_set_type			m_referenced_types_set;
   fn_type_ptr_set_type			m_referenced_fn_types_set;
-  nc_type_ptr_set_type	m_referenced_non_canonicalized_types_set;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -463,8 +459,6 @@ public:
   type_has_existing_id(type_base* type) const
   {
     type = get_exemplar_type(type);
-    if (is_non_canonicalized_type(type))
-      return m_nc_type_id_map.find(type) != m_nc_type_id_map.end();
     return m_type_id_map.find(type) != m_type_id_map.end();
   }
 
@@ -484,28 +478,17 @@ public:
   get_id_for_type(type_base* type) const
   {
     type_base* c = get_exemplar_type(type);
-    bool is_non_canon_type = is_non_canonicalized_type(c);
-    if (is_non_canon_type)
-      {
-	auto it = m_nc_type_id_map.find(c);
-	if (it != m_nc_type_id_map.end())
-	  return it->second;
-      }
-    else
-      {
-	auto it = m_type_id_map.find(c);
-	if (it != m_type_id_map.end())
-	  return it->second;
-      }
+
+    auto it = m_type_id_map.find(c);
+    if (it != m_type_id_map.end())
+      return it->second;
 
     switch (m_type_id_style)
       {
       case SEQUENCE_TYPE_ID_STYLE:
 	{
 	  interned_string id = get_id_manager().get_id_with_prefix("type-id-");
-	  return is_non_canon_type
-	    ? m_nc_type_id_map[c] = id
-	    : m_type_id_map[c] = id;
+	  return m_type_id_map[c] = id;
 	}
       case HASH_TYPE_ID_STYLE:
 	{
@@ -515,9 +498,7 @@ public:
 	    ++hash;
 	  std::ostringstream os;
 	  os << std::hex << std::setfill('0') << std::setw(8) << hash;
-	  return is_non_canon_type
-	    ? m_nc_type_id_map[c] = c->get_environment()->intern(os.str())
-	    : m_type_id_map[c] = c->get_environment()->intern(os.str());
+	  return m_type_id_map[c] = c->get_environment()->intern(os.str());
 	}
       }
     ABG_ASSERT_NOT_REACHED;
@@ -554,7 +535,6 @@ public:
   clear_type_id_map()
   {
     m_type_id_map.clear();
-    m_nc_type_id_map.clear();
   }
 
 
@@ -577,14 +557,6 @@ public:
   get_referenced_function_types() const
   {return m_referenced_fn_types_set;}
 
-  /// Getter of the set of types which have no canonical types and
-  /// which were referenced by a pointer, reference or typedef.
-  ///
-  /// @return the of referenced type that have no canonical types.
-  const nc_type_ptr_set_type&
-  get_referenced_non_canonicalized_types() const
-  {return m_referenced_non_canonicalized_types_set;}
-
   /// Test if there are non emitted referenced types.
   ///
   /// @return true iff there are non emitted referenced types.
@@ -594,10 +566,6 @@ public:
     for (const auto t : get_referenced_types())
       if (!type_is_emitted(t))
 	  return false;
-
-    for (const auto t : get_referenced_non_canonicalized_types())
-      if (!type_is_emitted(t))
-	return false;
 
     return true;
   }
@@ -615,10 +583,6 @@ public:
     // structure.
     if (function_type* f = is_function_type(t))
       m_referenced_fn_types_set.insert(f);
-    else if (is_non_canonicalized_type(t))
-      // If the type doesn't have a canonical type, record it in a
-      // dedicated data structure.
-      m_referenced_non_canonicalized_types_set.insert(t);
     else
       m_referenced_types_set.insert(t);
   }
@@ -637,9 +601,6 @@ public:
     if (function_type* f = is_function_type(t))
       return (m_referenced_fn_types_set.find(f)
 	      != m_referenced_fn_types_set.end());
-    else if (is_non_canonicalized_type(t))
-      return (m_referenced_non_canonicalized_types_set.find(t)
-	      != m_referenced_non_canonicalized_types_set.end());
     else
       return m_referenced_types_set.find(t) != m_referenced_types_set.end();
   }
@@ -810,10 +771,7 @@ public:
   record_type_as_emitted(const type_base* t)
   {
     type_base* c = get_exemplar_type(t);
-    if (is_non_canonicalized_type(c))
-      m_emitted_non_canonicalized_type_set.insert(c);
-    else
-      m_emitted_type_set.insert(c);
+    m_emitted_type_set.insert(c);
   }
 
   /// Test if a given type has been written out to the XML output.
@@ -826,10 +784,6 @@ public:
   type_is_emitted(const type_base* t) const
   {
     type_base* c = get_exemplar_type(t);
-    if (is_non_canonicalized_type(c))
-      return (m_emitted_non_canonicalized_type_set.find(c)
-	      != m_emitted_non_canonicalized_type_set.end());
-
     return (m_emitted_type_set.find(c) != m_emitted_type_set.end());
   }
 
@@ -876,17 +830,12 @@ public:
   get_emitted_types_set() const
   {return m_emitted_type_set;}
 
-  const nc_type_ptr_set_type&
-  get_emitted_non_canonicalized_type_set() const
-  {return m_emitted_non_canonicalized_type_set;}
-
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
   void
   clear_referenced_types()
   {
     m_referenced_types_set.clear();
-    m_referenced_non_canonicalized_types_set.clear();
     m_referenced_fn_types_set.clear();
   }
 
@@ -2063,7 +2012,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 	  c = is_class_type(look_through_decl_only_class(c));
 	  class_decl_sptr class_type(c, noop_deleter());
 	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
-				       /*prepare_to_handle_members=*/false);
+				       /*prepare_to_handle_empty=*/false);
 	  closing_tags.push("</class-decl>");
 	  closing_indents.push(indent);
 
@@ -2077,7 +2026,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 	{
 	  union_decl_sptr union_type(u, noop_deleter());
 	  write_union_decl_opening_tag(union_type, "", ctxt, indent,
-				       /*prepare_to_handle_members=*/false);
+				       /*prepare_to_handle_empty=*/false);
 	  closing_tags.push("</union-decl>");
 	  closing_indents.push(indent);
 
@@ -2361,10 +2310,6 @@ write_referenced_types(write_context &		ctxt,
     if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
       referenced_types_to_emit.insert(*i);
 
-  for (auto i : ctxt.get_referenced_non_canonicalized_types())
-    if (referenced_type_should_be_emitted(i, ctxt, tu, is_last))
-      referenced_types_to_emit.insert(i);
-
   // Ok, now let's emit the referenced type for good.
   while (!referenced_types_to_emit.empty())
     {
@@ -2423,10 +2368,6 @@ write_referenced_types(write_context &		ctxt,
 	   ++i)
 	if (referenced_type_should_be_emitted(*i, ctxt, tu, is_last))
 	  referenced_types_to_emit.insert(*i);
-
-      for (auto i : ctxt.get_referenced_non_canonicalized_types())
-	if (referenced_type_should_be_emitted(i, ctxt, tu, is_last))
-	  referenced_types_to_emit.insert(i);
     }
 }
 
@@ -3590,7 +3531,7 @@ write_function_type(const function_type_sptr& fn_type,
 ///
 /// @param indent the number of white space to use for indentation.
 ///
-/// @param prepare_to_handle_members if set to true, then this function
+/// @param prepare_to_handle_empty if set to true, then this function
 /// figures out if the opening tag should be for an empty element or
 /// not.  If set to false, then the opening tag is unconditionnaly for
 /// a non-empty element.
@@ -3601,7 +3542,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 			     const string&		id,
 			     write_context&		ctxt,
 			     unsigned			indent,
-			     bool			prepare_to_handle_members)
+			     bool			prepare_to_handle_empty)
 {
   if (!decl)
     return false;
@@ -3643,7 +3584,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  if (prepare_to_handle_members && decl->has_no_base_nor_member())
+  if (prepare_to_handle_empty && decl->has_no_base_nor_member())
     o << "/>\n";
   else
     o << ">\n";
@@ -3662,7 +3603,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 ///
 /// @param indent the number of white space to use for indentation.
 ///
-/// @param prepare_to_handle_members if set to true, then this function
+/// @param prepare_to_handle_empty if set to true, then this function
 /// figures out if the opening tag should be for an empty element or
 /// not.  If set to false, then the opening tag is unconditionnaly for
 /// a non-empty element.
@@ -3673,7 +3614,7 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
 			     const string&		id,
 			     write_context&		ctxt,
 			     unsigned			indent,
-			     bool			prepare_to_handle_members)
+			     bool			prepare_to_handle_empty)
 {
   if (!decl)
     return false;
@@ -3706,7 +3647,7 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
 
-  if (prepare_to_handle_members && decl->has_no_member())
+  if (prepare_to_handle_empty && decl->has_no_member())
     o << "/>\n";
   else
     o << ">\n";
@@ -3744,8 +3685,74 @@ write_class_decl(const class_decl_sptr& d,
 
   ostream& o = ctxt.get_ostream();
 
+  if (decl->get_is_declaration_only())
+    {
+      type_base_wptrs_type result;
+      canonical_type_sptr_set_type member_types;
+      const environment* env = ctxt.get_environment();
+
+      // We are looking at a decl-only class.  All decl-only classes
+      // of a given name are equal.  But then the problem is that a
+      // decl-only class can still have member types.  So we might
+      // have other decl-only classes of the same name as this one,
+      // but that have been defined in a namespace definition
+      // somewhere else in a different translation-unit, for exemple.
+      // Those other decl-only classes of the same name might have a
+      // number of different member-types.  So depending on the
+      // decl-only class that is seen first, "different" ones might be
+      // emitted here, even though they compare equal from the
+      // library's point of view.  This might lead to an instability
+      // of the abixml output.
+      //
+      // So let's gather all the member-types of all the decl-only
+      // classes of the fully-qualified name and emit them here.
+      if (lookup_decl_only_class_types(env->intern(decl->get_qualified_name()),
+				       *decl->get_corpus(),
+				       result))
+	{
+	  for (auto t : result)
+	    {
+	      type_base_sptr type(t);
+	      class_decl_sptr c = is_class_type(type);
+	      for (auto m : c->get_member_types())
+		if (member_types.find(m) != member_types.end())
+		  member_types.insert(m);
+	    }
+	}
+
+      if (!member_types.empty())
+	{
+	  // So we now have a hand on the member types of the current
+	  // decl-only class we are looking at, so let's emit them in
+	  // a sorted manner.
+
+	  write_class_decl_opening_tag(decl, id, ctxt, indent,
+				       /*prepare_to_handle_empty=*/
+				       member_types.empty());
+
+	  vector<type_base_sptr> sorted_types;
+	  sort_types(member_types, sorted_types);
+
+	  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+	  // Really emit the member types now.
+	  for (auto t : sorted_types)
+	    if (!ctxt.type_is_emitted(t))
+	      write_member_type(t, ctxt, nb_ws);
+
+	  if (!member_types.empty())
+	    o << indent << "</class-decl>\n";
+
+	  // Mark all the decl-only classes as emitted, even if just
+	  // marking one of them should be enough.  We are doing this
+	  // for logical consistency.
+	  for (auto t : result)
+	    ctxt.record_type_as_emitted(type_base_sptr(t));
+	  return true;
+	}
+    }
+
   write_class_decl_opening_tag(decl, id, ctxt, indent,
-			       /*prepare_to_handle_members=*/true);
+			       /*prepare_to_handle_empty=*/true);
 
   if (!decl->has_no_base_nor_member())
     {
@@ -3779,8 +3786,8 @@ write_class_decl(const class_decl_sptr& d,
 				     /*is_member_type=*/true);
 
       for (class_decl::member_types::const_iterator ti =
-	     decl->get_member_types().begin();
-	   ti != decl->get_member_types().end();
+	     decl->get_sorted_member_types().begin();
+	   ti != decl->get_sorted_member_types().end();
 	   ++ti)
 	if (!(*ti)->get_naked_canonical_type())
 	  write_member_type(*ti, ctxt, nb_ws);
@@ -3955,7 +3962,7 @@ write_union_decl(const union_decl_sptr& d,
   ostream& o = ctxt.get_ostream();
 
   write_union_decl_opening_tag(decl, id, ctxt, indent,
-			       /*prepare_to_handle_members=*/true);
+			       /*prepare_to_handle_empty=*/true);
   if (!decl->has_no_member())
     {
       unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
@@ -4901,9 +4908,6 @@ write_canonical_type_ids(xml_writer::write_context& ctxt, ostream& o)
   o << "<abixml-types-check>\n";
 
   for (const auto &type : ctxt.get_emitted_types_set())
-    write_type_record(ctxt, type, o);
-
-  for (const auto &type : ctxt.get_emitted_non_canonicalized_type_set())
     write_type_record(ctxt, type, o);
 
   o << "</abixml-types-check>\n";

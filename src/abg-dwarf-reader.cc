@@ -13880,8 +13880,10 @@ add_or_update_class_type(read_context&	 ctxt,
 		}
 	      // if the type is not already a member of this class,
 	      // then add it to the class.
-	      if (!lookup_class_typedef_or_enum_type_from_corpus
-		  (&child, anonymous_member_type_index, result.get()))
+	      if ((is_anonymous_type_die(&child)
+		   && !lookup_class_typedef_or_enum_type_from_corpus
+		   (&child, anonymous_member_type_index, result.get()))
+		  || !result->find_member_type(die_name(&child)))
 		build_ir_node_from_die(ctxt, &child, result.get(),
 				       called_from_public_decl,
 				       where_offset);
@@ -16211,9 +16213,14 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_typedef:
       {
-	typedef_decl_sptr t = build_typedef_type(ctxt, die,
-						 called_from_public_decl,
-						 where_offset);
+	typedef_decl_sptr t;
+	t = is_typedef(scope->find_member_type(die_name(die)));
+
+	if (!t)
+	  t = build_typedef_type(ctxt, die,
+				 called_from_public_decl,
+				 where_offset);
+
 	result = add_decl_to_scope(t, scope);
 	if (result)
 	  {

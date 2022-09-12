@@ -1137,6 +1137,11 @@ lookup_class_type(const interned_string&, const corpus&);
 const type_base_wptrs_type*
 lookup_class_types(const interned_string&, const corpus&);
 
+bool
+lookup_decl_only_class_types(const interned_string&,
+			     const corpus&,
+			     type_base_wptrs_type&);
+
 const type_base_wptrs_type*
 lookup_class_types(const string&, const corpus&);
 

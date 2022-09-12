@@ -43,6 +43,7 @@
         <enumerator name='e0' value='0'/>
         <enumerator name='e1' value='1'/>
       </enum-decl>
+      <typedef-decl name='long_long' type-id='95e97e60' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='0eabcaca'/>
       <function-decl name='bar' mangled-name='_ZN3ns03barEiz' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03barEiz'>
         <parameter type-id='2448a865' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1'/>
         <parameter is-variadic='yes'/>
@@ -56,7 +57,6 @@
         <parameter type-id='b176607d' name='e' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='22' column='1'/>
         <return type-id='48b5725f'/>
       </function-decl>
-      <typedef-decl name='long_long' type-id='95e97e60' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='0eabcaca'/>
       <function-decl name='baz2' mangled-name='_ZN3ns04baz2ERi' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns04baz2ERi'>
         <parameter type-id='769216e8' name='c' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1'/>
         <return type-id='0eabcaca'/>

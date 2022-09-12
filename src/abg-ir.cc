@@ -3286,6 +3286,43 @@ is_ptr_ref_or_qual_type(const type_base *t)
   return false;
 }
 
+/// Compare decls using their locations.
+///
+/// @param f the first decl to compare.
+///
+/// @param s the second decl to compare.
+///
+/// @return true if @p f compares less than @p s.
+static bool
+compare_using_locations(const decl_base *f,
+			const decl_base *s)
+{
+  // If a decl has artificial location, then use that one over the
+  // natural one.
+  location fl = get_artificial_or_natural_location(f);
+  location sl = get_artificial_or_natural_location(s);
+
+  ABG_ASSERT(fl.get_value() && sl.get_value());
+  if (fl.get_is_artificial() == sl.get_is_artificial())
+    {
+      // The locations of the two artfifacts have the same
+      // artificial-ness so they can be compared.
+      string p1, p2;
+      unsigned l1 = 0, l2 = 0, c1 = 0, c2 = 0;
+      fl.expand(p1, l1, c1);
+      sl.expand(p2, l2, c2);
+      if (p1 != p2)
+	return p1 < p2;
+      if (l1 != l2)
+	return l1 < l2;
+      if (c1 != c2)
+	return c1 < c2;
+    }
+
+  return (get_pretty_representation(f, /*internal=*/false)
+	  < get_pretty_representation(s, /*internal=*/false));
+}
+
 /// A functor to sort decls somewhat topologically.  That is, types
 /// are sorted in a way that makes the ones that are defined "first"
 /// to come first.
@@ -3314,29 +3351,19 @@ struct decl_topo_comp
     if (!f)
       return false;
 
+    // If both decls come from an abixml file, keep the order they
+    // have from that abixml file.
+    if (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
+	&& s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN)
+      return compare_using_locations(f, s);
+
     // If a decl has artificial location, then use that one over the
     // natural one.
     location fl = get_artificial_or_natural_location(f);
     location sl = get_artificial_or_natural_location(s);
 
     if (fl.get_value() && sl.get_value())
-      {
-	if (fl.get_is_artificial() == sl.get_is_artificial())
-	  {
-	    // The locations of the two artfifacts have the same
-	    // artificial-ness so they can be compared.
-	    string p1, p2;
-	    unsigned l1 = 0, l2 = 0, c1 = 0, c2 = 0;
-	    fl.expand(p1, l1, c1);
-	    sl.expand(p2, l2, c2);
-	    if (p1 != p2)
-	      return p1 < p2;
-	    if (l1 != l2)
-	      return l1 < l2;
-	    if (c1 != c2)
-	      return c1 < c2;
-	  }
-      }
+      return compare_using_locations(f, s);
     else if (!!fl != !!sl)
       // So one of the decls doesn't have location data.
       // The first decl is less than the second if it's the one not
@@ -3422,6 +3449,12 @@ struct type_topo_comp
   operator()(const type_base *f,
 	     const type_base *s)
   {
+    // If both decls come from an abixml file, keep the order they
+    // have from that abixml file.
+    if (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
+	&& s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN)
+      return compare_using_locations(is_decl(f), is_decl(s));
+
     bool f_is_ptr_ref_or_qual = is_ptr_ref_or_qual_type(f);
     bool s_is_ptr_ref_or_qual = is_ptr_ref_or_qual_type(s);
 
@@ -3493,44 +3526,62 @@ struct type_topo_comp
 	  }
       }
 
+    string s1 = get_pretty_representation(f, false);
+    string s2 = get_pretty_representation(s, false);
+
+    if (s1 != s2)
+      return s1 < s2;
+
+    if (is_typedef(f) && is_typedef(s))
+      {
+	s1 = get_pretty_representation(is_typedef(f)->get_underlying_type(),
+				       false);
+	s2 = get_pretty_representation(is_typedef(s)->get_underlying_type(),
+				       false);
+	if (s1 != s2)
+	  return s1 < s2;
+      }
+
+    type_base *peeled_f = peel_typedef_pointer_or_reference_type(f, true);
+    type_base *peeled_s = peel_typedef_pointer_or_reference_type(s, true);
+
+    s1 = get_pretty_representation(peeled_f, false);
+    s2 = get_pretty_representation(peeled_s, false);
+
+    if (s1 != s2)
+      return s1 < s2;
+
     decl_base *fd = is_decl(f);
     decl_base *sd = is_decl(s);
 
     if (!!fd != !!sd)
       return fd && !sd;
 
-    if (!fd)
-      {
-	type_base *peeled_f = peel_pointer_or_reference_type(f, true);
-	type_base *peeled_s = peel_pointer_or_reference_type(s, true);
-
-	fd = is_decl(peeled_f);
-	sd = is_decl(peeled_s);
-
-	if (!!fd != !!sd)
-	  return fd && !sd;
-
-	string s1 = get_pretty_representation(peeled_f, false);
-	string s2 = get_pretty_representation(peeled_s, false);
-
-	if (!fd || s1 != s2)
-	  return (s1 < s2);
-
-	peeled_f = peel_typedef_pointer_or_reference_type(peeled_f, true);
-	peeled_s = peel_typedef_pointer_or_reference_type(peeled_s, true);
-
-	s1 = get_pretty_representation(peeled_f, false);
-	s2 = get_pretty_representation(peeled_s, false);
-
-	if (s1 != s2)
-	  return s1 < s2;
-      }
+    // If the two types have no decls, how come we could not sort them
+    // until now? Let's investigate.
+    ABG_ASSERT(fd);
 
     // From this point, fd and sd should be non-nil
     decl_topo_comp decl_comp;
     return decl_comp(fd, sd);
   }
 }; //end struct type_topo_comp
+
+/// Sort types in a hopefully stable manner.
+///
+/// @param types a set of types with canonical types to sort.
+///
+/// @param result the resulting sorted vector.
+void
+sort_types(const canonical_type_sptr_set_type& types,
+	   vector<type_base_sptr>& result)
+{
+  for (auto t: types)
+    result.push_back(t);
+
+  type_topo_comp comp;
+  std::stable_sort(result.begin(), result.end(), comp);
+}
 
 /// Get a @ref type_decl that represents a "void" type for the current
 /// environment.
@@ -7627,6 +7678,8 @@ struct scope_decl::priv
 {
   declarations members_;
   declarations sorted_members_;
+  type_base_sptrs_type member_types_;
+  type_base_sptrs_type sorted_member_types_;
   scopes member_scopes_;
   canonical_type_sptr_set_type canonical_types_;
   type_base_sptrs_type sorted_canonical_types_;
@@ -7835,6 +7888,8 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
 
   member->set_scope(this);
   priv_->members_.push_back(member);
+  if (is_type(member))
+    priv_->member_types_.push_back(is_type(member));
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     priv_->member_scopes_.push_back(m);
@@ -7855,6 +7910,110 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
   maybe_update_types_lookup_map(member);
 
   return member;
+}
+
+/// Get the member types of this @ref scope_decl.
+///
+/// @return a vector of the member types of this ref class_or_union.
+const type_base_sptrs_type&
+scope_decl::get_member_types() const
+{return priv_->member_types_;}
+
+/// Find a member type of a given name, inside the current @ref
+/// scope_decl.
+///
+/// @param name the name of the member type to look for.
+///
+/// @return a pointer to the @ref type_base that represents the member
+/// type of name @p name, for the current scope.
+type_base_sptr
+scope_decl::find_member_type(const string& name) const
+{
+  for (auto t : get_member_types())
+    if (get_type_name(t, /*qualified*/false) == name)
+      return t;
+  return type_base_sptr();
+}
+
+/// Insert a member type.
+///
+/// @param t the type to insert in the @ref scope_decl type.
+///
+/// @param an iterator right before which @p t has to be inserted.
+void
+scope_decl::insert_member_type(type_base_sptr t,
+			       declarations::iterator before)
+{
+  decl_base_sptr d = get_type_declaration(t);
+  ABG_ASSERT(d);
+  ABG_ASSERT(!has_scope(d));
+
+  priv_->member_types_.push_back(t);
+  insert_member_decl(d, before);
+}
+
+/// Add a member type to the current instance of class_or_union.
+///
+/// @param t the member type to add.  It must not have been added to a
+/// scope, otherwise this will violate an ABG_ASSERTion.
+void
+scope_decl::add_member_type(type_base_sptr t)
+{insert_member_type(t, get_member_decls().end());}
+
+/// Add a member type to the current instance of class_or_union.
+///
+/// @param t the type to be added as a member type to the current
+/// instance of class_or_union.  An instance of class_or_union::member_type
+/// will be created out of @p t and and added to the the class.
+///
+/// @param a the access specifier for the member type to be created.
+type_base_sptr
+scope_decl::add_member_type(type_base_sptr t, access_specifier a)
+{
+  decl_base_sptr d = get_type_declaration(t);
+  ABG_ASSERT(d);
+  ABG_ASSERT(!is_member_decl(d));
+  add_member_type(t);
+  set_member_access_specifier(d, a);
+  return t;
+}
+
+/// Remove a member type from the current @ref class_or_union scope.
+///
+/// @param t the type to remove.
+void
+scope_decl::remove_member_type(type_base_sptr t)
+{
+  for (auto i = priv_->member_types_.begin();
+       i != priv_->member_types_.end();
+       ++i)
+    {
+      if (*((*i)) == *t)
+	{
+	  priv_->member_types_.erase(i);
+	  return;
+	}
+    }
+}
+
+/// Get the sorted member types of this @ref scope_decl
+///
+/// @return a vector of the sorted member types of this ref
+/// class_or_union.
+const type_base_sptrs_type&
+scope_decl::get_sorted_member_types() const
+{
+  if (priv_->sorted_member_types_.empty())
+    {
+      for (auto t : get_member_types())
+	priv_->sorted_member_types_.push_back(t);
+
+      type_topo_comp comp;
+      std::stable_sort(priv_->sorted_member_types_.begin(),
+		       priv_->sorted_member_types_.end(),
+		       comp);
+    }
+  return priv_->sorted_member_types_;
 }
 
 /// Insert a member decl to this scope, right before an element
@@ -10966,8 +11125,9 @@ lookup_types_in_map(const interned_string& type_name,
 
 /// Lookup a type (with a given name) in a map that associates a type
 /// name to a type.  If there are several types with a given name,
-/// then return the last of such types, that is, the last one that got
-/// registered.
+/// then try to return the first one that is not decl-only.
+/// Otherwise, return the last of such types, that is, the last one
+/// that got registered.
 ///
 /// @tparam TypeKind the type of the type this function is supposed to
 /// return.
@@ -10986,7 +11146,21 @@ lookup_type_in_map(const interned_string& type_name,
 {
   istring_type_base_wptrs_map_type::const_iterator i = type_map.find(type_name);
   if (i != type_map.end())
-    return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second.back()));
+    {
+      // Walk the types that have the name "type_name" and return the
+      // first one that is not declaration-only ...
+      for (auto j : i->second)
+	{
+	  type_base_sptr t(j);
+	  decl_base_sptr d = is_decl(t);
+	  if (d && !d->get_is_declaration_only())
+	    return dynamic_pointer_cast<TypeKind>(type_base_sptr(j));
+	}
+      // ... or return the last type with the name "type_name" that
+      // was recorded.  It's likely to be declaration-only if we
+      // reached this point.
+      return dynamic_pointer_cast<TypeKind>(type_base_sptr(i->second.back()));
+    }
   return shared_ptr<TypeKind>();
 }
 
@@ -12374,6 +12548,41 @@ lookup_class_types(const interned_string& qualified_name, const corpus& corp)
 }
 
 /// Look into a given corpus to find the class type*s* that have a
+/// given qualified name and that are declaration-only.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @param result the vector of decl-only class types named @p
+/// qualified_name.  This is populated iff the function returns true.
+///
+/// @return true iff @p result was populated with the decl-only
+/// classes named @p qualified_name.
+bool
+lookup_decl_only_class_types(const interned_string& qualified_name,
+			     const corpus& corp,
+			     type_base_wptrs_type& result)
+{
+  const istring_type_base_wptrs_map_type& m = corp.get_types().class_types();
+
+  const type_base_wptrs_type *v = lookup_types_in_map(qualified_name, m);
+  if (!v)
+    return false;
+
+  for (auto type : *v)
+    {
+      type_base_sptr t(type);
+      class_decl_sptr c = is_class_type(t);
+      if (c->get_is_declaration_only()
+	  && !c->get_definition_of_declaration())
+	result.push_back(type);
+    }
+
+  return !result.empty();
+}
+
+/// Look into a given corpus to find the class type*s* that have a
 /// given qualified name.
 ///
 /// @param qualified_name the qualified name of the type to look for.
@@ -13158,11 +13367,12 @@ maybe_update_types_lookup_map<class_decl>(const class_decl_sptr& class_type,
   bool update_qname_map = true;
   if (type->get_is_declaration_only())
     {
+      // Let's try to look through decl-only classes to get their
+      // definition.  But if the class doesn't have a definition then
+      // we'll keep it.
       if (class_decl_sptr def =
 	  is_class_type(class_type->get_definition_of_declaration()))
 	type = def;
-      else
-	update_qname_map = false;
     }
 
   if (!update_qname_map)
@@ -18657,6 +18867,17 @@ equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 {
   bool result = true;
 
+  // No need to go further if the types have different names or
+  // different size / alignment.
+  if (!(l.decl_base::operator==(r)))
+    {
+      result = false;
+      if (k)
+	*k |= LOCAL_TYPE_CHANGE_KIND;
+      else
+	ABG_RETURN_FALSE;
+    }
+
   if (*l.get_underlying_type() != *r.get_underlying_type())
     {
       // Changes to the underlying type of a typedef are considered
@@ -21128,7 +21349,7 @@ class_or_union::class_or_union(const environment* env, const string& name,
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
     scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
-    priv_(new priv(mem_types, data_members, member_fns))
+    priv_(new priv(data_members, member_fns))
 {
   for (member_types::iterator i = mem_types.begin();
        i != mem_types.end();
@@ -21293,7 +21514,7 @@ class_or_union::~class_or_union()
 /// @param d the member declaration to add.
 decl_base_sptr
 class_or_union::add_member_decl(const decl_base_sptr& d)
-{return insert_member_decl(d, get_member_decls().end());}
+{return insert_member_decl(d);}
 
 /// Remove a given decl from the current @ref class_or_union scope.
 ///
@@ -21345,67 +21566,6 @@ class_or_union::maybe_fixup_members_of_anon_data_member(var_decl_sptr& anon_dm)
 	dynamic_cast<dm_context_rel*>((*it)->get_context_rel());
       ABG_ASSERT(rel);
       rel->set_anonymous_data_member(anon_dm.get());
-    }
-}
-
-/// Insert a member type.
-///
-/// @param t the type to insert in the @ref class_or_union type.
-///
-/// @param an iterator right before which @p t has to be inserted.
-void
-class_or_union::insert_member_type(type_base_sptr t,
-				   declarations::iterator before)
-{
-  decl_base_sptr d = get_type_declaration(t);
-  ABG_ASSERT(d);
-  ABG_ASSERT(!has_scope(d));
-
-  priv_->member_types_.push_back(t);
-  scope_decl::insert_member_decl(d, before);
-}
-
-/// Add a member type to the current instance of class_or_union.
-///
-/// @param t the member type to add.  It must not have been added to a
-/// scope, otherwise this will violate an ABG_ASSERTion.
-void
-class_or_union::add_member_type(type_base_sptr t)
-{insert_member_type(t, get_member_decls().end());}
-
-/// Add a member type to the current instance of class_or_union.
-///
-/// @param t the type to be added as a member type to the current
-/// instance of class_or_union.  An instance of class_or_union::member_type
-/// will be created out of @p t and and added to the the class.
-///
-/// @param a the access specifier for the member type to be created.
-type_base_sptr
-class_or_union::add_member_type(type_base_sptr t, access_specifier a)
-{
-  decl_base_sptr d = get_type_declaration(t);
-  ABG_ASSERT(d);
-  ABG_ASSERT(!is_member_decl(d));
-  add_member_type(t);
-  set_member_access_specifier(d, a);
-  return t;
-}
-
-/// Remove a member type from the current @ref class_or_union scope.
-///
-/// @param t the type to remove.
-void
-class_or_union::remove_member_type(type_base_sptr t)
-{
-  for (member_types::iterator i = priv_->member_types_.begin();
-       i != priv_->member_types_.end();
-       ++i)
-    {
-      if (*((*i)) == *t)
-	{
-	  priv_->member_types_.erase(i);
-	  return;
-	}
     }
 }
 
@@ -21473,13 +21633,6 @@ class_or_union::get_size_in_bits() const
   return type_base::get_size_in_bits();
 }
 
-/// Get the member types of this @ref class_or_union.
-///
-/// @return a vector of the member types of this ref class_or_union.
-const class_or_union::member_types&
-class_or_union::get_member_types() const
-{return priv_->member_types_;}
-
 /// Get the number of anonymous member classes contained in this
 /// class.
 ///
@@ -21533,24 +21686,6 @@ class_or_union::get_num_anonymous_member_enums() const
 	++result;
 
   return result;
-}
-
-/// Find a member type of a given name, inside the current @ref
-/// class_or_union.
-///
-/// @param name the name of the member type to look for.
-///
-/// @return a pointer to the @ref type_base that represents the member
-/// type of name @p name, for the current class.
-type_base_sptr
-class_or_union::find_member_type(const string& name) const
-{
-  for (member_types::const_iterator i = get_member_types().begin();
-       i != get_member_types().end();
-       ++i)
-    if (get_type_name(*i, /*qualified*/false) == name)
-      return *i;
-  return type_base_sptr();
 }
 
 /// Add a data member to the current instance of class_or_union.
@@ -21869,7 +22004,7 @@ class_or_union::add_member_class_template(member_class_template_sptr m)
 bool
 class_or_union::has_no_member() const
 {
-  return (priv_->member_types_.empty()
+  return (get_member_types().empty()
 	  && priv_->data_members_.empty()
 	  && priv_->member_functions_.empty()
 	  && priv_->member_function_templates_.empty()
@@ -21880,16 +22015,11 @@ class_or_union::has_no_member() const
 ///
 /// @param d the data member to insert.
 ///
-/// @param before an iterator to the point before which to insert the
-/// the data member, in the coontainer that contains all the data
-/// members.
+/// @return the decl @p that got inserted.
 decl_base_sptr
-class_or_union::insert_member_decl(decl_base_sptr d,
-				   declarations::iterator before)
+class_or_union::insert_member_decl(decl_base_sptr d)
 {
-  if (type_base_sptr t = dynamic_pointer_cast<type_base>(d))
-    insert_member_type(t, before);
-  else if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
+  if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
     {
       add_data_member(v, public_access,
 		      /*is_laid_out=*/false,
@@ -22838,8 +22968,7 @@ class_decl::get_pretty_representation(bool internal,
 }
 
 decl_base_sptr
-class_decl::insert_member_decl(decl_base_sptr d,
-			       declarations::iterator before)
+class_decl::insert_member_decl(decl_base_sptr d)
 {
   if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
     add_member_function(f, public_access,
@@ -22850,7 +22979,7 @@ class_decl::insert_member_decl(decl_base_sptr d,
 			/*is_dtor=*/false,
 			/*is_const=*/false);
   else
-    d = class_or_union::insert_member_decl(d, before);
+    d = class_or_union::insert_member_decl(d);
 
   return d;
 }
@@ -25968,7 +26097,6 @@ is_non_canonicalized_type(const type_base *t)
 
   const environment* env = t->get_environment();
   return (is_declaration_only_class_or_union_type(t)
-	  || is_typedef(t)
 	  || env->is_void_type(t)
 	  || env->is_variadic_parameter_type(t));
 }

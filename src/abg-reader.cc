@@ -2244,6 +2244,7 @@ read_corpus_group_from_input(read_context& ctxt)
     {
       corpus_group_sptr g(new corpus_group(ctxt.get_environment(),
 					   ctxt.get_path()));
+      g->set_origin(corpus::NATIVE_XML_ORIGIN);
       ctxt.set_corpus_group(g);
     }
 
@@ -6281,6 +6282,7 @@ create_native_xml_read_context(const string& path, environment *env)
   read_context_sptr result(new read_context(xml::new_reader_from_file(path),
 					    env));
   corpus_sptr corp(new corpus(env));
+  corp->set_origin(corpus::NATIVE_XML_ORIGIN);
   result->set_corpus(corp);
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (env->self_comparison_debug_is_on())
@@ -6304,6 +6306,7 @@ create_native_xml_read_context(std::istream* in, environment* env)
   read_context_sptr result(new read_context(xml::new_reader_from_istream(in),
 					    env));
   corpus_sptr corp(new corpus(env, ""));
+  corp->set_origin(corpus::NATIVE_XML_ORIGIN);
   result->set_corpus(corp);
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (env->self_comparison_debug_is_on())

@@ -313,7 +313,11 @@
                                                                                           in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
                                                                                             parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                                                                               pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                                                                      type of 'channel_hold_pipe_item_proc hold_item' changed, as reported earlier
+                                                                                      type of 'channel_hold_pipe_item_proc hold_item' changed:
+                                                                                        underlying type 'void (RedChannelClient*, PipeItem*)*' changed:
+                                                                                          in pointed to type 'function type void (RedChannelClient*, PipeItem*)':
+                                                                                            parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                              pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
                                                                                       type of 'channel_release_pipe_item_proc release_item' changed:
                                                                                         underlying type 'void (RedChannelClient*, PipeItem*, int)*' changed:
                                                                                           in pointed to type 'function type void (RedChannelClient*, PipeItem*, int)':
@@ -329,7 +333,11 @@
                                                                                           in pointed to type 'function type void (RedChannelClient*, typedef uint16_t, typedef uint32_t, uint8_t*)':
                                                                                             parameter 1 of type 'RedChannelClient*' has sub-type changes:
                                                                                               pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
-                                                                                      type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed, as reported earlier
+                                                                                      type of 'channel_handle_migrate_flush_mark_proc handle_migrate_flush_mark' changed:
+                                                                                        underlying type 'int (RedChannelClient*)*' changed:
+                                                                                          in pointed to type 'function type int (RedChannelClient*)':
+                                                                                            parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                              pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
                                                                                       type of 'channel_handle_migrate_data_proc handle_migrate_data' changed:
                                                                                         underlying type 'int (RedChannelClient*, typedef uint32_t, void*)*' changed:
                                                                                           in pointed to type 'function type int (RedChannelClient*, typedef uint32_t, void*)':
@@ -354,8 +362,16 @@
                                                                                               pointed to type 'typedef RedClient' changed at red_channel.h:137:1, as reported earlier
                                                                                             parameter 3 of type 'RedsStream*' has sub-type changes:
                                                                                               pointed to type 'typedef RedsStream' changed at red_channel.h:134:1, as reported earlier
-                                                                                      type of 'channel_client_disconnect_proc disconnect' changed, as reported earlier
-                                                                                      type of 'channel_client_migrate_proc migrate' changed, as reported earlier
+                                                                                      type of 'channel_client_disconnect_proc disconnect' changed:
+                                                                                        underlying type 'void (RedChannelClient*)*' changed:
+                                                                                          in pointed to type 'function type void (RedChannelClient*)':
+                                                                                            parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                              pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
+                                                                                      type of 'channel_client_migrate_proc migrate' changed:
+                                                                                        underlying type 'void (RedChannelClient*)*' changed:
+                                                                                          in pointed to type 'function type void (RedChannelClient*)':
+                                                                                            parameter 1 of type 'RedChannelClient*' has sub-type changes:
+                                                                                              pointed to type 'typedef RedChannelClient' changed at red_channel.h:136:1, as reported earlier
                                                                           type of 'RedWorker* worker' changed:
                                                                             pointed to type 'struct RedWorker' changed, as being reported
                                                             type of 'CursorChannel* cursor_channel' changed:
@@ -876,7 +892,12 @@
                                         parameter 1 of type 'SndChannel*' has sub-type changes:
                                           in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
                                             underlying type 'struct SndChannel' changed, as being reported
-                                  type of 'snd_channel_cleanup_channel_proc cleanup' changed, as reported earlier
+                                  type of 'snd_channel_cleanup_channel_proc cleanup' changed:
+                                    underlying type 'void (SndChannel*)*' changed:
+                                      in pointed to type 'function type void (SndChannel*)':
+                                        parameter 1 of type 'SndChannel*' has sub-type changes:
+                                          in pointed to type 'typedef SndChannel' at snd_worker.c:74:1:
+                                            underlying type 'struct SndChannel' changed, as being reported
                           type of 'SndWorker* next' changed:
                             in pointed to type 'typedef SndWorker' at snd_worker.c:80:1:
                               underlying type 'struct SndWorker' changed, as being reported

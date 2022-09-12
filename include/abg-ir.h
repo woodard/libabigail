@@ -118,6 +118,10 @@ typedef vector<type_base*> type_base_ptrs_type;
 /// Helper typedef for a vector of shared pointer to a type_base.
 typedef vector<type_base_sptr> type_base_sptrs_type;
 
+void
+sort_types(const canonical_type_sptr_set_type& types,
+	   vector<type_base_sptr>& result);
+
 /// This is an abstraction of the set of resources necessary to manage
 /// several aspects of the internal representations of the Abigail
 /// library.
@@ -1808,7 +1812,7 @@ protected:
   virtual decl_base_sptr
   add_member_decl(const decl_base_sptr& member);
 
-  virtual decl_base_sptr
+  decl_base_sptr
   insert_member_decl(decl_base_sptr member, declarations::iterator before);
 
   virtual void
@@ -1870,6 +1874,28 @@ public:
 
   bool
   find_iterator_for_member(const decl_base_sptr, declarations::iterator&);
+
+  void
+  insert_member_type(type_base_sptr t,
+		     declarations::iterator before);
+
+  void
+  add_member_type(type_base_sptr t);
+
+  type_base_sptr
+  add_member_type(type_base_sptr t, access_specifier a);
+
+  void
+  remove_member_type(type_base_sptr t);
+
+  const type_base_sptrs_type&
+  get_member_types() const;
+
+  const type_base_sptrs_type&
+  get_sorted_member_types() const;
+
+  type_base_sptr
+  find_member_type(const string& name) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -2171,6 +2197,9 @@ public:
 
   bool is_empty_or_has_empty_sub_namespaces() const;
 };// end class namespace_decl
+
+/// A convenience typedef for vectors of @ref namespace_decl_sptr
+typedef vector<namespace_decl_sptr> namespaces_type;
 
 bool
 equals(const qualified_type_def&, const qualified_type_def&, change_kind*);
@@ -3901,8 +3930,8 @@ protected:
   virtual decl_base_sptr
   add_member_decl(const decl_base_sptr&);
 
-  virtual decl_base_sptr
-  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+  decl_base_sptr
+  insert_member_decl(decl_base_sptr member);
 
   virtual void
   remove_member_decl(decl_base_sptr);
@@ -3949,22 +3978,6 @@ public:
   virtual void
   set_alignment_in_bits(size_t);
 
- void
-  insert_member_type(type_base_sptr t,
-		     declarations::iterator before);
-
-  void
-  add_member_type(type_base_sptr t);
-
-  type_base_sptr
-  add_member_type(type_base_sptr t, access_specifier a);
-
-  void
-  remove_member_type(type_base_sptr t);
-
-  const member_types&
-  get_member_types() const;
-
   virtual size_t
   get_num_anonymous_member_classes() const;
 
@@ -3973,9 +3986,6 @@ public:
 
   virtual size_t
   get_num_anonymous_member_enums() const;
-
-  type_base_sptr
-  find_member_type(const string& name) const;
 
   void
   add_data_member(var_decl_sptr v, access_specifier a,
@@ -4114,8 +4124,8 @@ class class_decl : public class_or_union
 
 protected:
 
-  virtual decl_base_sptr
-  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+  decl_base_sptr
+  insert_member_decl(decl_base_sptr member);
 
 public:
   /// Hasher.
