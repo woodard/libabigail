@@ -19115,7 +19115,8 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
 	    (is_class_or_union_type(get_type()),
 	     "", /*one_line=*/true, internal);
 	  result += " ";
-	  if (member_of_anonymous_class || !qualified_name)
+	  if (!internal
+	      && (member_of_anonymous_class || !qualified_name))
 	    // It doesn't make sense to name the member of an
 	    // anonymous class or union like:
 	    // "__anonymous__::data_member_name".  So let's just use
@@ -19130,7 +19131,8 @@ var_decl::get_pretty_representation(bool internal, bool qualified_name) const
 	    get_type_declaration(get_type())->get_qualified_name(internal)
 	    + " ";
 
-	  if (member_of_anonymous_class || !qualified_name)
+	  if (!internal
+	      && (member_of_anonymous_class || !qualified_name))
 	    // It doesn't make sense to name the member of an
 	    // anonymous class or union like:
 	    // "__anonymous__::data_member_name".  So let's just use

@@ -599,6 +599,9 @@ test-read-dwarf/test-libaaudio.so.abi   \
 test-read-dwarf/PR28584/PR28584-smv.cc  \
 test-read-dwarf/PR28584/PR28584-smv.clang.o \
 test-read-dwarf/PR28584/PR28584-smv.clang.o.abi \
+tests/data/test-read-dwarf/PR29443-missing-xx.cc \
+tests/data/test-read-dwarf/PR29443-missing-xx.o \
+tests/data/test-read-dwarf/PR29443-missing-xx.o.abi \
 \
 test-read-ctf/test0		\
 test-read-ctf/test0.abi		\
@@ -714,6 +717,7 @@ test-annotate/libtest24-drop-fns.so.abi      \
 test-annotate/test-anonymous-members-0.cc    \
 test-annotate/test-anonymous-members-0.o     \
 test-annotate/test-anonymous-members-0.o.abi \
+tests/data/test-annotate/PR29443-missing-xx.o.annotated.abi \
 \
 test-types-stability/pr19434-elf0 \
 test-types-stability/pr19139-DomainNeighborMapInst.o \

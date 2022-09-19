@@ -131,6 +131,11 @@ InOutSpec in_out_specs[] =
     "data/test-annotate/test-anonymous-members-0.o.abi",
     "output/test-annotate/test-anonymous-members-0.o.abi",
   },
+  {
+    "data/test-read-dwarf/PR29443-missing-xx.o",
+    "data/test-annotate/PR29443-missing-xx.o.annotated.abi",
+    "output/test-annotate/PR29443-missing-xx.o.annotated.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };
