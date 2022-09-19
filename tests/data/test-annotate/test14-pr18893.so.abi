@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' architecture='elf-amd-x86_64' soname='libGLU.so.1'>
+<abi-corpus version='2.1' soname='libGLU.so.1'>
   <elf-needed>
     <dependency name='libGL.so.1'/>
     <dependency name='libstdc++.so.6'/>
