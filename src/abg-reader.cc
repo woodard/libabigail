@@ -1538,7 +1538,7 @@ advance_cursor(read_context& ctxt)
 }
 
 /// Walk an entire XML sub-tree to build a map where the key is the
-/// the value of the 'id' attribute (for type definitions) and the key
+/// the value of the 'id' attribute (for type definitions) and the value
 /// is the xml node containing the 'id' attribute.
 ///
 /// @param ctxt the context of the reader.
