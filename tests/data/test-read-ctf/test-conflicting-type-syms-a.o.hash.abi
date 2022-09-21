@@ -5,10 +5,10 @@
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
     <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='95e97e5e'/>
+    <typedef-decl name='a_t' type-id='95e97e5e' id='40acc204'/>
+    <typedef-decl name='b_t' type-id='95e97e5e' id='b3d2db81'/>
     <pointer-type-def type-id='40acc204' size-in-bits='64' alignment-in-bits='64' id='c6fd4117'/>
     <var-decl name='a' type-id='c6fd4117' mangled-name='a' visibility='default' elf-symbol-id='a'/>
     <var-decl name='ignore2' type-id='b3d2db81' mangled-name='ignore2' visibility='default' elf-symbol-id='ignore2'/>
-    <typedef-decl name='a_t' type-id='95e97e5e' id='40acc204'/>
-    <typedef-decl name='b_t' type-id='95e97e5e' id='b3d2db81'/>
   </abi-instr>
 </abi-corpus>

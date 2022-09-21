@@ -31,6 +31,12 @@
         <var-decl name='' type-id='type-id-9' visibility='default'/>
       </data-member>
     </class-decl>
+    <typedef-decl name='__u16' type-id='type-id-10' id='type-id-11'/>
+    <typedef-decl name='__u32' type-id='type-id-12' id='type-id-13'/>
+    <typedef-decl name='arch_spinlock_t' type-id='type-id-5' id='type-id-4'/>
+    <typedef-decl name='spinlock_t' type-id='type-id-8' id='type-id-14'/>
+    <typedef-decl name='u16' type-id='type-id-11' id='type-id-3'/>
+    <typedef-decl name='u32' type-id='type-id-13' id='type-id-15'/>
     <union-decl name='' size-in-bits='32' is-anonymous='yes' visibility='default' id='type-id-9'>
       <data-member access='public'>
         <var-decl name='rlock' type-id='type-id-7' visibility='default'/>
@@ -38,28 +44,22 @@
     </union-decl>
     <union-decl name='' size-in-bits='32' is-anonymous='yes' visibility='default' id='type-id-6'>
       <data-member access='public'>
-        <var-decl name='slock' type-id='type-id-10' visibility='default'/>
+        <var-decl name='slock' type-id='type-id-15' visibility='default'/>
       </data-member>
       <data-member access='public'>
         <var-decl name='tickets' type-id='type-id-2' visibility='default'/>
       </data-member>
     </union-decl>
-    <type-decl name='unsigned int' size-in-bits='32' alignment-in-bits='32' id='type-id-11'/>
-    <type-decl name='unsigned short int' size-in-bits='16' alignment-in-bits='16' id='type-id-12'/>
-    <pointer-type-def type-id='type-id-13' size-in-bits='64' alignment-in-bits='64' id='type-id-14'/>
+    <type-decl name='unsigned int' size-in-bits='32' alignment-in-bits='32' id='type-id-12'/>
+    <type-decl name='unsigned short int' size-in-bits='16' alignment-in-bits='16' id='type-id-10'/>
+    <pointer-type-def type-id='type-id-14' size-in-bits='64' alignment-in-bits='64' id='type-id-16'/>
     <function-decl name='testexport' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='testexport'>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='testexport2' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='testexport2'>
-      <parameter type-id='type-id-14'/>
+      <parameter type-id='type-id-16'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <var-decl name='global_sym' type-id='type-id-1' mangled-name='global_sym' visibility='default' elf-symbol-id='global_sym'/>
-    <typedef-decl name='__u16' type-id='type-id-12' id='type-id-15'/>
-    <typedef-decl name='__u32' type-id='type-id-11' id='type-id-16'/>
-    <typedef-decl name='arch_spinlock_t' type-id='type-id-5' id='type-id-4'/>
-    <typedef-decl name='spinlock_t' type-id='type-id-8' id='type-id-13'/>
-    <typedef-decl name='u16' type-id='type-id-15' id='type-id-3'/>
-    <typedef-decl name='u32' type-id='type-id-16' id='type-id-10'/>
   </abi-instr>
 </abi-corpus>
