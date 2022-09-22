@@ -17331,7 +17331,8 @@ get_soname_of_elf_file(const string& path, string &soname)
                             : gelf_fsize (elf, ELF_T_DYN, 1, EV_CURRENT));
           int maxcnt = (shdr != NULL
                         ? shdr->sh_size / entsize : INT_MAX);
-          ABG_ASSERT (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
+          ABG_ASSERT (shdr == NULL || (shdr->sh_type == SHT_DYNAMIC
+				       || shdr->sh_type == SHT_PROGBITS));
           Elf_Data* data = elf_getdata (scn, NULL);
           if (data == NULL)
             break;
