@@ -20483,8 +20483,7 @@ function_decl::get_pretty_representation_of_declarator (bool internal) const
 	  type_base_sptr type = parm->get_type();
 	  if (internal)
 	    type = peel_typedef_type(type);
-	  decl_base_sptr type_decl = get_type_declaration(type);
-	  result += type_decl->get_qualified_name(internal);
+	  result += get_type_name(type, /*qualified=*/true, internal);
 	}
     }
   result += ")";

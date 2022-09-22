@@ -9780,21 +9780,6 @@ die_qualified_type_name(const read_context& ctxt,
     case DW_TAG_class_type:
     case DW_TAG_union_type:
       {
-	if (tag == DW_TAG_typedef)
-	  {
-	    // If the underlying type of the typedef is unspecified,
-	    // bail out as we don't support that yet.
-	    Dwarf_Die underlying_type_die;
-	    if (die_die_attribute(die, DW_AT_type, underlying_type_die))
-	      {
-		string n = die_qualified_type_name(ctxt, &underlying_type_die,
-						   where_offset);
-		if (die_is_unspecified(&underlying_type_die)
-		    || n.empty())
-		  break;
-	      }
-	  }
-
 	if (name.empty())
 	  // TODO: handle cases where there are more than one
 	  // anonymous type of the same kind in the same scope.  In
@@ -14565,6 +14550,17 @@ build_function_type(read_context&	ctxt,
 	     || dwarf_tag(die) == DW_TAG_subprogram);
 
   const die_source source = ctxt.get_die_source(die);
+
+  {
+    size_t off = dwarf_dieoffset(die);
+    auto i = ctxt.die_wip_function_types_map(source).find(off);
+    if (i != ctxt.die_wip_function_types_map(source).end())
+      {
+	function_type_sptr fn_type = is_function_type(i->second);
+	ABG_ASSERT(fn_type);
+	return fn_type;
+      }
+  }
 
   decl_base_sptr type_decl;
 

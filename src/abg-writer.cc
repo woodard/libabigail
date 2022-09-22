@@ -1758,7 +1758,9 @@ write_elf_symbol_reference(const elf_symbol& sym, ostream& o)
   // If all aliases are suppressed, just stick with the main symbol.
   if (!found)
     alias = main;
-  o << " elf-symbol-id='" << alias->get_id_string() << "'";
+  o << " elf-symbol-id='"
+    << xml::escape_xml_string(alias->get_id_string())
+    << "'";
   return true;
 }
 
@@ -3101,7 +3103,7 @@ write_elf_symbol(const elf_symbol_sptr&	sym,
 
   annotate(sym, ctxt, indent);
   do_indent(o, indent);
-  o << "<elf-symbol name='" << sym->get_name() << "'";
+  o << "<elf-symbol name='" << xml::escape_xml_string(sym->get_name()) << "'";
   if (sym->is_variable() && sym->get_size())
   o << " size='" << sym->get_size() << "'";
 
@@ -3400,7 +3402,7 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 	  ctxt.record_type_as_referenced(parm_type);
 
 	  if (ctxt.get_write_parameter_names() && !(*pi)->get_name().empty())
-	    o << " name='" << (*pi)->get_name() << "'";
+	    o << " name='" << xml::escape_xml_string((*pi)->get_name()) << "'";
 	}
       write_is_artificial(*pi, o);
       write_location((*pi)->get_location(), ctxt);
