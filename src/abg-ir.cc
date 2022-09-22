@@ -19131,7 +19131,7 @@ var_decl::clone() const
 
   if (is_member_decl(*this))
     {
-      class_decl* scope = dynamic_cast<class_decl*>(get_scope());
+      class_or_union* scope = is_class_or_union_type(get_scope());
       scope->add_data_member(v, get_member_access_specifier(*this),
 			     get_data_member_is_laid_out(*this),
 			     get_member_is_static(*this),
