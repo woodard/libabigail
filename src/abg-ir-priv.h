@@ -200,12 +200,14 @@ struct type_base::priv
   // The set of canonical recursive types this type depends on.
   unordered_set<uintptr_t> depends_on_recursive_type_;
   bool canonical_type_propagated_;
+  bool propagated_canonical_type_confirmed_;
 
   priv()
     : size_in_bits(),
       alignment_in_bits(),
       naked_canonical_type(),
-      canonical_type_propagated_(false)
+      canonical_type_propagated_(false),
+      propagated_canonical_type_confirmed_(false)
   {}
 
   priv(size_t s,
@@ -215,7 +217,8 @@ struct type_base::priv
       alignment_in_bits(a),
       canonical_type(c),
       naked_canonical_type(c.get()),
-      canonical_type_propagated_(false)
+      canonical_type_propagated_(false),
+      propagated_canonical_type_confirmed_(false)
   {}
 
   /// Test if the current type depends on recursive type comparison.
@@ -306,12 +309,38 @@ struct type_base::priv
   set_canonical_type_propagated(bool f)
   {canonical_type_propagated_ = f;}
 
+  /// Getter of the property propagated-canonical-type-confirmed.
+  ///
+  /// If canonical_type_propagated() returns true, then this property
+  /// says if the propagated canonical type has been confirmed or not.
+  /// If it hasn't been confirmed, then it means it can still
+  /// cancelled.
+  ///
+  /// @return true iff the propagated canonical type has been
+  /// confirmed.
+  bool
+  propagated_canonical_type_confirmed() const
+  {return propagated_canonical_type_confirmed_;}
+
+  /// Setter of the property propagated-canonical-type-confirmed.
+  ///
+  /// If canonical_type_propagated() returns true, then this property
+  /// says if the propagated canonical type has been confirmed or not.
+  /// If it hasn't been confirmed, then it means it can still
+  /// cancelled.
+  ///
+  /// @param f If this is true then the propagated canonical type has
+  /// been confirmed.
+  void
+  set_propagated_canonical_type_confirmed(bool f)
+  {propagated_canonical_type_confirmed_ = f;}
+
   /// If the current canonical type was set as the result of the
   /// "canonical type propagation optimization", then clear it.
   void
   clear_propagated_canonical_type()
   {
-    if (canonical_type_propagated_)
+    if (canonical_type_propagated_ && !propagated_canonical_type_confirmed_)
       {
 	canonical_type.reset();
 	naked_canonical_type = nullptr;
@@ -810,7 +839,7 @@ struct environment::priv
   /// propagation optimization" at @ref OnTheFlyCanonicalization, in
   /// the src/abg-ir.cc file.
   void
-  confirm_ct_propagation(const type_base* dependant_type)
+  confirm_ct_propagation_for_types_dependant_on(const type_base* dependant_type)
   {
     pointer_set to_remove;
     for (auto i : types_with_non_confirmed_propagated_ct_)
@@ -820,11 +849,63 @@ struct environment::priv
 		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type(dependant_type);
 	if (!t->priv_->depends_on_recursive_type())
-	  to_remove.insert(i);
+	  {
+	    to_remove.insert(i);
+	    t->priv_->set_propagated_canonical_type_confirmed(true);
+	  }
       }
 
     for (auto i : to_remove)
       types_with_non_confirmed_propagated_ct_.erase(i);
+  }
+
+  /// Mark a type that has been the target of canonical type
+  /// propagation as being permanently canonicalized.
+  ///
+  /// This function also marks the set of types that have been the
+  /// target of canonical type propagation and that depend on a
+  /// recursive type as being permanently canonicalized.
+  ///
+  /// To understand the sentence above, please read the description of
+  /// type canonicalization and especially about the "canonical type
+  /// propagation optimization" at @ref OnTheFlyCanonicalization, in
+  /// the src/abg-ir.cc file.
+  void
+  confirm_ct_propagation(const type_base*t)
+  {
+    if (!t || t->priv_->propagated_canonical_type_confirmed())
+      return;
+
+    const environment* env = t->get_environment();
+    ABG_ASSERT(env);
+
+    env->priv_->confirm_ct_propagation_for_types_dependant_on(t);
+    t->priv_->set_does_not_depend_on_recursive_type();
+    env->priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+    env->priv_->set_is_not_recursive(t);
+    t->priv_->set_propagated_canonical_type_confirmed(true);
+  }
+
+  /// Mark all the types that have been the target of canonical type
+  /// propagation and that are not yet confirmed as being permanently
+  /// canonicalized (aka confirmed).
+  ///
+  /// To understand the sentence above, please read the description of
+  /// type canonicalization and especially about the "canonical type
+  /// propagation optimization" at @ref OnTheFlyCanonicalization, in
+  /// the src/abg-ir.cc file.
+  void
+  confirm_ct_propagation()
+  {
+    for (auto i : types_with_non_confirmed_propagated_ct_)
+      {
+	type_base *t = reinterpret_cast<type_base*>(i);
+	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
+	t->priv_->set_does_not_depend_on_recursive_type();
+	t->priv_->set_propagated_canonical_type_confirmed(true);
+      }
+    types_with_non_confirmed_propagated_ct_.clear();
   }
 
   /// Collect the types that depends on a given "target" type.
@@ -868,7 +949,7 @@ struct environment::priv
   /// depend on a given recursive type.
   ///
   /// Once the canonical type of a type in that set is reset, the type
-  /// is marked as non being dependant on a recursive type anymore.
+  /// is marked as being non-dependant on a recursive type anymore.
   ///
   /// To understand the sentences above, please read the description
   /// of type canonicalization and especially about the "canonical
@@ -879,7 +960,7 @@ struct environment::priv
   /// type propagation optimizationdepends on a this target type, then
   /// cancel its canonical type.
   void
-  cancel_ct_propagation(const type_base* target)
+  cancel_ct_propagation_for_types_dependant_on(const type_base* target)
   {
     pointer_set to_remove;
     collect_types_that_depends_on(target,
@@ -901,6 +982,58 @@ struct environment::priv
 
     for (auto i : to_remove)
       types_with_non_confirmed_propagated_ct_.erase(i);
+  }
+
+  /// Reset the canonical type (set it nullptr) of a type that has
+  /// been the target of canonical type propagation.
+  ///
+  /// This also resets the propagated canonical type of the set of
+  /// types that depends on a given recursive type.
+  ///
+  /// Once the canonical type of a type in that set is reset, the type
+  /// is marked as being non-dependant on a recursive type anymore.
+  ///
+  /// To understand the sentences above, please read the description
+  /// of type canonicalization and especially about the "canonical
+  /// type propagation optimization" at @ref OnTheFlyCanonicalization,
+  /// in the src/abg-ir.cc file.
+  ///
+  /// @param target if a type which has been subject to the canonical
+  /// type propagation optimizationdepends on a this target type, then
+  /// cancel its canonical type.
+  void
+  cancel_ct_propagation(const type_base* t)
+  {
+    if (!t)
+      return;
+
+    const environment *env = t->get_environment();
+    env->priv_->cancel_ct_propagation_for_types_dependant_on(t);
+    if (t->priv_->depends_on_recursive_type()
+	|| env->priv_->is_recursive_type(t))
+      {
+	// This cannot carry any tentative canonical type at this
+	// point.
+	if (t->priv_->canonical_type_propagated()
+	    && !t->priv_->propagated_canonical_type_confirmed())
+	  t->priv_->clear_propagated_canonical_type();
+	// Reset the marking of the type as it no longer carries a
+	// tentative canonical type that might be later cancelled.
+	t->priv_->set_does_not_depend_on_recursive_type();
+	env->priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+      }
+  }
+
+  /// Add a given type to the set of types that have been
+  /// non-confirmed subjects of the canonical type propagation
+  /// optimization.
+  ///
+  /// @param t the dependant type to consider.
+  void
+  add_to_types_with_non_confirmed_propagated_ct(const type_base *t)
+  {
+    uintptr_t v = reinterpret_cast<uintptr_t>(t);
+    types_with_non_confirmed_propagated_ct_.insert(v);
   }
 
   /// Remove a given type from the set of types that have been

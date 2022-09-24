@@ -1084,13 +1084,14 @@ return_comparison_result(T& l, T& r, bool value,
       if (value == true
 	  && (is_type(&r)->priv_->depends_on_recursive_type()
 	      || env->priv_->is_recursive_type(&r))
-	  && is_type(&r)->priv_->canonical_type_propagated())
+	  && is_type(&r)->priv_->canonical_type_propagated()
+	  && !is_type(&r)->priv_->propagated_canonical_type_confirmed()
+	  && !env->priv_->right_type_comp_operands_.empty())
 	{
 	  // Track the object 'r' for which the propagated canonical
 	  // type might be re-initialized if the current comparison
 	  // eventually fails.
-	  env->priv_->types_with_non_confirmed_propagated_ct_.insert
-	    (reinterpret_cast<uintptr_t>(is_type(&r)));
+	  env->priv_->add_to_types_with_non_confirmed_propagated_ct(is_type(&r));
 	}
       else if (value == true && env->priv_->right_type_comp_operands_.empty())
 	{
@@ -1102,13 +1103,6 @@ return_comparison_result(T& l, T& r, bool value,
 	  // sub-types that were compared during the comparison of
 	  // 'r'.
 	  env->priv_->confirm_ct_propagation(&r);
-	  if (is_type(&r)->priv_->depends_on_recursive_type()
-	      || env->priv_->is_recursive_type(&r))
-	    {
-	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
-	      env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&r);
-	      env->priv_->set_is_not_recursive(&r);
-	    }
 	}
       else if (value == false)
 	{
@@ -1118,20 +1112,25 @@ return_comparison_result(T& l, T& r, bool value,
 	  // should see their tentatively propagated canonical type
 	  // cancelled.
 	  env->priv_->cancel_ct_propagation(&r);
-	  if (is_type(&r)->priv_->depends_on_recursive_type()
-	      || env->priv_->is_recursive_type(&r))
-	    {
-	      // The right-hand-side operand cannot carry any tentative
-	      // canonical type at this point.
-	      is_type(&r)->priv_->clear_propagated_canonical_type();
-	      // Reset the marking of the right-hand-side operand as it no
-	      // longer carries a tentative canonical type that might be
-	      // later cancelled.
-	      is_type(&r)->priv_->set_does_not_depend_on_recursive_type();
-	      env->priv_->remove_from_types_with_non_confirmed_propagated_ct(&r);
-	    }
 	}
     }
+
+  // If we reached this point with value == true and the stack of
+  // types being compared is empty, then it means that the type pair
+  // that was at the bottom of the stack is now fully compared.
+  //
+  // It follows that all types that were target of canonical type
+  // propagation can now see their tentative canonical type be
+  // confirmed for real.
+  if (value == true
+      && env->priv_->right_type_comp_operands_.empty()
+      && !env->priv_->types_with_non_confirmed_propagated_ct_.empty())
+    // So the comparison is completely done and there are some
+    // types for which their propagated canonical type is sitll
+    // considered not confirmed.  As the comparison did yield true, we
+    // shall now confirm the propagation for all those types.
+    env->priv_->confirm_ct_propagation();
+
   ABG_RETURN(value);
 }
 
@@ -14665,6 +14664,19 @@ canonicalize(type_base_sptr t)
 
   t->priv_->canonical_type = canonical;
   t->priv_->naked_canonical_type = canonical.get();
+
+  // So this type is now canonicalized.
+  //
+  // It means that:
+  //
+  //   1/ Either the canonical type was not propagated during the
+  //      comparison of another type that was being canonicalized
+  //
+  //   2/ Or the canonical type has been propagated during the
+  //      comparison of another type was being canonicalized and that
+  //      propagated canonical type has been confirmed.
+  ABG_ASSERT(!t->priv_->canonical_type_propagated()
+	     || t->priv_->propagated_canonical_type_confirmed());
 
   if (class_decl_sptr cl = is_class_type(t))
     if (type_base_sptr d = is_type(cl->get_earlier_declaration()))
