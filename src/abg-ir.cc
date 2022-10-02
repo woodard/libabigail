@@ -22505,15 +22505,17 @@ copy_member_function(const class_or_union_sptr& t, const method_decl* method)
 /// we say that T is a recursive type, because it has T (itself) as
 /// one of its sub-types:
 ///
-///   T
-///   +-- ST0
-///   |
-///   +-- ST1
-///   |    +
-///   |    |
-///   |    +-- T
-///   |
-///   +-- ST2
+/// <PRE>
+///    T
+///    +-- ST0
+///    |
+///    +-- ST1
+///    |    +
+///    |    |
+///    |    +-- T
+///    |
+///    +-- ST2
+/// </PRE>
 ///
 /// ST1 is said to "depend" on T because it has T as a sub-type.  But
 /// because T is recursive, then ST1 is said to depend on a recursive
