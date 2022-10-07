@@ -22251,16 +22251,6 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       RETURN(val);
     }
 
-  {
-    // First of all, let's see if these two types haven't already been
-    // compared.  If so, and if the result of the comparison has been
-    // cached, let's just re-use it, rather than comparing them all
-    // over again.
-    bool result = false;
-    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
-      return result;
-  }
-
   // No need to go further if the classes have different names or
   // different size / alignment.
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
@@ -22381,17 +22371,6 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    RETURN(result);
 	}
   }
-
-  // We are done comparing these two types and we have a full
-  // understanding of how they might be different, if they are.  Let's
-  // cache the result of this comparison -- in case we are asked in a
-  // very near future to compare them again.
-  //
-  // TODO: If further profiling shows its necessity, maybe we should
-  // perform this caching also on the earlier return points of this
-  // function.  That would basically mean to redefine the RETURN macro
-  // to make it perform this caching for us.
-  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -23824,8 +23803,6 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 		      static_cast<const class_or_union&>(r),
 		      k));
 
-  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
-
   bool had_canonical_type = !!r.get_naked_canonical_type();
   bool result = true;
   if (!equals(static_cast<const class_or_union&>(l),
@@ -23837,16 +23814,18 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	ABG_RETURN(result);
     }
 
-  mark_types_as_being_compared(l, r);
-
-#define RETURN(value) return return_comparison_result(l, r, value);
-
   // If comparing the class_or_union 'part' of the type led to
   // canonical type propagation, then cancel that because it's too
   // early to do that at this point.  We still need to compare bases
   // virtual members.
   if (!had_canonical_type)
     maybe_cancel_propagated_canonical_type(r);
+
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+
+  mark_types_as_being_compared(l, r);
+
+#define RETURN(value) return return_comparison_result(l, r, value);
 
   // Compare bases.
     if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
@@ -24961,8 +24940,15 @@ union_decl::~union_decl()
 bool
 equals(const union_decl& l, const union_decl& r, change_kind* k)
 {
-
-  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+  {
+    // First of all, let's see if these two types haven't already been
+    // compared.  If so, and if the result of the comparison has been
+    // cached, let's just re-use it, rather than comparing them all
+    // over again.
+    bool result = false;
+    if (l.get_environment()->priv_->is_type_comparison_cached(l, r, result))
+      return result;
+  }
 
 #define RETURN(value)				\
   return return_comparison_result(l, r, value);
@@ -24972,6 +24958,17 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
 		       k);
 
   mark_types_as_being_compared(l, r);
+
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 }
