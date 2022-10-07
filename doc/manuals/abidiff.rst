@@ -65,14 +65,37 @@ Options
 
     Display a short help about the command and exit.
 
-  * ``--debug``
+  * ``--debug-self-comparison``
 
-    In this mode, error messages are emitted for types which fail type canonicalization.
+    In this mode, error messages are emitted for types which fail type
+    canonicalization, in some circumstances, when comparing a binary
+    against itself.
 
-    This is an optional ebugging and sanity check option.  To enable
+    When comparing a binary against itself, canonical types of the
+    second binary should be equal (as much as possible) to canonical
+    types of the first binary.  When some discrepancies are detected
+    in this mode, an abort signal is emitted and execution is halted.
+    This option should be used while executing the tool in a debugger,
+    for troubleshooting purposes.
+
+    This is an optional debugging and sanity check option.  To enable
     it the libabigail package needs to be configured with
-    the --enable-debug-self-comparison option.
+    the --enable-debug-self-comparison configure option.
 
+  * ``--debug-tc``
+
+    In this mode, the process of type canonicalization is put under
+    heavy scrutiny.  Basically, during type canonicalization, each
+    type comparison is performed twice: once in a structural mode
+    (comparing every sub-type member-wise), and once using canonical
+    comparison.  The two comparisons should yield the same result.
+    Otherwise, an abort signal is emitted and the process can be
+    debugged to understand why the two kinds of comparison yield
+    different results.
+
+    This is an optional debugging and sanity check option.  To enable
+    it the libabigail package needs to be configured with
+    the --enable-debug-type-canonicalization configure option.
 
   * ``--version | -v``
 

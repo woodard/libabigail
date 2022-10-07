@@ -109,7 +109,10 @@ struct options
   bool			show_stats;
   bool			do_log;
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  bool			do_debug;
+  bool			do_debug_self_comparison;
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  bool			do_debug_type_canonicalization;
 #endif
 #ifdef WITH_CTF
   bool			use_ctf;
@@ -162,7 +165,11 @@ struct options
 #endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
     ,
-    do_debug()
+      do_debug_self_comparison()
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    ,
+      do_debug_type_canonicalization()
 #endif
   {}
 
@@ -256,7 +263,11 @@ display_usage(const string& prog_name, ostream& out)
     << " --ctf use CTF instead of DWARF in ELF files\n"
 #endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
-    << " --debug debug the process of comparing an ABI corpus against itself"
+    << " --debug-self-comparison debug the process of comparing "
+    "an ABI corpus against itself"
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    << " --debug-tc debug the type canonicalization process"
 #endif
     << " --verbose show verbose messages about internal stuff\n";
 }
@@ -612,8 +623,12 @@ parse_command_line(int argc, char* argv[], options& opts)
         opts.use_ctf = true;
 #endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
-      else if (!strcmp(argv[i], "--debug"))
-	opts.do_debug = true;
+      else if (!strcmp(argv[i], "--debug-self-comparison"))
+	opts.do_debug_self_comparison = true;
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+      else if (!strcmp(argv[i], "--debug-tc"))
+	opts.do_debug_type_canonicalization = true;
 #endif
       else
 	{
@@ -1143,8 +1158,12 @@ main(int argc, char* argv[])
 	env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	    if (opts.do_debug)
+	    if (opts.do_debug_self_comparison)
 	      env->self_comparison_debug_is_on(true);
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+	    if (opts.do_debug_type_canonicalization)
+	      env->debug_type_canonicalization_is_on(true);
 #endif
       translation_unit_sptr t1, t2;
       abigail::elf_reader::status c1_status =
