@@ -14673,8 +14673,10 @@ canonicalize(type_base_sptr t)
   //      comparison of another type that was being canonicalized
   //
   //   2/ Or the canonical type has been propagated during the
-  //      comparison of another type was being canonicalized and that
-  //      propagated canonical type has been confirmed.
+  //      comparison of another type that was being canonicalized and
+  //      that propagated canonical type has been confirmed, because
+  //      it was depending on a recursive type which comparison
+  //      succeeded.
   ABG_ASSERT(!t->priv_->canonical_type_propagated()
 	     || t->priv_->propagated_canonical_type_confirmed());
 
