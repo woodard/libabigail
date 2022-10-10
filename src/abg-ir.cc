@@ -23826,129 +23826,129 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 #define RETURN(value) return return_comparison_result(l, r, value);
 
   // Compare bases.
-    if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
+  if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
+    {
+      result = false;
+      if (k)
+	*k |= LOCAL_TYPE_CHANGE_KIND;
+      else
+	RETURN(result);
+    }
+
+  for (class_decl::base_specs::const_iterator
+	 b0 = l.get_base_specifiers().begin(),
+	 b1 = r.get_base_specifiers().begin();
+       (b0 != l.get_base_specifiers().end()
+	&& b1 != r.get_base_specifiers().end());
+       ++b0, ++b1)
+    if (*b0 != *b1)
       {
 	result = false;
 	if (k)
-	  *k |= LOCAL_TYPE_CHANGE_KIND;
-	else
-	  RETURN(result);
+	  {
+	    if (!types_have_similar_structure((*b0)->get_base_class().get(),
+					      (*b1)->get_base_class().get()))
+	      *k |= LOCAL_TYPE_CHANGE_KIND;
+	    else
+	      *k |= SUBTYPE_CHANGE_KIND;
+	    break;
+	  }
+	RETURN(result);
       }
 
-    for (class_decl::base_specs::const_iterator
-	   b0 = l.get_base_specifiers().begin(),
-	   b1 = r.get_base_specifiers().begin();
-	 (b0 != l.get_base_specifiers().end()
-	 && b1 != r.get_base_specifiers().end());
-	 ++b0, ++b1)
-      if (*b0 != *b1)
+  // Compare virtual member functions
+
+  // We look at the map that associates a given vtable offset to a
+  // vector of virtual member functions that point to that offset.
+  //
+  // This is because there are cases where several functions can
+  // point to the same virtual table offset.
+  //
+  // This is usually the case for virtual destructors.  Even though
+  // there can be only one virtual destructor declared in source
+  // code, there are actually potentially up to three generated
+  // functions for that destructor.  Some of these generated
+  // functions can be clones of other functions that are among those
+  // generated ones.  In any cases, they all have the same
+  // properties, including the vtable offset property.
+
+  // So, there should be the same number of different vtable
+  // offsets, the size of two maps must be equals.
+  if (l.get_virtual_mem_fns_map().size()
+      != r.get_virtual_mem_fns_map().size())
+    {
+      result = false;
+      if (k)
+	*k |= LOCAL_NON_TYPE_CHANGE_KIND;
+      else
+	RETURN(result);
+    }
+
+  // Then, each virtual member function of a given vtable offset in
+  // the first class type, must match an equivalent virtual member
+  // function of a the same vtable offset in the second class type.
+  //
+  // By "match", I mean that the two virtual member function should
+  // be equal if we don't take into account their symbol name or
+  // their linkage name.  This is because two destructor functions
+  // clones (for instance) might have different linkage name, but
+  // are still equivalent if their other properties are the same.
+  for (class_decl::virtual_mem_fn_map_type::const_iterator first_v_fn_entry =
+	 l.get_virtual_mem_fns_map().begin();
+       first_v_fn_entry != l.get_virtual_mem_fns_map().end();
+       ++first_v_fn_entry)
+    {
+      unsigned voffset = first_v_fn_entry->first;
+      const class_decl::member_functions& first_vfns =
+	first_v_fn_entry->second;
+
+      const class_decl::virtual_mem_fn_map_type::const_iterator
+	second_v_fn_entry = r.get_virtual_mem_fns_map().find(voffset);
+
+      if (second_v_fn_entry == r.get_virtual_mem_fns_map().end())
 	{
 	  result = false;
 	  if (k)
-	    {
-	      if (!types_have_similar_structure((*b0)->get_base_class().get(),
-						(*b1)->get_base_class().get()))
-		*k |= LOCAL_TYPE_CHANGE_KIND;
-	      else
-		*k |= SUBTYPE_CHANGE_KIND;
-	      break;
-	    }
+	    *k |= LOCAL_NON_TYPE_CHANGE_KIND;
 	  RETURN(result);
 	}
 
-    // Compare virtual member functions
+      const class_decl::member_functions& second_vfns =
+	second_v_fn_entry->second;
 
-    // We look at the map that associates a given vtable offset to a
-    // vector of virtual member functions that point to that offset.
-    //
-    // This is because there are cases where several functions can
-    // point to the same virtual table offset.
-    //
-    // This is usually the case for virtual destructors.  Even though
-    // there can be only one virtual destructor declared in source
-    // code, there are actually potentially up to three generated
-    // functions for that destructor.  Some of these generated
-    // functions can be clones of other functions that are among those
-    // generated ones.  In any cases, they all have the same
-    // properties, including the vtable offset property.
-
-    // So, there should be the same number of different vtable
-    // offsets, the size of two maps must be equals.
-    if (l.get_virtual_mem_fns_map().size()
-	!= r.get_virtual_mem_fns_map().size())
-      {
-	result = false;
-	if (k)
-	  *k |= LOCAL_NON_TYPE_CHANGE_KIND;
-	else
-	  RETURN(result);
-      }
-
-    // Then, each virtual member function of a given vtable offset in
-    // the first class type, must match an equivalent virtual member
-    // function of a the same vtable offset in the second class type.
-    //
-    // By "match", I mean that the two virtual member function should
-    // be equal if we don't take into account their symbol name or
-    // their linkage name.  This is because two destructor functions
-    // clones (for instance) might have different linkage name, but
-    // are still equivalent if their other properties are the same.
-    for (class_decl::virtual_mem_fn_map_type::const_iterator first_v_fn_entry =
-	   l.get_virtual_mem_fns_map().begin();
-	 first_v_fn_entry != l.get_virtual_mem_fns_map().end();
-	 ++first_v_fn_entry)
-      {
-	unsigned voffset = first_v_fn_entry->first;
-	const class_decl::member_functions& first_vfns =
-	  first_v_fn_entry->second;
-
-	const class_decl::virtual_mem_fn_map_type::const_iterator
-	  second_v_fn_entry = r.get_virtual_mem_fns_map().find(voffset);
-
-	if (second_v_fn_entry == r.get_virtual_mem_fns_map().end())
+      bool matches = false;
+      for (class_decl::member_functions::const_iterator i =
+	     first_vfns.begin();
+	   i != first_vfns.end();
+	   ++i)
+	if (method_matches_at_least_one_in_vector(*i, second_vfns))
 	  {
-	    result = false;
-	    if (k)
-	      *k |= LOCAL_NON_TYPE_CHANGE_KIND;
+	    matches = true;
+	    break;
+	  }
+
+      if (!matches)
+	{
+	  result = false;
+	  if (k)
+	    *k |= SUBTYPE_CHANGE_KIND;
+	  else
 	    RETURN(result);
-	  }
+	}
+    }
 
-	const class_decl::member_functions& second_vfns =
-	  second_v_fn_entry->second;
+  // We are done comparing these two types and we have a full
+  // understanding of how they might be different, if they are.  Let's
+  // cache the result of this comparison -- in case we are asked in a
+  // very near future to compare them again.
+  //
+  // TODO: If further profiling shows its necessity, maybe we should
+  // perform this caching also on the earlier return points of this
+  // function.  That would basically mean to redefine the RETURN macro
+  // to make it perform this caching for us.
+  l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
 
-	bool matches = false;
-	for (class_decl::member_functions::const_iterator i =
-	       first_vfns.begin();
-	     i != first_vfns.end();
-	     ++i)
-	  if (method_matches_at_least_one_in_vector(*i, second_vfns))
-	    {
-	      matches = true;
-	      break;
-	    }
-
-	if (!matches)
-	  {
-	    result = false;
-	    if (k)
-	      *k |= SUBTYPE_CHANGE_KIND;
-	    else
-	      RETURN(result);
-	  }
-      }
-
-    // We are done comparing these two types and we have a full
-    // understanding of how they might be different, if they are.  Let's
-    // cache the result of this comparison -- in case we are asked in a
-    // very near future to compare them again.
-    //
-    // TODO: If further profiling shows its necessity, maybe we should
-    // perform this caching also on the earlier return points of this
-    // function.  That would basically mean to redefine the RETURN macro
-    // to make it perform this caching for us.
-    l.get_environment()->priv_->cache_type_comparison_result(l, r, result);
-
-    RETURN(result);
+  RETURN(result);
 #undef RETURN
 }
 
