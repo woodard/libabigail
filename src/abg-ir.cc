@@ -22240,10 +22240,6 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 	    }
 	}
 
-      RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
-
-      mark_types_as_being_compared(l, r);
-
       bool val = *def1 == *def2;
       if (!val)
 	if (k)
