@@ -249,7 +249,7 @@
     <!-- namespace std -->
     <namespace-decl name='std'>
       <!-- class std::basic_string<char, std::char_traits<char>, std::allocator<char> > -->
-      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-43'>
+      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-43'>
         <member-type access='private'>
           <!-- typedef rebind<char>::other std::basic_string<char, std::char_traits<char>, std::allocator<char> >::_CharT_alloc_type -->
           <typedef-decl name='_CharT_alloc_type' type-id='type-id-78' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='114' column='1' id='type-id-77'/>

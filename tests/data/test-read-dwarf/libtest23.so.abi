@@ -155,7 +155,7 @@
       <typedef-decl name='string' type-id='type-id-43' filepath='/usr/include/c++/4.8.2/bits/stringfwd.h' line='62' column='1' id='type-id-61'/>
     </namespace-decl>
     <namespace-decl name='std'>
-      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-43'>
+      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='112' column='1' id='type-id-43'>
         <member-type access='private'>
           <typedef-decl name='_CharT_alloc_type' type-id='type-id-78' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='114' column='1' id='type-id-77'/>
         </member-type>

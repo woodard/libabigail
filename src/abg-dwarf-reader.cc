@@ -13662,6 +13662,12 @@ add_or_update_class_type(read_context&	 ctxt,
       // tests/data/test-diff-filter/test41-PR21486-abg-writer.llvm.o.
       result->set_is_declaration_only(is_declaration_only);
 
+  // If a non-decl-only class has children node and is advertized as
+  // having a non-zero size let's trust that.
+  if (!result->get_is_declaration_only() && has_child)
+    if (result->get_size_in_bits() == 0 && size != 0)
+      result->set_size_in_bits(size);
+
   result->set_is_artificial(is_artificial);
 
   ctxt.associate_die_to_type(die, result, where_offset);
