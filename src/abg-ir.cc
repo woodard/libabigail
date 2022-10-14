@@ -3353,8 +3353,9 @@ struct decl_topo_comp
 
     // If both decls come from an abixml file, keep the order they
     // have from that abixml file.
-    if (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
-	&& s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN)
+    if ((!f->get_corpus() && !s->get_corpus())
+	|| (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
+	    && s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN))
       return compare_using_locations(f, s);
 
     // If a decl has artificial location, then use that one over the
@@ -3451,8 +3452,9 @@ struct type_topo_comp
   {
     // If both decls come from an abixml file, keep the order they
     // have from that abixml file.
-    if (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
-	&& s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN)
+    if ((!f->get_corpus() && !s->get_corpus())
+	|| (f->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN
+	    && s->get_corpus()->get_origin() == corpus::NATIVE_XML_ORIGIN))
       return compare_using_locations(is_decl(f), is_decl(s));
 
     bool f_is_ptr_ref_or_qual = is_ptr_ref_or_qual_type(f);
