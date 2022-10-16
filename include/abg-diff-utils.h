@@ -803,7 +803,7 @@ struct deep_ptr_eq_functor
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param k the number of the diagonal on which we want to find the
@@ -942,7 +942,7 @@ end_of_fr_d_path_in_k(int k, int d,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param k the number of the diagonal on which we want to find the
@@ -1116,7 +1116,7 @@ is_match_point(RandomAccessOutputIterator a_begin,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_begin an iterator pointing to the begining of sequence A.
@@ -1308,7 +1308,7 @@ print_snake(RandomAccessOutputIterator a_begin,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a the first sequence we care about.
@@ -1444,7 +1444,7 @@ snake_end_points(const snake& s, point&, point&);
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_base the iterator to the base of the first sequence.
@@ -1653,7 +1653,7 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_start an iterator to the beginning of the first sequence
@@ -1719,7 +1719,7 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_base the iterator to the base of the first sequence.
@@ -1779,7 +1779,7 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_start an iterator to the beginning of the first sequence
@@ -1879,7 +1879,7 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_base the iterator to the base of the first sequence.
@@ -1935,7 +1935,7 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// call operator member returning a boolean and taking two arguments
 /// that must be of the same type as the one pointed to by the @ref
 /// RandomAccessOutputIterator template parameter. This functor is
-/// used to compare the elements referred to by the iterators pased in
+/// used to compare the elements referred to by the iterators passed in
 /// argument to this function.
 ///
 /// @param a_start an iterator to the beginning of the first sequence
