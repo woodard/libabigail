@@ -1509,7 +1509,8 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
   // translation unit.
   if (const environment* e = ftype->get_environment())
     ABG_ASSERT(env == e);
-  ftype->set_environment(const_cast<environment*>(env));
+  else
+    ftype->set_environment(const_cast<environment*>(env));
 
   if (const translation_unit* existing_tu = ftype->get_translation_unit())
     ABG_ASSERT(existing_tu == this);
