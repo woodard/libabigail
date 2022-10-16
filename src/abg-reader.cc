@@ -4602,8 +4602,7 @@ build_enum_type_decl(read_context&	ctxt,
 	    base_type_id = CHAR_STR(a);
 	  continue;
 	}
-
-      if (xmlStrEqual(n->name, BAD_CAST("enumerator")))
+      else if (xmlStrEqual(n->name, BAD_CAST("enumerator")))
 	{
 	  string name;
 	  int64_t value = 0;
