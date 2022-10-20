@@ -5189,7 +5189,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	unsigned i = it->index();
 	class_decl::base_spec_sptr b =
 	  first_class_decl()->get_base_specifiers()[i];
-	string name = b->get_base_class()->get_name();
+	string name = b->get_base_class()->get_qualified_name();
 	ABG_ASSERT(get_priv()->deleted_bases_.find(name)
 	       == get_priv()->deleted_bases_.end());
 	get_priv()->deleted_bases_[name] = b;
@@ -5207,7 +5207,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    unsigned i = *iit;
 	    class_decl::base_spec_sptr b =
 	      second_class_decl()->get_base_specifiers()[i];
-	    string name = b->get_base_class()->get_name();
+	    string name = b->get_base_class()->get_qualified_name();
 	    ABG_ASSERT(get_priv()->inserted_bases_.find(name)
 		   == get_priv()->inserted_bases_.end());
 	    string_base_sptr_map::const_iterator j =

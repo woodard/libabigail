@@ -449,7 +449,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-PR29144-report-2.txt",
     "output/test-abidiff-exit/test-PR29144-report-2.txt"
   },
-    {
+  {
     "data/test-abidiff-exit/ld-2.28-210.so",
     "data/test-abidiff-exit/ld-2.28-211.so",
     "",
@@ -459,6 +459,17 @@ InOutSpec in_out_specs[] =
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt",
     "output/test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt"
+  },
+  {
+    "data/test-abidiff-exit/test-rhbz2114909-v0.o",
+    "data/test-abidiff-exit/test-rhbz2114909-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/test-rhbz2114909-report-1.txt",
+    "output/test-abidiff-exit/test-rhbz2114909-report-1.txt"
   },
   {0, 0, 0 ,0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };

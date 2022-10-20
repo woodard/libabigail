@@ -23015,6 +23015,7 @@ class_decl::base_spec::base_spec(const class_decl_sptr& base,
     priv_(new priv(base, offset_in_bits, is_virtual))
 {
   runtime_type_instance(this);
+  set_qualified_name(base->get_qualified_name());
 }
 
 /// Get the base class referred to by the current base class
