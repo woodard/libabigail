@@ -74,10 +74,11 @@ functions and variables) between the Kernel and its modules.  In
 practice, though, some users might want to compare a subset of the
 those interfaces.
 
-By default, ``kmidiff`` uses debug information in `DWARF`_ format,
-if present, otherwise it compares interfaces using debug information
-in `CTF`_ format, if present, finally, if neither is found, it uses
-only `ELF`_ symbols to report which were added or removed.
+By default, ``kmidiff`` uses debug information in the `DWARF`_ debug
+info format, if present, otherwise it compares interfaces using `CTF`_
+or `BTF`_ debug info formats, if present.  Finally, if no debug info
+in these formats is found, it only considers `ELF`_ symbols and report
+about their addition or removal.
 
 Users can then define a "white list" of the interfaces to compare.
 Such a white list is a just a file in the "INI" format that looks
@@ -179,8 +180,13 @@ Options
 
   * ``--ctf``
 
-    Extract ABI information from `CTF`_ debug information, if present in
-    the Kernel and Modules.
+    Extract ABI information from `CTF`_ debug information, if present,
+    in the Kernel and Modules.
+
+  * ``--btf``
+
+    Extract ABI information from `BTF`_ debug information, if present,
+    in the Kernel and Modules.
 
   * ``--impacted-interfaces | -i``
 
@@ -249,3 +255,4 @@ Options
 .. _Linux Kernel: https://kernel.org
 .. _DWARF: http://www.dwarfstd.org
 .. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html

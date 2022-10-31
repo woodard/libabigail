@@ -201,6 +201,12 @@ AC_ARG_ENABLE(ctf,
 	      ENABLE_CTF=$enableval,
 	      ENABLE_CTF=auto)
 
+dnl check if user has enabled BTF code
+AC_ARG_ENABLE(btf,
+	      AS_HELP_STRING([--enable-btf=yes|no],
+			     [disable support of btf files)]),
+	      ENABLE_BTF=$enableval,
+	      ENABLE_BTF=auto)
 dnl *************************************************
 dnl check for dependencies
 dnl *************************************************
@@ -336,6 +342,77 @@ if test x$ENABLE_CTF != xno; then
   else
     AC_MSG_NOTICE([no libctf found, CTF support was disabled])
     ENABLE_CTF=no
+  fi
+fi
+
+dnl configure BTF usage
+BPF_LIBS=
+if test x$ENABLE_BTF != xno; then
+  AC_CHECK_HEADER([bpf/btf.h],
+		  [ENABLE_BTF=yes],
+		  [AC_MSG_NOTICE([could not find bpf/btf.h])])
+  if test x$ENABLE_BTF = xyes; then
+    AC_MSG_NOTICE([enable BTF support])
+    ENABLE_BTF=yes
+    AC_DEFINE([WITH_BTF], 1,
+	     [Defined if user enabled BTF usage])
+    BPF_LIBS=-lbpf
+  else
+    AC_MSG_NOTICE([BTF support was disabled])
+    ENABLE_BTF=no
+  fi
+
+dnl Test if various functions and structs are present.
+
+  if test x$ENABLE_BTF = xyes; then
+    dnl Test if struct btf_enum64 is present.
+    AC_CHECK_TYPE([struct btf_enum64],
+    		  [HAVE_BTF_ENUM64=yes],
+		  [HAVE_BTF_ENUM64=no],
+		  [#include <bpf/btf.h>])
+
+    if test x$HAVE_BTF_ENUM64 = xyes; then
+      AC_DEFINE([WITH_BTF_ENUM64], 1, [struct btf_enum64 is present])
+    fi
+
+    dnl Test if btf__get_nr_types is present
+    AC_CHECK_DECL([btf__get_nr_types],
+		  [HAVE_BTF__GET_NR_TYPES=yes],
+		  [HAVE_BTF__GET_NR_TYPES=no],
+		  [#include <bpf/btf.h>])
+
+    if test x$HAVE_BTF__GET_NR_TYPES = xyes; then
+       AC_DEFINE(WITH_BTF__GET_NR_TYPES, 1, [The function btf__get_nr_types is present])
+    fi
+
+    dnl Test if btf__type_cnt is present
+    AC_CHECK_DECL([btf__type_cnt],
+		  [HAVE_BTF__TYPE_CNT=yes],
+		  [HAVE_BTF__TYPE_CNT=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF__TYPE_CNT = xyes; then
+       AC_DEFINE(WITH_BTF__TYPE_CNT, 1, [The function btf__type_cnt is present])
+    fi
+
+    dnl Test if BTF_KIND_TYPE_TAG exists
+    AC_CHECK_DECL([int kind = BTF_KIND_TYPE_TAG],
+    		  [HAVE_BTF_KIND_TYPE_TAG=yes],
+		  [HAVE_BTF_KIND_TYPE_TAG=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF_KIND_TYPE_TAG = xyes; then
+       AC_DEFINE([WITH_BTF_KIND_TYPE_TAG], 1,
+       [The BTF_KIND_TYPE_TAG enumerator is present])
+    fi
+
+    dnl Test if BTF_KIND_DECL_TAG exists
+    AC_CHECK_DECL([int kind = BTF_KIND_DECL_TAG],
+    		  [HAVE_BTF_KIND_DECL_TAG=yes],
+		  [HAVE_BTF_KIND_DECL_TAG=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF_KIND_DECL_TAG = xyes; then
+       AC_DEFINE([WITH_BTF_KIND_DECL_TAG], 1,
+       [The BTF_KIND_DECL_TAG enumerator is present])
+    fi
   fi
 fi
 
@@ -741,7 +818,7 @@ AX_VALGRIND_CHECK
 
 dnl Set the list of libraries libabigail depends on
 
-DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS $CTF_LIBS"
+DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS $CTF_LIBS $BPF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
@@ -782,6 +859,7 @@ fi
 dnl Set a few Automake conditionals
 
 AM_CONDITIONAL([CTF_READER],[test "x$ENABLE_CTF" = "xyes"])
+AM_CONDITIONAL([BTF_READER],[test "x$ENABLE_BTF" = "xyes"])
 
 dnl Set the level of C++ standard we use.
 CXXFLAGS="$CXXFLAGS -std=$CXX_STANDARD"
@@ -1092,6 +1170,7 @@ AC_MSG_NOTICE([
     Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
     Enable python 3				   : ${ENABLE_PYTHON3}
     Enable CTF front-end                           : ${ENABLE_CTF}
+    Enable BTF front-end                           : ${ENABLE_BTF}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Enable build with -fsanitize=address    	   : ${ENABLE_ASAN}
     Enable build with -fsanitize=memory    	   : ${ENABLE_MSAN}

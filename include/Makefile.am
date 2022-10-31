@@ -34,4 +34,8 @@ if CTF_READER
 pkginclude_HEADERS += abg-ctf-reader.h
 endif
 
+if BTF_READER
+pkginclude_HEADERS += abg-btf-reader.h
+endif
+
 EXTRA_DIST = abg-version.h.in

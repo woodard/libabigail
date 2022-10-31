@@ -471,6 +471,30 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-rhbz2114909-report-1.txt",
     "output/test-abidiff-exit/test-rhbz2114909-report-1.txt"
   },
+#ifdef WITH_BTF
+  {
+    "data/test-abidiff-exit/btf/test0-v0.o",
+    "data/test-abidiff-exit/btf/test0-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --btf",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/btf/test0-report-1.txt",
+    "output/test-abidiff-exit/btf/test0-report-1.txt"
+  },
+  {
+    "data/test-abidiff-exit/btf/test0-v0.o",
+    "data/test-abidiff-exit/btf/test0-v1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --harmless --btf",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/btf/test0-report-2.txt",
+    "output/test-abidiff-exit/btf/test0-report-2.txt"
+  },
+#endif
   {0, 0, 0 ,0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 

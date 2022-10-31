@@ -21,10 +21,10 @@ functions and variables, along with a complete representation of their
 types.
 
 To generate either ABI or KMI representation, by default ``abidw``
-uses debug information in `DWARF`_ format, if present, otherwise it
-looks for debug information in `CTF`_ format, if present, finally, if
-neither is found, it uses only `ELF`_ symbols to report which of them
-were added or removed.
+uses debug information in the `DWARF`_ format, if present, otherwise
+it looks for debug information in `CTF`_ or `BTF`_formats, if present.
+Finally, if no debug info in these formats is found, it only considers
+`ELF`_ symbols and report about their addition or removal.
 
 .. include:: tools-use-libabigail.txt
 
@@ -389,6 +389,7 @@ standard `here
 .. _GNU: http://www.gnu.org
 .. _Linux Kernel: https://kernel.org/
 .. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html
 .. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _DWZ: https://sourceware.org/dwz

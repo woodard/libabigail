@@ -16,8 +16,9 @@ For a comprehensive ABI change report between two input shared
 libraries that includes changes about function and variable sub-types,
 ``abidiff`` uses by default, debug information in `DWARF`_ format, if
 present, otherwise it compares interfaces using debug information in
-`CTF`_ format, if present, finally, if neither is found, it uses only
-`ELF`_ symbols to report which of them were added or removed.
+`CTF`_ or `BTF`_ formats, if present. Finally, if no debug info in
+these formats is found, it only considers `ELF`_ symbols and report
+about their addition or removal.
 
 .. include:: tools-use-libabigail.txt
 
@@ -605,6 +606,11 @@ Options
     When comparing binaries, extract ABI information from `CTF`_ debug
     information, if present.
 
+  * ``--btf``
+
+    When comparing binaries, extract ABI information from `BTF`_ debug
+    information, if present.
+
   * ``--stats``
 
     Emit statistics about various internal things.
@@ -830,6 +836,7 @@ Usage examples
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
 .. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html
 .. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _DWZ: https://sourceware.org/dwz

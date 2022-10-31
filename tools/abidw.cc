@@ -29,6 +29,9 @@
 #ifdef WITH_CTF
 #include "abg-ctf-reader.h"
 #endif
+#ifdef WITH_BTF
+#include "abg-btf-reader.h"
+#endif
 #include "abg-writer.h"
 #include "abg-reader.h"
 #include "abg-comparison.h"
@@ -104,6 +107,9 @@ struct options
 #ifdef WITH_CTF
   bool			use_ctf;
 #endif
+#ifdef WITH_BTF
+  bool			use_btf;
+#endif
   bool			show_locs;
   bool			abidiff;
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -144,6 +150,9 @@ struct options
       noout(),
 #ifdef WITH_CTF
       use_ctf(false),
+#endif
+#ifdef WITH_BTF
+      use_btf(false),
 #endif
       show_locs(true),
       abidiff(),
@@ -234,6 +243,9 @@ display_usage(const string& prog_name, ostream& out)
     "speed-up the analysis of the binary\n"
     << "  --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
     "analysis of the binary\n"
+#ifdef WITH_BTF
+    << "  --btf use BTF instead of DWARF in ELF files\n"
+#endif
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
     << "  --verbose show verbose messages about internal stuff\n";
@@ -335,6 +347,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 #ifdef WITH_CTF
         else if (!strcmp(argv[i], "--ctf"))
           opts.use_ctf = true;
+#endif
+#ifdef WITH_BTF
+        else if (!strcmp(argv[i], "--btf"))
+          opts.use_btf = true;
 #endif
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
@@ -587,6 +603,10 @@ load_corpus_and_write_abixml(char* argv[],
 #ifdef WITH_CTF
   if (opts.use_ctf)
     requested_fe_kind = corpus::CTF_ORIGIN;
+#endif
+#ifdef WITH_BTF
+  if (opts.use_btf)
+    requested_fe_kind = corpus::BTF_ORIGIN;
 #endif
 
   // First of all, create a reader to read the ABI from the file

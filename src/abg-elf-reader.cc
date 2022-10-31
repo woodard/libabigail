@@ -274,6 +274,7 @@ struct reader::priv
   int					alt_ctf_fd		= 0;
   Elf*					alt_ctf_handle		= nullptr;
   Elf_Scn*				alt_ctf_section	= nullptr;
+  Elf_Scn*				btf_section		= nullptr;
 
   priv(reader& reeder, const std::string& elf_path,
        const vector<char**>& debug_info_roots)
@@ -602,6 +603,13 @@ bool
 reader::has_ctf_debug_info() const
 {return (priv_->ctf_section != nullptr);}
 
+/// Test if the binary has BTF debug info.
+///
+/// @return true iff the binary has BTF debug info
+bool
+reader::has_btf_debug_info() const
+{return (priv_->btf_section != nullptr);}
+
 /// Getter of the handle use to access DWARF information from the
 /// alternate split DWARF information.
 ///
@@ -695,6 +703,20 @@ reader::find_alternate_ctf_section() const
     priv_->locate_alt_ctf_debug_info();
 
   return priv_->alt_ctf_section;
+}
+
+/// Find and return a pointer to the BTF section of the current ELF
+/// file.
+///
+/// @return a pointer to the BTF section of the current ELF file.
+const Elf_Scn*
+reader::find_btf_section() const
+{
+  if (priv_->btf_section == nullptr)
+    priv_->btf_section =
+      elf_helpers::find_section(priv_->elf_handle,
+				".BTF", SHT_PROGBITS);
+  return priv_->btf_section;
 }
 
 /// Get the value of the DT_NEEDED property of the current ELF file.

@@ -48,6 +48,10 @@ if CTF_READER
 libabigail_la_SOURCES += abg-ctf-reader.cc
 endif
 
+if BTF_READER
+libabigail_la_SOURCES += abg-btf-reader.cc
+endif
+
 libabigail_la_LIBADD = $(DEPS_LIBS) $(FTS_LIBS)
 libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined -version-info $(LIBABIGAIL_SO_CURRENT):$(LIBABIGAIL_SO_REVISION):$(LIBABIGAIL_SO_AGE)
 

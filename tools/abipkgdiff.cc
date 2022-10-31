@@ -93,6 +93,9 @@
 #ifdef WITH_CTF
 #include "abg-ctf-reader.h"
 #endif
+#ifdef WITH_BTF
+#include "abg-btf-reader.h"
+#endif
 
 using std::cout;
 using std::cerr;
@@ -212,6 +215,9 @@ public:
 #ifdef WITH_CTF
   bool		use_ctf;
 #endif
+#ifdef WITH_BTF
+  bool		use_btf;
+#endif
 
   vector<string> kabi_whitelist_packages;
   vector<string> suppression_paths;
@@ -256,6 +262,10 @@ public:
 #ifdef WITH_CTF
       ,
       use_ctf()
+#endif
+#ifdef WITH_BTF
+      ,
+      use_btf()
 #endif
   {
     // set num_workers to the default number of threads of the
@@ -906,6 +916,9 @@ display_usage(const string& prog_name, ostream& out)
 #ifdef WITH_CTF
     << " --ctf                          use CTF instead of DWARF in ELF files\n"
 #endif
+#ifdef WITH_BTF
+    << " --btf                          use BTF instead of DWARF in ELF files\n"
+#endif
     << " --help|-h                      display this help message\n"
     << " --version|-v                   display program version information"
     " and exit\n";
@@ -1354,6 +1367,10 @@ compare(const elf_file&		elf1,
     if (opts.use_ctf)
       requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
+#ifdef WITH_BTF
+    if (opts.use_btf)
+      requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
     abigail::elf_based_reader_sptr reader =
       create_best_elf_based_reader(elf1.path,
 				   di_dirs1,
@@ -1415,6 +1432,11 @@ compare(const elf_file&		elf1,
               ;
             else
 #endif
+#ifdef WITH_BTF
+	      if (opts.use_btf)
+		;
+	      else
+#endif
 	      reader->refers_to_alt_debug_info(alt_di_path);
 	    if (!alt_di_path.empty())
 	      cerr << ": " << alt_di_path << "\n";
@@ -1449,10 +1471,16 @@ compare(const elf_file&		elf1,
   corpus_sptr corpus2;
   {
     corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
+
 #ifdef WITH_CTF
     if (opts.use_ctf)
       requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
+#ifdef WITH_BTF
+    if (opts.use_btf)
+      requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
+
     abigail::elf_based_reader_sptr reader =
       create_best_elf_based_reader(elf2.path,
 				   di_dirs2,
@@ -1511,6 +1539,11 @@ compare(const elf_file&		elf1,
 	    string alt_di_path;
 #ifdef WITH_CTF
             if (opts.use_ctf)
+              ;
+            else
+#endif
+#ifdef WITH_BTF
+            if (opts.use_btf)
               ;
             else
 #endif
@@ -1617,6 +1650,10 @@ compare_to_self(const elf_file&		elf,
 #ifdef WITH_CTF
     if (opts.use_ctf)
       requested_fe_kind = corpus::CTF_ORIGIN;
+#endif
+#ifdef WITH_BTF
+    if (opts.use_btf)
+      requested_fe_kind = corpus::BTF_ORIGIN;
 #endif
     abigail::elf_based_reader_sptr reader =
       create_best_elf_based_reader(elf.path,
@@ -3044,14 +3081,24 @@ compare_prepared_linux_kernel_packages(package& first_package,
 
   suppressions_type supprs;
   corpus_group_sptr corpus1, corpus2;
+
+  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
+#ifdef WITH_CTF
+    if (opts.use_ctf)
+      requested_fe_kind = corpus::CTF_ORIGIN;
+#endif
+#ifdef WITH_BTF
+    if (opts.use_btf)
+      requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
+
   corpus1 = build_corpus_group_from_kernel_dist_under(dist_root1,
 						      debug_dir1,
 						      vmlinux_path1,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
-						      supprs,
-						      opts.verbose,
-						      env);
+						      supprs, opts.verbose,
+						      env, requested_fe_kind);
 
   if (!corpus1)
     return abigail::tools_utils::ABIDIFF_ERROR;
@@ -3061,9 +3108,8 @@ compare_prepared_linux_kernel_packages(package& first_package,
 						      vmlinux_path2,
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
-						      supprs,
-						      opts.verbose,
-						      env);
+						      supprs, opts.verbose,
+						      env, requested_fe_kind);
 
   if (!corpus2)
     return abigail::tools_utils::ABIDIFF_ERROR;
@@ -3434,6 +3480,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 #ifdef WITH_CTF
 	else if (!strcmp(argv[i], "--ctf"))
           opts.use_ctf = true;
+#endif
+#ifdef WITH_BTF
+	else if (!strcmp(argv[i], "--btf"))
+          opts.use_btf = true;
 #endif
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "-h"))

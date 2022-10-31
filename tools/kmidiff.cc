@@ -64,6 +64,9 @@ struct options
 #ifdef WITH_CTF
   bool			use_ctf;
 #endif
+#ifdef WITH_BTF
+  bool			use_btf;
+#endif
   string		wrong_option;
   string		kernel_dist_root1;
   string		kernel_dist_root2;
@@ -88,6 +91,10 @@ struct options
 #ifdef WITH_CTF
       ,
       use_ctf(false)
+#endif
+#ifdef WITH_BTF
+    ,
+      use_btf(false)
 #endif
   {}
 }; // end struct options.
@@ -117,6 +124,9 @@ display_usage(const string& prog_name, ostream& out)
     "whitelist\n"
 #ifdef WITH_CTF
     << " --ctf use CTF instead of DWARF in ELF files\n"
+#endif
+#ifdef WITH_BTF
+    << " --btf use BTF instead of DWARF in ELF files\n"
 #endif
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
@@ -259,6 +269,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 #ifdef WITH_CTF
       else if (!strcmp(argv[i], "--ctf"))
 	opts.use_ctf = true;
+#endif
+#ifdef WITH_BTF
+      else if (!strcmp(argv[i], "--btf"))
+	opts.use_btf = true;
 #endif
       else if (!strcmp(argv[i], "--impacted-interfaces")
 	       || !strcmp(argv[i], "-i"))
@@ -421,11 +435,15 @@ main(int argc, char* argv[])
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;
-  corpus::origin requested_fe_kind =
+  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
-   opts.use_ctf ? corpus::CTF_ORIGIN :
+  if (opts.use_ctf)
+    requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-   corpus::DWARF_ORIGIN;
+#ifdef WITH_BTF
+  if (opts.use_btf)
+    requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
 
   if (!opts.kernel_dist_root1.empty())
     {

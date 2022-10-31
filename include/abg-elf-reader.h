@@ -97,6 +97,9 @@ class reader : public fe_iface
   bool
   has_ctf_debug_info() const;
 
+  bool
+  has_btf_debug_info() const;
+
   const Dwarf*
   alternate_dwarf_debug_info() const;
 
@@ -117,6 +120,9 @@ class reader : public fe_iface
 
   const Elf_Scn*
   find_alternate_ctf_section() const;
+
+  const Elf_Scn*
+  find_btf_section() const;
 
   const vector<string>&
   dt_needed()const;

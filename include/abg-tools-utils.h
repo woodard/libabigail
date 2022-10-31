@@ -41,6 +41,8 @@ bool file_has_dwarf_debug_info(const string& elf_file_path,
 			       const vector<char**>& debug_info_root_paths);
 bool file_has_ctf_debug_info(const string& elf_file_path,
 			     const vector<char**>& debug_info_root_paths);
+bool file_has_btf_debug_info(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths);
 bool is_dir(const string&);
 bool dir_exists(const string&);
 bool dir_is_empty(const string &);

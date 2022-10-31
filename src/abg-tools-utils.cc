@@ -47,6 +47,9 @@
 #ifdef WITH_CTF
 #include "abg-ctf-reader.h"
 #endif
+#ifdef WITH_BTF
+#include "abg-btf-reader.h"
+#endif
 #include "abg-internal.h"
 #include "abg-regex.h"
 
@@ -500,6 +503,34 @@ file_has_ctf_debug_info(const string& elf_file_path,
   for (const auto& path : debug_info_root_paths)
     if (dir_contains_ctf_archive(*path, vmlinux))
       return true;
+
+  return false;
+}
+
+/// Test if an ELF file has BTFG debug info.
+///
+/// @param elf_file_path the path to the ELF file to consider.
+///
+/// @param debug_info_root a vector of pointer to directory to look
+/// for debug info, in case the file is associated to split debug
+/// info.  If there is no split debug info then this vector can be
+/// empty.  Note that convert_char_stars_to_char_star_stars() can be
+/// used to ease the construction of this vector.
+///
+/// @return true iff the ELF file at @elf_file_path is an ELF file
+/// that contains debug info.
+bool
+file_has_btf_debug_info(const string& elf_file_path,
+			const vector<char**>& debug_info_root_paths)
+{
+    if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path, debug_info_root_paths, env);
+
+  if (r.find_btf_section())
+    return true;
 
   return false;
 }
@@ -2852,6 +2883,13 @@ create_best_elf_based_reader(const string& elf_file_path,
 	result = ctf::create_reader(elf_file_path, debug_info_root_paths, env);
 #endif
     }
+  else if (requested_fe_kind & corpus::BTF_ORIGIN)
+    {
+#ifdef WITH_BTF
+      if (file_has_btf_debug_info(elf_file_path, debug_info_root_paths))
+	result = btf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+    }
   else
     {
       // The user hasn't formally requested the use of the CTF front-end.
@@ -2861,6 +2899,14 @@ create_best_elf_based_reader(const string& elf_file_path,
 	// The file has CTF debug info and no DWARF, let's use the CTF
 	// front end even if it wasn't formally requested by the user.
 	result = ctf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+
+#ifdef WITH_BTF
+      if (!file_has_dwarf_debug_info(elf_file_path, debug_info_root_paths)
+	  && file_has_btf_debug_info(elf_file_path, debug_info_root_paths))
+	// The file has BTF debug info and no BTF, let's use the BTF
+	// front-end even if it wasn't formally requested by the user.
+	result = btf::create_reader(elf_file_path, debug_info_root_paths, env);
 #endif
     }
 

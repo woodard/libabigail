@@ -242,6 +242,12 @@ test-abidiff-exit/test-rhbz2114909-v0.o       \
 test-abidiff-exit/test-rhbz2114909-v1.cc      \
 test-abidiff-exit/test-rhbz2114909-v1.o       \
 test-abidiff-exit/test-rhbz2114909-report-1.txt  \
+test-abidiff-exit/btf/test0-report-1.txt	\
+test-abidiff-exit/btf/test0-report-2.txt	\
+test-abidiff-exit/btf/test0-v0.c	\
+test-abidiff-exit/btf/test0-v0.o	\
+test-abidiff-exit/btf/test0-v1.c	\
+test-abidiff-exit/btf/test0-v1.o	\
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
@@ -720,6 +726,13 @@ test-read-ctf/test-array-mdimension.o	\
 test-read-ctf/test-array-size.abi	\
 test-read-ctf/test-array-size.c		\
 test-read-ctf/test-array-size.o		\
+\
+test-read-btf/test0.c 	   			\
+test-read-btf/test0.o      			\
+test-read-btf/test0.o.abi  			\
+test-read-btf/test1.c				\
+test-read-btf/test1.o				\
+test-read-btf/test1.o.abi			\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

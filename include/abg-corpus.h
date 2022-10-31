@@ -48,7 +48,8 @@ public:
     ELF_ORIGIN        = 1 << 1,
     DWARF_ORIGIN      = 1 << 2,
     CTF_ORIGIN        = 1 << 3,
-    LINUX_KERNEL_BINARY_ORIGIN = 1 << 4
+    BTF_ORIGIN        = 1 << 4,
+    LINUX_KERNEL_BINARY_ORIGIN = 1 << 5
   };
 
 private:
