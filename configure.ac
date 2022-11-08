@@ -57,7 +57,7 @@ dnl This one is to be able to run "make check-valgrind"
 dnl and have unit tests run under  der Valgrind.
 m4_include([autoconf-archive/ax_valgrind_check.m4])
 
-AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects tar-ustar parallel-tests])
+AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects dist-xz tar-ustar parallel-tests])
 AM_MAINTAINER_MODE([enable])
 
 AM_SILENT_RULES([yes])
