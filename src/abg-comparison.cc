@@ -3133,8 +3133,6 @@ compute_diff(const decl_base_sptr	first,
   if (!first || !second)
     return diff_sptr();
 
-  ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d;
   if (is_type(first) && is_type(second))
     d = compute_diff_for_types(first, second, ctxt);
@@ -3164,9 +3162,6 @@ compute_diff(const type_base_sptr	first,
 {
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
-
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
 
   diff_sptr d = compute_diff_for_types(f,s, ctxt);
   ABG_ASSERT(d);
@@ -3317,9 +3312,6 @@ compute_diff(const var_decl_sptr	first,
 	     const var_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   var_diff_sptr d(new var_diff(first, second, diff_sptr(), ctxt));
   ctxt->initialize_canonical_diff(d);
 
@@ -3451,9 +3443,6 @@ compute_diff(pointer_type_def_sptr	first,
 	     pointer_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
@@ -3607,9 +3596,6 @@ compute_diff(array_type_def_sptr	first,
 	     array_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d = compute_diff_for_types(first->get_element_type(),
 				       second->get_element_type(),
 				       ctxt);
@@ -3742,9 +3728,6 @@ compute_diff(reference_type_def_sptr	first,
 	     reference_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
@@ -3892,9 +3875,6 @@ compute_diff(const qualified_type_def_sptr	first,
 	     const qualified_type_def_sptr	second,
 	     diff_context_sptr			ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
@@ -4110,9 +4090,6 @@ compute_diff(const enum_type_decl_sptr first,
 	     const enum_type_decl_sptr second,
 	     diff_context_sptr ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
 					second->get_underlying_type(),
 					ctxt);
@@ -5596,9 +5573,6 @@ compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   class_decl_sptr f = is_class_type(look_through_decl_only_class(first)),
     s = is_class_type(look_through_decl_only_class(second));
 
@@ -5821,15 +5795,6 @@ compute_diff(const class_decl::base_spec_sptr	first,
 	     const class_decl::base_spec_sptr	second,
 	     diff_context_sptr			ctxt)
 {
-  if (first && second)
-    {
-      ABG_ASSERT(first->get_environment() == second->get_environment());
-      ABG_ASSERT(first->get_base_class()->get_environment()
-	     == second->get_base_class()->get_environment());
-      ABG_ASSERT(first->get_environment()
-	     == first->get_base_class()->get_environment());
-    }
-
   class_diff_sptr cl = compute_diff(first->get_base_class(),
 				    second->get_base_class(),
 				    ctxt);
@@ -5945,9 +5910,6 @@ compute_diff(const union_decl_sptr	first,
 	     const union_decl_sptr	second,
 	     diff_context_sptr	ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   union_diff_sptr changes(new union_diff(first, second, ctxt));
 
   ctxt->initialize_canonical_diff(changes);
@@ -6449,9 +6411,6 @@ compute_diff(const scope_decl_sptr	first,
 {
   ABG_ASSERT(d->first_scope() == first && d->second_scope() == second);
 
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   compute_diff(first->get_member_decls().begin(),
 	       first->get_member_decls().end(),
 	       second->get_member_decls().begin(),
@@ -6482,10 +6441,6 @@ compute_diff(const scope_decl_sptr	first_scope,
 	     const scope_decl_sptr	second_scope,
 	     diff_context_sptr		ctxt)
 {
-  if (first_scope && second_scope)
-    ABG_ASSERT(first_scope->get_environment()
-	   == second_scope->get_environment());
-
   scope_diff_sptr d(new scope_diff(first_scope, second_scope, ctxt));
   d = compute_diff(first_scope, second_scope, d, ctxt);
   ctxt->initialize_canonical_diff(d);
@@ -6631,8 +6586,6 @@ compute_diff(const function_decl::parameter_sptr	first,
 {
   if (!first || !second)
     return fn_parm_diff_sptr();
-
-  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   fn_parm_diff_sptr result(new fn_parm_diff(first, second, ctxt));
   ctxt->initialize_canonical_diff(result);
@@ -6930,8 +6883,6 @@ compute_diff(const function_type_sptr	first,
       return function_type_diff_sptr();
     }
 
-  ABG_ASSERT(first->get_environment() == second->get_environment());
-
   function_type_diff_sptr result(new function_type_diff(first, second, ctxt));
 
   diff_utils::compute_diff(first->get_first_parm(),
@@ -7072,8 +7023,6 @@ compute_diff(const function_decl_sptr first,
       return function_decl_diff_sptr();
     }
 
-  ABG_ASSERT(first->get_environment() == second->get_environment());
-
   function_type_diff_sptr type_diff = compute_diff(first->get_type(),
 						   second->get_type(),
 						   ctxt);
@@ -7196,9 +7145,6 @@ compute_diff(const type_decl_sptr	first,
 	     const type_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   type_decl_diff_sptr result(new type_decl_diff(first, second, ctxt));
 
   // We don't need to actually compute a diff here as a type_decl
@@ -7349,9 +7295,6 @@ compute_diff(const typedef_decl_sptr	first,
 	     const typedef_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (first && second)
-    ABG_ASSERT(first->get_environment() == second->get_environment());
-
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
@@ -7469,8 +7412,6 @@ compute_diff(const translation_unit_sptr	first,
 	     diff_context_sptr			ctxt)
 {
   ABG_ASSERT(first && second);
-
-  ABG_ASSERT(first->get_environment() == second->get_environment());
 
   if (!ctxt)
     ctxt.reset(new diff_context);
@@ -10929,10 +10870,6 @@ compute_diff(const corpus_sptr	f,
 
   ABG_ASSERT(f && s);
 
-  // We can only compare two corpora that were built out of the same
-  // environment.
-  ABG_ASSERT(f->get_environment() == s->get_environment());
-
   if (!ctxt)
     ctxt.reset(new diff_context);
 
@@ -12272,11 +12209,11 @@ is_diff_of_variadic_parameter_type(const diff* d)
     return false;
 
   type_base_sptr t = is_type(d->first_subject());
-  if (t && t->get_environment()->is_variadic_parameter_type(t))
+  if (t && t->get_environment().is_variadic_parameter_type(t))
     return true;
 
   t = is_type(d->second_subject());
-  if (t && t->get_environment()->is_variadic_parameter_type(t))
+  if (t && t->get_environment().is_variadic_parameter_type(t))
     return true;
 
   return false;

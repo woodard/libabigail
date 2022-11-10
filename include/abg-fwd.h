@@ -1384,7 +1384,7 @@ string
 demangle_cplus_mangled_name(const string&);
 
 type_base_sptr
-type_or_void(const type_base_sptr, const environment*);
+type_or_void(const type_base_sptr, const environment&);
 
 type_base_sptr
 canonicalize(type_base_sptr);

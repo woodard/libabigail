@@ -415,10 +415,10 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  environment_sptr env(new environment);
+  environment env;
 
   if (opts.exported_interfaces_only.has_value())
-    env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;
@@ -451,7 +451,7 @@ main(int argc, char* argv[])
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group1 =
 	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root1,
-						 env.get());
+						 env);
 
     }
 
@@ -477,7 +477,7 @@ main(int argc, char* argv[])
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group2 =
 	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root2,
-						 env.get());
+						 env);
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;

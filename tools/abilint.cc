@@ -702,7 +702,7 @@ main(int argc, char* argv[])
   if (!maybe_check_suppression_files(opts))
     return 1;
 
-  abigail::ir::environment_sptr env(new abigail::ir::environment);
+  abigail::ir::environment env;
   if (opts.read_from_stdin)
     {
       if (!cin.good())
@@ -711,7 +711,7 @@ main(int argc, char* argv[])
       if (opts.read_tu)
 	{
 	  abigail::translation_unit_sptr tu =
-	    read_translation_unit_from_istream(&cin, env.get());
+	    read_translation_unit_from_istream(&cin, env);
 
 	  if (!tu)
 	    {
@@ -723,7 +723,7 @@ main(int argc, char* argv[])
 	  if (!opts.noout)
 	    {
 	      const write_context_sptr& ctxt
-		  = create_write_context(tu->get_environment(), cout);
+		  = create_write_context(env, cout);
 	      write_translation_unit(*ctxt, *tu, 0);
 	    }
 	  return 0;
@@ -732,14 +732,14 @@ main(int argc, char* argv[])
 	{
 	  abigail::xml_reader::read_context_sptr ctxt =
 	    abigail::xml_reader::create_native_xml_read_context(&cin,
-								env.get());
+								env);
 	  assert(ctxt);
 	  set_suppressions(*ctxt, opts);
 	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  if (!opts.noout)
 	    {
 	      const write_context_sptr& ctxt
-		  = create_write_context(corp->get_environment(), cout);
+		  = create_write_context(env, cout);
 	      write_corpus(*ctxt, corp, /*indent=*/0);
 	    }
 	  return 0;
@@ -768,7 +768,7 @@ main(int argc, char* argv[])
 	  {
 	    abixml_read_ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env.get());
+								  env);
 	    tu = read_translation_unit(*abixml_read_ctxt);
 	  }
 	  break;
@@ -785,7 +785,7 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt =
                   abigail::ctf_reader::create_read_context(opts.file_path,
                                                            di_roots,
-                                                           env.get());
+                                                           env);
                 ABG_ASSERT(ctxt);
                 corp = abigail::ctf_reader::read_corpus(ctxt.get(), s);
               }
@@ -794,7 +794,7 @@ main(int argc, char* argv[])
               {
                 abigail::dwarf_reader::read_context_sptr ctxt =
                   abigail::dwarf_reader::create_read_context(opts.file_path,
-                                                             di_roots, env.get(),
+                                                             di_roots, env,
                                                              /*load_all_types=*/false);
                 assert(ctxt);
                 set_suppressions(*ctxt, opts);
@@ -806,7 +806,7 @@ main(int argc, char* argv[])
 	  {
 	    abixml_read_ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env.get());
+								  env);
 	    assert(abixml_read_ctxt);
 	    set_suppressions(*abixml_read_ctxt, opts);
 	    corp = read_corpus_from_input(*abixml_read_ctxt);
@@ -816,7 +816,7 @@ main(int argc, char* argv[])
 	  {
 	    abixml_read_ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env.get());
+								  env);
 	    assert(abixml_read_ctxt);
 	    set_suppressions(*abixml_read_ctxt, opts);
 	    group = read_corpus_group_from_input(*abixml_read_ctxt);
@@ -874,15 +874,6 @@ main(int argc, char* argv[])
 	}
 
       std::ostream& of = opts.diff ? tmp_file->get_stream() : cout;
-      const abigail::ir::environment* env = 0;
-      if (tu)
-	env = tu->get_environment();
-      else if (corp)
-	env = corp->get_environment();
-      else if (group)
-	env = group->get_environment();
-
-      ABG_ASSERT(env);
       const write_context_sptr ctxt = create_write_context(env, of);
 
       bool is_ok = true;

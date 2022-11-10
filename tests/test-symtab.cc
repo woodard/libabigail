@@ -42,10 +42,10 @@ read_corpus(const std::string&		    path,
 {
   const std::string& absolute_path = test_data_dir + path;
 
-  environment_sptr	    env(new environment);
+  environment env;
   const std::vector<char**> debug_info_root_paths;
   read_context_sptr	    ctxt =
-      create_read_context(absolute_path, debug_info_root_paths, env.get(),
+      create_read_context(absolute_path, debug_info_root_paths, env,
 			  /* load_all_type = */ true,
 			  /* linux_kernel_mode = */ true);
 

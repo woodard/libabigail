@@ -2537,19 +2537,18 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
                                 suppressions_type&  supprs,
                                 bool                verbose,
                                 timer&              t,
-                                environment_sptr&   env)
+                                environment&        env)
 {
   if (!(origin & corpus::DWARF_ORIGIN))
     return;
 
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
+   abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
   dwarf_reader::read_context_sptr ctxt;
   ctxt =
-   dwarf_reader::create_read_context(vmlinux, di_roots, env.get(),
-                                     /*read_all_types=*/false,
-                                     /*linux_kernel_mode=*/true);
-  dwarf_reader::set_do_log(*ctxt, verbose);
-
+    dwarf_reader::create_read_context(vmlinux, di_roots, env,
+                                      /*read_all_types=*/false,
+                                      /*linux_kernel_mode=*/true);
+   dwarf_reader::set_do_log(*ctxt, verbose);
   t.start();
   load_generate_apply_suppressions(*ctxt, suppr_paths,
                                    kabi_wl_paths, supprs);
@@ -2560,7 +2559,7 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
      << t
      << "\n";
 
-  group.reset(new corpus_group(env.get(), root));
+  group.reset(new corpus_group(env, root));
 
   set_read_context_corpus_group(*ctxt, group);
 
@@ -2595,7 +2594,7 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, di_roots, env.get(),
+      reset_read_context(ctxt, *m, di_roots,
                          /*read_all_types=*/false,
                          /*linux_kernel_mode=*/true);
 
@@ -2652,15 +2651,15 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
                               vector<char**>&     di_roots,
                               bool                verbose,
                               timer&              t,
-                              environment_sptr&   env)
+                              environment&        env)
 {
   if (!(origin & corpus::CTF_ORIGIN))
     return;
 
   abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
   ctf_reader::read_context_sptr ctxt;
-  ctxt = ctf_reader::create_read_context(vmlinux, di_roots, env.get());
-  group.reset(new corpus_group(env.get(), root));
+  ctxt = ctf_reader::create_read_context(vmlinux, di_roots, env);
+  group.reset(new corpus_group(env, root));
   set_read_context_corpus_group(*ctxt, group);
 
   if (verbose)
@@ -2694,7 +2693,7 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, di_roots, env.get());
+      reset_read_context(ctxt, *m, di_roots);
       set_read_context_corpus_group(*ctxt, group);
 
       t.start();
@@ -2757,7 +2756,7 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  vector<string>&	kabi_wl_paths,
 					  suppressions_type&	supprs,
 					  bool			verbose,
-					  environment_sptr&	env,
+					  environment&		env,
 					  corpus::origin	origin)
 {
   string vmlinux = vmlinux_path;

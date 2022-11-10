@@ -892,7 +892,7 @@ compare_symbol_name(const string& symbol_name,
 /// @param syms_found a vector of symbols found with the name @p
 /// sym_name.  table.
 static bool
-lookup_symbol_from_sysv_hash_tab(const environment*		env,
+lookup_symbol_from_sysv_hash_tab(const environment&		env,
 				 Elf*				elf_handle,
 				 const string&			sym_name,
 				 size_t			ht_index,
@@ -1169,7 +1169,7 @@ setup_gnu_ht(Elf* elf_handle,
 ///
 /// @return true if a symbol was actually found.
 static bool
-lookup_symbol_from_gnu_hash_tab(const environment*		env,
+lookup_symbol_from_gnu_hash_tab(const environment&		env,
 				Elf*				elf_handle,
 				const string&			sym_name,
 				size_t				ht_index,
@@ -1301,7 +1301,7 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
 /// @return true iff the function found the symbol from the elf hash
 /// table.
 static bool
-lookup_symbol_from_elf_hash_tab(const environment*		env,
+lookup_symbol_from_elf_hash_tab(const environment&		env,
 				Elf*				elf_handle,
 				hash_table_kind		ht_kind,
 				size_t				ht_index,
@@ -1358,7 +1358,7 @@ lookup_symbol_from_elf_hash_tab(const environment*		env,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_symbol_from_symtab(const environment*		env,
+lookup_symbol_from_symtab(const environment&		env,
 			  Elf*				elf_handle,
 			  const string&		sym_name,
 			  size_t			sym_tab_index,
@@ -1449,7 +1449,7 @@ lookup_symbol_from_symtab(const environment*		env,
 ///
 /// @return true iff a symbol with the name @p symbol_name was found.
 static bool
-lookup_symbol_from_elf(const environment*		env,
+lookup_symbol_from_elf(const environment&		env,
 		       Elf*				elf_handle,
 		       const string&			symbol_name,
 		       bool				demangle,
@@ -1500,7 +1500,7 @@ lookup_symbol_from_elf(const environment*		env,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_public_function_symbol_from_elf(const environment*		env,
+lookup_public_function_symbol_from_elf(environment&			env,
 				       Elf*				elf_handle,
 				       const string&			symbol_name,
 				       vector<elf_symbol_sptr>&	func_syms)
@@ -2019,14 +2019,14 @@ class read_context
 public:
   struct options_type
   {
-    environment*	env;
+    environment&	env;
     bool		load_in_linux_kernel_mode;
     bool		load_all_types;
     bool		show_stats;
     bool		do_log;
 
-    options_type()
-      : env(),
+    options_type(environment& e)
+      : env(e),
 	load_in_linux_kernel_mode(),
 	load_all_types(),
 	show_stats(),
@@ -2280,11 +2280,12 @@ public:
   /// exported or not.
   read_context(const string&	elf_path,
 	       const vector<char**>& debug_info_root_paths,
-	       ir::environment* environment,
+	       ir::environment& environment,
 	       bool		load_all_types,
 	       bool		linux_kernel_mode)
+    : options_(environment)
   {
-    initialize(elf_path, debug_info_root_paths, environment,
+    initialize(elf_path, debug_info_root_paths,
 	       load_all_types, linux_kernel_mode);
   }
 
@@ -2320,7 +2321,6 @@ public:
   void
   initialize(const string&	elf_path,
 	     const vector<char**>& debug_info_root_paths,
-	     ir::environment* environment,
 	     bool		load_all_types,
 	     bool		linux_kernel_mode)
   {
@@ -2378,7 +2378,6 @@ public:
 
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
     create_default_dwfl(debug_info_root_paths);
-    options_.env = environment;
     options_.load_in_linux_kernel_mode = linux_kernel_mode;
     options_.load_all_types = load_all_types;
     drop_undefined_syms_ = false;
@@ -2442,23 +2441,16 @@ public:
   /// Getter for the current environment.
   ///
   /// @return the current environment.
-  const ir::environment*
-  env() const
+  environment&
+  env()
   {return options_.env;}
 
   /// Getter for the current environment.
   ///
   /// @return the current environment.
-  ir::environment*
-  env()
-  {return options_.env;}
-
-  /// Setter for the current environment.
-  ///
-  /// @param env the new current environment.
-  void
-  env(ir::environment* env)
-  {options_.env = env;}
+  const environment&
+  env() const
+  {return const_cast<read_context*>(this)->env();}
 
   /// Getter for the flag that tells us if we are dropping functions
   /// and variables that have undefined symbols.
@@ -3333,7 +3325,7 @@ public:
       {
 	read_context& ctxt  = *const_cast<read_context*>(this);
 	string qualified_name = die_qualified_name(ctxt, die, where_offset);
-	interned_string istr = env()->intern(qualified_name);
+	interned_string istr = env().intern(qualified_name);
 	map[die_offset] = istr;
 	return istr;
       }
@@ -3384,7 +3376,7 @@ public:
 
     // The name of the translation unit die is "".
     if (die == cur_tu_die())
-      return env()->intern("");
+      return env().intern("");
 
     die_istring_map_type& map =
       die_qualified_name_maps_.get_container(*const_cast<read_context*>(this),
@@ -3412,7 +3404,7 @@ public:
 	  qualified_name =
 	    die_qualified_type_name(ctxt, die, where_offset);
 
-	interned_string istr = env()->intern(qualified_name);
+	interned_string istr = env().intern(qualified_name);
 	map[die_offset] = istr;
 	return istr;
       }
@@ -3453,7 +3445,7 @@ public:
 	read_context& ctxt = *const_cast<read_context*>(this);
 	string pretty_representation =
 	  die_pretty_print_type(ctxt, die, where_offset);
-	interned_string istr = env()->intern(pretty_representation);
+	interned_string istr = env().intern(pretty_representation);
 	map[die_offset] = istr;
 	return istr;
       }
@@ -3490,7 +3482,7 @@ public:
 	read_context& ctxt = *const_cast<read_context*>(this);
 	string pretty_representation =
 	  die_pretty_print(ctxt, die, where_offset);
-	interned_string istr = env()->intern(pretty_representation);
+	interned_string istr = env().intern(pretty_representation);
 	map[die_offset] = istr;
 	return istr;
       }
@@ -4262,16 +4254,16 @@ public:
     if (!l || !r)
       return !!l == !!r;
 
-    const environment* e = l->get_environment();
-    ABG_ASSERT(!e->canonicalization_is_done());
+    const environment& e = l->get_environment();
+    ABG_ASSERT(!e.canonicalization_is_done());
 
-    e->priv_->allow_type_comparison_results_caching(true);
-    bool s0 = e->decl_only_class_equals_definition();
-    e->decl_only_class_equals_definition(true);
+    e.priv_->allow_type_comparison_results_caching(true);
+    bool s0 = e.decl_only_class_equals_definition();
+    e.decl_only_class_equals_definition(true);
     bool equal = l == r;
-    e->decl_only_class_equals_definition(s0);
-    e->priv_->clear_type_comparison_results_cache();
-    e->priv_->allow_type_comparison_results_caching(false);
+    e.decl_only_class_equals_definition(s0);
+    e.priv_->clear_type_comparison_results_cache();
+    e.priv_->allow_type_comparison_results_caching(false);
     return equal;
   }
 
@@ -12764,7 +12756,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   do
     // Analyze all the DIEs we encounter unless we are asked to only
     // analyze exported interfaces and the types reachables from them.
-    if (!ctxt.env()->analyze_exported_interfaces_only()
+    if (!ctxt.env().analyze_exported_interfaces_only()
 	|| ctxt.is_decl_die_with_exported_symbol(&child))
       build_ir_node_from_die(ctxt, &child,
 			     die_is_public_decl(&child),
@@ -13098,7 +13090,7 @@ build_enum_type(read_context&	ctxt,
 	  die_loc_and_name(ctxt, &child, l, n, m);
 	  uint64_t val = 0;
 	  die_unsigned_constant_attribute(&child, DW_AT_const_value, val);
-	  enms.push_back(enum_type_decl::enumerator(ctxt.env(), n, val));
+	  enms.push_back(enum_type_decl::enumerator(n, val));
 	}
       while (dwarf_siblingof(&child, &child) == 0);
     }
@@ -14698,8 +14690,7 @@ build_function_type(read_context&	ctxt,
 	  {
 	    // This is a variadic function parameter.
 	    bool is_artificial = die_is_artificial(&child);
-	    ir::environment* env = ctxt.env();
-	    ABG_ASSERT(env);
+
 	    type_base_sptr parm_type =
 	      is_type(build_ir_node_for_variadic_parameter_type(ctxt));
 	    function_decl::parameter_sptr p
@@ -15044,7 +15035,7 @@ build_typedef_type(read_context&	ctxt,
       if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
 	// A typedef DIE with no underlying type means a typedef to
 	// void type.
-	utype = ctxt.env()->get_void_type();
+	utype = ctxt.env().get_void_type();
 
       if (!utype)
 	utype =
@@ -15639,7 +15630,7 @@ get_opaque_version_of_type(read_context	&ctxt,
 ///
 /// @return the newly created symbol.
 elf_symbol_sptr
-create_default_fn_sym(const string& sym_name, const environment *env)
+create_default_fn_sym(const string& sym_name, const environment& env)
 {
   elf_symbol::version ver;
   elf_symbol_sptr result =
@@ -15795,14 +15786,14 @@ read_debug_info_into_corpus(read_context& ctxt)
   ctxt.current_corpus()->set_origin(origin);
 
   if (origin & corpus::LINUX_KERNEL_BINARY_ORIGIN
-      && !ctxt.env()->user_set_analyze_exported_interfaces_only())
+      && !ctxt.env().user_set_analyze_exported_interfaces_only())
     // So we are looking at the Linux Kernel and the user has not set
     // any particular option regarding the amount of types to analyse.
     // In that case, we need to only analyze types that are reachable
     // from exported interfaces otherwise we get such a massive amount
     // of type DIEs to look at that things are just too slow down the
     // road.
-    ctxt.env()->analyze_exported_interfaces_only(true);
+    ctxt.env().analyze_exported_interfaces_only(true);
 
   ctxt.current_corpus()->set_soname(ctxt.dt_soname());
   ctxt.current_corpus()->set_needed(ctxt.dt_needed());
@@ -15825,8 +15816,8 @@ read_debug_info_into_corpus(read_context& ctxt)
     (ctxt.current_corpus()->get_exported_decls_builder().get());
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  if (ctxt.env()->self_comparison_debug_is_on())
-    ctxt.env()->set_self_comparison_debug_input(ctxt.current_corpus());
+  if (ctxt.env().self_comparison_debug_is_on())
+    ctxt.env().set_self_comparison_debug_input(ctxt.current_corpus());
 #endif
 
   // Walk all the DIEs of the debug info to build a DIE -> parent map
@@ -15851,7 +15842,7 @@ read_debug_info_into_corpus(read_context& ctxt)
       }
   }
 
-  ctxt.env()->canonicalization_is_done(false);
+  ctxt.env().canonicalization_is_done(false);
 
   {
     tools_utils::timer t;
@@ -15987,7 +15978,7 @@ read_debug_info_into_corpus(read_context& ctxt)
       }
   }
 
-  ctxt.env()->canonicalization_is_done(true);
+  ctxt.env().canonicalization_is_done(true);
 
   {
     tools_utils::timer t;
@@ -16739,9 +16730,8 @@ build_ir_node_from_die(read_context&	ctxt,
 static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt)
 {
-  ir::environment* env = ctxt.env();
-  ABG_ASSERT(env);
-  type_base_sptr t = env->get_void_type();
+  ir::environment& env = ctxt.env();
+  type_base_sptr t = env.get_void_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
   if (!has_scope(type_declaration))
     add_decl_to_scope(type_declaration,
@@ -16759,9 +16749,8 @@ static decl_base_sptr
 build_ir_node_for_variadic_parameter_type(read_context &ctxt)
 {
 
-  ir::environment* env = ctxt.env();
-  ABG_ASSERT(env);
-  type_base_sptr t = env->get_variadic_parameter_type();
+  ir::environment& env = ctxt.env();
+  type_base_sptr t = env.get_variadic_parameter_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
   if (!has_scope(type_declaration))
     add_decl_to_scope(type_declaration,
@@ -16862,7 +16851,7 @@ build_ir_node_from_die(read_context&	ctxt,
 read_context_sptr
 create_read_context(const std::string&		elf_path,
 		    const vector<char**>&	debug_info_root_paths,
-		    ir::environment*		environment,
+		    ir::environment&		environment,
 		    bool			load_all_types,
 		    bool			linux_kernel_mode)
 {
@@ -16919,12 +16908,11 @@ void
 reset_read_context(read_context_sptr	&ctxt,
 		   const std::string&	 elf_path,
 		   const vector<char**>& debug_info_root_path,
-		   ir::environment*	 environment,
 		   bool		 read_all_types,
 		   bool		 linux_kernel_mode)
 {
   if (ctxt)
-    ctxt->initialize(elf_path, debug_info_root_path, environment,
+    ctxt->initialize(elf_path, debug_info_root_path,
 		     read_all_types, linux_kernel_mode);
 }
 
@@ -17082,7 +17070,7 @@ read_and_add_corpus_to_group_from_elf(read_context& ctxt,
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
 		     const vector<char**>& debug_info_root_paths,
-		     ir::environment*	environment,
+		     environment&	environment,
 		     bool		load_all_types,
 		     status&		status)
 {
@@ -17111,7 +17099,7 @@ read_corpus_from_elf(const std::string& elf_path,
 /// @return true iff the symbol was found among the publicly exported
 /// symbols of the ELF file.
 bool
-lookup_symbol_from_elf(const environment*		env,
+lookup_symbol_from_elf(const environment&		env,
 		       const string&			elf_path,
 		       const string&			symbol_name,
 		       bool				demangle,
@@ -17156,7 +17144,7 @@ lookup_symbol_from_elf(const environment*		env,
 /// @return true iff a function with symbol name @p symbol_name is
 /// found.
 bool
-lookup_public_function_symbol_from_elf(const environment*		env,
+lookup_public_function_symbol_from_elf(environment&			env,
 				       const string&			path,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	syms)
@@ -17279,7 +17267,8 @@ has_alt_debug_info(const string&	elf_path,
 {
   vector<char**> di_roots;
   di_roots.push_back(debug_info_root_path);
-  read_context_sptr c = create_read_context(elf_path, di_roots, 0);
+  environment env;
+  read_context_sptr c = create_read_context(elf_path, di_roots, env);
   read_context& ctxt = *c;
 
   // Load debug info from the elf path.

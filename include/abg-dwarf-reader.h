@@ -53,7 +53,7 @@ typedef shared_ptr<read_context> read_context_sptr;
 read_context_sptr
 create_read_context(const std::string&	elf_path,
 		    const vector<char**>& debug_info_root_paths,
-		    ir::environment*	environment,
+		    ir::environment&	environment,
 		    bool		read_all_types = false,
 		    bool		linux_kernel_mode = false);
 
@@ -64,7 +64,6 @@ void
 reset_read_context(read_context_sptr &ctxt,
 		   const std::string&	elf_path,
 		   const vector<char**>& debug_info_root_paths,
-		   ir::environment*	environment,
 		   bool		read_all_types = false,
 		   bool		linux_kernel_mode = false);
 
@@ -81,7 +80,7 @@ read_corpus_from_elf(read_context& ctxt, elf_reader::status& stat);
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
 		     const vector<char**>& debug_info_root_paths,
-		     ir::environment*	environment,
+		     ir::environment&	environment,
 		     bool		load_all_types,
 		     elf_reader::status&);
 
@@ -89,14 +88,14 @@ corpus_sptr
 read_and_add_corpus_to_group_from_elf(read_context&, corpus_group&, elf_reader::status&);
 
 bool
-lookup_symbol_from_elf(const environment*		env,
+lookup_symbol_from_elf(const environment&		env,
 		       const string&			elf_path,
 		       const string&			symbol_name,
 		       bool				demangle,
 		       vector<elf_symbol_sptr>&	symbols);
 
 bool
-lookup_public_function_symbol_from_elf(const environment*		env,
+lookup_public_function_symbol_from_elf(const environment&		env,
 				       const string&			path,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	func_syms);

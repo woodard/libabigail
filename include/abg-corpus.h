@@ -60,18 +60,12 @@ public:
   struct priv;
   std::unique_ptr<priv> priv_;
 
-  corpus(ir::environment*, const string& path= "");
+  corpus(const ir::environment&, const string& path= "");
 
   virtual ~corpus();
 
-  const environment*
+  const environment&
   get_environment() const;
-
-  environment*
-  get_environment();
-
-  void
-  set_environment(environment*);
 
   void
   add(const translation_unit_sptr);
@@ -355,7 +349,7 @@ class corpus_group : public corpus
 public:
   typedef vector<corpus_sptr> corpora_type;
 
-  corpus_group(ir::environment*, const string&);
+  corpus_group(const ir::environment&, const string&);
 
   virtual ~corpus_group();
 

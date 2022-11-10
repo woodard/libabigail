@@ -531,7 +531,7 @@ set_suppressions(dwarf_reader::read_context& read_ctxt, options& opts)
 /// otherwise.
 static int
 load_corpus_and_write_abixml(char* argv[],
-			     environment_sptr& env,
+			     environment& env,
 			     options& opts)
 {
   int exit_code = 0;
@@ -539,14 +539,14 @@ load_corpus_and_write_abixml(char* argv[],
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (opts.debug_abidiff)
-    env->self_comparison_debug_is_on(true);
+    env.self_comparison_debug_is_on(true);
 #endif
 
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
   if (opts.debug_type_canonicalization)
-    env->debug_type_canonicalization_is_on(true);
+    env.debug_type_canonicalization_is_on(true);
   if (opts.debug_die_canonicalization)
-    env->debug_die_canonicalization_is_on(true);
+    env.debug_die_canonicalization_is_on(true);
 #endif
 
   // First of all, read a libabigail IR corpus from the file specified
@@ -559,7 +559,7 @@ load_corpus_and_write_abixml(char* argv[],
       abigail::ctf_reader::read_context_sptr ctxt
         = abigail::ctf_reader::create_read_context(opts.in_file_path,
                                                    opts.prepared_di_root_paths,
-                                                   env.get());
+                                                   env);
       assert (ctxt);
       t.start();
       corp = abigail::ctf_reader::read_corpus (ctxt, s);
@@ -574,7 +574,7 @@ load_corpus_and_write_abixml(char* argv[],
       dwarf_reader::read_context_sptr c
         = abigail::dwarf_reader::create_read_context(opts.in_file_path,
                                                      opts.prepared_di_root_paths,
-                                                     env.get(),
+                                                     env,
                                                      opts.load_all_types,
                                                      opts.linux_kernel_mode);
       dwarf_reader::read_context& ctxt = *c;
@@ -615,8 +615,10 @@ load_corpus_and_write_abixml(char* argv[],
             }
         }
 
-      if (opts.exported_interfaces_only.has_value())
-	env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+  // ... if we are asked to only analyze exported interfaces (to stay
+  // concise), then take that into account ...
+  if (opts.exported_interfaces_only.has_value())
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
       t.start();
       corp = dwarf_reader::read_corpus_from_elf(ctxt, s);
@@ -707,7 +709,7 @@ load_corpus_and_write_abixml(char* argv[],
         }
 #endif
       xml_reader::read_context_sptr read_ctxt =
-        create_native_xml_read_context(tmp_file->get_path(), env.get());
+        create_native_xml_read_context(tmp_file->get_path(), env);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
       if (opts.debug_abidiff
@@ -810,7 +812,7 @@ load_corpus_and_write_abixml(char* argv[],
 /// otherwise.
 static int
 load_kernel_corpus_group_and_write_abixml(char* argv[],
-					  environment_sptr& env,
+					  environment& env,
 					  options& opts)
 {
   if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
@@ -826,7 +828,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   suppressions_type supprs;
 
   if (opts.exported_interfaces_only.has_value())
-    env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   if (opts.do_log)
     emit_prefix(argv[0], cerr)
@@ -861,7 +863,7 @@ corpus::origin origin =
   if (!opts.noout)
     {
       const xml_writer::write_context_sptr& ctxt
-	  = xml_writer::create_write_context(group->get_environment(), cout);
+	  = xml_writer::create_write_context(env, cout);
       set_common_options(*ctxt, opts);
 
       if (!opts.out_file_path.empty())
@@ -983,7 +985,7 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  environment_sptr env(new environment);
+  environment env;
   int exit_code = 0;
 
   if (tools_utils::is_regular_file(opts.in_file_path))

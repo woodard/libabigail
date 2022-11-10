@@ -131,9 +131,9 @@ main(int argc, char* argv[])
 	 && opts.symbol_name != 0);
 
   string p = opts.elf_path, n = opts.symbol_name;
-  environment_sptr env(new environment);
+  environment env;
   vector<elf_symbol_sptr> syms;
-  if (!lookup_symbol_from_elf(env.get(), p, n, opts.demangle, syms))
+  if (!lookup_symbol_from_elf(env, p, n, opts.demangle, syms))
     {
       cout << "could not find symbol '"
 	   << opts.symbol_name

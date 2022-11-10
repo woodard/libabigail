@@ -657,7 +657,7 @@ perform_compat_check_in_weak_mode(options& opts,
 static corpus_sptr
 read_corpus(options opts, status &status,
 	    const vector<char**> di_roots,
-	    const environment_sptr &env,
+	    environment&      env,
 	    const string &path)
 {
   corpus_sptr retval = NULL;
@@ -677,14 +677,14 @@ read_corpus(options opts, status &status,
 	  {
 	    abigail::ctf_reader::read_context_sptr r_ctxt
 	      = abigail::ctf_reader::create_read_context(path,
-							 env.get());
+							 env);
 	    ABG_ASSERT(r_ctxt);
 
 	    retval = abigail::ctf_reader::read_corpus(r_ctxt.get(), status);
 	  }
 	else
 #endif
-	  retval = read_corpus_from_elf(path, di_roots, env.get(),
+	  retval = read_corpus_from_elf(path, di_roots, env,
 					/*load_all_types=*/opts.weak_mode,
 					status);
       }
@@ -692,7 +692,7 @@ read_corpus(options opts, status &status,
     case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
       {
 	abigail::xml_reader::read_context_sptr r_ctxt =
-	  abigail::xml_reader::create_native_xml_read_context(path, env.get());
+	  abigail::xml_reader::create_native_xml_read_context(path, env);
 	assert(r_ctxt);
 	retval = abigail::xml_reader::read_corpus_from_input(*r_ctxt);
       }
@@ -789,7 +789,7 @@ main(int argc, char* argv[])
   vector<char**> app_di_roots;
   app_di_roots.push_back(&app_di_root);
   status status = abigail::elf_reader::STATUS_UNKNOWN;
-  environment_sptr env(new environment);
+  environment env;
 
   corpus_sptr app_corpus = read_corpus(opts, status,
 				       app_di_roots, env,

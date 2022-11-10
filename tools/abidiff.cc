@@ -1153,17 +1153,17 @@ main(int argc, char* argv[])
       t1_type = guess_file_type(opts.file1);
       t2_type = guess_file_type(opts.file2);
 
-      environment_sptr env(new environment);
+      environment env;
       if (opts.exported_interfaces_only.has_value())
-	env->analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+	env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
 	    if (opts.do_debug_self_comparison)
-	      env->self_comparison_debug_is_on(true);
+	      env.self_comparison_debug_is_on(true);
 #endif
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
 	    if (opts.do_debug_type_canonicalization)
-	      env->debug_type_canonicalization_is_on(true);
+	      env.debug_type_canonicalization_is_on(true);
 #endif
       translation_unit_sptr t1, t2;
       abigail::elf_reader::status c1_status =
@@ -1194,7 +1194,7 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1,
-								    env.get());
+								    env);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF: // fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
@@ -1205,7 +1205,7 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file1,
                                                              opts.prepared_di_root_paths1,
-                                                             env.get());
+                                                             env);
                 ABG_ASSERT(ctxt);
                 c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
                                                       c1_status);
@@ -1216,7 +1216,7 @@ main(int argc, char* argv[])
                 abigail::dwarf_reader::read_context_sptr ctxt =
                   abigail::dwarf_reader::create_read_context
                   (opts.file1, opts.prepared_di_root_paths1,
-                   env.get(), /*read_all_types=*/opts.show_all_types,
+                   env, /*read_all_types=*/opts.show_all_types,
                    opts.linux_kernel_mode);
                 assert(ctxt);
 
@@ -1237,7 +1237,7 @@ main(int argc, char* argv[])
 	  {
 	    abigail::xml_reader::read_context_sptr ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
-								  env.get());
+								  env);
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    set_native_xml_reader_options(*ctxt, opts);
@@ -1251,7 +1251,7 @@ main(int argc, char* argv[])
 	  {
 	    abigail::xml_reader::read_context_sptr ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
-								  env.get());
+								  env);
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    set_native_xml_reader_options(*ctxt, opts);
@@ -1278,7 +1278,7 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2,
-								    env.get());
+								    env);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
@@ -1289,7 +1289,7 @@ main(int argc, char* argv[])
                 abigail::ctf_reader::read_context_sptr ctxt
                   = abigail::ctf_reader::create_read_context(opts.file2,
                                                              opts.prepared_di_root_paths2,
-                                                             env.get());
+                                                             env);
                 ABG_ASSERT(ctxt);
                 c2 = abigail::ctf_reader::read_corpus(ctxt.get(),
                                                       c2_status);
@@ -1300,7 +1300,7 @@ main(int argc, char* argv[])
                 abigail::dwarf_reader::read_context_sptr ctxt =
                   abigail::dwarf_reader::create_read_context
                   (opts.file2, opts.prepared_di_root_paths2,
-                   env.get(), /*read_all_types=*/opts.show_all_types,
+                   env, /*read_all_types=*/opts.show_all_types,
                    opts.linux_kernel_mode);
                 assert(ctxt);
                 abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
@@ -1320,7 +1320,7 @@ main(int argc, char* argv[])
 	  {
 	    abigail::xml_reader::read_context_sptr ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
-								  env.get());
+								  env);
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    set_native_xml_reader_options(*ctxt, opts);
@@ -1334,7 +1334,7 @@ main(int argc, char* argv[])
 	  {
 	    abigail::xml_reader::read_context_sptr ctxt =
 	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
-								  env.get());
+								  env);
 	    assert(ctxt);
 	    set_suppressions(*ctxt, opts);
 	    set_native_xml_reader_options(*ctxt, opts);

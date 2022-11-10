@@ -348,12 +348,11 @@ test_task_ctf::test_task_ctf(const InOutSpec &s,
 void
 test_task_ctf::perform()
 {
-  abigail::ir::environment_sptr env;
+  abigail::ir::environment env;
 
   set_in_elf_path();
   set_in_suppr_spec_path();
 
-  env.reset(new abigail::ir::environment);
   abigail::elf_reader::status status =
     abigail::elf_reader::STATUS_UNKNOWN;
   vector<char**> di_roots;
@@ -361,7 +360,7 @@ test_task_ctf::perform()
 
   read_context_sptr ctxt = create_read_context(in_elf_path,
                                                di_roots,
-                                               env.get());
+                                               env);
   ABG_ASSERT(ctxt);
 
   corpus_sptr corp = read_corpus(ctxt.get(), status);

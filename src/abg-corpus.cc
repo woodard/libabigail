@@ -596,7 +596,7 @@ corpus::priv::~priv()
 /// @param env the environment of the corpus.
 ///
 /// @param path the path to the file containing the ABI corpus.
-corpus::corpus(ir::environment* env, const string& path)
+corpus::corpus(const ir::environment& env, const string& path)
 {
   priv_.reset(new priv(path, env));
   init_format_version();
@@ -607,26 +607,9 @@ corpus::~corpus() = default;
 /// Getter of the enviroment of the corpus.
 ///
 /// @return the environment of this corpus.
-const environment*
+const environment&
 corpus::get_environment() const
 {return priv_->env;}
-
-/// Getter of the enviroment of the corpus.
-///
-/// @return the environment of this corpus.
-environment*
-corpus::get_environment()
-{return priv_->env;}
-
-/// Setter of the environment of this corpus.
-///
-/// @param e the new environment.
-void
-corpus::set_environment(environment* e)
-{
-  priv_->env = e;
-  init_format_version();
-}
 
 /// Add a translation unit to the current ABI Corpus. Next time
 /// corpus::save is called, all the translation unit that got added to
@@ -641,11 +624,6 @@ corpus::set_environment(environment* e)
 void
 corpus::add(const translation_unit_sptr tu)
 {
-  if (!tu->get_environment())
-    tu->set_environment(get_environment());
-
-  ABG_ASSERT(tu->get_environment() == get_environment());
-
   ABG_ASSERT(priv_->members.insert(tu).second);
 
   if (!tu->get_absolute_path().empty())
@@ -741,7 +719,7 @@ void
 corpus::record_type_as_reachable_from_public_interfaces(const type_base& t)
 {
   string repr = get_pretty_representation(&t, /*internal=*/true);
-  interned_string s = t.get_environment()->intern(repr);
+  interned_string s = t.get_environment().intern(repr);
   priv_->get_public_types_pretty_representations()->insert(s);
 }
 
@@ -759,7 +737,7 @@ bool
 corpus::type_is_reachable_from_public_interfaces(const type_base& t) const
 {
   string repr = get_pretty_representation(&t, /*internal=*/true);
-  interned_string s = t.get_environment()->intern(repr);
+  interned_string s = t.get_environment().intern(repr);
 
   return (priv_->get_public_types_pretty_representations()->find(s)
 	  !=  priv_->get_public_types_pretty_representations()->end());
@@ -839,13 +817,10 @@ corpus::set_group(corpus_group* g)
 void
 corpus::init_format_version()
 {
-  if (priv_->env)
-    {
-      set_format_major_version_number
-	(priv_->env->get_config().get_format_major_version_number());
-      set_format_minor_version_number
-	(priv_->env->get_config().get_format_minor_version_number());
-    }
+  set_format_major_version_number
+    (priv_->env.get_config().get_format_major_version_number());
+  set_format_minor_version_number
+    (priv_->env.get_config().get_format_minor_version_number());
 }
 
 /// Getter for the origin of the corpus.
@@ -1690,8 +1665,12 @@ struct corpus_group::priv
   }
 }; // end corpus_group::priv
 
-/// Default constructor of the @ref corpus_group type.
-corpus_group::corpus_group(environment* env, const string& path = "")
+/// Constructor of the @ref corpus_group type.
+///
+/// @param env the environment of the @ref corpus_group.
+///
+/// @param path the path to the file represented by the corpus group.
+corpus_group::corpus_group(const environment& env, const string& path = "")
   : corpus(env, path), priv_(new priv)
 {}
 
@@ -1707,15 +1686,6 @@ corpus_group::add_corpus(const corpus_sptr& corp)
 {
   if (!corp)
     return;
-
-  // Ensure the new environment patches the current one.
-  if (const environment* cur_env = get_environment())
-    {
-      if (environment* corp_env = corp->get_environment())
-	ABG_ASSERT(cur_env == corp_env);
-    }
-  else
-    set_environment(corp->get_environment());
 
   // Ensure the new architecture name matches the current one.
   string cur_arch = get_architecture_name(),

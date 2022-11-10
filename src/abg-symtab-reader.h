@@ -243,7 +243,7 @@ public:
 
   static symtab_ptr
   load(Elf*		elf_handle,
-       ir::environment* env,
+       const ir::environment& env,
        symbol_predicate is_suppressed = NULL);
 
   static symtab_ptr
@@ -283,7 +283,9 @@ private:
   addr_symbol_map_type entry_addr_symbol_map_;
 
   bool
-  load_(Elf* elf_handle, ir::environment* env, symbol_predicate is_suppressed);
+  load_(Elf* elf_handle,
+	const ir::environment& env,
+	symbol_predicate is_suppressed);
 
   bool
   load_(string_elf_symbols_map_sptr function_symbol_map,

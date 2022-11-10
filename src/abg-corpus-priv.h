@@ -667,7 +667,7 @@ struct corpus::priv
   mutable unordered_map<string, type_base_sptr> canonical_types_;
   string					format_major_version_number_;
   string					format_minor_version_number_;
-  environment*					env;
+  const environment&				env;
   corpus_group*				group;
   corpus::exported_decls_builder_sptr		exported_decls_builder;
   corpus::origin				origin_;
@@ -717,8 +717,8 @@ private:
   mutable abg_compat::optional<elf_symbols> unrefed_fun_symbols;
 
 public:
-  priv(const string &	p,
-       environment*	e)
+  priv(const string &		p,
+       const environment&	e)
     : env(e),
       group(),
       origin_(ARTIFICIAL_ORIGIN),

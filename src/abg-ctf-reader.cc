@@ -54,7 +54,7 @@ public:
   string filename;
 
   /// The IR environment.
-  ir::environment *ir_env;
+  ir::environment& ir_env;
 
   /// The CTF archive read from FILENAME.  If an archive couldn't
   /// be read from the file then this is NULL.
@@ -271,10 +271,10 @@ public:
   /// created within the same environment.
   read_context(const string& elf_path,
                const vector<char**>& debug_info_root_paths,
-               ir::environment *env) :
-   ctfa(NULL)
+               ir::environment& env) :
+   ir_env(env), ctfa(nullptr)
   {
-    initialize(elf_path, debug_info_root_paths, env);
+    initialize(elf_path, debug_info_root_paths);
   }
 
   /// Initializer of read_context.
@@ -297,12 +297,10 @@ public:
   /// the environment.
   void
   initialize(const string& elf_path,
-             const vector<char**>& debug_info_root_paths,
-             ir::environment *env)
+             const vector<char**>& debug_info_root_paths)
   {
     types_map.clear();
     filename = elf_path;
-    ir_env = env;
     elf_handler = NULL;
     elf_handler_dbg = NULL;
     elf_fd = -1;
@@ -425,7 +423,7 @@ process_ctf_base_type(read_context *ctxt,
       && type_encoding.cte_format == CTF_INT_SIGNED)
     {
       /* This is the `void' type.  */
-      type_base_sptr void_type = ctxt->ir_env->get_void_type();
+      type_base_sptr void_type = ctxt->ir_env.get_void_type();
       decl_base_sptr type_declaration = get_type_declaration(void_type);
       result = is_type_decl(type_declaration);
       canonicalize(result);
@@ -472,9 +470,8 @@ build_ir_node_for_variadic_parameter_type(read_context &ctxt,
                                           translation_unit_sptr tunit)
 {
 
-  ir::environment* env = ctxt.ir_env;
-  ABG_ASSERT(env);
-  type_base_sptr t = env->get_variadic_parameter_type();
+  ir::environment& env = ctxt.ir_env;
+  type_base_sptr t = env.get_variadic_parameter_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
   if (!has_scope(type_declaration))
     add_decl_to_scope(type_declaration, tunit->get_global_scope());
@@ -1041,7 +1038,7 @@ process_ctf_enum_type(read_context *ctxt,
   int evalue;
 
   while ((ename = ctf_enum_next(ctf_dictionary, ctf_type, &enum_next, &evalue)))
-    enms.push_back(enum_type_decl::enumerator(ctxt->ir_env, ename, evalue));
+    enms.push_back(enum_type_decl::enumerator(ename, evalue));
   if (ctf_errno(ctf_dictionary) != ECTF_NEXT_END)
     {
       fprintf(stderr, "ERROR from ctf_enum_next\n");
@@ -1618,7 +1615,7 @@ find_ctfa_file(read_context *ctxt, std::string& ctfa_file)
 read_context_sptr
 create_read_context(const std::string& elf_path,
                     const vector<char**>& debug_info_root_paths,
-                    ir::environment *env)
+                    ir::environment& env)
 {
   read_context_sptr result(new read_context(elf_path,
                                             debug_info_root_paths,
@@ -1687,7 +1684,7 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
     ctxt->ctfa = ctf_arc_bufopen(&ctxt->ctf_sect, &ctxt->symtab_sect,
                                  &ctxt->strtab_sect, &errp);
 
-  ctxt->ir_env->canonicalization_is_done(false);
+  ctxt->ir_env.canonicalization_is_done(false);
   if (ctxt->ctfa == NULL)
     status |= elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
   else
@@ -1697,7 +1694,7 @@ read_corpus(read_context *ctxt, elf_reader::status &status)
       ctxt->cur_corpus_->sort_variables();
     }
 
-  ctxt->ir_env->canonicalization_is_done(true);
+  ctxt->ir_env.canonicalization_is_done(true);
 
   /* Cleanup and return.  */
   close_elf_handler(ctxt);
@@ -1776,11 +1773,10 @@ read_and_add_corpus_to_group_from_elf(read_context* ctxt,
 void
 reset_read_context(read_context_sptr	&ctxt,
                    const std::string&	 elf_path,
-                   const vector<char**>& debug_info_root_path,
-                   ir::environment*	 environment)
+	     const vector<char**>&	debug_info_root_path)
 {
   if (ctxt)
-    ctxt->initialize(elf_path, debug_info_root_path, environment);
+    ctxt->initialize(elf_path, debug_info_root_path);
 }
 
 /// Returns a key to be use in types_map dict conformed by

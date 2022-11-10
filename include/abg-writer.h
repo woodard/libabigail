@@ -36,7 +36,7 @@ class write_context;
 typedef shared_ptr<write_context> write_context_sptr;
 
 write_context_sptr
-create_write_context(const environment *env,
+create_write_context(const environment& env,
 		     ostream& output_stream);
 
 void

@@ -1260,7 +1260,7 @@ compare(const elf_file& elf1,
 	const string&	debug_dir2,
 	const suppressions_type& priv_types_supprs2,
 	const options&	opts,
-	abigail::ir::environment_sptr	&env,
+	abigail::ir::environment&	env,
 	corpus_diff_sptr	&diff,
 	diff_context_sptr	&ctxt,
 	abigail::elf_reader::status *detailed_error_status = 0)
@@ -1331,7 +1331,7 @@ compare(const elf_file& elf1,
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf1.path,
 							    di_dirs1,
-                                                            env.get());
+                                                            env);
         ABG_ASSERT(ctxt_ctf);
         corpus1 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
                                                    c1_status);
@@ -1339,7 +1339,7 @@ compare(const elf_file& elf1,
     else
 #endif
       {
-        ctxt_dwarf = create_read_context(elf1.path, di_dirs1, env.get(),
+        ctxt_dwarf = create_read_context(elf1.path, di_dirs1, env,
                                          /*load_all_types=*/opts.show_all_types);
         add_read_context_suppressions(*ctxt_dwarf, priv_types_supprs1);
         if (!opts.kabi_suppressions.empty())
@@ -1436,14 +1436,14 @@ compare(const elf_file& elf1,
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf2.path,
 							    di_dirs2,
-							    env.get());
+							    env);
         corpus2 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
                                                    c2_status);
       }
     else
 #endif
       {
-        ctxt_dwarf = create_read_context(elf2.path, di_dirs2, env.get(),
+        ctxt_dwarf = create_read_context(elf2.path, di_dirs2, env,
                                          /*load_all_types=*/opts.show_all_types);
         add_read_context_suppressions(*ctxt_dwarf, priv_types_supprs2);
 
@@ -1575,7 +1575,7 @@ static abidiff_status
 compare_to_self(const elf_file& elf,
 		const string&	debug_dir,
 		const options&	opts,
-		abigail::ir::environment_sptr	&env,
+		abigail::ir::environment&	env,
 		corpus_diff_sptr	&diff,
 		diff_context_sptr	&ctxt,
 		abigail::elf_reader::status *detailed_error_status = 0)
@@ -1610,7 +1610,7 @@ compare_to_self(const elf_file& elf,
       {
         ctxt_ctf = abigail::ctf_reader::create_read_context(elf.path,
 							    di_dirs,
-                                                            env.get());
+                                                            env);
         ABG_ASSERT(ctxt_ctf);
         corp = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
                                                    c_status);
@@ -1619,7 +1619,7 @@ compare_to_self(const elf_file& elf,
 #endif
       {
         ctxt_dwarf =
-         create_read_context(elf.path, di_dirs, env.get(),
+         create_read_context(elf.path, di_dirs, env,
                              /*read_all_types=*/opts.show_all_types);
 
         corp = read_corpus_from_elf(*ctxt_dwarf, c_status);
@@ -1666,7 +1666,7 @@ compare_to_self(const elf_file& elf,
 
     {
       const abigail::xml_writer::write_context_sptr c =
-	abigail::xml_writer::create_write_context(env.get(), of);
+	abigail::xml_writer::create_write_context(env, of);
 
       if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr)
@@ -1697,7 +1697,7 @@ compare_to_self(const elf_file& elf,
     {
       abigail::xml_reader::read_context_sptr c =
 	abigail::xml_reader::create_native_xml_read_context(abi_file_path,
-							    env.get());
+							    env);
       if (!c)
 	{
 	  if (opts.verbose)
@@ -2074,7 +2074,7 @@ public:
   virtual void
   perform()
   {
-    abigail::ir::environment_sptr env(new abigail::ir::environment);
+    abigail::ir::environment env;
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
@@ -2082,7 +2082,7 @@ public:
       abigail::elf_reader::STATUS_UNKNOWN;
 
     if (args->opts.exported_interfaces_only.has_value())
-      env->analyze_exported_interfaces_only
+      env.analyze_exported_interfaces_only
 	(*args->opts.exported_interfaces_only);
 
     status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
@@ -2147,12 +2147,12 @@ public:
   virtual void
   perform()
   {
-    abigail::ir::environment_sptr env(new abigail::ir::environment);
+    abigail::ir::environment env;
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
     if (args->opts.exported_interfaces_only.has_value())
-      env->analyze_exported_interfaces_only
+      env.analyze_exported_interfaces_only
 	(*args->opts.exported_interfaces_only);
 
     abigail::elf_reader::status detailed_status =
@@ -3036,9 +3036,9 @@ compare_prepared_linux_kernel_packages(package& first_package,
   string dist_root1 = first_package.extracted_dir_path();
   string dist_root2 = second_package.extracted_dir_path();
 
-  abigail::ir::environment_sptr env(new abigail::ir::environment);
+  abigail::ir::environment env;
   if (opts.exported_interfaces_only.has_value())
-    env->analyze_exported_interfaces_only
+    env.analyze_exported_interfaces_only
       (*opts.exported_interfaces_only);
 
   suppressions_type supprs;

@@ -155,12 +155,12 @@ main(int argc, char **argv)
 
   string file_name = argv[1];
 
-  abigail::ir::environment_sptr env(new abigail::ir::environment);
+  abigail::ir::environment env;
   abigail::corpus_sptr c;
   abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
   std::vector<char**> di_roots;
   if (!(c = abigail::dwarf_reader::read_corpus_from_elf(file_name, di_roots,
-							env.get(),
+							env,
 							/*load_all_type=*/false,
 							status)))
     {

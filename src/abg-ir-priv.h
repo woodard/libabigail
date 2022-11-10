@@ -141,7 +141,7 @@ parse_integral_type(const string& type_name,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  const environment*				env_;
+  const environment&				env_;
   corpus*					corp;
   bool						is_constructed_;
   char						address_size_;
@@ -156,7 +156,7 @@ struct translation_unit::priv
   type_maps					types_;
 
 
-  priv(const environment* env)
+  priv(const environment& env)
     : env_(env),
       corp(),
       is_constructed_(),
@@ -845,7 +845,7 @@ struct environment::priv
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
 		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type(dependant_type);
 	if (!t->priv_->depends_on_recursive_type())
@@ -876,13 +876,12 @@ struct environment::priv
     if (!t || t->priv_->propagated_canonical_type_confirmed())
       return;
 
-    const environment* env = t->get_environment();
-    ABG_ASSERT(env);
+    const environment& env = t->get_environment();
 
-    env->priv_->confirm_ct_propagation_for_types_dependant_on(t);
+    env.priv_->confirm_ct_propagation_for_types_dependant_on(t);
     t->priv_->set_does_not_depend_on_recursive_type();
-    env->priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
-    env->priv_->set_is_not_recursive(t);
+    env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+    env.priv_->set_is_not_recursive(t);
     t->priv_->set_propagated_canonical_type_confirmed(true);
   }
 
@@ -900,7 +899,7 @@ struct environment::priv
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
 		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type();
 	t->priv_->set_propagated_canonical_type_confirmed(true);
@@ -970,7 +969,7 @@ struct environment::priv
     for (auto i : to_remove)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->get_environment()->priv_->is_recursive_type(t)
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
 		   || t->priv_->depends_on_recursive_type());
 	type_base_sptr canonical = t->priv_->canonical_type.lock();
 	if (canonical)
@@ -1007,10 +1006,10 @@ struct environment::priv
     if (!t)
       return;
 
-    const environment *env = t->get_environment();
-    env->priv_->cancel_ct_propagation_for_types_dependant_on(t);
+    const environment& env = t->get_environment();
+    env.priv_->cancel_ct_propagation_for_types_dependant_on(t);
     if (t->priv_->depends_on_recursive_type()
-	|| env->priv_->is_recursive_type(t))
+	|| env.priv_->is_recursive_type(t))
       {
 	// This cannot carry any tentative canonical type at this
 	// point.
@@ -1020,7 +1019,7 @@ struct environment::priv
 	// Reset the marking of the type as it no longer carries a
 	// tentative canonical type that might be later cancelled.
 	t->priv_->set_does_not_depend_on_recursive_type();
-	env->priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+	env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
       }
   }
 
@@ -1174,9 +1173,8 @@ struct class_or_union::priv
   mark_as_being_compared(const class_or_union& first,
 			 const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.insert
+    const environment& env = first.get_environment();
+    env.priv_->classes_being_compared_.insert
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>(&second)));
   }
@@ -1237,9 +1235,8 @@ struct class_or_union::priv
   unmark_as_being_compared(const class_or_union& first,
 			   const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.erase
+    const environment& env = first.get_environment();
+    env.priv_->classes_being_compared_.erase
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>(&second)));
   }
@@ -1279,9 +1276,8 @@ struct class_or_union::priv
   comparison_started(const class_or_union& first,
 		     const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->
+    const environment& env = first.get_environment();
+    return env.priv_->
       classes_being_compared_.count
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>((&second))));
@@ -1340,9 +1336,8 @@ struct function_type::priv
   mark_as_being_compared(const function_type& first,
 			 const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.insert
+    const environment& env = first.get_environment();
+    env.priv_->fn_types_being_compared_.insert
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>(&second)));
   }
@@ -1358,9 +1353,8 @@ struct function_type::priv
   unmark_as_being_compared(const function_type& first,
 			   const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.erase
+    const environment& env = first.get_environment();
+    env.priv_->fn_types_being_compared_.erase
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>(&second)));
   }
@@ -1374,9 +1368,8 @@ struct function_type::priv
   comparison_started(const function_type& first,
 		     const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->fn_types_being_compared_.count
+    const environment& env = first.get_environment();
+    return env.priv_->fn_types_being_compared_.count
       (std::make_pair(reinterpret_cast<uint64_t>(&first),
 		      reinterpret_cast<uint64_t>(&second)));
   }

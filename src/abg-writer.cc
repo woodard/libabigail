@@ -65,7 +65,7 @@ namespace xml_writer
 
 class id_manager
 {
-  const environment* m_env;
+  const environment& m_env;
   mutable unsigned long long m_cur_id;
 
   unsigned long long
@@ -73,11 +73,11 @@ class id_manager
   { return ++m_cur_id; }
 
 public:
-  id_manager(const environment* env)
+  id_manager(const environment& env)
     : m_env(env),
       m_cur_id(0) {}
 
-  const environment*
+  const environment&
   get_environment() const
   {return m_env;}
 
@@ -87,9 +87,8 @@ public:
   {
     ostringstream o;
     o << get_new_id();
-    const environment* env = get_environment();
-    ABG_ASSERT(env);
-    return env->intern(o.str());
+    const environment& env = get_environment();
+    return env.intern(o.str());
   }
 
   /// Return a unique string representing a numerical ID, prefixed by
@@ -101,9 +100,8 @@ public:
   {
     ostringstream o;
     o << prefix << get_new_id();
-    const environment* env = get_environment();
-    ABG_ASSERT(env);
-    return env->intern(o.str());
+    const environment& env = get_environment();
+    return env.intern(o.str());
   }
 };
 
@@ -207,7 +205,7 @@ typedef unordered_map<shared_ptr<class_tdecl>,
 
 class write_context
 {
-  const environment*			m_env;
+  const environment&			m_env;
   id_manager				m_id_manager;
   ostream*				m_ostream;
   bool					m_annotate;
@@ -243,7 +241,7 @@ public:
   /// @param env the enviroment we are operating from.
   ///
   /// @param os the output stream to write to.
-  write_context(const environment* env, ostream& os)
+  write_context(const environment& env, ostream& os)
     : m_env(env),
       m_id_manager(env),
       m_ostream(&os),
@@ -262,16 +260,13 @@ public:
   /// Getter of the environment we are operating from.
   ///
   /// @return the environment we are operating from.
-  const environment*
+  const environment&
   get_environment() const
   {return m_env;}
 
   const config&
   get_config() const
-  {
-    ABG_ASSERT(get_environment());
-    return get_environment()->get_config();
-  }
+  {return get_environment().get_config();}
 
   /// Getter for the current ostream
   ///
@@ -498,7 +493,7 @@ public:
 	    ++hash;
 	  std::ostringstream os;
 	  os << std::hex << std::setfill('0') << std::setw(8) << hash;
-	  return m_type_id_map[c] = c->get_environment()->intern(os.str());
+	  return m_type_id_map[c] = c->get_environment().intern(os.str());
 	}
       }
     ABG_ASSERT_NOT_REACHED;
@@ -808,7 +803,7 @@ public:
   {
     ABG_ASSERT(!is_type(decl));
     string repr = get_pretty_representation(decl, true);
-    interned_string irepr = decl->get_environment()->intern(repr);
+    interned_string irepr = decl->get_environment().intern(repr);
     return m_emitted_decls_set.find(irepr) != m_emitted_decls_set.end();
   }
 
@@ -819,7 +814,7 @@ public:
   record_decl_as_emitted(const decl_base_sptr& decl)
   {
     string repr = get_pretty_representation(decl, true);
-    interned_string irepr = decl->get_environment()->intern(repr);
+    interned_string irepr = decl->get_environment().intern(repr);
     m_emitted_decls_set.insert(irepr);
   }
 
@@ -2064,7 +2059,7 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 ///
 /// @return the new @ref write_context object.
 write_context_sptr
-create_write_context(const environment *env,
+create_write_context(const environment& env,
 		     ostream& default_output_stream)
 {
   write_context_sptr ctxt(new write_context(env, default_output_stream));
@@ -3691,7 +3686,7 @@ write_class_decl(const class_decl_sptr& d,
     {
       type_base_wptrs_type result;
       canonical_type_sptr_set_type member_types;
-      const environment* env = ctxt.get_environment();
+      const environment& env = ctxt.get_environment();
 
       // We are looking at a decl-only class.  All decl-only classes
       // of a given name are equal.  But then the problem is that a
@@ -3708,7 +3703,7 @@ write_class_decl(const class_decl_sptr& d,
       //
       // So let's gather all the member-types of all the decl-only
       // classes of the fully-qualified name and emit them here.
-      if (lookup_decl_only_class_types(env->intern(decl->get_qualified_name()),
+      if (lookup_decl_only_class_types(env.intern(decl->get_qualified_name()),
 				       *decl->get_corpus(),
 				       result))
 	{

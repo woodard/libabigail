@@ -104,9 +104,9 @@ main(int argc, char* argv[])
       elf_reader::status c1_status, c2_status;
       corpus_sptr c1, c2;
 
-      environment_sptr env(new environment);
+      environment env;
       vector<char**> di_roots;
-      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, di_roots, env.get(),
+      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, di_roots, env,
 					      /*load_all_types=*/false,
 					      c1_status);
       if (c1_status != elf_reader::STATUS_OK)
@@ -115,7 +115,7 @@ main(int argc, char* argv[])
 	  return 1;
 	}
 
-      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, di_roots, env.get(),
+      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, di_roots, env,
 					      /*load_all_types=*/false,
 					      c2_status);
       if (c2_status != elf_reader::STATUS_OK)

@@ -211,18 +211,18 @@ main(int, char*[])
 	  continue;
 	}
 
-      environment_sptr env(new environment);
+      environment env;
       translation_unit_sptr tu1, tu2;
       corpus_sptr corpus1, corpus2;
       corpus_group_sptr corpus_group1, corpus_group2;
       file_type t = guess_file_type(first_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu1 = read_translation_unit_from_file(first_in_path, env.get());
+	tu1 = read_translation_unit_from_file(first_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus1 = read_corpus_from_native_xml_file(first_in_path, env.get());
+	corpus1 = read_corpus_from_native_xml_file(first_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
 	corpus_group1 = read_corpus_group_from_native_xml_file(first_in_path,
-							       env.get());
+							       env);
       else
 	abort();
       if (!tu1 && !corpus1 && !corpus_group1)
@@ -234,12 +234,12 @@ main(int, char*[])
 
       t = guess_file_type(second_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu2 = read_translation_unit_from_file(second_in_path, env.get());
+	tu2 = read_translation_unit_from_file(second_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus2 = read_corpus_from_native_xml_file(second_in_path, env.get());
+	corpus2 = read_corpus_from_native_xml_file(second_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
 	corpus_group2 = read_corpus_group_from_native_xml_file(first_in_path,
-							       env.get());
+							       env);
       else
 	abort();
       if (!tu2 && !corpus2 && !corpus_group2)

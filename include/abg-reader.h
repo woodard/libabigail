@@ -30,15 +30,15 @@ class read_context;
 
 translation_unit_sptr
 read_translation_unit_from_file(const std::string&	file_path,
-				environment*		env);
+				environment&		env);
 
 translation_unit_sptr
 read_translation_unit_from_buffer(const std::string&	file_path,
-				  environment*		env);
+				  environment&		env);
 
 translation_unit_sptr
 read_translation_unit_from_istream(std::istream*	in,
-				   environment*	env);
+				   environment&	env);
 
 translation_unit_sptr
 read_translation_unit(read_context&);
@@ -47,21 +47,20 @@ read_translation_unit(read_context&);
 typedef shared_ptr<read_context> read_context_sptr;
 
 read_context_sptr
-create_native_xml_read_context(const string& path, environment *env);
+create_native_xml_read_context(const string& path, environment& env);
 
 read_context_sptr
-create_native_xml_read_context(std::istream* in, environment* env);
-
+create_native_xml_read_context(std::istream* in, environment& env);
 const string&
 read_context_get_path(const read_context&);
 
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in,
-			    environment*  env);
+			    environment&  env);
 
 corpus_sptr
 read_corpus_from_native_xml_file(const string& path,
-				 environment*  env);
+				 environment&  env);
 
 corpus_sptr
 read_corpus_from_input(read_context& ctxt);
@@ -71,11 +70,11 @@ read_corpus_group_from_input(read_context& ctxt);
 
 corpus_group_sptr
 read_corpus_group_from_native_xml(std::istream* in,
-				  environment*  env);
+				  environment&  env);
 
 corpus_group_sptr
 read_corpus_group_from_native_xml_file(const string& path,
-				       environment*  env);
+				       environment&  env);
 
 void
 add_read_context_suppressions(read_context& ctxt,

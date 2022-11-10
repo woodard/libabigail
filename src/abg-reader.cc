@@ -110,7 +110,7 @@ public:
 
 private:
   string						m_path;
-  environment*						m_env;
+  environment&						m_env;
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
@@ -135,7 +135,7 @@ private:
 
 public:
   read_context(xml::reader_sptr reader,
-	       environment*	env)
+	 environment&	env)
     : m_env(env),
       m_reader(reader),
       m_corp_node(),
@@ -196,23 +196,16 @@ public:
   /// Getter for the environment of this reader.
   ///
   /// @return the environment of this reader.
-  const environment*
-  get_environment() const
+  environment&
+  get_environment()
   {return m_env;}
 
   /// Getter for the environment of this reader.
   ///
   /// @return the environment of this reader.
-  environment*
-  get_environment()
-  {return m_env;}
-
-  /// Setter for the environment of this reader.
-  ///
-  /// @param env the environment of this reader.
-  void
-  set_environment(environment* env)
-  {m_env = env;}
+  const environment&
+  get_environment() const
+  {return const_cast<read_context*>(this)->get_environment();}
 
   xml::reader_sptr
   get_reader() const
@@ -923,8 +916,8 @@ public:
   void
   maybe_check_abixml_canonical_type_stability(type_base_sptr& t)
   {
-    if (!m_env->self_comparison_debug_is_on()
-	|| m_env->get_type_id_canonical_type_map().empty())
+    if (!get_environment().self_comparison_debug_is_on()
+	|| get_environment().get_type_id_canonical_type_map().empty())
       return ;
 
     if (class_decl_sptr c = is_class_type(t))
@@ -936,15 +929,15 @@ public:
     // Let's get the type-id of this type as recorded in the
     // originating abixml file.
     string type_id =
-      m_env->get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t.get()));
+      get_environment().get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t.get()));
 
     if (!type_id.empty())
       {
 	// Now let's get the canonical type that initially led to the
 	// serialization of a type with this type-id, when the abixml
 	// was being serialized.
-	auto j = m_env->get_type_id_canonical_type_map().find(type_id);
-	if (j == m_env->get_type_id_canonical_type_map().end())
+	auto j = get_environment().get_type_id_canonical_type_map().find(type_id);
+	if (j == get_environment().get_type_id_canonical_type_map().end())
 	  {
 	    if (t->get_naked_canonical_type())
 	      std::cerr << "error: no type with type-id: '"
@@ -2111,8 +2104,8 @@ read_corpus_from_input(read_context& ctxt)
     {
       ctxt.set_corpus(std::make_shared<corpus>(ctxt.get_environment(), ""));
 #ifdef WITH_DEBUG_SELF_COMPARISON
-      if (ctxt.get_environment()->self_comparison_debug_is_on())
-	ctxt.get_environment()->
+      if (ctxt.get_environment().self_comparison_debug_is_on())
+	ctxt.get_environment().
 	  set_self_comparison_debug_input(ctxt.get_corpus());
 #endif
 
@@ -2167,7 +2160,7 @@ read_corpus_from_input(read_context& ctxt)
   // due to potential suppression specifications.  That's fine.
   corp.set_symtab(symtab_reader::symtab::load(fn_sym_db, var_sym_db));
 
-  ctxt.get_environment()->canonicalization_is_done(false);
+  ctxt.get_environment().canonicalization_is_done(false);
 
   // Read the translation units.
   while (read_translation_unit_from_input(ctxt))
@@ -2186,7 +2179,7 @@ read_corpus_from_input(read_context& ctxt)
 
   ctxt.perform_late_type_canonicalizing();
 
-  ctxt.get_environment()->canonicalization_is_done(true);
+  ctxt.get_environment().canonicalization_is_done(true);
 
   if (call_reader_next)
     {
@@ -2286,7 +2279,7 @@ read_corpus_group_from_input(read_context& ctxt)
 /// This is non-null iff the parsing resulted in a valid corpus group.
 corpus_group_sptr
 read_corpus_group_from_native_xml(std::istream* in,
-				  environment*  env)
+				  environment&  env)
 {
   read_context_sptr read_ctxt = create_native_xml_read_context(in, env);
   return read_corpus_group_from_input(*read_ctxt);
@@ -2308,7 +2301,7 @@ read_corpus_group_from_native_xml(std::istream* in,
 /// group.
 corpus_group_sptr
 read_corpus_group_from_native_xml_file(const string& path,
-				       environment*  env)
+				   environment&  env)
 {
     read_context_sptr read_ctxt = create_native_xml_read_context(path, env);
     corpus_group_sptr group = read_corpus_group_from_input(*read_ctxt);
@@ -2326,13 +2319,13 @@ read_corpus_group_from_native_xml_file(const string& path,
 /// successful completion, or nil.
 translation_unit_sptr
 read_translation_unit_from_file(const string&	input_file,
-				environment*	env)
+				environment&	env)
 {
   read_context ctxt(xml::new_reader_from_file(input_file), env);
   translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
-  ctxt.get_environment()->canonicalization_is_done(false);
+  env.canonicalization_is_done(false);
   ctxt.perform_late_type_canonicalizing();
-  ctxt.get_environment()->canonicalization_is_done(true);
+  env.canonicalization_is_done(true);
   return tu;
 }
 
@@ -2348,13 +2341,13 @@ read_translation_unit_from_file(const string&	input_file,
 /// successful completion, or nil.
 translation_unit_sptr
 read_translation_unit_from_buffer(const string&	buffer,
-				  environment*		env)
+				  environment&	env)
 {
   read_context ctxt(xml::new_reader_from_buffer(buffer), env);
   translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
-  ctxt.get_environment()->canonicalization_is_done(false);
+  env.canonicalization_is_done(false);
   ctxt.perform_late_type_canonicalizing();
-  ctxt.get_environment()->canonicalization_is_done(true);
+  env.canonicalization_is_done(true);
   return tu;
 }
 
@@ -2369,9 +2362,9 @@ translation_unit_sptr
 read_translation_unit(read_context& ctxt)
 {
   translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
-  ctxt.get_environment()->canonicalization_is_done(false);
+  ctxt.get_environment().canonicalization_is_done(false);
   ctxt.perform_late_type_canonicalizing();
-  ctxt.get_environment()->canonicalization_is_done(true);
+  ctxt.get_environment().canonicalization_is_done(true);
   return tu;
 }
 
@@ -3052,12 +3045,12 @@ maybe_map_type_with_type_id(const type_base_sptr& t,
   if (!t)
     return false;
 
-  environment *env = t->get_environment();
-  if (!env->self_comparison_debug_is_on()
+  const environment& env = t->get_environment();
+  if (!env.self_comparison_debug_is_on()
       || is_non_canonicalized_type(t.get()))
     return false;
 
-  env->get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] =
+  env.get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] =
     type_id;
 
   return true;
@@ -3083,8 +3076,8 @@ maybe_map_type_with_type_id(const type_base_sptr& t,
   if (!t)
     return false;
 
-  environment *env = t->get_environment();
-  if (!env->self_comparison_debug_is_on()
+  const environment& env = t->get_environment();
+  if (!env.self_comparison_debug_is_on()
       || is_non_canonicalized_type(t.get()))
     return false;
 
@@ -3159,7 +3152,7 @@ build_namespace_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  const environment* env = ctxt.get_environment();
+  const environment& env = ctxt.get_environment();
   namespace_decl_sptr decl(new namespace_decl(env, name, loc));
   maybe_set_artificial_location(ctxt, node, decl);
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
@@ -3255,7 +3248,7 @@ build_elf_symbol(read_context& ctxt, const xmlNodePtr node,
   if (drop_if_suppressed && is_suppressed)
     return elf_symbol_sptr();
 
-  const environment* env = ctxt.get_environment();
+  const environment& env = ctxt.get_environment();
   elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0,
 					 size, name, type, binding,
 					 is_defined, is_common,
@@ -3410,7 +3403,7 @@ build_elf_symbol_db(read_context& ctxt,
 
 /// Build a function parameter from a 'parameter' xml element node.
 ///
-/// @param ctxt the contexte of the xml parsing.
+/// @param rdr the contexte of the xml parsing.
 ///
 /// @param node the xml 'parameter' element node to de-serialize from.
 static shared_ptr<function_decl::parameter>
@@ -3420,8 +3413,6 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 
   if (!node || !xmlStrEqual(node->name, BAD_CAST("parameter")))
     return nil;
-
-  ABG_ASSERT(ctxt.get_environment());
 
   bool is_variadic = false;
   string is_variadic_str;
@@ -3441,14 +3432,13 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 
   type_base_sptr type;
   if (is_variadic)
-    type = ctxt.get_environment()->get_variadic_parameter_type();
+    type = ctxt.get_environment().get_variadic_parameter_type();
   else
     {
       ABG_ASSERT(!type_id.empty());
       type = ctxt.build_or_get_type_decl(type_id, true);
     }
   ABG_ASSERT(type);
-  ABG_ASSERT(type->get_environment() == ctxt.get_environment());
 
   string name;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
@@ -3518,10 +3508,9 @@ build_function_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  environment& env = ctxt.get_environment();
   std::vector<function_decl::parameter_sptr> parms;
-  type_base_sptr return_type = env->get_void_type();
+  type_base_sptr return_type = env.get_void_type();
 
   for (xmlNodePtr n = xmlFirstElementChild(node);
        n ;
@@ -3885,7 +3874,7 @@ build_type_decl(read_context&		ctxt,
       return ty;
     }
 
-  const environment* env = ctxt.get_environment();
+  const environment& env = ctxt.get_environment();
   type_decl_sptr decl(new type_decl(env, name, size_in_bits,
 				    alignment_in_bits, loc));
   maybe_set_artificial_location(ctxt, node, decl);
@@ -4179,10 +4168,9 @@ build_function_type(read_context&	ctxt,
   size_t size = ctxt.get_translation_unit()->get_address_size(), align = 0;
   read_size_and_alignment(node, size, align);
 
-  environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  const environment& env = ctxt.get_environment();
   std::vector<shared_ptr<function_decl::parameter> > parms;
-  type_base_sptr return_type = env->get_void_type();
+  type_base_sptr return_type = env.get_void_type();
 
   class_or_union_sptr method_class_type;
   if (is_method_t)
@@ -4196,7 +4184,7 @@ build_function_type(read_context&	ctxt,
 
  function_type_sptr fn_type(is_method_t
 			    ? new method_type(method_class_type,
-					      ctxt.get_environment(),
+					      /*is_const=*/false,
 					      size, align)
 			    : new function_type(return_type,
 						parms, size, align));
@@ -4586,9 +4574,6 @@ build_enum_type_decl(read_context&	ctxt,
 
   ABG_ASSERT(!id.empty());
 
-  const environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
-
   string base_type_id;
   enum_type_decl::enumerators enums;
   for (xmlNodePtr n = xmlFirstElementChild(node);
@@ -4623,7 +4608,7 @@ build_enum_type_decl(read_context&	ctxt,
 		return nil;
 	    }
 
-	  enums.push_back(enum_type_decl::enumerator(env, name, value));
+	  enums.push_back(enum_type_decl::enumerator(name, value));
 	}
     }
 
@@ -4864,8 +4849,7 @@ build_class_decl(read_context&		ctxt,
 	return previous_declaration;
     }
 
-  const environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  const environment& env = ctxt.get_environment();
 
   if (!is_decl_only && previous_definition)
     // We are in the case where we've read this class definition
@@ -5281,8 +5265,7 @@ build_union_decl(read_context& ctxt,
 	return previous_declaration;
     }
 
-  const environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  const environment& env = ctxt.get_environment();
 
   if (!is_decl_only && previous_definition)
     // We are in the case where we've read this class definition
@@ -5569,8 +5552,7 @@ build_function_tdecl(read_context& ctxt,
   decl_base::binding bind = decl_base::BINDING_NONE;
   read_binding(node, bind);
 
-  const environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  const environment& env = ctxt.get_environment();
 
   function_tdecl_sptr fn_tmpl_decl(new function_tdecl(env, loc, vis, bind));
   maybe_set_artificial_location(ctxt, node, fn_tmpl_decl);
@@ -5633,8 +5615,7 @@ build_class_tdecl(read_context&	ctxt,
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
 
-  const environment* env = ctxt.get_environment();
-  ABG_ASSERT(env);
+  const environment& env = ctxt.get_environment();
 
   class_tdecl_sptr class_tmpl (new class_tdecl(env, loc, vis));
   maybe_set_artificial_location(ctxt, node, class_tmpl);
@@ -5723,7 +5704,6 @@ build_type_tparameter(read_context&		ctxt,
   else
     ctxt.push_and_key_type_decl(result, id, /*add_to_current_scope=*/true);
 
-  ABG_ASSERT(result->get_environment());
 
   ctxt.maybe_canonicalize_type(result, /*force_delay=*/false);
 
@@ -6252,7 +6232,7 @@ handle_class_tdecl(read_context&	ctxt,
 /// @return the translation unit resulting from the parsing upon
 /// successful completion, or nil.
 translation_unit_sptr
-read_translation_unit_from_istream(istream* in, environment* env)
+read_translation_unit_from_istream(istream* in, environment& env)
 {
   read_context read_ctxt(xml::new_reader_from_istream(in), env);
   return read_translation_unit_from_input(read_ctxt);
@@ -6276,7 +6256,7 @@ struct array_deleter
 ///
 /// @return the created context.
 read_context_sptr
-create_native_xml_read_context(const string& path, environment *env)
+create_native_xml_read_context(const string& path, environment& env)
 {
   read_context_sptr result(new read_context(xml::new_reader_from_file(path),
 					    env));
@@ -6284,8 +6264,8 @@ create_native_xml_read_context(const string& path, environment *env)
   corp->set_origin(corpus::NATIVE_XML_ORIGIN);
   result->set_corpus(corp);
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  if (env->self_comparison_debug_is_on())
-    env->set_self_comparison_debug_input(result->get_corpus());
+  if (env.self_comparison_debug_is_on())
+    env.set_self_comparison_debug_input(result->corpus());
 #endif
   result->set_path(path);
   return result;
@@ -6300,7 +6280,7 @@ create_native_xml_read_context(const string& path, environment *env)
 ///
 /// @return the created context.
 read_context_sptr
-create_native_xml_read_context(std::istream* in, environment* env)
+create_native_xml_read_context(std::istream* in, environment& env)
 {
   read_context_sptr result(new read_context(xml::new_reader_from_istream(in),
 					    env));
@@ -6308,8 +6288,8 @@ create_native_xml_read_context(std::istream* in, environment* env)
   corp->set_origin(corpus::NATIVE_XML_ORIGIN);
   result->set_corpus(corp);
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  if (env->self_comparison_debug_is_on())
-    env->set_self_comparison_debug_input(result->get_corpus());
+  if (env.self_comparison_debug_is_on())
+    env.set_self_comparison_debug_input(result->corpus());
 #endif
   return result;
 }
@@ -6335,7 +6315,7 @@ read_context_get_path(const read_context& ctxt)
 /// is non-null iff the parsing resulted in a valid corpus.
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in,
-			    environment* env)
+			    environment& env)
 {
   read_context_sptr read_ctxt = create_native_xml_read_context(in, env);
   return read_corpus_from_input(*read_ctxt);
@@ -6356,7 +6336,7 @@ read_corpus_from_native_xml(std::istream* in,
 /// is non-null if the parsing successfully resulted in a corpus.
 corpus_sptr
 read_corpus_from_native_xml_file(const string& path,
-				 environment* env)
+				 environment& env)
 {
   read_context_sptr read_ctxt = create_native_xml_read_context(path, env);
   corpus_sptr corp = read_corpus_from_input(*read_ctxt);
@@ -6443,7 +6423,7 @@ load_canonical_type_ids(xml_reader::read_context& ctxt, const string &file_path)
 	      // that are not canonicalized.  Look into function
 	      // hash_as_canonical_type_or_constant for the details.
 	      && v != 0xdeadbabe)
-	    ctxt.get_environment()->get_type_id_canonical_type_map()[id] = v;
+	    ctxt.get_environment().get_type_id_canonical_type_map()[id] = v;
 	}
     }
   return true;

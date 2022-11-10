@@ -139,11 +139,10 @@ static struct
 /// not completed
 symtab_ptr
 symtab::load(Elf*	      elf_handle,
-	     ir::environment* env,
+	     const ir::environment& env,
 	     symbol_predicate is_suppressed)
 {
   ABG_ASSERT(elf_handle);
-  ABG_ASSERT(env);
 
   symtab_ptr result(new symtab);
   if (!result->load_(elf_handle, env, is_suppressed))
@@ -201,7 +200,7 @@ symtab::symtab()
 /// @return true if the load succeeded
 bool
 symtab::load_(Elf*	       elf_handle,
-	      ir::environment* env,
+	      const ir::environment& env,
 	      symbol_predicate is_suppressed)
 {
   GElf_Ehdr ehdr_mem;
