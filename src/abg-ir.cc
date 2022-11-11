@@ -1788,7 +1788,7 @@ struct elf_symbol::priv
   //     STT_COMMON definition of that name that has the largest size.
   bool			is_common_;
   bool			is_in_ksymtab_;
-  abg_compat::optional<uint64_t>	crc_;
+  abg_compat::optional<uint32_t>	crc_;
   abg_compat::optional<std::string>	namespace_;
   bool			is_suppressed_;
   elf_symbol_wptr	main_symbol_;
@@ -1822,7 +1822,7 @@ struct elf_symbol::priv
        const elf_symbol::version& ve,
        elf_symbol::visibility	  vi,
        bool			  is_in_ksymtab,
-       const abg_compat::optional<uint64_t>&	crc,
+       const abg_compat::optional<uint32_t>&	crc,
        const abg_compat::optional<std::string>&	ns,
        bool			  is_suppressed)
     : env_(e),
@@ -1896,7 +1896,7 @@ elf_symbol::elf_symbol(const environment* e,
 		       const version&	  ve,
 		       visibility	  vi,
 		       bool		  is_in_ksymtab,
-		       const abg_compat::optional<uint64_t>&	crc,
+		       const abg_compat::optional<uint32_t>&	crc,
 		       const abg_compat::optional<std::string>&	ns,
 		       bool		  is_suppressed)
   : priv_(new priv(e,
@@ -1971,7 +1971,7 @@ elf_symbol::create(const environment* e,
 		   const version&     ve,
 		   visibility	      vi,
 		   bool		      is_in_ksymtab,
-		   const abg_compat::optional<uint64_t>&	crc,
+		   const abg_compat::optional<uint32_t>&	crc,
 		   const abg_compat::optional<std::string>&	ns,
 		   bool		      is_suppressed)
 {
@@ -2208,7 +2208,7 @@ elf_symbol::set_is_in_ksymtab(bool is_in_ksymtab)
 /// Getter of the 'crc' property.
 ///
 /// @return the CRC (modversions) value for Linux Kernel symbols, if any
-const abg_compat::optional<uint64_t>&
+const abg_compat::optional<uint32_t>&
 elf_symbol::get_crc() const
 {return priv_->crc_;}
 
@@ -2216,7 +2216,7 @@ elf_symbol::get_crc() const
 ///
 /// @param crc the new CRC (modversions) value for Linux Kernel symbols
 void
-elf_symbol::set_crc(const abg_compat::optional<uint64_t>& crc)
+elf_symbol::set_crc(const abg_compat::optional<uint32_t>& crc)
 {priv_->crc_ = crc;}
 
 /// Getter of the 'namespace' property.

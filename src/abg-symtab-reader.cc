@@ -265,7 +265,7 @@ symtab::load_(Elf*	       elf_handle,
 
   const bool is_kernel = elf_helpers::is_linux_kernel(elf_handle);
   std::unordered_set<std::string> exported_kernel_symbols;
-  std::unordered_map<std::string, uint64_t> crc_values;
+  std::unordered_map<std::string, uint32_t> crc_values;
   std::unordered_map<std::string, std::string> namespaces;
 
   for (size_t i = 0; i < number_syms; ++i)

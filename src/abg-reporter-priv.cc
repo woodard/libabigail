@@ -1149,8 +1149,8 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 	  << "\n";
     }
 
-  const abg_compat::optional<uint64_t>& crc1 = symbol1->get_crc();
-  const abg_compat::optional<uint64_t>& crc2 = symbol2->get_crc();
+  const abg_compat::optional<uint32_t>& crc1 = symbol1->get_crc();
+  const abg_compat::optional<uint32_t>& crc2 = symbol2->get_crc();
   if (crc1 != crc2)
     {
       const std::string none = "(none)";
