@@ -4,8 +4,10 @@ abg-sptr-utils.h	\
 abg-interned-str.h	\
 abg-ir.h		\
 abg-corpus.h		\
+abg-fe-iface.h		\
+abg-elf-based-reader.h  \
+abg-elf-reader.h	\
 abg-reader.h		\
-abg-elf-reader-common.h \
 abg-dwarf-reader.h	\
 abg-writer.h		\
 abg-comparison.h	\

@@ -17,16 +17,15 @@
 #include <istream>
 #include "abg-corpus.h"
 #include "abg-suppression.h"
+#include "abg-fe-iface.h"
 
 namespace abigail
 {
 
-namespace xml_reader
+namespace abixml
 {
 
 using namespace abigail::ir;
-
-class read_context;
 
 translation_unit_sptr
 read_translation_unit_from_file(const std::string&	file_path,
@@ -41,61 +40,49 @@ read_translation_unit_from_istream(std::istream*	in,
 				   environment&	env);
 
 translation_unit_sptr
-read_translation_unit(read_context&);
+read_translation_unit(fe_iface&);
 
-/// A convenience typedef for a shared pointer to read_context.
-typedef shared_ptr<read_context> read_context_sptr;
+ abigail::fe_iface_sptr
+create_reader(const string& path, environment& env);
 
-read_context_sptr
-create_native_xml_read_context(const string& path, environment& env);
-
-read_context_sptr
-create_native_xml_read_context(std::istream* in, environment& env);
-const string&
-read_context_get_path(const read_context&);
+fe_iface_sptr
+create_reader(std::istream* in, environment& env);
 
 corpus_sptr
-read_corpus_from_native_xml(std::istream* in,
-			    environment&  env);
+read_corpus_from_abixml(std::istream* in,
+			environment&  env);
 
 corpus_sptr
-read_corpus_from_native_xml_file(const string& path,
-				 environment&  env);
-
-corpus_sptr
-read_corpus_from_input(read_context& ctxt);
+read_corpus_from_abixml_file(const string& path,
+			     environment&  env);
 
 corpus_group_sptr
-read_corpus_group_from_input(read_context& ctxt);
+read_corpus_group_from_input(fe_iface& ctxt);
 
 corpus_group_sptr
-read_corpus_group_from_native_xml(std::istream* in,
-				  environment&  env);
+read_corpus_group_from_abixml(std::istream* in,
+			      environment&  env);
 
 corpus_group_sptr
-read_corpus_group_from_native_xml_file(const string& path,
-				       environment&  env);
+read_corpus_group_from_abixml_file(const string& path,
+				   environment&  env);
 
 void
-add_read_context_suppressions(read_context& ctxt,
-			      const suppr::suppressions_type& supprs);
-
-void
-consider_types_not_reachable_from_public_interfaces(read_context& ctxt,
+consider_types_not_reachable_from_public_interfaces(fe_iface& ctxt,
 						    bool flag);
 
 #ifdef WITH_SHOW_TYPE_USE_IN_ABILINT
 vector<type_base_sptr>*
-get_types_from_type_id(read_context&, const string&);
+get_types_from_type_id(fe_iface&, const string&);
 
 unordered_map<type_or_decl_base*, vector<type_or_decl_base*>>*
-get_artifact_used_by_relation_map(read_context&);
+get_artifact_used_by_relation_map(fe_iface&);
 #endif
-}//end xml_reader
+}//end abixml
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
 bool
-load_canonical_type_ids(xml_reader::read_context& ctxt,
+load_canonical_type_ids(fe_iface& ctxt,
 			const string& file_path);
 #endif
 }//end namespace abigail

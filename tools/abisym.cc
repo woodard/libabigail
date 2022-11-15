@@ -28,8 +28,7 @@ using std::ostringstream;
 using std::vector;
 
 using abigail::ir::environment;
-using abigail::ir::environment_sptr;
-using abigail::dwarf_reader::lookup_symbol_from_elf;
+using abigail::dwarf::lookup_symbol_from_elf;
 using abigail::elf_symbol;
 using abigail::elf_symbol_sptr;
 

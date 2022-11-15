@@ -29,11 +29,11 @@ using abigail::tests::read_common::test_task;
 using abigail::tests::read_common::display_usage;
 using abigail::tests::read_common::options;
 
-using abigail::ctf_reader::read_context_sptr;
-using abigail::ctf_reader::create_read_context;
 using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
 using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::tools_utils::emit_prefix;
+
+using namespace abigail;
 
 static InOutSpec in_out_specs[] =
 {
@@ -353,17 +353,17 @@ test_task_ctf::perform()
   set_in_elf_path();
   set_in_suppr_spec_path();
 
-  abigail::elf_reader::status status =
-    abigail::elf_reader::STATUS_UNKNOWN;
+  abigail::fe_iface::status status =
+    abigail::fe_iface::STATUS_UNKNOWN;
   vector<char**> di_roots;
   ABG_ASSERT(abigail::tools_utils::file_exists(in_elf_path));
 
-  read_context_sptr ctxt = create_read_context(in_elf_path,
-                                               di_roots,
-                                               env);
-  ABG_ASSERT(ctxt);
+  abigail::elf_based_reader_sptr rdr = ctf::create_reader(in_elf_path,
+							  di_roots, env);
+  ABG_ASSERT(rdr);
 
-  corpus_sptr corp = read_corpus(ctxt.get(), status);
+  corpus_sptr corp = rdr->read_corpus(status);
+
   // if there is no output and no input, assume that we do not care about the
   // actual read result, just that it succeeded.
   if (!spec.in_abi_path && !spec.out_abi_path)

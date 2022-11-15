@@ -45,9 +45,10 @@ public:
   {
     ARTIFICIAL_ORIGIN = 0,
     NATIVE_XML_ORIGIN = 1,
-    DWARF_ORIGIN      = 1 << 1,
-    CTF_ORIGIN        = 1 << 2,
-    LINUX_KERNEL_BINARY_ORIGIN = 1 << 3
+    ELF_ORIGIN        = 1 << 1,
+    DWARF_ORIGIN      = 1 << 2,
+    CTF_ORIGIN        = 1 << 3,
+    LINUX_KERNEL_BINARY_ORIGIN = 1 << 4
   };
 
 private:
@@ -68,7 +69,7 @@ public:
   get_environment() const;
 
   void
-  add(const translation_unit_sptr);
+  add(const translation_unit_sptr&);
 
   const translation_units&
   get_translation_units() const;
@@ -326,10 +327,10 @@ public:
   exported_variables();
 
   void
-  maybe_add_fn_to_exported_fns(function_decl*);
+  maybe_add_fn_to_exported_fns(const function_decl*);
 
   void
-  maybe_add_var_to_exported_vars(var_decl*);
+  maybe_add_var_to_exported_vars(const var_decl*);
 }; //corpus::exported_decls_builder
 
 /// Abstraction of a group of corpora.

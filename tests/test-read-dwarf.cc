@@ -28,14 +28,12 @@ using abigail::tests::read_common::display_usage;
 using abigail::tests::read_common::options;
 using abigail::tests::get_build_dir;
 
-using abigail::dwarf_reader::read_corpus_from_elf;
-using abigail::dwarf_reader::read_context;
-using abigail::dwarf_reader::read_context_sptr;
-using abigail::dwarf_reader::create_read_context;
 using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
 using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::xml_writer::type_id_style_kind;
 using abigail::tools_utils::emit_prefix;
+
+using namespace abigail;
 
 static InOutSpec in_out_specs[] =
 {

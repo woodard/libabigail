@@ -53,6 +53,8 @@ using std::ofstream;
 using std::vector;
 using std::shared_ptr;
 
+using namespace abigail;
+
 using abigail::tools_utils::emit_prefix;
 
 class options
@@ -274,10 +276,6 @@ using abigail::ir::type_base_sptr;
 using abigail::ir::function_type_sptr;
 using abigail::ir::function_decl;
 using abigail::ir::var_decl;
-using abigail::elf_reader::status;
-using abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND;
-using abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND;
-using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
 using abigail::comparison::diff_sptr;
@@ -646,7 +644,7 @@ perform_compat_check_in_weak_mode(options& opts,
 ///
 /// @param opts the options passed from the user to the program.
 ///
-/// @param status the resulting elf_reader::status to send back to the
+/// @param status the resulting fe_iface::status to send back to the
 /// caller.
 ///
 /// @param di_roots the directories from where to look for debug info.
@@ -655,14 +653,16 @@ perform_compat_check_in_weak_mode(options& opts,
 ///
 /// @param path the path to the ABI corpus to read from.
 static corpus_sptr
-read_corpus(options opts, status &status,
-	    const vector<char**> di_roots,
-	    environment&      env,
-	    const string &path)
+read_corpus(options			opts,
+	    abigail::fe_iface::status&	status,
+	    const vector<char**>	di_roots,
+	    environment		&env,
+	    const string		&path)
 {
   corpus_sptr retval = NULL;
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(path);
+  abigail::fe_iface_sptr rdr;
 
   switch (type)
     {
@@ -675,26 +675,23 @@ read_corpus(options opts, status &status,
 #ifdef WITH_CTF
 	if (opts.use_ctf)
 	  {
-	    abigail::ctf_reader::read_context_sptr r_ctxt
-	      = abigail::ctf_reader::create_read_context(path,
-							 env);
-	    ABG_ASSERT(r_ctxt);
+	    rdr = ctf::create_reader(path, env);
+	    ABG_ASSERT(rdr);
 
-	    retval = abigail::ctf_reader::read_corpus(r_ctxt.get(), status);
+	    retval = ctf::read_corpus(rdr.get(), status);
 	  }
 	else
 #endif
-	  retval = read_corpus_from_elf(path, di_roots, env,
-					/*load_all_types=*/opts.weak_mode,
-					status);
+	  retval = dwarf::read_corpus_from_elf(path, di_roots, env,
+					       /*load_all_types=*/opts.weak_mode,
+					       status);
       }
       break;
     case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
       {
-	abigail::xml_reader::read_context_sptr r_ctxt =
-	  abigail::xml_reader::create_native_xml_read_context(path, env);
-	assert(r_ctxt);
-	retval = abigail::xml_reader::read_corpus_from_input(*r_ctxt);
+	rdr = abixml::create_reader(path, env);
+	assert(rdr);
+	retval = rdr->read_corpus(status);
       }
       break;
     case abigail::tools_utils::FILE_TYPE_AR:
@@ -788,7 +785,7 @@ main(int argc, char* argv[])
   char * app_di_root = opts.app_di_root_path.get();
   vector<char**> app_di_roots;
   app_di_roots.push_back(&app_di_root);
-  status status = abigail::elf_reader::STATUS_UNKNOWN;
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_UNKNOWN;
   environment env;
 
   corpus_sptr app_corpus = read_corpus(opts, status,
@@ -801,20 +798,21 @@ main(int argc, char* argv[])
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  if (opts.fail_no_debug_info && (status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-      && (status & STATUS_DEBUG_INFO_NOT_FOUND))
+  if (opts.fail_no_debug_info
+      && (status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      && (status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND))
     {
       emit_prefix(argv[0], cerr) << opts.app_path
 				 << " does not have debug symbols\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
+  if (status & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read symbols from " << opts.app_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (!(status & abigail::elf_reader::STATUS_OK))
+  if (!(status & abigail::fe_iface::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.app_path << "\n";
@@ -856,17 +854,18 @@ main(int argc, char* argv[])
 				 << " is not a supported file\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (opts.fail_no_debug_info && (status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-      && (status & STATUS_DEBUG_INFO_NOT_FOUND))
+  if (opts.fail_no_debug_info
+      && (status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      && (status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND))
     emit_prefix(argv[0], cerr)
       << "could not read debug info for " << opts.lib1_path << "\n";
-  if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
+  if (status & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
     {
       emit_prefix(argv[0], cerr) << "could not read symbols from "
 				 << opts.lib1_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
-  if (!(status & abigail::elf_reader::STATUS_OK))
+  if (!(status & abigail::fe_iface::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.lib1_path << "\n";
@@ -891,20 +890,21 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
-      if (opts.fail_no_debug_info && (status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-	  && (status & STATUS_DEBUG_INFO_NOT_FOUND))
+      if (opts.fail_no_debug_info
+	  && (status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	  && (status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND))
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read debug info for " << opts.lib2_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
-      if (status & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
+      if (status & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read symbols from " << opts.lib2_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
-      if (!(status & abigail::elf_reader::STATUS_OK))
+      if (!(status & abigail::fe_iface::STATUS_OK))
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read file " << opts.lib2_path << "\n";

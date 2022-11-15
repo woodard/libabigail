@@ -147,14 +147,13 @@ using abigail::comparison::get_default_harmful_categories_bitmap;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
-using abigail::dwarf_reader::read_context_sptr;
-using abigail::dwarf_reader::create_read_context;
-using abigail::dwarf_reader::get_soname_of_elf_file;
-using abigail::dwarf_reader::get_type_of_elf_file;
-using abigail::dwarf_reader::read_corpus_from_elf;
+using abigail::elf::get_soname_of_elf_file;
+using abigail::elf::get_type_of_elf_file;
 using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
+
+using namespace abigail;
 
 class package;
 
@@ -279,7 +278,7 @@ public:
   string				name;
   string				soname;
   off_t				size;
-  abigail::dwarf_reader::elf_type	type;
+  abigail::elf::elf_type	type;
 
   /// The path to the elf file.
   ///
@@ -1248,22 +1247,22 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 ///
 /// @param detailed_error_status is this pointer is non-null and if
 /// the function returns ABIDIFF_ERROR, then the function sets the
-/// pointed-to parameter to the abigail::elf_reader::status value
+/// pointed-to parameter to the abigail::fe_iface::status value
 /// that gives details about the rror.
 ///
 /// @return the status of the comparison.
 static abidiff_status
-compare(const elf_file& elf1,
-	const string&	debug_dir1,
-	const suppressions_type& priv_types_supprs1,
-	const elf_file& elf2,
-	const string&	debug_dir2,
-	const suppressions_type& priv_types_supprs2,
-	const options&	opts,
+compare(const elf_file&		elf1,
+	const string&			debug_dir1,
+	const suppressions_type&	priv_types_supprs1,
+	const elf_file&		elf2,
+	const string&			debug_dir2,
+	const suppressions_type&	priv_types_supprs2,
+	const options&			opts,
 	abigail::ir::environment&	env,
-	corpus_diff_sptr	&diff,
-	diff_context_sptr	&ctxt,
-	abigail::elf_reader::status *detailed_error_status = 0)
+	corpus_diff_sptr&		diff,
+	diff_context_sptr&		ctxt,
+	abigail::fe_iface::status*	detailed_error_status = 0)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
@@ -1280,8 +1279,8 @@ compare(const elf_file& elf1,
       << elf2.path
       << "...\n";
 
-  abigail::elf_reader::status c1_status = abigail::elf_reader::STATUS_OK,
-    c2_status = abigail::elf_reader::STATUS_OK;
+  abigail::fe_iface::status c1_status = abigail::fe_iface::STATUS_OK,
+    c2_status = abigail::fe_iface::STATUS_OK;
 
   ctxt.reset(new diff_context);
   set_diff_context_from_opts(ctxt, opts);
@@ -1320,36 +1319,27 @@ compare(const elf_file& elf1,
       << elf1.path
       << " ...\n";
 
+  abigail::elf_based_reader_sptr reader;
   corpus_sptr corpus1;
-#ifdef WITH_CTF
-  abigail::ctf_reader::read_context_sptr ctxt_ctf;
-#endif
-  read_context_sptr ctxt_dwarf;
   {
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      {
-        ctxt_ctf = abigail::ctf_reader::create_read_context(elf1.path,
-							    di_dirs1,
-                                                            env);
-        ABG_ASSERT(ctxt_ctf);
-        corpus1 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
-                                                   c1_status);
-      }
+      reader = ctf::create_reader(elf1.path, di_dirs1, env);
     else
 #endif
-      {
-        ctxt_dwarf = create_read_context(elf1.path, di_dirs1, env,
-                                         /*load_all_types=*/opts.show_all_types);
-        add_read_context_suppressions(*ctxt_dwarf, priv_types_supprs1);
-        if (!opts.kabi_suppressions.empty())
-          add_read_context_suppressions(*ctxt_dwarf, opts.kabi_suppressions);
+      reader = dwarf::create_reader(elf1.path, di_dirs1, env,
+				    /*load_all_types=*/opts.show_all_types);
 
-        corpus1 = read_corpus_from_elf(*ctxt_dwarf, c1_status);
-      }
+    ABG_ASSERT(reader);
+
+    reader->add_suppressions(priv_types_supprs1);
+    if (!opts.kabi_suppressions.empty())
+      reader->add_suppressions(opts.kabi_suppressions);
+
+    corpus1 = reader->read_corpus(c1_status);
 
     bool bail_out = false;
-    if (!(c1_status & abigail::elf_reader::STATUS_OK))
+    if (!(c1_status & abigail::fe_iface::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -1366,7 +1356,7 @@ compare(const elf_file& elf1,
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
-	if (c1_status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	if (c1_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1383,7 +1373,7 @@ compare(const elf_file& elf1,
 	    debug_info_error = true;
 	  }
 
-	if (c1_status & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	if (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1397,8 +1387,7 @@ compare(const elf_file& elf1,
               ;
             else
 #endif
-              abigail::dwarf_reader::refers_to_alt_debug_info(*ctxt_dwarf,
-                                                              alt_di_path);
+	      reader->refers_to_alt_debug_info(alt_di_path);
 	    if (!alt_di_path.empty())
 	      cerr << ": " << alt_di_path << "\n";
 	    else
@@ -1433,28 +1422,20 @@ compare(const elf_file& elf1,
   {
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      {
-        ctxt_ctf = abigail::ctf_reader::create_read_context(elf2.path,
-							    di_dirs2,
-							    env);
-        corpus2 = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
-                                                   c2_status);
-      }
+      reader = ctf::create_reader(elf2.path, di_dirs2, env);
     else
 #endif
-      {
-        ctxt_dwarf = create_read_context(elf2.path, di_dirs2, env,
-                                         /*load_all_types=*/opts.show_all_types);
-        add_read_context_suppressions(*ctxt_dwarf, priv_types_supprs2);
+      reader = dwarf::create_reader(elf2.path, di_dirs2, env,
+				    /*load_all_types=*/opts.show_all_types);
 
-        if (!opts.kabi_suppressions.empty())
-          add_read_context_suppressions(*ctxt_dwarf, opts.kabi_suppressions);
+    reader->add_suppressions(priv_types_supprs2);
+    if (!opts.kabi_suppressions.empty())
+      reader->add_suppressions(opts.kabi_suppressions);
 
-        corpus2 = read_corpus_from_elf(*ctxt_dwarf, c2_status);
-      }
+    corpus2 = reader->read_corpus(c2_status);
 
     bool bail_out = false;
-    if (!(c2_status & abigail::elf_reader::STATUS_OK))
+    if (!(c2_status & abigail::fe_iface::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -1471,7 +1452,7 @@ compare(const elf_file& elf1,
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
-	if (c2_status & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	if (c2_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1488,7 +1469,7 @@ compare(const elf_file& elf1,
 	    debug_info_error = true;
 	  }
 
-	if (c2_status & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	if (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	  {
 	    if (opts.verbose)
 	      emit_prefix("abipkgdiff", cerr)
@@ -1502,8 +1483,7 @@ compare(const elf_file& elf1,
               ;
             else
 #endif
-              abigail::dwarf_reader::refers_to_alt_debug_info(*ctxt_dwarf,
-                                                              alt_di_path);
+	      reader->refers_to_alt_debug_info(alt_di_path);
 	    if (!alt_di_path.empty())
 	      cerr << ": " << alt_di_path << "\n";
 	    else
@@ -1572,20 +1552,20 @@ compare(const elf_file& elf1,
 ///
 /// @return the status of the self comparison.
 static abidiff_status
-compare_to_self(const elf_file& elf,
-		const string&	debug_dir,
-		const options&	opts,
+compare_to_self(const elf_file&		elf,
+		const string&			debug_dir,
+		const options&			opts,
 		abigail::ir::environment&	env,
-		corpus_diff_sptr	&diff,
-		diff_context_sptr	&ctxt,
-		abigail::elf_reader::status *detailed_error_status = 0)
+		corpus_diff_sptr&		diff,
+		diff_context_sptr&		ctxt,
+		abigail::fe_iface::status*	detailed_error_status = 0)
 {
   char *di_dir = (char*) debug_dir.c_str();
 
   vector<char**> di_dirs;
   di_dirs.push_back(&di_dir);
 
-  abigail::elf_reader::status c_status = abigail::elf_reader::STATUS_OK;
+  abigail::fe_iface::status c_status = abigail::fe_iface::STATUS_OK;
 
   if (opts.verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1600,32 +1580,19 @@ compare_to_self(const elf_file& elf,
       << " ...\n";
 
   corpus_sptr corp;
-#ifdef WITH_CTF
-  abigail::ctf_reader::read_context_sptr ctxt_ctf;
-#endif
-  read_context_sptr ctxt_dwarf;
+  abigail::elf_based_reader_sptr reader;
   {
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      {
-        ctxt_ctf = abigail::ctf_reader::create_read_context(elf.path,
-							    di_dirs,
-                                                            env);
-        ABG_ASSERT(ctxt_ctf);
-        corp = abigail::ctf_reader::read_corpus(ctxt_ctf.get(),
-                                                   c_status);
-      }
+      reader = ctf::create_reader(elf.path, di_dirs, env);
     else
 #endif
-      {
-        ctxt_dwarf =
-         create_read_context(elf.path, di_dirs, env,
-                             /*read_all_types=*/opts.show_all_types);
+      reader = dwarf::create_reader(elf.path, di_dirs, env,
+				    /*read_all_types=*/opts.show_all_types);
 
-        corp = read_corpus_from_elf(*ctxt_dwarf, c_status);
-      }
+    corp = reader->read_corpus(c_status);
 
-    if (!(c_status & abigail::elf_reader::STATUS_OK))
+    if (!(c_status & abigail::fe_iface::STATUS_OK))
       {
 	if (opts.verbose)
 	  emit_prefix("abipkgdiff", cerr)
@@ -1695,10 +1662,8 @@ compare_to_self(const elf_file& elf,
     }
 
     {
-      abigail::xml_reader::read_context_sptr c =
-	abigail::xml_reader::create_native_xml_read_context(abi_file_path,
-							    env);
-      if (!c)
+      abigail::fe_iface_sptr rdr = abixml::create_reader(abi_file_path, env);
+      if (!rdr)
 	{
 	  if (opts.verbose)
 	    emit_prefix("abipkgdiff", cerr)
@@ -1714,7 +1679,8 @@ compare_to_self(const elf_file& elf,
 	  << abi_file_path
 	  << "' ...\n";
 
-      reread_corp = read_corpus_from_input(*c);
+      abigail::fe_iface::status sts;
+      reread_corp = rdr->read_corpus(sts);
       if (!reread_corp)
 	{
 	  if (opts.verbose)
@@ -2078,8 +2044,8 @@ public:
     diff_context_sptr ctxt;
     corpus_diff_sptr diff;
 
-    abigail::elf_reader::status detailed_status =
-      abigail::elf_reader::STATUS_UNKNOWN;
+    abigail::fe_iface::status detailed_status =
+      abigail::fe_iface::STATUS_UNKNOWN;
 
     if (args->opts.exported_interfaces_only.has_value())
       env.analyze_exported_interfaces_only
@@ -2113,7 +2079,7 @@ public:
     if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
 	string diagnostic =
-	  abigail::elf_reader::status_to_diagnostic_string(detailed_status);
+	  abigail::status_to_diagnostic_string(detailed_status);
 	if (diagnostic.empty())
 	  diagnostic =
 	    "Unknown error.  Please run the tool again with --verbose\n";
@@ -2155,8 +2121,8 @@ public:
       env.analyze_exported_interfaces_only
 	(*args->opts.exported_interfaces_only);
 
-    abigail::elf_reader::status detailed_status =
-      abigail::elf_reader::STATUS_UNKNOWN;
+    abigail::fe_iface::status detailed_status =
+      abigail::fe_iface::STATUS_UNKNOWN;
 
     status |= compare_to_self(args->elf1, args->debug_dir1,
 			      args->opts, env, diff, ctxt,
@@ -2183,7 +2149,7 @@ public:
     if (status & abigail::tools_utils::ABIDIFF_ERROR)
       {
 	string diagnostic =
-	  abigail::elf_reader::status_to_diagnostic_string(detailed_status);
+	  abigail::status_to_diagnostic_string(detailed_status);
 
 	if (diagnostic.empty())
 	  diagnostic =
@@ -2370,7 +2336,7 @@ create_maps_of_package_content(package& package, options& opts)
       elf_file_sptr e (new elf_file(*file));
       if (opts.compare_dso_only)
 	{
-	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
+	  if (e->type != abigail::elf::ELF_TYPE_DSO)
 	    {
 	      if (opts.verbose)
 		emit_prefix("abipkgdiff", cerr)
@@ -2380,13 +2346,13 @@ create_maps_of_package_content(package& package, options& opts)
 	}
       else
 	{
-	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
-	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC
-              && e->type != abigail::dwarf_reader::ELF_TYPE_PI_EXEC)
+	  if (e->type != abigail::elf::ELF_TYPE_DSO
+	      && e->type != abigail::elf::ELF_TYPE_EXEC
+              && e->type != abigail::elf::ELF_TYPE_PI_EXEC)
 	    {
 	      if (is_linux_kernel_package)
 		{
-		  if (e->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+		  if (e->type == abigail::elf::ELF_TYPE_RELOCATABLE)
 		    {
 		      // This is a Linux Kernel module.
 		      ;
@@ -2405,7 +2371,7 @@ create_maps_of_package_content(package& package, options& opts)
 
       if (e->soname.empty())
 	{
-	  if (e->type == abigail::dwarf_reader::ELF_TYPE_DSO
+	  if (e->type == abigail::elf::ELF_TYPE_DSO
 	      && must_compare_public_dso_only(package, opts))
 	    {
 	      // We are instructed to compare public DSOs only.  Yet
@@ -2751,12 +2717,12 @@ compare_prepared_userspace_packages(package& first_package,
 	second_package.path_elf_file_sptr_map().find(it->first);
 
       if (iter != second_package.path_elf_file_sptr_map().end()
-	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
-	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
-              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC
-	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
+	  && (iter->second->type == abigail::elf::ELF_TYPE_DSO
+	      || iter->second->type == abigail::elf::ELF_TYPE_EXEC
+              || iter->second->type == abigail::elf::ELF_TYPE_PI_EXEC
+	      || iter->second->type == abigail::elf::ELF_TYPE_RELOCATABLE))
 	{
-	  if (iter->second->type != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+	  if (iter->second->type != abigail::elf::ELF_TYPE_RELOCATABLE)
 	    {
 	      if (opts.verbose)
 		emit_prefix("abipkgdiff", cerr)
@@ -2914,12 +2880,12 @@ self_compare_prepared_userspace_package(package&	pkg,
        ++it)
     {
       if (it != pkg.path_elf_file_sptr_map().end()
-	  && (it->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
-	      || it->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
-              || it->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC
-	      || it->second->type == abigail::dwarf_reader::ELF_TYPE_RELOCATABLE))
+	  && (it->second->type == abigail::elf::ELF_TYPE_DSO
+	      || it->second->type == abigail::elf::ELF_TYPE_EXEC
+              || it->second->type == abigail::elf::ELF_TYPE_PI_EXEC
+	      || it->second->type == abigail::elf::ELF_TYPE_RELOCATABLE))
 	{
-	  if (it->second->type != abigail::dwarf_reader::ELF_TYPE_RELOCATABLE)
+	  if (it->second->type != abigail::elf::ELF_TYPE_RELOCATABLE)
 	    {
 	      compare_args_sptr args
 		(new compare_args(*it->second,

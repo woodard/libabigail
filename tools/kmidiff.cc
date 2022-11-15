@@ -32,8 +32,8 @@ using std::cerr;
 using abg_compat::optional;
 
 using namespace abigail::tools_utils;
-using namespace abigail::dwarf_reader;
 using namespace abigail::ir;
+using namespace abigail;
 
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
@@ -48,7 +48,6 @@ using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
-using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 
 /// The options of this program.
 struct options
@@ -450,8 +449,8 @@ main(int argc, char* argv[])
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group1 =
-	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root1,
-						 env);
+	  abixml::read_corpus_group_from_abixml_file(opts.kernel_dist_root1,
+						     env);
 
     }
 
@@ -476,8 +475,8 @@ main(int argc, char* argv[])
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group2 =
-	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root2,
-						 env);
+	  abixml::read_corpus_group_from_abixml_file(opts.kernel_dist_root2,
+						     env);
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;

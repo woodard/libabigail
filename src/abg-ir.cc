@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-// -*- mode: C++ -*-
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception -*- mode:
+// C++ -*-
 //
 // Copyright (C) 2013-2022 Red Hat, Inc.
 //
@@ -28,11 +28,11 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-interned-str.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
-#include "abg-corpus-priv.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
+#include "abg-corpus-priv.h"
 #include "abg-tools-utils.h"
 #include "abg-comp-filter.h"
 #include "abg-ir-priv.h"
@@ -26242,6 +26242,30 @@ get_function_parameter(const decl_base* fun,
     return 0;
 
   return parms[parm_index].get();
+}
+
+/// Build the internal name of the underlying type of an enum.
+///
+/// @param base_name the (unqualified) name of the enum the underlying
+/// type is destined to.
+///
+/// @param is_anonymous true if the underlying type of the enum is to
+/// be anonymous.
+string
+build_internal_underlying_enum_type_name(const string &base_name,
+					 bool is_anonymous,
+					 uint64_t size)
+{
+  std::ostringstream o;
+
+  if (is_anonymous)
+    o << "unnamed-enum";
+  else
+    o << "enum-" << base_name;
+
+  o << "-underlying-type-" << size;
+
+  return o.str();
 }
 
 bool

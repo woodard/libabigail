@@ -30,6 +30,7 @@ using std::cout;
 using std::cerr;
 using std::shared_ptr;
 using abg_compat::optional;
+using namespace abigail;
 using abigail::ir::environment;
 using abigail::ir::environment_sptr;
 using abigail::translation_unit;
@@ -45,8 +46,7 @@ using abigail::comparison::get_default_harmful_categories_bitmap;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
-using namespace abigail::dwarf_reader;
-using namespace abigail::elf_reader;
+
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
@@ -55,6 +55,8 @@ using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
+
+using namespace abigail;
 
 struct options
 {
@@ -808,14 +810,13 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 /// @param read_ctxt the read context to apply the suppression
 /// specifications to.  Note that the type of this parameter is
 /// generic (class template) because in practise, it can be either an
-/// abigail::dwarf_reader::read_context type or an
-/// abigail::xml_reader::read_context type.
+/// dwarf::read_context type or an
+/// abigail::abiabixml_reader::reader type.
 ///
 /// @param opts the options where to get the suppression
 /// specifications from.
-template<class ReadContextType>
 static void
-set_suppressions(ReadContextType& read_ctxt, const options& opts)
+set_suppressions(abigail::fe_iface& reader, const options& opts)
 {
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
@@ -823,7 +824,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
        ++i)
     read_suppressions(*i, supprs);
 
-  if (read_context_get_path(read_ctxt) == opts.file1
+  if (reader.corpus_path() == opts.file1
       && (!opts.headers_dirs1.empty() || !opts.header_files1.empty()))
     {
       // Generate suppression specification to avoid showing ABI
@@ -843,7 +844,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 	}
     }
 
-  if (read_context_get_path(read_ctxt) == opts.file2
+  if (reader.corpus_path() == opts.file2
       && (!opts.headers_dirs2.empty() || !opts.header_files2.empty()))
     {
       // Generate suppression specification to avoid showing ABI
@@ -869,7 +870,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 
   supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
 
-  add_read_context_suppressions(read_ctxt, supprs);
+  reader.add_suppressions(supprs);
 }
 
 /// Configure the abigail::xml_reacher::read_context based on the
@@ -879,11 +880,11 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 ///
 /// @param opts the command-line options to configure @p ctxt from.
 static void
-set_native_xml_reader_options(abigail::xml_reader::read_context& ctxt,
+set_native_xml_reader_options(abigail::fe_iface& rdr,
 			      const options& opts)
 {
-  consider_types_not_reachable_from_public_interfaces(ctxt,
-						      opts.show_all_types);
+  abixml::consider_types_not_reachable_from_public_interfaces(rdr,
+									      opts.show_all_types);
 }
 
 /// Set the regex patterns describing the functions to drop from the
@@ -979,17 +980,17 @@ prepare_di_root_paths(options& o)
 /// @return abigail::tools_utils::ABIDIFF_ERROR if an error was
 /// detected, abigail::tools_utils::ABIDIFF_OK otherwise.
 static abigail::tools_utils::abidiff_status
-handle_error(abigail::elf_reader::status status_code,
-	     const abigail::dwarf_reader::read_context* ctxt,
+handle_error(abigail::fe_iface::status status_code,
+	     const abigail::elf_based_reader* rdr,
 	     const string& prog_name,
 	     const options& opts)
 {
-  if (!(status_code & abigail::elf_reader::STATUS_OK))
+  if (!(status_code & abigail::fe_iface::STATUS_OK))
     {
       emit_prefix(prog_name, cerr)
 	<< "failed to read input file " << opts.file1 << "\n";
 
-      if (status_code & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+      if (status_code & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr) <<
 	    "could not find the debug info\n";
@@ -1042,22 +1043,18 @@ handle_error(abigail::elf_reader::status status_code,
 	  }
 	}
 
-      if (status_code & abigail::elf_reader::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      if (status_code & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr)
 	    << "could not find the alternate debug info file";
-	  if (ctxt)
-	    {
-	      string alt_di_path;
-	      abigail::dwarf_reader::refers_to_alt_debug_info(*ctxt,
-							      alt_di_path);
-	      if (!alt_di_path.empty())
-		cerr << " at: " << alt_di_path;
-	    }
-	  cerr << "\n";
+
+	   if (rdr->alternate_dwarf_debug_info())
+	    cerr << " at: "
+		 << rdr->alternate_dwarf_debug_info_path()
+		 << "\n";
 	}
 
-      if (status_code & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
+      if (status_code & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(prog_name, cerr)
 	  << "could not find the ELF symbols in the file '"
 	  << opts.file1
@@ -1166,9 +1163,9 @@ main(int argc, char* argv[])
 	      env.debug_type_canonicalization_is_on(true);
 #endif
       translation_unit_sptr t1, t2;
-      abigail::elf_reader::status c1_status =
-	abigail::elf_reader::STATUS_OK,
-	c2_status = abigail::elf_reader::STATUS_OK;
+      abigail::fe_iface::status c1_status =
+	abigail::fe_iface::STATUS_OK,
+	c2_status = abigail::fe_iface::STATUS_OK;
       corpus_sptr c1, c2;
       corpus_group_sptr g1, g2;
       bool files_suppressed = false;
@@ -1193,69 +1190,63 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1,
-								    env);
+	  t1 = abixml::read_translation_unit_from_file(opts.file1,
+								       env);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF: // fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
+	    abigail::elf_based_reader_sptr rdr;
 #ifdef WITH_CTF
             if (opts.use_ctf)
-              {
-                abigail::ctf_reader::read_context_sptr ctxt
-                  = abigail::ctf_reader::create_read_context(opts.file1,
-                                                             opts.prepared_di_root_paths1,
-                                                             env);
-                ABG_ASSERT(ctxt);
-                c1 = abigail::ctf_reader::read_corpus(ctxt.get(),
-                                                      c1_status);
-              }
+	      rdr = ctf::create_reader(opts.file1,
+				       opts.prepared_di_root_paths1,
+				       env);
             else
 #endif
-              {
-                abigail::dwarf_reader::read_context_sptr ctxt =
-                  abigail::dwarf_reader::create_read_context
-                  (opts.file1, opts.prepared_di_root_paths1,
-                   env, /*read_all_types=*/opts.show_all_types,
-                   opts.linux_kernel_mode);
-                assert(ctxt);
+	      rdr = dwarf::create_reader(opts.file1,
+					 opts.prepared_di_root_paths1,
+					 env,
+					 /*read_all_types=*/opts.show_all_types,
+					 opts.linux_kernel_mode);
 
-                abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
-                set_suppressions(*ctxt, opts);
-                abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
-                c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
-                if (!c1
-                    || (opts.fail_no_debug_info
-                        && (c1_status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-                        && (c1_status & STATUS_DEBUG_INFO_NOT_FOUND)))
-                  return handle_error(c1_status, ctxt.get(),
-                                      argv[0], opts);
-              }
+	    assert(rdr);
+
+	    rdr->options().show_stats = opts.show_stats;
+	    rdr->options().do_log = opts.do_log;
+	    set_suppressions(*rdr, opts);
+	    c1 = rdr->read_corpus(c1_status);
+
+	    if (!c1
+		|| (opts.fail_no_debug_info
+		    && (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		    && (c1_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
+	      return handle_error(c1_status, rdr.get(),
+				  argv[0], opts);
+
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  {
-	    abigail::xml_reader::read_context_sptr ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
-								  env);
-	    assert(ctxt);
-	    set_suppressions(*ctxt, opts);
-	    set_native_xml_reader_options(*ctxt, opts);
-	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	    abigail::fe_iface_sptr rdr =
+	      abixml::create_reader(opts.file1, env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    set_native_xml_reader_options(*rdr, opts);
+	    c1 = rdr->read_corpus(c1_status);
 	    if (!c1)
-	      return handle_error(c1_status, /*ctxt=*/0,
-				  argv[0], opts);
+	      return handle_error(c1_status, /*ctxt=*/0, argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
 	  {
-	    abigail::xml_reader::read_context_sptr ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
-								  env);
-	    assert(ctxt);
-	    set_suppressions(*ctxt, opts);
-	    set_native_xml_reader_options(*ctxt, opts);
-	    g1 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	    abigail::fe_iface_sptr rdr =
+	      abixml::create_reader(opts.file1,
+							   env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    set_native_xml_reader_options(*rdr, opts);
+	    g1 = abixml::read_corpus_group_from_input(*rdr);
 	    if (!g1)
 	      return handle_error(c1_status, /*ctxt=*/0,
 				  argv[0], opts);
@@ -1277,54 +1268,47 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2,
-								    env);
+	  t2 = abixml::read_translation_unit_from_file(opts.file2,
+								       env);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
+	    abigail::elf_based_reader_sptr rdr;
 #ifdef WITH_CTF
             if (opts.use_ctf)
-              {
-                abigail::ctf_reader::read_context_sptr ctxt
-                  = abigail::ctf_reader::create_read_context(opts.file2,
-                                                             opts.prepared_di_root_paths2,
-                                                             env);
-                ABG_ASSERT(ctxt);
-                c2 = abigail::ctf_reader::read_corpus(ctxt.get(),
-                                                      c2_status);
-              }
+	      rdr = ctf::create_reader(opts.file2,
+				       opts.prepared_di_root_paths2,
+				       env);
             else
 #endif
-              {
-                abigail::dwarf_reader::read_context_sptr ctxt =
-                  abigail::dwarf_reader::create_read_context
-                  (opts.file2, opts.prepared_di_root_paths2,
-                   env, /*read_all_types=*/opts.show_all_types,
-                   opts.linux_kernel_mode);
-                assert(ctxt);
-                abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
-                abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
-                set_suppressions(*ctxt, opts);
+	      rdr = dwarf::create_reader (opts.file2,
+					  opts.prepared_di_root_paths2,
+					  env,
+					  /*read_all_types=*/opts.show_all_types,
+					  opts.linux_kernel_mode);
 
-                c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
-                if (!c2
-                    || (opts.fail_no_debug_info
-                        && (c2_status & STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-                        && (c2_status & STATUS_DEBUG_INFO_NOT_FOUND)))
-                  return handle_error(c2_status, ctxt.get(), argv[0], opts);
-              }
+	    assert(rdr);
+	    rdr->options().show_stats = opts.show_stats;
+	    rdr->options().do_log = opts.do_log;
+	    set_suppressions(*rdr, opts);
+
+	    c2 = rdr->read_corpus(c2_status);
+
+	    if (!c2
+		|| (opts.fail_no_debug_info
+		    && (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		    && (c2_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
+	      return handle_error(c2_status, rdr.get(), argv[0], opts);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  {
-	    abigail::xml_reader::read_context_sptr ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
-								  env);
-	    assert(ctxt);
-	    set_suppressions(*ctxt, opts);
-	    set_native_xml_reader_options(*ctxt, opts);
-	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	    abigail::fe_iface_sptr rdr = abixml::create_reader(opts.file2, env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    set_native_xml_reader_options(*rdr, opts);
+	    c2 = rdr->read_corpus(c2_status);
 	    if (!c2)
 	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 
@@ -1332,13 +1316,11 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
 	  {
-	    abigail::xml_reader::read_context_sptr ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
-								  env);
-	    assert(ctxt);
-	    set_suppressions(*ctxt, opts);
-	    set_native_xml_reader_options(*ctxt, opts);
-	    g2 = abigail::xml_reader::read_corpus_group_from_input(*ctxt);
+	    abigail::fe_iface_sptr rdr = abixml::create_reader(opts.file2, env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    set_native_xml_reader_options(*rdr, opts);
+	    g2 = abixml::read_corpus_group_from_input(*rdr);
 	    if (!g2)
 	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 	  }

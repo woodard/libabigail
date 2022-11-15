@@ -56,16 +56,16 @@ using abigail::type_base_sptr;
 using abigail::type_or_decl_base_sptr;
 using abigail::corpus;
 using abigail::corpus_sptr;
-using abigail::xml_reader::read_translation_unit_from_file;
-using abigail::xml_reader::read_translation_unit_from_istream;
-using abigail::xml_reader::read_corpus_from_native_xml;
-using abigail::xml_reader::read_corpus_from_native_xml_file;
-using abigail::xml_reader::read_corpus_group_from_input;
+using abigail::abixml::read_translation_unit_from_file;
+using abigail::abixml::read_translation_unit_from_istream;
+using abigail::abixml::read_corpus_from_abixml;
+using abigail::abixml::read_corpus_from_abixml_file;
+using abigail::abixml::read_corpus_group_from_input;
 #ifdef WITH_SHOW_TYPE_USE_IN_ABILINT
-using abigail::xml_reader::get_types_from_type_id;
-using abigail::xml_reader::get_artifact_used_by_relation_map;
+using abigail::abixml::get_types_from_type_id;
+using abigail::abixml::get_artifact_used_by_relation_map;
 #endif
-using abigail::dwarf_reader::read_corpus_from_elf;
+
 using abigail::xml_writer::write_translation_unit;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::create_write_context;
@@ -302,7 +302,7 @@ fill_artifact_use_tree(const std::unordered_map<type_or_decl_base*,
 /// @param type_id the type-id of the type to construct the "use tree"
 /// for.
 static unique_ptr<artifact_use_relation_tree>
-build_type_use_tree(abigail::xml_reader::read_context &ctxt,
+build_type_use_tree(abigail::abixml::reader &ctxt,
 		    const string& type_id)
 {
   unique_ptr<artifact_use_relation_tree> result;
@@ -452,7 +452,7 @@ emit_artifact_use_trace(const artifact_use_relation_tree& artifact_use_tree,
 ///
 /// @param the type_id of the type which usage to analyse.
 static bool
-show_how_type_is_used(abigail::xml_reader::read_context &ctxt,
+show_how_type_is_used(abigail::abixml::reader &ctxt,
 		      const string& type_id)
 {
   if (type_id.empty())
@@ -641,7 +641,7 @@ maybe_check_suppression_files(const options& opts)
   return true;
 }
 
-/// Set suppression specifications to the @p read_context used to load
+/// Set suppression specifications to the @p reader used to load
 /// the ABI corpus from the ELF/DWARF file.
 ///
 /// These suppression specifications are going to be applied to drop
@@ -652,14 +652,13 @@ maybe_check_suppression_files(const options& opts)
 /// @param read_ctxt the read context to apply the suppression
 /// specifications to.  Note that the type of this parameter is
 /// generic (class template) because in practise, it can be either an
-/// abigail::dwarf_reader::read_context type or an
-/// abigail::xml_reader::read_context type.
+/// abigail::dwarf_reader::reader type or an
+/// abigail::abixml::reader type.
 ///
 /// @param opts the options where to get the suppression
 /// specifications from.
-template<class ReadContextType>
 static void
-set_suppressions(ReadContextType& read_ctxt, const options& opts)
+set_suppressions(abigail::fe_iface& reader, const options& opts)
 {
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
@@ -673,7 +672,7 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
   if (suppr)
     supprs.push_back(suppr);
 
-  add_read_context_suppressions(read_ctxt, supprs);
+  reader.add_suppressions(supprs);
 }
 
 /// Reads a bi (binary instrumentation) file, saves it back to a
@@ -730,12 +729,12 @@ main(int argc, char* argv[])
 	}
       else
 	{
-	  abigail::xml_reader::read_context_sptr ctxt =
-	    abigail::xml_reader::create_native_xml_read_context(&cin,
-								env);
-	  assert(ctxt);
-	  set_suppressions(*ctxt, opts);
-	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	  abigail::fe_iface_sptr rdr =
+	    abigail::abixml::create_reader(&cin, env);
+	  assert(rdr);
+	  set_suppressions(*rdr, opts);
+	  abigail::fe_iface::status sts;
+	  corpus_sptr corp = rdr->read_corpus(sts);
 	  if (!opts.noout)
 	    {
 	      const write_context_sptr& ctxt
@@ -752,10 +751,9 @@ main(int argc, char* argv[])
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
       abigail::corpus_group_sptr group;
-      abigail::elf_reader::status s = abigail::elf_reader::STATUS_OK;
+      abigail::fe_iface::status s = abigail::fe_iface::STATUS_OK;
       char* di_root_path = 0;
       file_type type = guess_file_type(opts.file_path);
-      abigail::xml_reader::read_context_sptr abixml_read_ctxt;
 
       switch (type)
 	{
@@ -766,10 +764,10 @@ main(int argc, char* argv[])
 	  return 1;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  {
-	    abixml_read_ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env);
-	    tu = read_translation_unit(*abixml_read_ctxt);
+	    abigail::fe_iface_sptr rdr =
+	      abigail::abixml::create_reader(opts.file_path,
+							   env);
+	    tu = abigail::abixml::read_translation_unit(*rdr);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
@@ -778,48 +776,38 @@ main(int argc, char* argv[])
 	    di_root_path = opts.di_root_path.get();
 	    vector<char**> di_roots;
 	    di_roots.push_back(&di_root_path);
-
+	    abigail::elf_based_reader_sptr rdr;
 #ifdef WITH_CTF
             if (opts.use_ctf)
-              {
-                abigail::ctf_reader::read_context_sptr ctxt =
-                  abigail::ctf_reader::create_read_context(opts.file_path,
-                                                           di_roots,
-                                                           env);
-                ABG_ASSERT(ctxt);
-                corp = abigail::ctf_reader::read_corpus(ctxt.get(), s);
-              }
+	      rdr =
+		abigail::ctf::create_reader(opts.file_path,
+					    di_roots, env);
             else
 #endif
-              {
-                abigail::dwarf_reader::read_context_sptr ctxt =
-                  abigail::dwarf_reader::create_read_context(opts.file_path,
-                                                             di_roots, env,
-                                                             /*load_all_types=*/false);
-                assert(ctxt);
-                set_suppressions(*ctxt, opts);
-                corp = read_corpus_from_elf(*ctxt, s);
-              }
+	      rdr =
+		abigail::dwarf::create_reader(opts.file_path,
+					      di_roots, env,
+					      /*load_all_types=*/false);
+	    set_suppressions(*rdr, opts);
+	    corp = rdr->read_corpus(s);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  {
-	    abixml_read_ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env);
-	    assert(abixml_read_ctxt);
-	    set_suppressions(*abixml_read_ctxt, opts);
-	    corp = read_corpus_from_input(*abixml_read_ctxt);
+	    abigail::fe_iface_sptr rdr =
+	      abigail::abixml::create_reader(opts.file_path, env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    corp = rdr->read_corpus(s);
 	    break;
 	  }
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
 	  {
-	    abixml_read_ctxt =
-	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
-								  env);
-	    assert(abixml_read_ctxt);
-	    set_suppressions(*abixml_read_ctxt, opts);
-	    group = read_corpus_group_from_input(*abixml_read_ctxt);
+	    abigail::fe_iface_sptr rdr =
+	      abigail::abixml::create_reader(opts.file_path, env);
+	    assert(rdr);
+	    set_suppressions(*rdr, opts);
+	    group = read_corpus_group_from_input(*rdr);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_RPM:
@@ -838,9 +826,9 @@ main(int argc, char* argv[])
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "failed to read " << opts.file_path << "\n";
-	  if (!(s & abigail::elf_reader::STATUS_OK))
+	  if (!(s & abigail::fe_iface::STATUS_OK))
 	    {
-	      if (s & abigail::elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+	      if (s & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
 		  cerr << "could not find the debug info";
 		  if(di_root_path == 0)
@@ -854,7 +842,7 @@ main(int argc, char* argv[])
 		      << "Maybe the root path to the debug "
 		      "information is wrong?\n";
 		}
-	      if (s & abigail::elf_reader::STATUS_NO_SYMBOLS_FOUND)
+	      if (s & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
 		emit_prefix(argv[0], cerr)
 		  << "could not find the ELF symbols in the file "
 		  << opts.file_path

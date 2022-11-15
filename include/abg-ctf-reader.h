@@ -17,40 +17,24 @@
 #include <ostream>
 #include "abg-corpus.h"
 #include "abg-suppression.h"
-#include "abg-elf-reader-common.h"
+#include "abg-elf-based-reader.h"
 
 #include "ctf-api.h"
 
 namespace abigail
 {
-namespace ctf_reader
+namespace ctf
 {
 
-class read_context;
-typedef shared_ptr<read_context> read_context_sptr;
-
-read_context_sptr
-create_read_context(const std::string& elf_path,
-                    const vector<char**>& debug_info_root_paths,
-                    ir::environment& env);
-corpus_sptr
-read_corpus(read_context *ctxt, elf_reader::status& status);
-
-corpus_sptr
-read_corpus(const read_context_sptr &ctxt, elf_reader::status &status);
-
-corpus_sptr
-read_and_add_corpus_to_group_from_elf(read_context*, corpus_group&, elf_reader::status&);
+elf_based_reader_sptr
+create_reader(const std::string& elf_path,
+	      const vector<char**>& debug_info_root_paths,
+	      environment& env);
 
 void
-set_read_context_corpus_group(read_context& ctxt, corpus_group_sptr& group);
-
-void
-reset_read_context(read_context_sptr &ctxt,
-                   const std::string&	elf_path,
+reset_reader(elf_based_reader&		ctxt,
+	     const std::string&	elf_path,
 	     const vector<char**>&	debug_info_root_path);
-std::string
-dic_type_key(ctf_dict_t *dic, ctf_id_t ctf_type);
 } // end namespace ctf_reader
 } // end namespace abigail
 

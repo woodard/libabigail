@@ -24,7 +24,6 @@ using abigail::comparison::compute_diff;
 using abigail::comparison::print_diff_tree;
 using abigail::comparison::apply_filters;
 using namespace abigail;
-using namespace abigail::dwarf_reader;
 
 struct options
 {
@@ -101,24 +100,24 @@ main(int argc, char* argv[])
 
   if (!opts.elf1.empty() && !opts.elf2.empty())
     {
-      elf_reader::status c1_status, c2_status;
+      fe_iface::status c1_status, c2_status;
       corpus_sptr c1, c2;
 
       environment env;
       vector<char**> di_roots;
-      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, di_roots, env,
-					      /*load_all_types=*/false,
-					      c1_status);
-      if (c1_status != elf_reader::STATUS_OK)
+      c1 = dwarf::read_corpus_from_elf(opts.elf1, di_roots, env,
+				       /*load_all_types=*/false,
+				       c1_status);
+      if (c1_status != fe_iface::STATUS_OK)
 	{
 	  cerr << "Failed to read elf file " << opts.elf1 << "\n";
 	  return 1;
 	}
 
-      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, di_roots, env,
-					      /*load_all_types=*/false,
-					      c2_status);
-      if (c2_status != elf_reader::STATUS_OK)
+      c2 = dwarf::read_corpus_from_elf(opts.elf2, di_roots, env,
+				       /*load_all_types=*/false,
+				       c2_status);
+      if (c2_status != fe_iface::STATUS_OK)
 	{
 	  cerr << "Failed to read elf file " << opts.elf2 << "\n";
 	  return 1;

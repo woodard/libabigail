@@ -16,6 +16,8 @@
 namespace abigail
 {
 
+class fe_iface;
+
 /// @brief an engine to suppress the parts of the result of comparing
 /// two sets of ABI artifacts.
 ///
@@ -115,6 +117,12 @@ public:
 					 const string& filename,
 					 const suppression_base& suppr);
 }; // end class suppression_base
+
+/// Convenience typedef for a shared pointer to a @ref suppression.
+typedef shared_ptr<suppression_base> suppression_sptr;
+
+/// Convenience typedef for a vector of @ref suppression_sptr
+typedef vector<suppression_sptr> suppressions_type;
 
 void
 read_suppressions(std::istream& input,
@@ -821,7 +829,66 @@ is_private_type_suppr_spec(const type_suppression&);
 
 bool
 is_private_type_suppr_spec(const suppression_sptr& s);
+
+bool
+suppression_can_match(const fe_iface&,
+		      const suppression_base&);
+
+bool
+suppression_matches_function_name(const fe_iface&,
+				  const suppr::function_suppression&,
+				  const string&);
+
+bool
+suppression_matches_function_sym_name(const fe_iface&,
+				      const suppr::function_suppression& s,
+				      const string& fn_linkage_name);
+
+bool
+suppression_matches_variable_name(const fe_iface&,
+				  const suppr::variable_suppression& s,
+				  const string& var_name);
+
+bool
+suppression_matches_variable_sym_name(const fe_iface&,
+				      const suppr::variable_suppression&,
+				      const string&);
+
+bool
+suppression_matches_type_name_or_location(const fe_iface&,
+					  const suppr::type_suppression&,
+					  const string&,
+					  const location&);
+
+bool
+is_elf_symbol_suppressed(const fe_iface&,
+			 const elf_symbol_sptr& symbol);
+
+bool
+is_elf_symbol_suppressed(const fe_iface&,
+			 const string& sym_name,
+			 elf_symbol::type sym_type);
+
+bool
+is_function_suppressed(const fe_iface&	fe,
+		       const string&		fn_name,
+		       const string&		fn_linkage_name,
+		       bool			require_drop_property = false);
+
+bool
+is_variable_suppressed(const fe_iface&	fe,
+		       const string&	var_name,
+		       const string&	var_linkage_name,
+		       bool			require_drop_property = false);
+
+bool
+is_type_suppressed(const fe_iface&	fe,
+		   const string&	type_name,
+		   const location&	type_location,
+		   bool&		type_is_private,
+		   bool			require_drop_property = false);
 } // end namespace suppr
+
 
 } // end namespace abigail
 

@@ -23,6 +23,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-comp-filter.h"
 #include "abg-suppression.h"
 #include "abg-tools-utils.h"
+#include "abg-fe-iface.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -2932,78 +2933,6 @@ operator|(function_suppression::change_kind l,
       (static_cast<unsigned>(l) | static_cast<unsigned>(r));
 }
 
-  /// Test whether if a given function suppression matches a function
-  /// designated by a regular expression that describes its name.
-  ///
-  /// @param s the suppression specification to evaluate to see if it
-  /// matches a given function name.
-  ///
-  /// @param fn_name the name of the function of interest.  Note that
-  /// this name must be *non* qualified.
-  ///
-  /// @return true iff the suppression specification @p s matches the
-  /// function whose name is @p fn_name.
-bool
-suppression_matches_function_name(const suppr::function_suppression& s,
-				  const string& fn_name)
-{
-  if (regex_t_sptr regexp = s.priv_->get_name_regex())
-    {
-      if (!regex::match(regexp, fn_name))
-	return false;
-    }
-  else if (regex_t_sptr regexp = s.priv_->get_name_not_regex())
-    {
-      if (regex::match(regexp, fn_name))
-	return false;
-    }
-  else if (s.priv_->name_.empty())
-    return false;
-  else // if (!s.priv_->name_.empty())
-    {
-      if (s.priv_->name_ != fn_name)
-	return false;
-    }
-
-  return true;
-}
-
-/// Test whether if a given function suppression matches a function
-/// designated by a regular expression that describes its linkage
-/// name (symbol name).
-///
-/// @param s the suppression specification to evaluate to see if it
-/// matches a given function linkage name
-///
-/// @param fn_linkage_name the linkage name of the function of interest.
-///
-/// @return true iff the suppression specification @p s matches the
-/// function whose linkage name is @p fn_linkage_name.
-bool
-suppression_matches_function_sym_name(const suppr::function_suppression& s,
-				      const string& fn_linkage_name)
-{
-  if (regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
-    {
-      if (!regex::match(regexp, fn_linkage_name))
-	return false;
-    }
-  else if (regex_t_sptr regexp = s.priv_->get_symbol_name_not_regex())
-    {
-      if (regex::match(regexp, fn_linkage_name))
-	return false;
-    }
-  else if (s.priv_->symbol_name_.empty())
-    return false;
-  else // if (!s.priv_->symbol_name_.empty())
-    {
-      if (s.priv_->symbol_name_ != fn_linkage_name)
-	return false;
-    }
-
-  return true;
-}
-
 /// Test if a variable suppression matches a variable denoted by its name.
 ///
 /// @param s the variable suppression to consider.
@@ -4239,6 +4168,43 @@ read_variable_suppression(const ini::config::section& section)
   return result;
 }
 
+/// Test if a given variable is suppressed by at least one suppression
+/// specification among a vector of suppression specifications.
+///
+/// @param supprs the vector of suppression specifications to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @param var_linkage_name the linkage name of the variable to consider.
+///
+/// @param require_drop_property if yes, then only suppression
+/// specifications that require that the variable be dropped from the
+/// internal representation are taking into account.
+///
+/// @return true if there is at least one suppression specification in
+/// @p supprs which matches a variable named @p var_name, OR a
+/// variable which linkage name is @p var_linkage_name.
+bool
+variable_is_suppressed(const suppr::suppressions_type& supprs,
+		       const string&		var_name,
+		       const string&		var_linkage_name,
+		       bool			require_drop_property)
+{
+  for (auto i : supprs)
+    if (suppr::variable_suppression_sptr suppr = is_variable_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!var_name.empty()
+	    && suppression_matches_variable_name(*suppr, var_name))
+	  return true;
+	if (!var_linkage_name.empty()
+	    && suppression_matches_variable_sym_name(*suppr,
+						     var_linkage_name))
+	  return true;
+      }
+  return false;
+}
 // </variable_suppression stuff>
 
 // <file_suppression stuff>
@@ -4501,7 +4467,374 @@ is_private_type_suppr_spec(const suppression_sptr& s)
   return (type_suppr
 	  && type_suppr->get_label() == get_private_types_suppr_spec_label());
 }
-
 // </file_suppression stuff>
+
+/// Test if a given suppression specification can match an ABI
+/// artifact coming from the corpus being analyzed by a given
+/// front-end interface.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression speficication to consider.
+///
+/// @return true if the suppression specification @p s CAN patch ABI
+/// artifacts coming from the ABI corpus being analyzed by the
+/// front-end @p fe.
+bool
+suppression_can_match(const fe_iface& fe,
+		      const suppression_base& s)
+{
+  if (!s.priv_->matches_soname(fe.dt_soname()))
+    if (s.has_soname_related_property())
+      // The suppression has some SONAME related properties, but
+      // none of them match the SONAME of the current binary.  So
+      // the suppression cannot match the current binary.
+      return false;
+
+  if (!s.priv_->matches_binary_name(fe.corpus_path()))
+    if (s.has_file_name_related_property())
+      // The suppression has some file_name related properties, but
+      // none of them match the file name of the current binary.  So
+      // the suppression cannot match the current binary.
+      return false;
+
+  return true;
+}
+
+/// Test if a given function is suppressed by a suppression
+/// specification.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param fn_name the name of the function to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// function which name is @p fn_name.
+bool
+suppression_matches_function_name(const fe_iface& fe,
+				  const suppr::function_suppression& s,
+				  const string& fn_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  if (regex::regex_t_sptr regexp = s.priv_->get_name_regex())
+    {
+      if (!regex::match(regexp, fn_name))
+	return false;
+    }
+  else if (regex::regex_t_sptr regexp = s.priv_->get_name_not_regex())
+    {
+      if (regex::match(regexp, fn_name))
+	return false;
+    }
+  else if (s.priv_->name_.empty())
+    return false;
+  else // if (!s.priv_->name_.empty())
+    {
+      if (s.priv_->name_ != fn_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a given function is suppressed by a suppression
+/// specification.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param fn_linkage_name the linkage name of the function to
+/// consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// function which linkage name is @p fn_linkage_name.
+bool
+suppression_matches_function_sym_name(const fe_iface& fe,
+				      const suppr::function_suppression& s,
+				      const string& fn_linkage_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  if (regex::regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
+    {
+      if (!regex::match(regexp, fn_linkage_name))
+	return false;
+    }
+  else if (regex::regex_t_sptr regexp = s.priv_->get_symbol_name_not_regex())
+    {
+      if (regex::match(regexp, fn_linkage_name))
+	return false;
+    }
+  else if (s.priv_->symbol_name_.empty())
+    return false;
+  else // if (!s.priv_->symbol_name_.empty())
+    {
+      if (s.priv_->symbol_name_ != fn_linkage_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a suppression specification matches a variable of a given
+/// name, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the variable suppression specification to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// variable which name is @p var_name.
+bool
+suppression_matches_variable_name(const fe_iface& fe,
+				  const suppr::variable_suppression& s,
+				  const string& var_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_variable_name(s, var_name);
+}
+
+/// Test if a suppression specification matches a variable which ELF
+/// symbol has a given name, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the variable suppression specification to consider.
+///
+/// @param var_linkage_name the name of the ELF symbol of the variable
+/// to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// variable which ELF symbol name is @p var_linkage_name.
+bool
+suppression_matches_variable_sym_name(const fe_iface& fe,
+				      const suppr::variable_suppression& s,
+				      const string& var_linkage_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_variable_sym_name(s, var_linkage_name);
+}
+
+/// Test if a suppression specification matches a type designated by
+/// its name and source location, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the source location of the type designated by
+/// @p type_name.
+///
+/// @return true iff the suppression @p s matches the type designated
+/// by @p type_name at source location @type_location.
+bool
+suppression_matches_type_name_or_location(const fe_iface& fe,
+					  const suppr::type_suppression& s,
+					  const string& type_name,
+					  const location& type_location)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_type_name_or_location(s, type_name,
+						   type_location);
+}
+
+/// Test if an ELF symbol is suppressed by at least one of the
+/// suppression specifications associated with a given front-end.
+///
+/// The function looks for each suppression specification provided to
+/// a given libabigail front-end and analyzes them to see if they
+/// match a given ELF symbol.
+///
+/// @param fe the front-end to consider.
+///
+/// @param symbol the ELF symbol to consider.
+///
+/// @return true iff the symbol @p symbol is matched by at least a
+/// suppression specification associated with the front-end @p fe.
+bool
+is_elf_symbol_suppressed(const fe_iface& fe,
+			 const elf_symbol_sptr& symbol)
+{
+  if (elf_symbol_is_function(symbol->get_type()))
+    return is_function_suppressed(fe, /*fn_name=*/"",
+				  /*symbol_name=*/symbol->get_name());
+  else if (elf_symbol_is_variable(symbol->get_type()))
+    return is_variable_suppressed(fe, /*var_name=*/"",
+				  /*symbol_name=*/symbol->get_name());
+  return false;
+}
+
+/// Test if an ELF symbol is suppressed by at least one of the
+/// suppression specifications associated with a given front-end.
+///
+/// The function looks for each suppression specification provided to
+/// a given libabigail front-end and analyzes them to see if they
+/// match a given ELF symbol, designated by its name and kind.
+///
+/// @param fe the front-end to consider.
+///
+/// @param sym_name the name of the symbol to consider.
+///
+/// @return true iff the symbol denoted by @p sym_name, of kind @p
+/// sym_type, is matched by at least a suppression specification
+/// associated with the front-end @p fe.
+bool
+is_elf_symbol_suppressed(const fe_iface& fe,
+			 const string& sym_name,
+			 elf_symbol::type sym_type)
+{
+  if (elf_symbol_is_function(sym_type))
+    return is_function_suppressed(fe, /*fn_name=*/"",
+				  /*symbol_name=*/sym_name);
+  else if (elf_symbol_is_variable(sym_type))
+    return is_variable_suppressed(fe, /*var_name=*/"",
+				  /*symbol_name=*/sym_name);
+  return false;
+}
+
+/// Test if a function is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The function is designated by its name and its linkage_name.
+///
+/// @param fe the front-end to consider.
+///
+/// @param fn_name the name of the function to consider.
+///
+/// @param fn_linkage_name the linkage name of the function to
+/// consider.
+///
+/// @param require_drop_property if true, this function requires the
+/// suppression specification to contain the "drop" property to match
+/// the function.
+///
+/// @return true iff the function is matched by at least one
+/// suppression specification coming from the front-end.
+bool
+is_function_suppressed(const fe_iface&	fe,
+		       const string&	fn_name,
+		       const string&	fn_linkage_name,
+		       bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::function_suppression_sptr suppr = is_function_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!fn_name.empty()
+	    && suppression_matches_function_name(fe, *suppr, fn_name))
+	  return true;
+	if (!fn_linkage_name.empty()
+	    && suppression_matches_function_sym_name(fe, *suppr,
+						     fn_linkage_name))
+	  return true;
+      }
+  return false;
+}
+
+/// Test if a variable is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The variable is designated by its name and its linkage_name.
+///
+/// @param fe the front-end to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @param var_linkage_name the linkage name of the variable to
+/// consider.
+///
+/// @param require_drop_property if true, this variable requires the
+/// suppression specification to contain the "drop" property to match
+/// the function.
+///
+/// @return true iff the variable is matched by at least one
+/// suppression specification coming from the front-end.
+bool
+is_variable_suppressed(const fe_iface&	fe,
+		       const string&	var_name,
+		       const string&	var_linkage_name,
+		       bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::variable_suppression_sptr suppr = is_variable_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!var_name.empty()
+	    && suppression_matches_variable_name(fe, *suppr, var_name))
+	  return true;
+	if (!var_linkage_name.empty()
+	    && suppression_matches_variable_sym_name(fe, *suppr,
+						     var_linkage_name))
+	  return true;
+      }
+  return false;
+}
+
+/// Test if a type is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The type is designated by its name and its source location.
+///
+/// @param fe the front-end to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the source location of the type.
+///
+/// @param type_is_private output parameter.  This is set to true if
+/// the type was matched by one suppression specification, and if the
+/// suppression was for private types.
+///
+/// @param require_drop_property if true, this type requires the
+/// suppression specification to contain the "drop" property to match
+/// the type.
+///
+/// @return true iff the type is matched by at least one suppression
+/// specification coming from the front-end.
+bool
+is_type_suppressed(const fe_iface&	fe,
+		   const string&	type_name,
+		   const location&	type_location,
+		   bool&		type_is_private,
+		   bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::type_suppression_sptr suppr = is_type_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (suppression_matches_type_name_or_location(fe, *suppr,
+						      type_name,
+						      type_location))
+	  {
+	    if (is_private_type_suppr_spec(*suppr))
+	      type_is_private = true;
+
+	    return true;
+	  }
+      }
+
+  type_is_private = false;
+  return false;
+}
+
 }// end namespace suppr
 } // end namespace abigail

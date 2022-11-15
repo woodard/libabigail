@@ -15,6 +15,8 @@ using std::ofstream;
 using std::cerr;
 using std::cout;
 
+using namespace abigail;
+
 ///@file
 ///
 /// This example shows how to walk the Internal Representation (IR)
@@ -157,12 +159,11 @@ main(int argc, char **argv)
 
   abigail::ir::environment env;
   abigail::corpus_sptr c;
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_OK;
   std::vector<char**> di_roots;
-  if (!(c = abigail::dwarf_reader::read_corpus_from_elf(file_name, di_roots,
-							env,
-							/*load_all_type=*/false,
-							status)))
+  if (!(c = dwarf::read_corpus_from_elf(file_name, di_roots, env,
+					/*load_all_type=*/false,
+					status)))
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;

@@ -15,6 +15,7 @@
 #include <set>
 #include <string>
 #include "abg-suppression.h"
+#include "abg-elf-based-reader.h"
 
 namespace abigail
 {
@@ -36,6 +37,10 @@ const char* get_anonymous_enum_internal_name_prefix();
 
 bool file_exists(const string&);
 bool is_regular_file(const string&);
+bool file_has_dwarf_debug_info(const string& elf_file_path,
+			       const vector<char**>& debug_info_root_paths);
+bool file_has_ctf_debug_info(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths);
 bool is_dir(const string&);
 bool dir_exists(const string&);
 bool dir_is_empty(const string &);
@@ -313,6 +318,12 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  bool				verbose,
 					  environment&			env,
 					  corpus::origin	origin = corpus::DWARF_ORIGIN);
+
+elf_based_reader_sptr
+create_best_elf_based_reader(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths,
+			     environment& env);
+
 }// end namespace tools_utils
 
 /// A macro that expands to aborting the program when executed.

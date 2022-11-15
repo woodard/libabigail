@@ -6,11 +6,13 @@
 /// @file
 ///
 /// This contains the definitions of the ELF utilities for the dwarf reader.
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <limits.h>
+#include <elfutils/libdwfl.h>
 #include "abg-elf-helpers.h"
-
-#include <elf.h>
-
 #include "abg-tools-utils.h"
 
 namespace abigail
@@ -1380,6 +1382,179 @@ address_is_in_opd_section(Elf* elf_handle, Dwarf_Addr addr)
   return false;
 }
 
+/// Get data tag information of an ELF file by looking up into its
+/// dynamic segment
+///
+/// @param elf the elf handle to use for the query.
+///
+/// @param dt_tag data tag to look for in dynamic segment
+/// @param dt_tag_data vector of found information for a given @p data_tag
+///
+/// @return true iff data tag @p data_tag was found
+bool
+lookup_data_tag_from_dynamic_segment(Elf*                       elf,
+                                     Elf64_Sxword               data_tag,
+                                     vector<string>&            dt_tag_data)
+{
+  size_t num_prog_headers = 0;
+  bool found = false;
+  if (elf_getphdrnum(elf, &num_prog_headers) < 0)
+    return found;
+
+  // Cycle through each program header.
+  for (size_t i = 0; i < num_prog_headers; ++i)
+    {
+      GElf_Phdr phdr_mem;
+      GElf_Phdr *phdr = gelf_getphdr(elf, i, &phdr_mem);
+      if (phdr == NULL || phdr->p_type != PT_DYNAMIC)
+        continue;
+
+      // Poke at the dynamic segment like a section, so that we can
+      // get its section header information; also we'd like to read
+      // the data of the segment by using elf_getdata() but that
+      // function needs a Elf_Scn data structure to act on.
+      // Elfutils doesn't really have any particular function to
+      // access segment data, other than the functions used to
+      // access section data.
+      Elf_Scn *dynamic_section = gelf_offscn(elf, phdr->p_offset);
+      GElf_Shdr  shdr_mem;
+      GElf_Shdr *dynamic_section_header = gelf_getshdr(dynamic_section,
+						       &shdr_mem);
+      if (dynamic_section_header == NULL
+          || dynamic_section_header->sh_type != SHT_DYNAMIC)
+        continue;
+
+      // Get data of the dynamic segment (seen as a section).
+      Elf_Data *data = elf_getdata(dynamic_section, NULL);
+      if (data == NULL)
+        continue;
+
+      // Get the index of the section headers string table.
+      size_t string_table_index = 0;
+      ABG_ASSERT (elf_getshdrstrndx(elf, &string_table_index) >= 0);
+
+      size_t dynamic_section_header_entry_size = gelf_fsize(elf,
+                                                            ELF_T_DYN, 1,
+                                                            EV_CURRENT);
+
+      GElf_Shdr link_mem;
+      GElf_Shdr *link =
+        gelf_getshdr(elf_getscn(elf,
+                                dynamic_section_header->sh_link),
+		     &link_mem);
+      ABG_ASSERT(link != NULL);
+
+      size_t num_dynamic_section_entries =
+        dynamic_section_header->sh_size / dynamic_section_header_entry_size;
+
+      // Now walk through all the DT_* data tags that are in the
+      // segment/section
+      for (size_t j = 0; j < num_dynamic_section_entries; ++j)
+        {
+          GElf_Dyn dynamic_section_mem;
+          GElf_Dyn *dynamic_section = gelf_getdyn(data,
+                                                  j,
+                                                  &dynamic_section_mem);
+          if (dynamic_section->d_tag == data_tag)
+            {
+              dt_tag_data.push_back(elf_strptr(elf,
+                                               dynamic_section_header->sh_link,
+					       dynamic_section->d_un.d_val));
+              found = true;
+            }
+        }
+    }
+  return found;
+}
+
+const Dwfl_Callbacks&
+initialize_dwfl_callbacks(Dwfl_Callbacks& cb,
+			  char** debug_info_root_path)
+{
+  cb.find_debuginfo = dwfl_standard_find_debuginfo;
+  cb.section_address = dwfl_offline_section_address;
+  cb.debuginfo_path = debug_info_root_path;
+  return cb;
+}
+
+dwfl_sptr
+create_new_dwfl_handle(Dwfl_Callbacks& cb)
+{
+  dwfl_sptr handle(dwfl_begin(&cb), dwfl_deleter());
+  return handle;
+}
+
+/// Fetch the SONAME ELF property from an ELF binary file.
+///
+/// @param path The path to the elf file to consider.
+///
+/// @param soname out parameter. Set to the SONAME property of the
+/// binary file, if it present in the ELF file.
+///
+/// return false if an error occured while looking for the SONAME
+/// property in the binary, true otherwise.
+bool
+get_soname_of_elf_file(const string& path, string &soname)
+{
+
+  int fd = open(path.c_str(), O_RDONLY);
+  if (fd == -1)
+    return false;
+
+  elf_version (EV_CURRENT);
+  Elf* elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+
+  GElf_Ehdr ehdr_mem;
+  GElf_Ehdr* ehdr = gelf_getehdr (elf, &ehdr_mem);
+  if (ehdr == NULL)
+    return false;
+
+  for (int i = 0; i < ehdr->e_phnum; ++i)
+    {
+      GElf_Phdr phdr_mem;
+      GElf_Phdr* phdr = gelf_getphdr (elf, i, &phdr_mem);
+
+      if (phdr != NULL && phdr->p_type == PT_DYNAMIC)
+        {
+          Elf_Scn* scn = gelf_offscn (elf, phdr->p_offset);
+          GElf_Shdr shdr_mem;
+          GElf_Shdr* shdr = gelf_getshdr (scn, &shdr_mem);
+          size_t entsize = (shdr != NULL && shdr->sh_entsize != 0
+                            ? shdr->sh_entsize
+                            : gelf_fsize (elf, ELF_T_DYN, 1, EV_CURRENT));
+          int maxcnt = (shdr != NULL
+                        ? shdr->sh_size / entsize : INT_MAX);
+          ABG_ASSERT (shdr == NULL || (shdr->sh_type == SHT_DYNAMIC
+				       || shdr->sh_type == SHT_PROGBITS));
+          Elf_Data* data = elf_getdata (scn, NULL);
+          if (data == NULL)
+            break;
+
+          for (int cnt = 0; cnt < maxcnt; ++cnt)
+            {
+              GElf_Dyn dynmem;
+              GElf_Dyn* dyn = gelf_getdyn (data, cnt, &dynmem);
+              if (dyn == NULL)
+                continue;
+
+              if (dyn->d_tag == DT_NULL)
+                break;
+
+              if (dyn->d_tag != DT_SONAME)
+                continue;
+
+              soname = elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
+              break;
+            }
+          break;
+        }
+    }
+
+  elf_end(elf);
+  close(fd);
+
+  return true;
+}
 
 } // end namespace elf_helpers
 } // end namespace abigail

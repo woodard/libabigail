@@ -171,14 +171,13 @@ using abigail::corpus_sptr;
 using abigail::corpus_group_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
-using abigail::xml_reader::read_translation_unit_from_file;
-using abigail::xml_reader::read_corpus_from_native_xml_file;
-using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
+
+using namespace abigail;
 
 int
 main(int, char*[])
@@ -217,12 +216,12 @@ main(int, char*[])
       corpus_group_sptr corpus_group1, corpus_group2;
       file_type t = guess_file_type(first_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu1 = read_translation_unit_from_file(first_in_path, env);
+	tu1 = abixml::read_translation_unit_from_file(first_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus1 = read_corpus_from_native_xml_file(first_in_path, env);
+	corpus1 = abixml::read_corpus_from_abixml_file(first_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
-	corpus_group1 = read_corpus_group_from_native_xml_file(first_in_path,
-							       env);
+	corpus_group1 =
+	  abixml::read_corpus_group_from_abixml_file(first_in_path, env);
       else
 	abort();
       if (!tu1 && !corpus1 && !corpus_group1)
@@ -234,12 +233,12 @@ main(int, char*[])
 
       t = guess_file_type(second_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu2 = read_translation_unit_from_file(second_in_path, env);
+	tu2 = abixml::read_translation_unit_from_file(second_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus2 = read_corpus_from_native_xml_file(second_in_path, env);
+	corpus2 = abixml::read_corpus_from_abixml_file(second_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP)
-	corpus_group2 = read_corpus_group_from_native_xml_file(first_in_path,
-							       env);
+	corpus_group2 =
+	  abixml::read_corpus_group_from_abixml_file(first_in_path, env);
       else
 	abort();
       if (!tu2 && !corpus2 && !corpus_group2)

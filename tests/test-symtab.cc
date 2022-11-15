@@ -24,9 +24,6 @@
 
 using namespace abigail;
 
-using dwarf_reader::create_read_context;
-using dwarf_reader::read_context_sptr;
-using dwarf_reader::read_corpus_from_elf;
 using ir::environment;
 using ir::environment_sptr;
 using suppr::suppressions_type;
@@ -34,7 +31,7 @@ using suppr::suppressions_type;
 static const std::string test_data_dir =
     std::string(abigail::tests::get_src_dir()) + "/tests/data/test-symtab/";
 
-elf_reader::status
+fe_iface::status
 read_corpus(const std::string&		    path,
 	    corpus_sptr&		    result,
 	    const std::vector<std::string>& whitelist_paths =
@@ -44,10 +41,10 @@ read_corpus(const std::string&		    path,
 
   environment env;
   const std::vector<char**> debug_info_root_paths;
-  read_context_sptr	    ctxt =
-      create_read_context(absolute_path, debug_info_root_paths, env,
-			  /* load_all_type = */ true,
-			  /* linux_kernel_mode = */ true);
+  abigail::elf_based_reader_sptr rdr =
+    dwarf::create_reader(absolute_path, debug_info_root_paths,
+			 env, /* load_all_type = */ true,
+			 /* linux_kernel_mode = */ true);
 
   if (!whitelist_paths.empty())
     {
@@ -55,13 +52,13 @@ read_corpus(const std::string&		    path,
 	tools_utils::gen_suppr_spec_from_kernel_abi_whitelists(
 	  whitelist_paths);
       REQUIRE_FALSE(wl_suppr.empty());
-      dwarf_reader::add_read_context_suppressions(*ctxt, wl_suppr);
+      rdr->add_suppressions(wl_suppr);
     }
 
-  elf_reader::status status = elf_reader::STATUS_UNKNOWN;
-  result = read_corpus_from_elf(*ctxt, status);
+  fe_iface::status status = fe_iface::STATUS_UNKNOWN;
+  result = rdr->read_corpus(status);
 
-  REQUIRE(status != elf_reader::STATUS_UNKNOWN);
+  REQUIRE(status != fe_iface::STATUS_UNKNOWN);
   return status;
 }
 
@@ -69,22 +66,22 @@ TEST_CASE("Symtab::Empty", "[symtab, basic]")
 {
   const std::string	     binary = "basic/empty.so";
   corpus_sptr		     corpus_ptr;
-  const elf_reader::status status = read_corpus(binary, corpus_ptr);
+  const fe_iface::status status = read_corpus(binary, corpus_ptr);
   REQUIRE(!corpus_ptr);
 
-  REQUIRE((status & elf_reader::STATUS_NO_SYMBOLS_FOUND));
+  REQUIRE((status & fe_iface::STATUS_NO_SYMBOLS_FOUND));
 }
 
 TEST_CASE("Symtab::NoDebugInfo", "[symtab, basic]")
 {
   const std::string	     binary = "basic/no_debug_info.so";
   corpus_sptr		     corpus_ptr;
-  const elf_reader::status status = read_corpus(binary, corpus_ptr);
+  const fe_iface::status status = read_corpus(binary, corpus_ptr);
   REQUIRE(corpus_ptr);
 
   REQUIRE(status
-	  == (elf_reader::STATUS_OK
-	      | elf_reader::STATUS_DEBUG_INFO_NOT_FOUND));
+	  == (fe_iface::STATUS_OK
+	      | fe_iface::STATUS_DEBUG_INFO_NOT_FOUND));
 }
 
 // this value indicates in the following helper method, that we do not want to
@@ -102,11 +99,11 @@ assert_symbol_count(const std::string& path,
 			std::vector<std::string>())
 {
   corpus_sptr		     corpus_ptr;
-  const elf_reader::status status =
+  const fe_iface::status status =
     read_corpus(path, corpus_ptr, whitelist_paths);
   REQUIRE(corpus_ptr);
 
-  REQUIRE((status & elf_reader::STATUS_OK));
+  REQUIRE((status & fe_iface::STATUS_OK));
   const corpus& corpus = *corpus_ptr;
 
   size_t total_symbols = 0;
@@ -244,10 +241,10 @@ TEST_CASE("Symtab::SymtabWithWhitelist", "[symtab, whitelist]")
 	+ "basic/one_function_one_variable_irrelevant.whitelist");
 
       corpus_sptr		 corpus_ptr;
-      const elf_reader::status status =
+      const fe_iface::status status =
 	read_corpus(binary, corpus_ptr, whitelists);
       REQUIRE(!corpus_ptr);
-      REQUIRE((status & elf_reader::STATUS_NO_SYMBOLS_FOUND));
+      REQUIRE((status & fe_iface::STATUS_NO_SYMBOLS_FOUND));
     }
 
     GIVEN("we read the binary with only the function whitelisted")

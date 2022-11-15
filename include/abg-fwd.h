@@ -1440,6 +1440,11 @@ types_have_similar_structure(const type_base* first,
 			     const type_base* second,
 			     bool indirect_type = false);
 
+string
+build_internal_underlying_enum_type_name(const string &base_name,
+					 bool is_anonymous,
+					 uint64_t size);
+
 } // end namespace ir
 
 using namespace abigail::ir;

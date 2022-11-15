@@ -403,12 +403,12 @@ public:
   ///
   /// @param fn the function to add to the set of exported functions.
   void
-  add_fn_to_exported(function_decl* fn)
+  add_fn_to_exported(const function_decl* fn)
   {
     if (!fn_is_in_id_fns_map(fn))
       {
-	fns_.push_back(fn);
-	add_fn_to_id_fns_map(fn);
+	fns_.push_back(const_cast<function_decl*>(fn));
+	add_fn_to_id_fns_map(const_cast<function_decl*>(fn));
       }
   }
 
@@ -416,13 +416,13 @@ public:
   ///
   /// @param fn the variable to add to the set of exported variables.
   void
-  add_var_to_exported(var_decl* var)
+  add_var_to_exported(const var_decl* var)
   {
     const string& id = get_id(*var);
     if (!var_id_is_in_id_var_map(id))
       {
-	vars_.push_back(var);
-	add_var_to_map(var);
+	vars_.push_back(const_cast<var_decl*>(var));
+	add_var_to_map(const_cast<var_decl*>(var));
       }
   }
 

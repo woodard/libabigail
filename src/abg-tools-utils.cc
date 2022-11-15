@@ -405,6 +405,56 @@ is_regular_file(const string& path)
   return false;
 }
 
+/// Test if an ELF file has DWARF debug info.
+///
+/// This function supports split debug info files as well.
+///
+/// @param elf_file_path the path to the ELF file to consider.
+///
+/// @param debug_info_root a vector of pointer to directory to look
+/// for debug info, in case the file is associated to split debug
+/// info.  If there is no split debug info then this vector can be
+/// empty.  Note that convert_char_stars_to_char_star_stars() can be
+/// used to ease the construction of this vector.
+///
+/// @return true iff the ELF file at @elf_file_path is an ELF file
+/// that contains debug info.
+bool
+file_has_dwarf_debug_info(const string& elf_file_path,
+			  const vector<char**>& debug_info_root_paths)
+{
+  if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path,
+		debug_info_root_paths,
+		env);
+
+  if (r.dwarf_debug_info())
+    return true;
+
+  return false;
+}
+
+bool
+file_has_ctf_debug_info(const string& elf_file_path,
+			const vector<char**>& debug_info_root_paths)
+{
+    if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path,
+		debug_info_root_paths,
+		env);
+
+  if (r.find_ctf_section())
+    return true;
+
+  return false;
+}
+
 /// Tests if a given path is a directory or a symbolic link to a
 /// directory.
 ///
@@ -2211,7 +2261,7 @@ find_file_under_dir(const string& root_dir,
 ///
 /// @param opts the options to consider.
 static void
-load_generate_apply_suppressions(dwarf_reader::read_context &read_ctxt,
+load_generate_apply_suppressions(elf_based_reader &rdr,
 				 vector<string>& suppr_paths,
 				 vector<string>& kabi_whitelist_paths,
 				 suppressions_type& supprs)
@@ -2229,7 +2279,7 @@ load_generate_apply_suppressions(dwarf_reader::read_context &read_ctxt,
       supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
     }
 
-  abigail::dwarf_reader::add_read_context_suppressions(read_ctxt, supprs);
+  rdr.add_suppressions(supprs);
 }
 
 /// Test if an FTSENT pointer (resulting from fts_read) represents the
@@ -2542,15 +2592,16 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
   if (!(origin & corpus::DWARF_ORIGIN))
     return;
 
-   abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
-  dwarf_reader::read_context_sptr ctxt;
-  ctxt =
-    dwarf_reader::create_read_context(vmlinux, di_roots, env,
-                                      /*read_all_types=*/false,
-                                      /*linux_kernel_mode=*/true);
-   dwarf_reader::set_do_log(*ctxt, verbose);
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_OK;
+  elf_based_reader_sptr rdr =
+    dwarf::create_reader(vmlinux, di_roots, env,
+			 /*read_all_types=*/false,
+			 /*linux_kernel_mode=*/true);
+  ABG_ASSERT(rdr);
+  rdr->options().do_log = verbose;
+
   t.start();
-  load_generate_apply_suppressions(*ctxt, suppr_paths,
+  load_generate_apply_suppressions(*rdr, suppr_paths,
                                    kabi_wl_paths, supprs);
   t.stop();
 
@@ -2561,7 +2612,7 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
 
   group.reset(new corpus_group(env, root));
 
-  set_read_context_corpus_group(*ctxt, group);
+  rdr->corpus_group(group);
 
   if (verbose)
     std::cerr << "reading kernel binary '"
@@ -2569,7 +2620,7 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
 
   // Read the vmlinux corpus and add it to the group.
   t.start();
-  read_and_add_corpus_to_group_from_elf(*ctxt, *group, status);
+  rdr->read_and_add_corpus_to_group(*group, status);
   t.stop();
 
   if (verbose)
@@ -2594,18 +2645,17 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, di_roots,
-                         /*read_all_types=*/false,
-                         /*linux_kernel_mode=*/true);
+      dwarf::reset_reader(*rdr, *m, di_roots,
+			  /*read_all_types=*/false,
+			  /*linux_kernel_mode=*/true);
 
-      load_generate_apply_suppressions(*ctxt, suppr_paths,
+      load_generate_apply_suppressions(*rdr, suppr_paths,
                                        kabi_wl_paths, supprs);
 
-      set_read_context_corpus_group(*ctxt, group);
+      rdr->corpus_group(group);
 
       t.start();
-      read_and_add_corpus_to_group_from_elf(*ctxt,
-                                            *group, status);
+      rdr->read_and_add_corpus_to_group(*group, status);
       t.stop();
       if (verbose)
         std::cerr << "module '"
@@ -2656,11 +2706,13 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
   if (!(origin & corpus::CTF_ORIGIN))
     return;
 
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
-  ctf_reader::read_context_sptr ctxt;
-  ctxt = ctf_reader::create_read_context(vmlinux, di_roots, env);
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_OK;
+  elf_based_reader_sptr rdr =
+    ctf::create_reader(vmlinux, di_roots, env);
+  ABG_ASSERT(rdr);
+
   group.reset(new corpus_group(env, root));
-  set_read_context_corpus_group(*ctxt, group);
+  rdr->corpus_group(group);
 
   if (verbose)
     std::cerr << "reading kernel binary '"
@@ -2668,7 +2720,7 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
 
   // Read the vmlinux corpus and add it to the group.
   t.start();
-  read_and_add_corpus_to_group_from_elf(ctxt.get(), *group, status);
+  rdr->read_and_add_corpus_to_group(*group, status);
   t.stop();
 
   if (verbose)
@@ -2693,12 +2745,11 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, di_roots);
-      set_read_context_corpus_group(*ctxt, group);
+      ctf::reset_reader(*rdr, *m, di_roots);
+      rdr->corpus_group(group);
 
       t.start();
-      read_and_add_corpus_to_group_from_elf(ctxt.get(),
-                                            *group, status);
+      rdr->read_and_add_corpus_to_group(*group, status);
       t.stop();
       if (verbose)
         std::cerr << "module '"
@@ -2797,6 +2848,53 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
     }
 
   return group;
+}
+
+/// Create the best elf based reader (or front-end), given an ELF file.
+///
+/// This function looks into the ELF file.  If it contains DWARF debug
+/// info, then a DWARF Reader front-end is created and returned.
+/// Otherwise, if it contains CTF debug info, then a CTF Reader
+/// front-end is created and returned.
+///
+/// Otherwise, if the file contains no debug info or if the king of
+/// debug info is not yet recognized, a DWARF Reader front-end is
+/// created and returned.
+///
+/// @param elf_file_path a path to the ELF file to consider
+///
+/// @param debug_info_root_paths a vector of the paths where to look
+/// for debug info, if applicable.
+///
+/// @param env the environment to use for the front-end.
+///
+/// @return the ELF based Reader that is better adapted for the binary
+/// designated by @p elf_file_path.
+elf_based_reader_sptr
+create_best_elf_based_reader(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths,
+			     environment& env)
+{
+  elf_based_reader_sptr result;
+  if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return result;
+
+  if (file_has_dwarf_debug_info(elf_file_path, debug_info_root_paths))
+    result = dwarf::create_reader(elf_file_path,
+				  debug_info_root_paths,
+				  env);
+#ifdef WITH_CTF
+  else if (file_has_ctf_debug_info(elf_file_path, debug_info_root_paths))
+    result = ctf::create_reader(elf_file_path,
+				debug_info_root_paths,
+				env);
+#endif
+  else
+    result = dwarf::create_reader(elf_file_path,
+				  debug_info_root_paths,
+				  env);
+
+  return result;
 }
 
 }//end namespace tools_utils

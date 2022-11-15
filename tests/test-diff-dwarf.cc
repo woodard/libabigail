@@ -353,13 +353,14 @@ main()
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
   using abigail::tools_utils::ensure_parent_dir_created;
-  using abigail::dwarf_reader::read_corpus_from_elf;
   using abigail::comparison::compute_diff;
   using abigail::comparison::corpus_diff_sptr;
   using abigail::ir::environment;
   using abigail::ir::environment_sptr;
   using abigail::comparison::diff_context_sptr;
   using abigail::comparison::diff_context;
+
+  using namespace abigail;
 
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
@@ -380,24 +381,20 @@ main()
 	  continue;
 	}
 
-      abigail::elf_reader::status status =
-	abigail::elf_reader::STATUS_UNKNOWN;
+      abigail::fe_iface::status status =
+	abigail::fe_iface::STATUS_UNKNOWN;
 
       environment env;
       std::vector<char**> di_roots;
       abigail::corpus_sptr corp0 =
-	read_corpus_from_elf(in_elfv0_path,
-			     /*debug_info_root_path=*/di_roots,
-			     env,
-			     /*load_all_types=*/false,
-			     status);
+	dwarf::read_corpus_from_elf(in_elfv0_path,
+				    /*debug_info_root_path=*/di_roots,
+				    env, /*load_all_types=*/false, status);
 
       abigail::corpus_sptr corp1 =
-	read_corpus_from_elf(in_elfv1_path,
-			     /*debug_info_root_path=*/di_roots,
-			     env,
-			     /*load_all_types=*/false,
-			     status);
+	dwarf::read_corpus_from_elf(in_elfv1_path,
+				    /*debug_info_root_path=*/di_roots,
+				    env, /*load_all_types=*/false, status);
 
       if (!corp0)
 	{

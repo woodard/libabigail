@@ -1,4 +1,7 @@
 <abi-corpus version='2.1' path='data/test-read-ctf/test0'>
+  <elf-needed>
+    <dependency name='libc.so.6'/>
+  </elf-needed>
   <elf-function-symbols>
     <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>

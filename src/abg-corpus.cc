@@ -133,7 +133,7 @@ corpus::exported_decls_builder::exported_variables()
 ///
 /// @param fn the function to add the set of exported functions.
 void
-corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
+corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(const function_decl* fn)
 {
   if (!fn->get_is_in_public_symbol_table())
     return;
@@ -156,7 +156,7 @@ corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
 ///
 /// @param fn the variable to add the set of exported variables.
 void
-corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
+corpus::exported_decls_builder::maybe_add_var_to_exported_vars(const var_decl* var)
 {
   if (!var->get_is_in_public_symbol_table())
     return;
@@ -611,10 +611,7 @@ const environment&
 corpus::get_environment() const
 {return priv_->env;}
 
-/// Add a translation unit to the current ABI Corpus. Next time
-/// corpus::save is called, all the translation unit that got added to
-/// the corpus are going to be serialized on disk in the file
-/// associated to the current corpus.
+/// Add a translation unit to the current ABI Corpus.
 ///
 /// Note that two translation units with the same path (as returned by
 /// translation_unit::get_path) cannot be added to the same @ref
@@ -622,7 +619,7 @@ corpus::get_environment() const
 ///
 /// @param tu the new translation unit to add.
 void
-corpus::add(const translation_unit_sptr tu)
+corpus::add(const translation_unit_sptr& tu)
 {
   ABG_ASSERT(priv_->members.insert(tu).second);
 
@@ -988,7 +985,9 @@ corpus::is_empty() const
   return (members_empty
 	  && (!get_symtab() || !get_symtab()->has_symbols())
 	  && priv_->soname.empty()
-	  && priv_->needed.empty());
+	  && priv_->needed.empty()
+	  && priv_->architecture_name.empty()
+	  && !priv_->group);
 }
 
 /// Compare the current @ref corpus against another one.
