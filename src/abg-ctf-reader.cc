@@ -783,15 +783,17 @@ process_ctf_base_type(reader *rdr,
   translation_unit_sptr tunit = rdr->cur_transl_unit();
   type_decl_sptr result;
 
-  const char *type_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
+  ctf_id_t ctf_ref = ctf_type_reference(ctf_dictionary, ctf_type);
+  const char *type_name = ctf_type_name_raw(ctf_dictionary,
+                                            (ctf_ref != CTF_ERR) ? ctf_ref : ctf_type);
 
   /* Get the type encoding and extract some useful properties of
      the type from it.  In case of any error, just ignore the
      type.  */
   ctf_encoding_t type_encoding;
   if (ctf_type_encoding(ctf_dictionary,
-                         ctf_type,
-                         &type_encoding))
+                        (ctf_ref != CTF_ERR) ? ctf_ref : ctf_type,
+                        &type_encoding))
     return result;
 
   /* Create the IR type corresponding to the CTF type.  */
@@ -1357,7 +1359,10 @@ process_ctf_enum_type(reader *rdr,
 {
   translation_unit_sptr tunit = rdr->cur_transl_unit();
   enum_type_decl_sptr result;
-  std::string enum_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
+  ctf_id_t ctf_ref = ctf_type_reference(ctf_dictionary, ctf_type);
+  std::string enum_name = ctf_type_name_raw(ctf_dictionary,
+                                            (ctf_ref != CTF_ERR)
+                                              ? ctf_ref : ctf_type);
 
   if (!enum_name.empty())
     if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
@@ -1367,18 +1372,24 @@ process_ctf_enum_type(reader *rdr,
   /* Build a signed integral type for the type of the enumerators, aka
      the underlying type.  The size of the enumerators in bytes is
      specified in the CTF enumeration type.  */
-  size_t utype_size_in_bits = ctf_type_size(ctf_dictionary, ctf_type) * 8;
-  type_decl_sptr utype;
+  size_t utype_size_in_bits = ctf_type_size(ctf_dictionary,
+                                            (ctf_ref != CTF_ERR)
+                                              ? ctf_ref : ctf_type) * 8;
+  string underlying_type_name =
+        build_internal_underlying_enum_type_name(enum_name, true,
+                                                 utype_size_in_bits);
 
+  type_decl_sptr utype;
   utype.reset(new type_decl(rdr->env(),
-                              "",
-                              utype_size_in_bits,
-                              utype_size_in_bits,
-                              location()));
+                            underlying_type_name,
+                            utype_size_in_bits,
+                            utype_size_in_bits,
+                            location()));
   utype->set_is_anonymous(true);
   utype->set_is_artificial(true);
   if (!utype)
     return result;
+
   add_decl_to_scope(utype, tunit->get_global_scope());
   canonicalize(utype);
 
