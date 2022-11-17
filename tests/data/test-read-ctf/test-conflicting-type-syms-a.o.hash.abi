@@ -4,7 +4,7 @@
     <elf-symbol name='ignore2' size='8' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
-    <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='95e97e5e'/>
+    <type-decl name='long int' size-in-bits='64' id='95e97e5e'/>
     <typedef-decl name='a_t' type-id='95e97e5e' id='40acc204'/>
     <typedef-decl name='b_t' type-id='95e97e5e' id='b3d2db81'/>
     <pointer-type-def type-id='40acc204' size-in-bits='64' alignment-in-bits='64' id='c6fd4117'/>

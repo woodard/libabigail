@@ -783,7 +783,6 @@ process_ctf_base_type(reader *rdr,
   translation_unit_sptr tunit = rdr->cur_transl_unit();
   type_decl_sptr result;
 
-  ssize_t type_alignment = ctf_type_align(ctf_dictionary, ctf_type);
   const char *type_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
 
   /* Get the type encoding and extract some useful properties of
@@ -822,7 +821,7 @@ process_ctf_base_type(reader *rdr,
         result.reset(new type_decl(rdr->env(),
                                    type_name,
                                    type_encoding.cte_bits,
-                                   type_alignment * 8 /* in bits */,
+                                   /*alignment=*/0,
                                    location(),
                                    type_name /* mangled_name */));
 
@@ -929,7 +928,7 @@ process_ctf_function_type(reader *rdr,
   result.reset(new function_type(ret_type,
                                  function_parms,
                                  tunit->get_address_size(),
-                                 ctf_type_align(ctf_dictionary, ctf_type)));
+                                 /*alignment=*/0));
 
   if (result)
     {
@@ -1087,7 +1086,7 @@ process_ctf_struct_type(reader *rdr,
   result.reset(new class_decl(rdr->env(),
                               struct_type_name,
                               ctf_type_size(ctf_dictionary, ctf_type) * 8,
-                              ctf_type_align(ctf_dictionary, ctf_type) * 8,
+                              /*alignment=*/0,
                               true /* is_struct */,
                               location(),
                               decl_base::VISIBILITY_DEFAULT,

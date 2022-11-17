@@ -4,12 +4,12 @@
     <elf-symbol name='f2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr address-size='64' language='LANG_C'>
-    <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
-    <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='type-id-2'/>
-    <function-decl name='assign' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='assign'>
+    <type-decl name='int' size-in-bits='32' id='type-id-1'/>
+    <type-decl name='long int' size-in-bits='64' id='type-id-2'/>
+    <function-decl name='assign' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='assign'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <function-decl name='f2' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='f2'>
+    <function-decl name='f2' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='f2'>
       <parameter type-id='type-id-1'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-3'/>

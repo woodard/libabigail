@@ -7,8 +7,8 @@
     <elf-symbol name='global_sym' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x44a6713b'/>
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
-    <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
-    <class-decl name='__raw_tickets' size-in-bits='32' alignment-in-bits='16' is-struct='yes' visibility='default' id='type-id-2'>
+    <type-decl name='int' size-in-bits='32' id='type-id-1'/>
+    <class-decl name='__raw_tickets' size-in-bits='32' is-struct='yes' visibility='default' id='type-id-2'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='owner' type-id='type-id-3' visibility='default'/>
       </data-member>
@@ -16,17 +16,17 @@
         <var-decl name='next' type-id='type-id-3' visibility='default'/>
       </data-member>
     </class-decl>
-    <class-decl name='arch_spinlock_t' size-in-bits='32' alignment-in-bits='32' is-struct='yes' naming-typedef-id='type-id-4' visibility='default' id='type-id-5'>
+    <class-decl name='arch_spinlock_t' size-in-bits='32' is-struct='yes' naming-typedef-id='type-id-4' visibility='default' id='type-id-5'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='' type-id='type-id-6' visibility='default'/>
       </data-member>
     </class-decl>
-    <class-decl name='raw_spinlock' size-in-bits='32' alignment-in-bits='32' is-struct='yes' visibility='default' id='type-id-7'>
+    <class-decl name='raw_spinlock' size-in-bits='32' is-struct='yes' visibility='default' id='type-id-7'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='raw_lock' type-id='type-id-4' visibility='default'/>
       </data-member>
     </class-decl>
-    <class-decl name='spinlock' size-in-bits='32' alignment-in-bits='32' is-struct='yes' visibility='default' id='type-id-8'>
+    <class-decl name='spinlock' size-in-bits='32' is-struct='yes' visibility='default' id='type-id-8'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='' type-id='type-id-9' visibility='default'/>
       </data-member>
@@ -50,13 +50,13 @@
         <var-decl name='tickets' type-id='type-id-2' visibility='default'/>
       </data-member>
     </union-decl>
-    <type-decl name='unsigned int' size-in-bits='32' alignment-in-bits='32' id='type-id-12'/>
-    <type-decl name='unsigned short int' size-in-bits='16' alignment-in-bits='16' id='type-id-10'/>
+    <type-decl name='unsigned int' size-in-bits='32' id='type-id-12'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-10'/>
     <pointer-type-def type-id='type-id-14' size-in-bits='64' alignment-in-bits='64' id='type-id-16'/>
-    <function-decl name='testexport' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='testexport'>
+    <function-decl name='testexport' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='testexport'>
       <return type-id='type-id-1'/>
     </function-decl>
-    <function-decl name='testexport2' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='testexport2'>
+    <function-decl name='testexport2' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='testexport2'>
       <parameter type-id='type-id-16'/>
       <return type-id='type-id-1'/>
     </function-decl>

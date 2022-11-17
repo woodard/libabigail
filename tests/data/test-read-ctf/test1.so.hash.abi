@@ -12,7 +12,7 @@
       <enumerator name='e0' value='0'/>
       <enumerator name='e1' value='1'/>
     </enum-decl>
-    <class-decl name='opaque_struct' size-in-bits='32' alignment-in-bits='32' is-struct='yes' visibility='default' id='6cde5052'>
+    <class-decl name='opaque_struct' size-in-bits='32' is-struct='yes' visibility='default' id='6cde5052'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='m0' type-id='99fcd3a5' visibility='default'/>
       </data-member>
@@ -21,7 +21,7 @@
     <typedef-decl name='opaque_struct' type-id='6cde5052' id='dae69ca1'/>
     <pointer-type-def type-id='99fcd3a5' size-in-bits='64' alignment-in-bits='64' id='0e0526e0'/>
     <pointer-type-def type-id='dae69ca1' size-in-bits='64' alignment-in-bits='64' id='3f6e71d0'/>
-    <function-decl name='fn' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='8' elf-symbol-id='fn'>
+    <function-decl name='fn' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fn'>
       <parameter type-id='3f6e71d0'/>
       <parameter type-id='0e0526e0'/>
       <return type-id='48b5725f'/>
