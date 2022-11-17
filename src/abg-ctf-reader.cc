@@ -1251,6 +1251,63 @@ process_ctf_array_type(reader *rdr,
   return result;
 }
 
+/// Strip qualification from a qualified type, when it makes sense.
+///
+/// The C language specification says in [6.7.3]/8:
+///
+///     [If the specification of an array type includes any type
+///      qualifiers, the element type is so- qualified, not the
+///      array type.]
+///
+/// In more mundane words, a const array of int is the same as an
+/// array of const int.
+///
+/// This function thus removes the qualifiers of the array and applies
+/// them to the array element.  The function then pretends that the
+/// array itself it not qualified.
+///
+/// It might contain code to strip other cases like this in the
+/// future.
+///
+/// @param t the type to strip const qualification from.
+///
+/// @return the stripped type or just return @p t.
+static decl_base_sptr
+maybe_strip_qualification(const qualified_type_def_sptr t)
+{
+  if (!t)
+    return t;
+
+  decl_base_sptr result = t;
+  type_base_sptr u = t->get_underlying_type();
+
+  if (is_array_type(u))
+    {
+      // Let's apply the qualifiers of the array to the array element
+      // and pretend that the array itself is not qualified, as per
+      // section [6.7.3]/8 of the C specification.
+
+      array_type_def_sptr array = is_array_type(u);
+      ABG_ASSERT(array);
+      // We should not be editing types that are already canonicalized.
+      ABG_ASSERT(!array->get_canonical_type());
+      type_base_sptr element_type = array->get_element_type();
+
+      if (qualified_type_def_sptr qualified = is_qualified_type(element_type))
+        {
+          qualified_type_def::CV quals = qualified->get_cv_quals();
+          quals |= t->get_cv_quals();
+	  // So we apply the qualifiers of the array to the array
+	  // element.
+          qualified->set_cv_quals(quals);
+	  // Let's pretend that the array is no more qualified.
+          result = is_decl(u);
+        }
+    }
+
+  return result;
+}
+
 /// Build and return a qualified type libabigail IR.
 ///
 /// @param rdr the read context.
@@ -1293,8 +1350,15 @@ process_ctf_qualified_type(reader *rdr,
   result.reset(new qualified_type_def(utype, qualifiers, location()));
   if (result)
     {
-      decl_base_sptr qualified_type_decl = get_type_declaration(result);
-      add_decl_to_scope(qualified_type_decl, tunit->get_global_scope());
+      // Strip some potentially redundant type qualifiers from
+      // the qualified type we just built.
+      decl_base_sptr d = maybe_strip_qualification(is_qualified_type(result));
+      if (!d)
+        d = get_type_declaration(result);
+      ABG_ASSERT(d);
+
+      add_decl_to_scope(d, tunit->get_global_scope());
+      result = is_type(d);
       rdr->add_type(ctf_dictionary, ctf_type, result);
     }
 

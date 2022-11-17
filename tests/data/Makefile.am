@@ -710,6 +710,9 @@ test-read-ctf/test-bitfield.o		\
 test-read-ctf/test-bitfield-enum.abi	\
 test-read-ctf/test-bitfield-enum.c	\
 test-read-ctf/test-bitfield-enum.o	\
+test-read-ctf/test-const-array.abi	\
+test-read-ctf/test-const-array.c	\
+test-read-ctf/test-const-array.o	\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
