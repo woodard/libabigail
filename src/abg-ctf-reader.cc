@@ -1163,6 +1163,57 @@ process_ctf_union_type(reader *rdr,
   return result;
 }
 
+/// Build and return an array subrange.
+///
+/// @param rdr the read context.
+///
+/// @param ctf_dictionary the CTF dictionary where @ref index
+/// will be found.
+///
+/// @param index the CTF type ID for the array index.
+///
+/// @param nelems the elements number of the array.
+///
+/// @return a shared pointer to subrange built.
+static array_type_def::subrange_sptr
+build_array_ctf_range(reader *rdr, ctf_dict_t *dic,
+                      ctf_id_t index, uint64_t nelems)
+{
+  bool is_infinite = false;
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
+  array_type_def::subrange_sptr subrange;
+  array_type_def::subrange_type::bound_value lower_bound;
+  array_type_def::subrange_type::bound_value upper_bound;
+
+  type_base_sptr index_type = rdr->build_type(dic, index);
+  if (!index_type)
+    return nullptr;
+
+  lower_bound.set_unsigned(0); /* CTF supports C only.  */
+  upper_bound.set_unsigned(nelems > 0 ? nelems - 1 : 0U);
+
+  /* for VLAs number of array elements is 0 */
+  if (upper_bound.get_unsigned_value() == 0)
+    is_infinite = true;
+
+  subrange.reset(new array_type_def::subrange_type(rdr->env(),
+                                                   "",
+                                                   lower_bound,
+                                                   upper_bound,
+                                                   index_type,
+                                                   location(),
+                                                   translation_unit::LANG_C));
+  if (!subrange)
+    return nullptr;
+
+  subrange->is_infinite(is_infinite);
+  add_decl_to_scope(subrange, tunit->get_global_scope());
+  canonicalize(subrange);
+
+  return subrange;
+}
+
 /// Build and return an array type libabigail IR.
 ///
 /// @param rdr the read context.
@@ -1181,7 +1232,6 @@ process_ctf_array_type(reader *rdr,
   translation_unit_sptr tunit = rdr->cur_transl_unit();
   array_type_def_sptr result;
   ctf_arinfo_t ctf_ainfo;
-  bool is_infinite = false;
 
   /* First, get the information about the CTF array.  */
   if (static_cast<ctf_id_t>(ctf_array_info(ctf_dictionary,
@@ -1192,6 +1242,26 @@ process_ctf_array_type(reader *rdr,
   ctf_id_t ctf_element_type = ctf_ainfo.ctr_contents;
   ctf_id_t ctf_index_type = ctf_ainfo.ctr_index;
   uint64_t nelems = ctf_ainfo.ctr_nelems;
+  array_type_def::subrange_sptr subrange;
+  array_type_def::subranges_type subranges;
+
+  int type_array_kind = ctf_type_kind(ctf_dictionary, ctf_element_type);
+  while (type_array_kind == CTF_K_ARRAY)
+    {
+      if (static_cast<ctf_id_t>(ctf_array_info(ctf_dictionary,
+                                               ctf_element_type,
+                                               &ctf_ainfo)) == CTF_ERR)
+        return result;
+
+      subrange = build_array_ctf_range(rdr, ctf_dictionary,
+                                       ctf_ainfo.ctr_index,
+                                       ctf_ainfo.ctr_nelems);
+      subranges.push_back(subrange);
+      ctf_element_type = ctf_ainfo.ctr_contents;
+      type_array_kind = ctf_type_kind(ctf_dictionary, ctf_element_type);
+    }
+
+  std::reverse(subranges.begin(), subranges.end());
 
   /* Make sure the element type is generated.  */
   type_base_sptr element_type = rdr->build_type(ctf_dictionary,
@@ -1210,33 +1280,8 @@ process_ctf_array_type(reader *rdr,
   if (result)
     return result;
 
-  /* The number of elements of the array determines the IR subranges
-     type to build.  */
-  array_type_def::subranges_type subranges;
-  array_type_def::subrange_sptr subrange;
-  array_type_def::subrange_type::bound_value lower_bound;
-  array_type_def::subrange_type::bound_value upper_bound;
-
-  lower_bound.set_unsigned(0); /* CTF supports C only.  */
-  upper_bound.set_unsigned(nelems > 0 ? nelems - 1 : 0U);
-
-  /* for VLAs number of array elements is 0 */
-  if (upper_bound.get_unsigned_value() == 0)
-    is_infinite = true;
-
-  subrange.reset(new array_type_def::subrange_type(rdr->env(),
-                                                   "",
-                                                   lower_bound,
-                                                   upper_bound,
-                                                   index_type,
-                                                   location(),
-                                                   translation_unit::LANG_C));
-  if (!subrange)
-    return result;
-
-  subrange->is_infinite(is_infinite);
-  add_decl_to_scope(subrange, tunit->get_global_scope());
-  canonicalize(subrange);
+  subrange = build_array_ctf_range(rdr, ctf_dictionary,
+                                   ctf_index_type, nelems);
   subranges.push_back(subrange);
 
   /* Finally build the IR for the array type and return it.  */
