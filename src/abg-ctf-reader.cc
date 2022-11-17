@@ -1194,7 +1194,7 @@ build_array_ctf_range(reader *rdr, ctf_dict_t *dic,
   upper_bound.set_unsigned(nelems > 0 ? nelems - 1 : 0U);
 
   /* for VLAs number of array elements is 0 */
-  if (upper_bound.get_unsigned_value() == 0)
+  if (upper_bound.get_unsigned_value() == 0 && nelems == 0)
     is_infinite = true;
 
   subrange.reset(new array_type_def::subrange_type(rdr->env(),

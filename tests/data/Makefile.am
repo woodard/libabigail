@@ -716,6 +716,9 @@ test-read-ctf/test-const-array.o	\
 test-read-ctf/test-array-mdimension.abi	\
 test-read-ctf/test-array-mdimension.c	\
 test-read-ctf/test-array-mdimension.o	\
+test-read-ctf/test-array-size.abi	\
+test-read-ctf/test-array-size.c		\
+test-read-ctf/test-array-size.o		\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
