@@ -141,6 +141,9 @@ get_version_for_symbol(Elf*			elf_handle,
 		       bool			get_def_version,
 		       elf_symbol::version&	version);
 
+bool
+get_crc_for_symbol(Elf* elf_handle, GElf_Sym* crc_symbol, uint32_t& crc_value);
+
 //
 // Architecture specific helpers
 //

@@ -905,6 +905,53 @@ get_version_for_symbol(Elf*			elf_handle,
   return false;
 }
 
+/// Return the CRC from the "__crc_" symbol.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param crc_symbol symbol containing CRC value.
+///
+/// @param crc_value the CRC found for @p crc_symbol.
+///
+/// @return true iff a CRC was found for given @p crc_symbol.
+bool
+get_crc_for_symbol(Elf* elf_handle, GElf_Sym* crc_symbol, uint32_t& crc_value)
+{
+  size_t crc_section_index = crc_symbol->st_shndx;
+  uint64_t crc_symbol_value = crc_symbol->st_value;
+  if (crc_section_index == SHN_ABS)
+    {
+      crc_value = crc_symbol_value;
+      return true;
+    }
+
+  Elf_Scn* kcrctab_section = elf_getscn(elf_handle, crc_section_index);
+  if (kcrctab_section == NULL)
+      return false;
+
+  GElf_Shdr sheader_mem;
+  GElf_Shdr* sheader = gelf_getshdr(kcrctab_section, &sheader_mem);
+  if (sheader == NULL)
+    return false;
+
+  Elf_Data* kcrctab_data = elf_rawdata(kcrctab_section, NULL);
+  if (kcrctab_data == NULL)
+    return false;
+
+  if (crc_symbol_value < sheader->sh_addr)
+    return false;
+
+  size_t offset = crc_symbol_value - sheader->sh_addr;
+  if (offset + sizeof(uint32_t) > kcrctab_data->d_size
+      || offset + sizeof(uint32_t) > sheader->sh_size)
+    return false;
+
+  crc_value = *reinterpret_cast<uint32_t*>(
+      reinterpret_cast<char*>(kcrctab_data->d_buf) + offset);
+
+  return true;
+}
+
 /// Test if the architecture of the current binary is ppc64.
 ///
 /// @param elf_handle the ELF handle to consider.

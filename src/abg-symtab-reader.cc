@@ -314,7 +314,10 @@ symtab::load_(Elf*	       elf_handle,
 	}
       if (is_kernel && name.rfind("__crc_", 0) == 0)
 	{
-	  ABG_ASSERT(crc_values.emplace(name.substr(6), sym->st_value).second);
+	  uint32_t crc_value;
+	  ABG_ASSERT(elf_helpers::get_crc_for_symbol(elf_handle,
+						     sym, crc_value));
+	  ABG_ASSERT(crc_values.emplace(name.substr(6), crc_value).second);
 	  continue;
 	}
       if (strings_section && is_kernel && name.rfind("__kstrtabns_", 0) == 0)
