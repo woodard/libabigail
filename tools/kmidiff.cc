@@ -421,7 +421,7 @@ main(int argc, char* argv[])
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;
-  corpus::origin origin =
+  corpus::origin requested_fe_kind =
 #ifdef WITH_CTF
    opts.use_ctf ? corpus::CTF_ORIGIN :
 #endif
@@ -443,8 +443,8 @@ main(int argc, char* argv[])
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
-						      opts.verbose,
-						      env, origin);
+						      opts.verbose, env,
+						      requested_fe_kind);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
@@ -469,8 +469,8 @@ main(int argc, char* argv[])
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
-						      opts.verbose,
-						      env, origin);
+						      opts.verbose, env,
+						      requested_fe_kind);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)

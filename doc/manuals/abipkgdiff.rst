@@ -13,11 +13,17 @@ binaries.
 For a comprehensive ABI change report that includes changes about
 function and variable sub-types, the two input packages must be
 accompanied with their debug information packages that contain debug
-information either in `DWARF`_ or in `CTF` formats.  Please note
+information either in `DWARF`_ or in `CTF`_ formats.  Please note
 however that some packages contain binaries that embed the debug
 information directly in a section of said binaries.  In those cases,
 obviously, no separate debug information package is needed as the tool
 will find the debug information inside the binaries.
+
+By default, ``abipkgdiff`` uses debug information in `DWARF`_ format,
+if present, otherwise it compares binaries interfaces using debug
+information in `CTF`_ format, if present, finally, if neither is
+found, it uses only `ELF`_ symbols to report which of them were added
+or removed.
 
 .. include:: tools-use-libabigail.txt
 
@@ -525,8 +531,8 @@ Options
 
   * ``--ctf``
 
-     This is used to compare packages with CTF debug information, if
-     present.
+     This is used to compare packages with `CTF`_ debug information,
+     if present.
 
 .. _abipkgdiff_return_value_label:
 
@@ -546,4 +552,5 @@ In the later case, the value of the exit code is the same as for the
 .. _Deb: https://en.wikipedia.org/wiki/Deb_%28file_format%29
 .. _tar: https://en.wikipedia.org/wiki/Tar_%28computing%29
 .. _DWARF: http://www.dwarfstd.org
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
 .. _Development Package: https://fedoraproject.org/wiki/Packaging:Guidelines?rd=Packaging/Guidelines#Devel_Packages

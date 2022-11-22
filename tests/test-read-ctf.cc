@@ -43,7 +43,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test0.abi",
-    "output/test-read-ctf/test0.abi"
+    "output/test-read-ctf/test0.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test0",
@@ -51,7 +52,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test0.hash.abi",
-    "output/test-read-ctf/test0.hash.abi"
+    "output/test-read-ctf/test0.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test1.so",
@@ -59,7 +61,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test1.so.abi",
-    "output/test-read-ctf/test1.so.abi"
+    "output/test-read-ctf/test1.so.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test1.so",
@@ -67,7 +70,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test1.so.hash.abi",
-    "output/test-read-ctf/test1.so.hash.abi"
+    "output/test-read-ctf/test1.so.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test2.so",
@@ -75,7 +79,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test2.so.abi",
-    "output/test-read-ctf/test2.so.abi"
+    "output/test-read-ctf/test2.so.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test2.so",
@@ -83,7 +88,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test2.so.hash.abi",
-    "output/test-read-ctf/test2.so.hash.abi"
+    "output/test-read-ctf/test2.so.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test3.so",
@@ -91,7 +97,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test3.so.abi",
-    "output/test-read-ctf/test3.so.abi"
+    "output/test-read-ctf/test3.so.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test3.so",
@@ -99,7 +106,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test3.so.hash.abi",
-    "output/test-read-ctf/test3.so.hash.abi"
+    "output/test-read-ctf/test3.so.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-enum-many.o",
@@ -107,7 +115,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-enum-many.o.hash.abi",
-    "output/test-read-ctf/test-enum-many.o.hash.abi"
+    "output/test-read-ctf/test-enum-many.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-ambiguous-struct-A.o",
@@ -115,7 +124,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-ambiguous-struct-A.o.hash.abi",
-    "output/test-read-ctf/test-ambiguous-struct-A.o.hash.abi"
+    "output/test-read-ctf/test-ambiguous-struct-A.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-ambiguous-struct-B.o",
@@ -123,7 +133,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-ambiguous-struct-B.o.hash.abi",
-    "output/test-read-ctf/test-ambiguous-struct-B.o.hash.abi"
+    "output/test-read-ctf/test-ambiguous-struct-B.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-conflicting-type-syms-a.o",
@@ -131,7 +142,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-conflicting-type-syms-a.o.hash.abi",
-    "output/test-read-ctf/test-conflicting-type-syms-a.o.hash.abi"
+    "output/test-read-ctf/test-conflicting-type-syms-a.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-conflicting-type-syms-b.o",
@@ -139,7 +151,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-conflicting-type-syms-b.o.hash.abi",
-    "output/test-read-ctf/test-conflicting-type-syms-b.o.hash.abi"
+    "output/test-read-ctf/test-conflicting-type-syms-b.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test4.so",
@@ -147,7 +160,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test4.so.abi",
-    "output/test-read-ctf/test4.so.abi"
+    "output/test-read-ctf/test4.so.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test4.so",
@@ -155,7 +169,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test4.so.hash.abi",
-    "output/test-read-ctf/test4.so.hash.abi"
+    "output/test-read-ctf/test4.so.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test5.o",
@@ -163,7 +178,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test5.o.abi",
-    "output/test-read-ctf/test5.o.abi"
+    "output/test-read-ctf/test5.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test7.o",
@@ -171,7 +187,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test7.o.abi",
-    "output/test-read-ctf/test7.o.abi"
+    "output/test-read-ctf/test7.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test8.o",
@@ -179,7 +196,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test8.o.abi",
-    "output/test-read-ctf/test8.o.abi"
+    "output/test-read-ctf/test8.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test9.o",
@@ -187,7 +205,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test9.o.abi",
-    "output/test-read-ctf/test9.o.abi"
+    "output/test-read-ctf/test9.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-enum.o",
@@ -195,7 +214,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-enum.o.abi",
-    "output/test-read-ctf/test-enum.o.abi"
+    "output/test-read-ctf/test-enum.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-enum-symbol.o",
@@ -203,7 +223,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/test-enum-symbol.o.hash.abi",
-    "output/test-read-ctf/test-enum-symbol.o.hash.abi"
+    "output/test-read-ctf/test-enum-symbol.o.hash.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-dynamic-array.o",
@@ -211,7 +232,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-dynamic-array.o.abi",
-    "output/test-read-ctf/test-dynamic-array.o.abi"
+    "output/test-read-ctf/test-dynamic-array.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-anonymous-fields.o",
@@ -219,7 +241,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-anonymous-fields.o.abi",
-    "output/test-read-ctf/test-anonymous-fields.o.abi"
+    "output/test-read-ctf/test-anonymous-fields.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/PR27700/test-PR27700.o",
@@ -228,6 +251,7 @@ static InOutSpec in_out_specs[] =
     HASH_TYPE_ID_STYLE,
     "data/test-read-ctf/PR27700/test-PR27700.abi",
     "output/test-read-ctf/PR27700/test-PR27700.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-callback.o",
@@ -236,6 +260,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-callback.abi",
     "output/test-read-ctf/test-callback.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-array-of-pointers.o",
@@ -244,6 +269,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-array-of-pointers.abi",
     "output/test-read-ctf/test-array-of-pointers.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-functions-declaration.o",
@@ -252,6 +278,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-functions-declaration.abi",
     "output/test-read-ctf/test-functions-declaration.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-forward-type-decl.o",
@@ -260,6 +287,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-forward-type-decl.abi",
     "output/test-read-ctf/test-forward-type-decl.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-list-struct.o",
@@ -268,6 +296,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-list-struct.abi",
     "output/test-read-ctf/test-list-struct.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test-PR26568-1.o",
@@ -276,6 +305,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-PR26568-1.o.abi",
     "output/test-read-ctf/test-PR26568-1.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-common/test-PR26568-2.o",
@@ -284,6 +314,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-PR26568-2.o.abi",
     "output/test-read-ctf/test-PR26568-2.o.abi",
+    "--ctf"
   },
   {
     "data/test-read-ctf/test-callback2.o",
@@ -292,6 +323,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-callback2.abi",
     "output/test-read-ctf/test-callback2.abi",
+    "--ctf"
   },
   // out-of-tree kernel module.
   {
@@ -301,9 +333,20 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-linux-module.abi",
     "output/test-read-ctf/test-linux-module.abi",
+    "--ctf"
+  },
+  // CTF fallback feature.
+  {
+    "data/test-read-ctf/test-fallback.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-ctf/test-fallback.abi",
+    "output/test-read-ctf/test-fallback.abi",
+    NULL,
   },
   // This should be the last entry.
-  {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
+  {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL, NULL}
 };
 
 /// Task specialization to perform CTF tests.
@@ -389,7 +432,7 @@ test_task_ctf::perform()
   if (!(is_ok = serialize_corpus(out_abi_path, corp)))
        return;
 
-  if (!(is_ok = run_abidw("--ctf ")))
+  if (!(is_ok = run_abidw()))
     return;
 
   if (!(is_ok = run_diff()))

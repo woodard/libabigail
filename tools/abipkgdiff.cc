@@ -136,6 +136,7 @@ using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
+using abigail::tools_utils::create_best_elf_based_reader;
 using abigail::ir::corpus_sptr;
 using abigail::ir::corpus_group_sptr;
 using abigail::comparison::diff_context;
@@ -1322,14 +1323,16 @@ compare(const elf_file&		elf1,
   abigail::elf_based_reader_sptr reader;
   corpus_sptr corpus1;
   {
+    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      reader = ctf::create_reader(elf1.path, di_dirs1, env);
-    else
+      requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-      reader = dwarf::create_reader(elf1.path, di_dirs1, env,
-				    /*load_all_types=*/opts.show_all_types);
-
+    abigail::elf_based_reader_sptr reader =
+      create_best_elf_based_reader(elf1.path,
+				   di_dirs1,
+				   env, requested_fe_kind,
+				   opts.show_all_types);
     ABG_ASSERT(reader);
 
     reader->add_suppressions(priv_types_supprs1);
@@ -1420,13 +1423,17 @@ compare(const elf_file&		elf1,
 
   corpus_sptr corpus2;
   {
+    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      reader = ctf::create_reader(elf2.path, di_dirs2, env);
-    else
+      requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-      reader = dwarf::create_reader(elf2.path, di_dirs2, env,
-				    /*load_all_types=*/opts.show_all_types);
+    abigail::elf_based_reader_sptr reader =
+      create_best_elf_based_reader(elf2.path,
+				   di_dirs2,
+				   env, requested_fe_kind,
+				   opts.show_all_types);
+    ABG_ASSERT(reader);
 
     reader->add_suppressions(priv_types_supprs2);
     if (!opts.kabi_suppressions.empty())
@@ -1582,13 +1589,17 @@ compare_to_self(const elf_file&		elf,
   corpus_sptr corp;
   abigail::elf_based_reader_sptr reader;
   {
+    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
     if (opts.use_ctf)
-      reader = ctf::create_reader(elf.path, di_dirs, env);
-    else
+      requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-      reader = dwarf::create_reader(elf.path, di_dirs, env,
-				    /*read_all_types=*/opts.show_all_types);
+    abigail::elf_based_reader_sptr reader =
+      create_best_elf_based_reader(elf.path,
+				   di_dirs,
+				   env, requested_fe_kind,
+				   opts.show_all_types);
+    ABG_ASSERT(reader);
 
     corp = reader->read_corpus(c_status);
 

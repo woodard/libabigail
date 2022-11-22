@@ -8,8 +8,7 @@ representation of its ABI to standard output.  The emitted
 representation format, named ``ABIXML``, includes all the globally
 defined functions and variables, along with a complete representation
 of their types.  It also includes a representation of the globally
-defined ELF symbols of the file.  The input shared library must
-contain associated debug information in `DWARF`_ format.
+defined ELF symbols of the file.
 
 When given the ``--linux-tree`` option, this program can also handle a
 `Linux kernel`_ tree.  That is, a directory tree that contains both
@@ -19,8 +18,13 @@ interface between the kernel and its module, to standard output.  In
 this case, we don't call it an ABI, but a KMI (Kernel Module
 Interface).  The emitted KMI includes all the globally defined
 functions and variables, along with a complete representation of their
-types.  The input binaries must contain associated debug information
-in `DWARF`_ format.
+types.
+
+To generate either ABI or KMI representation, by default ``abidw``
+uses debug information in `DWARF`_ format, if present, otherwise it
+looks for debug information in `CTF`_ format, if present, finally, if
+neither is found, it uses only `ELF`_ symbols to report which of them
+were added or removed.
 
 .. include:: tools-use-libabigail.txt
 
@@ -326,7 +330,7 @@ Options
 
   * ``--ctf``
 
-    Extract ABI information from CTF debug information, if present in
+    Extract ABI information from `CTF`_ debug information, if present in
     the given object.
 
   *  ``--annotate``
@@ -365,3 +369,4 @@ standard `here
 .. _DWARF: http://www.dwarfstd.org
 .. _GNU: http://www.gnu.org
 .. _Linux Kernel: https://kernel.org/
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf

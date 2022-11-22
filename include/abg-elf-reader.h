@@ -91,6 +91,12 @@ class reader : public fe_iface
   const Dwarf*
   dwarf_debug_info() const;
 
+  bool
+  has_dwarf_debug_info() const;
+
+  bool
+  has_ctf_debug_info() const;
+
   const Dwarf*
   alternate_dwarf_debug_info() const;
 

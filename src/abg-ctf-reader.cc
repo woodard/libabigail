@@ -51,15 +51,11 @@ class reader;
 
 static typedef_decl_sptr
 process_ctf_typedef(reader *rdr,
-                    corpus_sptr corp,
-                    translation_unit_sptr tunit,
                     ctf_dict_t *ctf_dictionary,
                     ctf_id_t ctf_type);
 
 static type_decl_sptr
 process_ctf_base_type(reader *rdr,
-                      corpus_sptr corp,
-                      translation_unit_sptr tunit,
                       ctf_dict_t *ctf_dictionary,
                       ctf_id_t ctf_type);
 
@@ -69,63 +65,47 @@ build_ir_node_for_variadic_parameter_type(reader &rdr,
 
 static function_type_sptr
 process_ctf_function_type(reader *rdr,
-                          corpus_sptr corp,
-                          translation_unit_sptr tunit,
                           ctf_dict_t *ctf_dictionary,
                           ctf_id_t ctf_type);
 
 static void
 process_ctf_sou_members(reader *rdr,
-                        corpus_sptr corp,
-                        translation_unit_sptr tunit,
                         ctf_dict_t *ctf_dictionary,
                         ctf_id_t ctf_type,
                         class_or_union_sptr sou);
 
 static type_base_sptr
 process_ctf_forward_type(reader *rdr,
-                         translation_unit_sptr tunit,
                          ctf_dict_t *ctf_dictionary,
                          ctf_id_t ctf_type);
 
 static class_decl_sptr
 process_ctf_struct_type(reader *rdr,
-                        corpus_sptr corp,
-                        translation_unit_sptr tunit,
                         ctf_dict_t *ctf_dictionary,
                         ctf_id_t ctf_type);
 
 static union_decl_sptr
 process_ctf_union_type(reader *rdr,
-                       corpus_sptr corp,
-                       translation_unit_sptr tunit,
                        ctf_dict_t *ctf_dictionary,
                        ctf_id_t ctf_type);
 
 static array_type_def_sptr
 process_ctf_array_type(reader *rdr,
-                       corpus_sptr corp,
-                       translation_unit_sptr tunit,
                        ctf_dict_t *ctf_dictionary,
                        ctf_id_t ctf_type);
 
 static type_base_sptr
 process_ctf_qualified_type(reader *rdr,
-                           corpus_sptr corp,
-                           translation_unit_sptr tunit,
                            ctf_dict_t *ctf_dictionary,
                            ctf_id_t ctf_type);
 
 static pointer_type_def_sptr
 process_ctf_pointer_type(reader *rdr,
-                         corpus_sptr corp,
-                         translation_unit_sptr tunit,
                          ctf_dict_t *ctf_dictionary,
                          ctf_id_t ctf_type);
 
 static enum_type_decl_sptr
 process_ctf_enum_type(reader *rdr,
-                      translation_unit_sptr tunit,
                       ctf_dict_t *ctf_dictionary,
                       ctf_id_t ctf_type);
 
@@ -161,6 +141,7 @@ class reader : public elf_based_reader
   ctf_sect_t ctf_sect;
   ctf_sect_t symtab_sect;
   ctf_sect_t strtab_sect;
+  translation_unit_sptr cur_tu_;
 
 public:
 
@@ -263,16 +244,20 @@ public:
   {
     ctfa = nullptr;
     types_map.clear();
+    cur_tu_.reset();
     corpus_group().reset();
   }
 
   /// Initializer of the reader.
   ///
-  ///
   /// @param elf_path the new path to the new ELF file to use.
   ///
   /// @param debug_info_root_paths a vector of paths to use to look
   /// for debug info that is split out into a separate file.
+  ///
+  /// @param load_all_types currently not used.
+  ///
+  /// @param linux_kernel_mode currently not used.
   ///
   /// This is useful to clear out the data used by the reader and get
   /// it ready to be used again.
@@ -286,10 +271,31 @@ public:
   /// the environment.
   void
   initialize(const string& elf_path,
-             const vector<char**>& debug_info_root_paths)
+             const vector<char**>& debug_info_root_paths,
+             bool load_all_types = false,
+             bool linux_kernel_mode = false)
   {
+    load_all_types = load_all_types;
+    linux_kernel_mode = linux_kernel_mode;
     reset(elf_path, debug_info_root_paths);
   }
+
+  /// Setter of the current translation unit.
+  ///
+  /// @param tu the current translation unit being constructed.
+  void
+  cur_transl_unit(translation_unit_sptr tu)
+  {
+    if (tu)
+      cur_tu_ = tu;
+  }
+
+  /// Getter of the current translation unit.
+  ///
+  /// @return the current translation unit being constructed.
+  const translation_unit_sptr&
+  cur_transl_unit() const
+  {return cur_tu_;}
 
   /// Getter of the environment of the current CTF reader.
   ///
@@ -349,27 +355,23 @@ public:
     // Read the ELF-specific parts of the corpus.
     elf::reader::read_corpus(status);
 
+    corpus_sptr corp = corpus();
+    if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+	&& corpus_group())
+      {
+	// Not finding any debug info so far is expected if we are
+	// building a kABI.
+        status &= static_cast<abigail::fe_iface::status>
+                    (~STATUS_DEBUG_INFO_NOT_FOUND);
+	return;
+      }
+
     if ((status & STATUS_NO_SYMBOLS_FOUND)
 	|| !(status & STATUS_OK))
       // Either we couldn't find ELF symbols or something went badly
       // wrong.  There is nothing we can do with this ELF file.  Bail
       // out.
       return;
-
-    corpus_sptr corp = corpus();
-    if ((corp->get_origin() & corpus::LINUX_KERNEL_BINARY_ORIGIN)
-	&& corpus_group())
-      {
-	status |= fe_iface::STATUS_OK;
-	return;
-      }
-
-    /* Get the raw ELF section contents for libctf.  */
-    if (!find_ctf_section())
-      {
-	status |= fe_iface::STATUS_DEBUG_INFO_NOT_FOUND;
-	return;
-      }
 
     GElf_Ehdr *ehdr, eh_mem;
     if (!(ehdr = gelf_getehdr(elf_handle(), &eh_mem)))
@@ -402,16 +404,16 @@ public:
   /// Process a CTF archive and create libabigail IR for the types,
   /// variables and function declarations found in the archive, iterating
   /// over public symbols.  The IR is added to the given corpus.
-  ///
-  /// @param corp the IR corpus to which add the new contents.
   void
-  process_ctf_archive(corpus_sptr corp)
+  process_ctf_archive()
   {
+    corpus_sptr corp = corpus();
     /* We only have a translation unit.  */
     translation_unit_sptr ir_translation_unit =
       std::make_shared<translation_unit>(env(), "", 64);
     ir_translation_unit->set_language(translation_unit::LANG_C);
     corp->add(ir_translation_unit);
+    cur_transl_unit(ir_translation_unit);
 
     int ctf_err;
     ctf_dict_t *ctf_dict, *dict_tmp;
@@ -455,8 +457,7 @@ public:
 	if (ctf_type_kind(ctf_dict, ctf_sym_type) != CTF_K_FUNCTION)
 	  {
 	    const char *var_name = sym_name.c_str();
-	    type_base_sptr var_type = lookup_type(corp, ir_translation_unit,
-						  ctf_dict, ctf_sym_type);
+	    type_base_sptr var_type = build_type(ctf_dict, ctf_sym_type);
 	    if (!var_type)
 	      /* Ignore variable if its type can't be sorted out.  */
 	      continue;
@@ -477,8 +478,7 @@ public:
 	  {
 	    const char *func_name = sym_name.c_str();
 	    ctf_id_t ctf_sym = ctf_sym_type;
-	    type_base_sptr func_type = lookup_type(corp, ir_translation_unit,
-						   ctf_dict, ctf_sym);
+	    type_base_sptr func_type = build_type(ctf_dict, ctf_sym);
 	    if (!func_type)
 	      /* Ignore function if its type can't be sorted out.  */
 	      continue;
@@ -508,8 +508,6 @@ public:
 
   /// Add a new type declaration to the given libabigail IR corpus CORP.
   ///
-  /// @param corp the libabigail IR corpus being constructed.
-  /// @param tunit the current IR translation unit.
   /// @param ctf_dictionary the CTF dictionary being read.
   /// @param ctf_type the CTF type ID of the source type.
   ///
@@ -518,11 +516,11 @@ public:
   ///
   /// @return a shared pointer to the IR node for the type.
   type_base_sptr
-  process_ctf_type(corpus_sptr corp,
-		   translation_unit_sptr tunit,
-		   ctf_dict_t *ctf_dictionary,
+  process_ctf_type(ctf_dict_t *ctf_dictionary,
 		   ctf_id_t ctf_type)
   {
+    corpus_sptr corp = corpus();
+    translation_unit_sptr tunit = cur_transl_unit();
     int type_kind = ctf_type_kind(ctf_dictionary, ctf_type);
     type_base_sptr result;
 
@@ -538,21 +536,21 @@ public:
       case CTF_K_FLOAT:
 	{
 	  type_decl_sptr type_decl
-	    = process_ctf_base_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_base_type(this, ctf_dictionary, ctf_type);
 	  result = is_type(type_decl);
 	  break;
 	}
       case CTF_K_TYPEDEF:
 	{
 	  typedef_decl_sptr typedef_decl
-	    = process_ctf_typedef(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_typedef(this, ctf_dictionary, ctf_type);
 	  result = is_type(typedef_decl);
 	  break;
 	}
       case CTF_K_POINTER:
 	{
 	  pointer_type_def_sptr pointer_type
-	    = process_ctf_pointer_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_pointer_type(this, ctf_dictionary, ctf_type);
 	  result = pointer_type;
 	  break;
 	}
@@ -561,49 +559,45 @@ public:
       case CTF_K_RESTRICT:
 	{
 	  type_base_sptr qualified_type
-	    = process_ctf_qualified_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_qualified_type(this, ctf_dictionary, ctf_type);
 	  result = qualified_type;
 	  break;
 	}
       case CTF_K_ARRAY:
 	{
 	  array_type_def_sptr array_type
-	    = process_ctf_array_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_array_type(this, ctf_dictionary, ctf_type);
 	  result = array_type;
 	  break;
 	}
       case CTF_K_ENUM:
 	{
 	  enum_type_decl_sptr enum_type
-	    = process_ctf_enum_type(this, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_enum_type(this, ctf_dictionary, ctf_type);
 	  result = enum_type;
 	  break;
 	}
       case CTF_K_FUNCTION:
 	{
 	  function_type_sptr function_type
-	    = process_ctf_function_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_function_type(this, ctf_dictionary, ctf_type);
 	  result = function_type;
 	  break;
 	}
       case CTF_K_STRUCT:
 	{
 	  class_decl_sptr struct_decl
-	    = process_ctf_struct_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_struct_type(this, ctf_dictionary, ctf_type);
 	  result = is_type(struct_decl);
 	  break;
 	}
       case CTF_K_FORWARD:
-	{
-	  result = process_ctf_forward_type(this, tunit,
-					    ctf_dictionary,
-					    ctf_type);
-	}
+	  result = process_ctf_forward_type(this, ctf_dictionary, ctf_type);
 	break;
       case CTF_K_UNION:
 	{
 	  union_decl_sptr union_decl
-	    = process_ctf_union_type(this, corp, tunit, ctf_dictionary, ctf_type);
+	    = process_ctf_union_type(this, ctf_dictionary, ctf_type);
 	  result = is_type(union_decl);
 	  break;
 	}
@@ -622,11 +616,10 @@ public:
     return result;
   }
 
-  /// Given a CTF type id, lookup the corresponding libabigail IR type.
-  /// If the IR type hasn't been generated yet, generate it.
+  /// Given a CTF type id, build the corresponding libabigail IR type.
+  /// If the IR type has been generated it returns the corresponding
+  /// type.
   ///
-  /// @param corp the libabigail IR corpus being constructed.
-  /// @param tunit the current IR translation unit.
   /// @param ctf_dictionary the CTF dictionary being read.
   /// @param ctf_type the CTF type ID of the looked type.
   ///
@@ -635,14 +628,12 @@ public:
   ///
   /// @return a shared pointer to the IR node for the type.
   type_base_sptr
-  lookup_type(corpus_sptr corp,
-	      translation_unit_sptr tunit, ctf_dict_t *ctf_dictionary,
-	      ctf_id_t ctf_type)
+  build_type(ctf_dict_t *ctf_dictionary, ctf_id_t ctf_type)
   {
     type_base_sptr result = lookup_type(ctf_dictionary, ctf_type);
 
     if (!result)
-      result = process_ctf_type(corp, tunit, ctf_dictionary, ctf_type);
+      result = process_ctf_type(ctf_dictionary, ctf_type);
     return result;
   }
 
@@ -664,13 +655,12 @@ public:
     origin |= corpus::CTF_ORIGIN;
     corp->set_origin(origin);
 
-    if (corpus_group())
-      corpus_group()->add_corpus(corpus());
-
     slurp_elf_info(status);
-    if (!elf_helpers::is_linux_kernel(elf_handle())
-	&& ((status & fe_iface::STATUS_DEBUG_INFO_NOT_FOUND) |
-	    (status & fe_iface::STATUS_NO_SYMBOLS_FOUND)))
+    if (status & fe_iface::STATUS_NO_SYMBOLS_FOUND)
+       return corpus_sptr();
+
+    if (!(origin & corpus::LINUX_KERNEL_BINARY_ORIGIN)
+          && (status & fe_iface::STATUS_DEBUG_INFO_NOT_FOUND))
       return corp;
 
     int errp;
@@ -697,7 +687,7 @@ public:
       status |= fe_iface::STATUS_DEBUG_INFO_NOT_FOUND;
     else
       {
-	process_ctf_archive(corp);
+	process_ctf_archive();
 	corpus()->sort_functions();
 	corpus()->sort_variables();
       }
@@ -719,8 +709,6 @@ typedef shared_ptr<reader> reader_sptr;
 /// Build and return a typedef libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -728,11 +716,11 @@ typedef shared_ptr<reader> reader_sptr;
 
 static typedef_decl_sptr
 process_ctf_typedef(reader *rdr,
-                    corpus_sptr corp,
-                    translation_unit_sptr tunit,
                     ctf_dict_t *ctf_dictionary,
                     ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   typedef_decl_sptr result;
 
   ctf_id_t ctf_utype = ctf_type_reference(ctf_dictionary, ctf_type);
@@ -744,14 +732,13 @@ process_ctf_typedef(reader *rdr,
     if (result = lookup_typedef_type(typedef_name, *corp))
       return result;
 
-  type_base_sptr utype = rdr->lookup_type(corp, tunit,
-					  ctf_dictionary, ctf_utype);
+  type_base_sptr utype = rdr->build_type(ctf_dictionary, ctf_utype);
 
   if (!utype)
     return result;
 
-  result = dynamic_pointer_cast<typedef_decl>(rdr->lookup_type(ctf_dictionary,
-                                                                ctf_type));
+  result = dynamic_pointer_cast<typedef_decl>
+             (rdr->lookup_type(ctf_dictionary, ctf_type));
   if (result)
     return result;
 
@@ -782,7 +769,6 @@ process_ctf_typedef(reader *rdr,
 /// IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -790,11 +776,11 @@ process_ctf_typedef(reader *rdr,
 
 static type_decl_sptr
 process_ctf_base_type(reader *rdr,
-                      corpus_sptr corp,
-                      translation_unit_sptr tunit,
                       ctf_dict_t *ctf_dictionary,
                       ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   type_decl_sptr result;
 
   ssize_t type_alignment = ctf_type_align(ctf_dictionary, ctf_type);
@@ -873,8 +859,6 @@ build_ir_node_for_variadic_parameter_type(reader &rdr,
 /// Build and return a function type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -882,11 +866,11 @@ build_ir_node_for_variadic_parameter_type(reader &rdr,
 
 static function_type_sptr
 process_ctf_function_type(reader *rdr,
-                          corpus_sptr corp,
-                          translation_unit_sptr tunit,
                           ctf_dict_t *ctf_dictionary,
                           ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   function_type_sptr result;
 
   /* Fetch the function type info from the CTF type.  */
@@ -896,8 +880,7 @@ process_ctf_function_type(reader *rdr,
 
   /* Take care first of the result type.  */
   ctf_id_t ctf_ret_type = funcinfo.ctc_return;
-  type_base_sptr ret_type = rdr->lookup_type(corp, tunit,
-					     ctf_dictionary, ctf_ret_type);
+  type_base_sptr ret_type = rdr->build_type(ctf_dictionary, ctf_ret_type);
   if (!ret_type)
     return result;
 
@@ -912,8 +895,7 @@ process_ctf_function_type(reader *rdr,
   for (int i = 0; i < argc; i++)
     {
       ctf_id_t ctf_arg_type = argv[i];
-      type_base_sptr arg_type = rdr->lookup_type(corp, tunit,
-						 ctf_dictionary, ctf_arg_type);
+      type_base_sptr arg_type = rdr->build_type(ctf_dictionary, ctf_arg_type);
       if (!arg_type)
         return result;
 
@@ -938,8 +920,8 @@ process_ctf_function_type(reader *rdr,
       function_parms.push_back(parm);
     }
 
-  result = dynamic_pointer_cast<function_type>(rdr->lookup_type(ctf_dictionary,
-                                                                 ctf_type));
+  result = dynamic_pointer_cast<function_type>
+             (rdr->lookup_type(ctf_dictionary, ctf_type));
   if (result)
     return result;
 
@@ -964,20 +946,18 @@ process_ctf_function_type(reader *rdr,
 /// Add member information to a IR struct or union type.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 /// @param sou the IR struct or union type to which add the members.
 
 static void
 process_ctf_sou_members(reader *rdr,
-                        corpus_sptr corp,
-                        translation_unit_sptr tunit,
                         ctf_dict_t *ctf_dictionary,
                         ctf_id_t ctf_type,
                         class_or_union_sptr sou)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   ssize_t member_size;
   ctf_next_t *member_next = NULL;
   const char *member_name = NULL;
@@ -997,9 +977,8 @@ process_ctf_sou_members(reader *rdr,
         return;
 
       /* Build the IR for the member's type.  */
-      type_base_sptr member_type = rdr->lookup_type(corp, tunit,
-						    ctf_dictionary,
-						    member_ctf_type);
+      type_base_sptr member_type = rdr->build_type(ctf_dictionary,
+                                                   member_ctf_type);
       if (!member_type)
         /* Ignore this member.  */
         continue;
@@ -1024,17 +1003,16 @@ process_ctf_sou_members(reader *rdr,
 /// IR.
 ///
 /// @param rdr the read context.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 /// @return the resulting IR node created.
 
 static type_base_sptr
 process_ctf_forward_type(reader *rdr,
-                         translation_unit_sptr tunit,
                          ctf_dict_t *ctf_dictionary,
                          ctf_id_t ctf_type)
 {
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   decl_base_sptr result;
   std::string type_name = ctf_type_name_raw(ctf_dictionary,
                                             ctf_type);
@@ -1083,8 +1061,6 @@ process_ctf_forward_type(reader *rdr,
 /// Build and return a struct type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -1092,11 +1068,11 @@ process_ctf_forward_type(reader *rdr,
 
 static class_decl_sptr
 process_ctf_struct_type(reader *rdr,
-                        corpus_sptr corp,
-                        translation_unit_sptr tunit,
                         ctf_dict_t *ctf_dictionary,
                         ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   class_decl_sptr result;
   std::string struct_type_name = ctf_type_name_raw(ctf_dictionary,
                                                    ctf_type);
@@ -1130,8 +1106,7 @@ process_ctf_struct_type(reader *rdr,
   /* Now add the struct members as specified in the CTF type description.
      This is C, so named types can only be defined in the global
      scope.  */
-  process_ctf_sou_members(rdr, corp, tunit, ctf_dictionary, ctf_type,
-                          result);
+  process_ctf_sou_members(rdr, ctf_dictionary, ctf_type, result);
 
   return result;
 }
@@ -1139,8 +1114,6 @@ process_ctf_struct_type(reader *rdr,
 /// Build and return an union type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -1148,11 +1121,11 @@ process_ctf_struct_type(reader *rdr,
 
 static union_decl_sptr
 process_ctf_union_type(reader *rdr,
-                       corpus_sptr corp,
-                       translation_unit_sptr tunit,
                        ctf_dict_t *ctf_dictionary,
                        ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   union_decl_sptr result;
   std::string union_type_name = ctf_type_name_raw(ctf_dictionary,
                                                    ctf_type);
@@ -1184,8 +1157,7 @@ process_ctf_union_type(reader *rdr,
   /* Now add the union members as specified in the CTF type description.
      This is C, so named types can only be defined in the global
      scope.  */
-  process_ctf_sou_members(rdr, corp, tunit, ctf_dictionary, ctf_type,
-                          result);
+  process_ctf_sou_members(rdr, ctf_dictionary, ctf_type, result);
 
   return result;
 }
@@ -1193,20 +1165,19 @@ process_ctf_union_type(reader *rdr,
 /// Build and return an array type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
+///
 /// @param ctf_dictionary the CTF dictionary being read.
+///
 /// @param ctf_type the CTF type ID of the source type.
 ///
 /// @return a shared pointer to the IR node for the array type.
-
 static array_type_def_sptr
 process_ctf_array_type(reader *rdr,
-                       corpus_sptr corp,
-                       translation_unit_sptr tunit,
                        ctf_dict_t *ctf_dictionary,
                        ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   array_type_def_sptr result;
   ctf_arinfo_t ctf_ainfo;
   bool is_infinite = false;
@@ -1222,21 +1193,19 @@ process_ctf_array_type(reader *rdr,
   uint64_t nelems = ctf_ainfo.ctr_nelems;
 
   /* Make sure the element type is generated.  */
-  type_base_sptr element_type = rdr->lookup_type(corp, tunit,
-						 ctf_dictionary,
-						 ctf_element_type);
+  type_base_sptr element_type = rdr->build_type(ctf_dictionary,
+                                                ctf_element_type);
   if (!element_type)
     return result;
 
   /* Ditto for the index type.  */
-  type_base_sptr index_type = rdr->lookup_type(corp, tunit,
-					       ctf_dictionary,
-					       ctf_index_type);
+  type_base_sptr index_type = rdr->build_type(ctf_dictionary,
+                                              ctf_index_type);
   if (!index_type)
     return result;
 
-  result = dynamic_pointer_cast<array_type_def>(rdr->lookup_type(ctf_dictionary,
-                                                                  ctf_type));
+  result = dynamic_pointer_cast<array_type_def>
+             (rdr->lookup_type(ctf_dictionary, ctf_type));
   if (result)
     return result;
 
@@ -1284,28 +1253,25 @@ process_ctf_array_type(reader *rdr,
 /// Build and return a qualified type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 
 static type_base_sptr
 process_ctf_qualified_type(reader *rdr,
-                           corpus_sptr corp,
-                           translation_unit_sptr tunit,
                            ctf_dict_t *ctf_dictionary,
                            ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   type_base_sptr result;
   int type_kind = ctf_type_kind(ctf_dictionary, ctf_type);
   ctf_id_t ctf_utype = ctf_type_reference(ctf_dictionary, ctf_type);
-  type_base_sptr utype = rdr->lookup_type(corp, tunit,
-					  ctf_dictionary, ctf_utype);
+  type_base_sptr utype = rdr->build_type(ctf_dictionary, ctf_utype);
   if (!utype)
     return result;
 
-  result = dynamic_pointer_cast<type_base>(rdr->lookup_type(ctf_dictionary,
-                                                             ctf_type));
+  result = dynamic_pointer_cast<type_base>
+             (rdr->lookup_type(ctf_dictionary, ctf_type));
   if (result)
     return result;
 
@@ -1337,8 +1303,6 @@ process_ctf_qualified_type(reader *rdr,
 /// Build and return a pointer type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -1346,24 +1310,23 @@ process_ctf_qualified_type(reader *rdr,
 
 static pointer_type_def_sptr
 process_ctf_pointer_type(reader *rdr,
-                         corpus_sptr corp,
-                         translation_unit_sptr tunit,
                          ctf_dict_t *ctf_dictionary,
                          ctf_id_t ctf_type)
 {
+  corpus_sptr corp = rdr->corpus();
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   pointer_type_def_sptr result;
   ctf_id_t ctf_target_type = ctf_type_reference(ctf_dictionary, ctf_type);
   if (ctf_target_type == CTF_ERR)
     return result;
 
-  type_base_sptr target_type = rdr->lookup_type(corp, tunit,
-						ctf_dictionary,
-						ctf_target_type);
+  type_base_sptr target_type = rdr->build_type(ctf_dictionary,
+                                               ctf_target_type);
   if (!target_type)
     return result;
 
-  result = dynamic_pointer_cast<pointer_type_def>(rdr->lookup_type(ctf_dictionary,
-                                                                    ctf_type));
+  result = dynamic_pointer_cast<pointer_type_def>
+             (rdr->lookup_type(ctf_dictionary, ctf_type));
   if (result)
     return result;
 
@@ -1383,8 +1346,6 @@ process_ctf_pointer_type(reader *rdr,
 /// Build and return an enum type libabigail IR.
 ///
 /// @param rdr the read context.
-/// @param corp the libabigail IR corpus being constructed.
-/// @param tunit the current IR translation unit.
 /// @param ctf_dictionary the CTF dictionary being read.
 /// @param ctf_type the CTF type ID of the source type.
 ///
@@ -1392,10 +1353,10 @@ process_ctf_pointer_type(reader *rdr,
 
 static enum_type_decl_sptr
 process_ctf_enum_type(reader *rdr,
-                      translation_unit_sptr tunit,
                       ctf_dict_t *ctf_dictionary,
                       ctf_id_t ctf_type)
 {
+  translation_unit_sptr tunit = rdr->cur_transl_unit();
   enum_type_decl_sptr result;
   std::string enum_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
 
@@ -1430,6 +1391,7 @@ process_ctf_enum_type(reader *rdr,
 
   while ((ename = ctf_enum_next(ctf_dictionary, ctf_type, &enum_next, &evalue)))
     enms.push_back(enum_type_decl::enumerator(ename, evalue));
+
   if (ctf_errno(ctf_dictionary) != ECTF_NEXT_END)
     {
       fprintf(stderr, "ERROR from ctf_enum_next\n");

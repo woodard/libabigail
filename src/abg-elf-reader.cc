@@ -459,6 +459,7 @@ reader::reader(const string&		elf_path,
 {
   priv_->crack_open_elf_file();
   priv_->locate_dwarf_debug_info();
+  priv_->locate_ctf_debug_info();
 }
 
 /// The destructor of the @ref elf::reader type.
@@ -479,10 +480,13 @@ void
 reader::reset(const std::string&	elf_path,
 	      const vector<char**>&	debug_info_roots)
 {
+  fe_iface::options_type opts = options();
+  fe_iface::reset(elf_path, opts.env);
   corpus_path(elf_path);
   priv_->initialize(debug_info_roots);
   priv_->crack_open_elf_file();
   priv_->locate_dwarf_debug_info();
+  priv_->locate_ctf_debug_info();
 }
 
 /// Getter of the vector of directory paths to look into for split
@@ -527,6 +531,21 @@ reader::elf_handle() const
 const Dwarf*
 reader::dwarf_debug_info() const
 {return priv_->dwarf_handle;}
+
+/// Test if the binary has DWARF debug info.
+///
+/// @return true iff the binary has DWARF debug info.
+bool
+reader::has_dwarf_debug_info() const
+{return ((priv_->dwarf_handle != nullptr)
+	  || (priv_->alt_dwarf_handle != nullptr));}
+
+/// Test if the binary has CTF debug info.
+///
+/// @return true iff the binary has CTF debug info.
+bool
+reader::has_ctf_debug_info() const
+{return (priv_->ctf_section != nullptr);}
 
 /// Getter of the handle use to access DWARF information from the
 /// alternate split DWARF information.
@@ -873,13 +892,15 @@ reader::read_corpus(status& status)
   corpus()->set_symtab(symtab());
 
   // If we couldn't load debug info from the elf path, then say it.
-    if (dwarf_debug_info() == nullptr
-	&& find_ctf_section() == nullptr)
-      status |= STATUS_DEBUG_INFO_NOT_FOUND;
+  if ((origin & abigail::ir::corpus::DWARF_ORIGIN)
+        && !has_dwarf_debug_info())
+    status |= STATUS_DEBUG_INFO_NOT_FOUND;
+  else if ((origin & abigail::ir::corpus::CTF_ORIGIN)
+             && !has_ctf_debug_info())
+    status |= STATUS_DEBUG_INFO_NOT_FOUND;
 
-    status |= STATUS_OK;
-
-    return corpus();
+  status |= STATUS_OK;
+  return corpus();
 }
 
 /// Get the SONAME property of a designated ELF file.

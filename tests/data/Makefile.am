@@ -607,6 +607,9 @@ test-read-dwarf/PR28584/PR28584-smv.clang.o.abi \
 test-read-dwarf/PR29443-missing-xx.cc \
 test-read-dwarf/PR29443-missing-xx.o \
 test-read-dwarf/PR29443-missing-xx.o.abi \
+test-read-dwarf/test-fallback.abi	\
+test-read-dwarf/test-fallback.c		\
+test-read-dwarf/test-fallback.o		\
 \
 test-read-ctf/test0		\
 test-read-ctf/test0.abi		\
@@ -698,6 +701,9 @@ test-read-ctf/test-anonymous-fields.o.abi	\
 test-read-ctf/test-linux-module.abi		\
 test-read-ctf/test-linux-module.c		\
 test-read-ctf/test-linux-module.ko		\
+test-read-ctf/test-fallback.abi		\
+test-read-ctf/test-fallback.c		\
+test-read-ctf/test-fallback.o		\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\

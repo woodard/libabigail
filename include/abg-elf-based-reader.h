@@ -56,6 +56,11 @@ public:
   virtual ir::corpus_sptr
   read_and_add_corpus_to_group(ir::corpus_group& group,
 			       fe_iface::status& status);
+  virtual void
+  initialize(const string&		elf_path,
+	     const vector<char**>&	debug_info_root_paths,
+	     bool			load_all_types,
+	     bool			linux_kernel_mode) = 0;
 };//end class elf_based_reader
 
 typedef std::shared_ptr<elf_based_reader> elf_based_reader_sptr;

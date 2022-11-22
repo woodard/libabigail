@@ -55,6 +55,7 @@ using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
+using abigail::tools_utils::create_best_elf_based_reader;
 
 using namespace abigail;
 
@@ -1196,21 +1197,17 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF: // fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
-	    abigail::elf_based_reader_sptr rdr;
+	    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
-            if (opts.use_ctf)
-	      rdr = ctf::create_reader(opts.file1,
-				       opts.prepared_di_root_paths1,
-				       env);
-            else
+	    if (opts.use_ctf)
+	      requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-	      rdr = dwarf::create_reader(opts.file1,
-					 opts.prepared_di_root_paths1,
-					 env,
-					 /*read_all_types=*/opts.show_all_types,
-					 opts.linux_kernel_mode);
-
-	    assert(rdr);
+	    abigail::elf_based_reader_sptr rdr =
+	      create_best_elf_based_reader(opts.file1,
+					   opts.prepared_di_root_paths1,
+					   env, requested_fe_kind,
+					   opts.show_all_types);
+            ABG_ASSERT(rdr);
 
 	    rdr->options().show_stats = opts.show_stats;
 	    rdr->options().do_log = opts.do_log;
@@ -1274,21 +1271,18 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  {
-	    abigail::elf_based_reader_sptr rdr;
+	    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
-            if (opts.use_ctf)
-	      rdr = ctf::create_reader(opts.file2,
-				       opts.prepared_di_root_paths2,
-				       env);
-            else
+	    if (opts.use_ctf)
+	      requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-	      rdr = dwarf::create_reader (opts.file2,
-					  opts.prepared_di_root_paths2,
-					  env,
-					  /*read_all_types=*/opts.show_all_types,
-					  opts.linux_kernel_mode);
+            abigail::elf_based_reader_sptr rdr =
+	      create_best_elf_based_reader(opts.file2,
+					   opts.prepared_di_root_paths2,
+					   env, requested_fe_kind,
+					   opts.show_all_types);
+            ABG_ASSERT(rdr);
 
-	    assert(rdr);
 	    rdr->options().show_stats = opts.show_stats;
 	    rdr->options().do_log = opts.do_log;
 	    set_suppressions(*rdr, opts);

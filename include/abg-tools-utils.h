@@ -317,12 +317,15 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  suppr::suppressions_type&	supprs,
 					  bool				verbose,
 					  environment&			env,
-					  corpus::origin	origin = corpus::DWARF_ORIGIN);
+					  corpus::origin	requested_fe_kind = corpus::DWARF_ORIGIN);
 
 elf_based_reader_sptr
 create_best_elf_based_reader(const string& elf_file_path,
 			     const vector<char**>& debug_info_root_paths,
-			     environment& env);
+			     environment& env,
+			     corpus::origin requested_debug_info_kind,
+			     bool show_all_types,
+			     bool linux_kernel_mode = false);
 
 }// end namespace tools_utils
 

@@ -855,7 +855,7 @@ static InOutSpec in_out_specs[] =
   { // Just like the previous tests, but loc info is emitted.
     "data/test-diff-pkg-ctf/dirpkg-3-dir1",
     "data/test-diff-pkg-ctf/dirpkg-3-dir2",
-    "--no-default-suppression --no-abignore",
+    "--ctf --no-default-suppression --no-abignore",
     "data/test-diff-pkg-ctf/dirpkg-3.suppr",
     "",
     "",

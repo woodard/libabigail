@@ -48,6 +48,7 @@ using abigail::tools_utils::temp_file_sptr;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::timer;
+using abigail::tools_utils::create_best_elf_based_reader;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -101,7 +102,7 @@ struct options
   bool			show_stats;
   bool			noout;
 #ifdef WITH_CTF
-  bool				use_ctf;
+  bool			use_ctf;
 #endif
   bool			show_locs;
   bool			abidiff;
@@ -552,21 +553,21 @@ load_corpus_and_write_abixml(char* argv[],
 
   corpus_sptr corp;
   fe_iface::status s = fe_iface::STATUS_UNKNOWN;
-  // First of all, create a reader to read the ABI from the file
-  // specfied in opts ...
-  abigail::elf_based_reader_sptr reader;
+  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
   if (opts.use_ctf)
-    reader = abigail::ctf::create_reader(opts.in_file_path,
-					 opts.prepared_di_root_paths,
-					 env);
-  else
+    requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-    reader = abigail::dwarf::create_reader(opts.in_file_path,
-					   opts.prepared_di_root_paths,
-					   env,
-					   opts.load_all_types,
-					   opts.linux_kernel_mode);
+
+  // First of all, create a reader to read the ABI from the file
+  // specfied in opts ...
+  abigail::elf_based_reader_sptr reader =
+    create_best_elf_based_reader(opts.in_file_path,
+				 opts.prepared_di_root_paths,
+				 env, requested_fe_kind,
+				 opts.load_all_types,
+				 opts.linux_kernel_mode);
+  ABG_ASSERT(reader);
 
   // ... then tune a bunch of "buttons" on the newly created reader ...
   reader->options().drop_undefined_syms = opts.drop_undefined_syms;
@@ -819,7 +820,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 
   global_timer.start();
   t.start();
-corpus::origin origin =
+  corpus::origin requested_fe_kind =
 #ifdef WITH_CTF
     opts.use_ctf ? corpus::CTF_ORIGIN :
 #endif
@@ -830,7 +831,8 @@ corpus::origin origin =
 					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
-					      supprs, opts.do_log, env, origin);
+					      supprs, opts.do_log, env,
+					      requested_fe_kind);
   t.stop();
 
   if (opts.do_log)

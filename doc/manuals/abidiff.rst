@@ -12,11 +12,12 @@ This tool can also compare the textual representations of the ABI of
 two ELF binaries (as emitted by ``abidw``) or an ELF binary against a
 textual representation of another ELF binary.
 
-For a comprehensive ABI change report that includes changes about
-function and variable sub-types, the two input shared libraries must
-be accompanied with their debug information in `DWARF`_ format.
-Otherwise, only `ELF`_ symbols that were added or removed are
-reported.
+For a comprehensive ABI change report between two input shared
+libraries that includes changes about function and variable sub-types,
+``abidiff`` uses by default, debug information in `DWARF`_ format, if
+present, otherwise it compares interfaces using debug information in
+`CTF`_ format, if present, finally, if neither is found, it uses only
+`ELF`_ symbols to report which of them were added or removed.
 
 .. include:: tools-use-libabigail.txt
 
@@ -581,7 +582,7 @@ Options
 
   * ``--ctf``
 
-    When comparing binaries, extract ABI information from CTF debug
+    When comparing binaries, extract ABI information from `CTF`_ debug
     information, if present.
 
   * ``--stats``
@@ -808,4 +809,4 @@ Usage examples
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
-
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
