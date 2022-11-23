@@ -528,6 +528,26 @@ Options
       $ abipkgdiff --self-check --d1 mesa-libGLU-debuginfo-9.0.1-3.fc33.x86_64.rpm  mesa-libGLU-9.0.1-3.fc33.x86_64.rpm
        ==== SELF CHECK SUCCEEDED for 'libGLU.so.1.3.1' ====
       $
+  * ``--no-assume-odr-for-cplusplus``
+
+    When analysing a binary originating from C++ code using `DWARF`_
+    debug information, libabigail assumes the `One Definition Rule`_
+    to speed-up the analysis.  In that case, when several types have
+    the same name in the binary, they are assumed to all be equal.
+
+    This option disables that assumption and instructs libabigail to
+    actually actually compare the types to determine if they are
+    equal.
+
+  * ``--no-leverage-dwarf-factorization``
+
+    When analysing a binary which `DWARF`_ debug information was
+    processed with the `DWZ`_ tool, the type information is supposed
+    to be already factorized.  That context is used by libabigail to
+    perform some speed optimizations.
+
+    This option disables those optimizations.
+
 
   * ``--ctf``
 
@@ -554,3 +574,6 @@ In the later case, the value of the exit code is the same as for the
 .. _DWARF: http://www.dwarfstd.org
 .. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
 .. _Development Package: https://fedoraproject.org/wiki/Packaging:Guidelines?rd=Packaging/Guidelines#Devel_Packages
+.. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _DWZ: https://sourceware.org/dwz

@@ -63,7 +63,9 @@ protected:
     bool		load_all_types			= false;
     bool		drop_undefined_syms		= false;
     bool		show_stats			= false;
-    bool		do_log				= false;;
+    bool		do_log				= false;
+    bool		leverage_dwarf_factorization	= true;
+    bool		assume_odr_for_cplusplus	= true;
     options_type(environment&);
 
   };// font_end_iface::options_type

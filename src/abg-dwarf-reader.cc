@@ -74,6 +74,7 @@ using std::stack;
 using std::deque;
 using std::list;
 using std::map;
+using abg_compat::optional;
 
 using namespace elf_helpers; // TODO: avoid using namespace
 
@@ -1857,6 +1858,7 @@ public:
   mutable size_t		compare_count_;
   mutable size_t		canonical_propagated_count_;
   mutable size_t		cancelled_propagation_count_;
+  mutable optional<bool>	leverage_dwarf_factorization_;
 
 protected:
 
@@ -5114,6 +5116,29 @@ public:
   load_in_linux_kernel_mode(bool f)
   {options().load_in_linux_kernel_mode = f;}
 
+  /// Test if it's allowed to assume that the DWARF debug info has
+  /// been factorized (for instance, with the DWZ tool) so that if two
+  /// type DIEs originating from the .gnu_debugaltlink section have
+  /// different offsets, they represent different types.
+  ///
+  /// @return true iff we can assume that the DWARF debug info has
+  /// been factorized.
+  bool
+  leverage_dwarf_factorization() const
+  {
+    if (!leverage_dwarf_factorization_.has_value())
+      {
+	if (options().leverage_dwarf_factorization
+	    && elf_helpers::find_section_by_name(elf_handle(),
+						 ".gnu_debugaltlink"))
+	  leverage_dwarf_factorization_ = true;
+	else
+	  leverage_dwarf_factorization_ = false;
+      }
+    ABG_ASSERT(leverage_dwarf_factorization_.has_value());
+
+    return *leverage_dwarf_factorization_;
+  }
   /// Getter of the "show_stats" flag.
   ///
   /// This flag tells if we should emit statistics about various
@@ -10556,6 +10581,12 @@ compare_dies(const reader& rdr,
   if (l_offset == r_offset)
     return COMPARISON_RESULT_EQUAL;
 
+  if (rdr.leverage_dwarf_factorization()
+      && (l_die_source == ALT_DEBUG_INFO_DIE_SOURCE
+	  && r_die_source == ALT_DEBUG_INFO_DIE_SOURCE))
+    if (l_offset != r_offset)
+      return COMPARISON_RESULT_DIFFERENT;
+
   comparison_result result = COMPARISON_RESULT_EQUAL;
   if (maybe_get_cached_type_comparison_result(rdr, l_tag,
 					      dies_being_compared,
@@ -10706,6 +10737,12 @@ compare_dies(const reader& rdr,
 
 	if (!compare_as_decl_and_type_dies(rdr, l, r))
 	  SET_RESULT_TO_FALSE(result, l, r);
+	else if (rdr.options().assume_odr_for_cplusplus
+		 && rdr.odr_is_relevant(l)
+		 && rdr.odr_is_relevant(r)
+		 && !die_is_anonymous(l)
+		 && !die_is_anonymous(r))
+	  result = COMPARISON_RESULT_EQUAL;
 	else
 	  {
 	    aggregates_being_compared.add(dies_being_compared);

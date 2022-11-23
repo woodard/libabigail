@@ -205,6 +205,8 @@ public:
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
   bool		show_identical_binaries;
+  bool		leverage_dwarf_factorization;
+  bool		assume_odr_for_cplusplus;
   bool		self_check;
   optional<bool> exported_interfaces_only;
 #ifdef WITH_CTF
@@ -248,6 +250,8 @@ public:
       show_added_binaries(true),
       fail_if_no_debug_info(),
       show_identical_binaries(),
+      leverage_dwarf_factorization(true),
+      assume_odr_for_cplusplus(true),
       self_check()
 #ifdef WITH_CTF
       ,
@@ -892,6 +896,10 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-parallel                  do not execute in parallel\n"
     << " --fail-no-dbg                  fail if no debug info was found\n"
     << " --show-identical-binaries      show the names of identical binaries\n"
+    << " --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+    "speed-up the analysis of the binary\n"
+    << " --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the"
+    "analysis of the binary\n"
     << " --verbose                      emit verbose progress messages\n"
     << " --self-check                   perform a sanity check by comparing "
     "binaries inside the input package against their ABIXML representation\n"
@@ -1224,6 +1232,24 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->add_suppressions(supprs);
 }
 
+/// Set a bunch of tunable buttons on the ELF-based reader from the
+/// command-line options.
+///
+/// @param rdr the reader to tune.
+///
+/// @param opts the command line options.
+static void
+set_generic_options(abigail::elf_based_reader& rdr, const options& opts)
+{
+  if (!opts.kabi_suppressions.empty())
+    rdr.add_suppressions(opts.kabi_suppressions);
+
+  rdr.options().leverage_dwarf_factorization =
+    opts.leverage_dwarf_factorization;
+  rdr.options().assume_odr_for_cplusplus =
+    opts.assume_odr_for_cplusplus;
+}
+
 /// Compare the ABI two elf files, using their associated debug info.
 ///
 /// The result of the comparison is emitted to standard output.
@@ -1336,8 +1362,7 @@ compare(const elf_file&		elf1,
     ABG_ASSERT(reader);
 
     reader->add_suppressions(priv_types_supprs1);
-    if (!opts.kabi_suppressions.empty())
-      reader->add_suppressions(opts.kabi_suppressions);
+    set_generic_options(*reader, opts);
 
     corpus1 = reader->read_corpus(c1_status);
 
@@ -1436,8 +1461,7 @@ compare(const elf_file&		elf1,
     ABG_ASSERT(reader);
 
     reader->add_suppressions(priv_types_supprs2);
-    if (!opts.kabi_suppressions.empty())
-      reader->add_suppressions(opts.kabi_suppressions);
+    set_generic_options(*reader, opts);
 
     corpus2 = reader->read_corpus(c2_status);
 
@@ -3350,6 +3374,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_added_binaries = false;
       else if (!strcmp(argv[i], "--fail-no-dbg"))
 	opts.fail_if_no_debug_info = true;
+      else if (!strcmp(argv[i], "--no-leverage-dwarf-factorization"))
+	opts.leverage_dwarf_factorization = false;
+      else if (!strcmp(argv[i], "--no-assume-odr-for-cplusplus"))
+	opts.assume_odr_for_cplusplus = false;
       else if (!strcmp(argv[i], "--verbose"))
 	opts.verbose = true;
       else if (!strcmp(argv[i], "--no-abignore"))

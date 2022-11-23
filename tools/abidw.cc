@@ -117,6 +117,8 @@ struct options
   bool			do_log;
   bool			drop_private_types;
   bool			drop_undefined_syms;
+  bool			assume_odr_for_cplusplus;
+  bool			leverage_dwarf_factorization;
   optional<bool>	exported_interfaces_only;
   type_id_style_kind	type_id_style;
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -156,6 +158,8 @@ struct options
       do_log(),
       drop_private_types(false),
       drop_undefined_syms(false),
+      assume_odr_for_cplusplus(true),
+      leverage_dwarf_factorization(true),
       type_id_style(SEQUENCE_TYPE_ID_STYLE)
   {}
 
@@ -226,6 +230,10 @@ display_usage(const string& prog_name, ostream& out)
 #ifdef WITH_CTF
     << "  --ctf use CTF instead of DWARF in ELF files\n"
 #endif
+    << "  --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+    "speed-up the analysis of the binary\n"
+    << "  --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
+    "analysis of the binary\n"
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
     << "  --verbose show verbose messages about internal stuff\n";
@@ -398,6 +406,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	       || !strcmp(argv[i], "debug-die-canonicalization"))
 	opts.debug_die_canonicalization = true;
 #endif
+      else if (!strcmp (argv[i], "--no-assume-odr-for-cplusplus"))
+	opts.assume_odr_for_cplusplus = false;
+      else if (!strcmp (argv[i], "--no-leverage-dwarf-factorization"))
+	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -520,6 +532,24 @@ set_suppressions(abigail::elf_based_reader& rdr, options& opts)
   rdr.add_suppressions(opts.kabi_whitelist_supprs);
 }
 
+/// Set a bunch of tunable buttons on the ELF-based reader from the
+/// command-line options.
+///
+/// @param rdr the reader to tune.
+///
+/// @param opts the command line options.
+static void
+set_generic_options(abigail::elf_based_reader& rdr, options& opts)
+{
+  rdr.options().drop_undefined_syms = opts.drop_undefined_syms;
+  rdr.options().show_stats = opts.show_stats;
+  rdr.options().do_log = opts.do_log;
+  rdr.options().leverage_dwarf_factorization =
+    opts.leverage_dwarf_factorization;
+  rdr.options().assume_odr_for_cplusplus =
+    opts.assume_odr_for_cplusplus;
+}
+
 /// Load an ABI @ref corpus (the internal representation of the ABI of
 /// a binary) and write it out as an abixml.
 ///
@@ -569,10 +599,9 @@ load_corpus_and_write_abixml(char* argv[],
 				 opts.linux_kernel_mode);
   ABG_ASSERT(reader);
 
-  // ... then tune a bunch of "buttons" on the newly created reader ...
-  reader->options().drop_undefined_syms = opts.drop_undefined_syms;
-  reader->options().show_stats = opts.show_stats;
-  reader->options().do_log = opts.do_log;
+  // ... then tune a bunch of "buttons" on the newly created reader
+  // ...
+  set_generic_options(*reader, opts);
   set_suppressions(*reader, opts);
 
   // If the user asked us to check if we found the "alternate debug

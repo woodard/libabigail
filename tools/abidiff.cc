@@ -108,6 +108,8 @@ struct options
   bool			show_redundant_changes;
   bool			show_symbols_not_referenced_by_debug_info;
   bool			show_impacted_interfaces;
+  bool			assume_odr_for_cplusplus;
+  bool			leverage_dwarf_factorization;
   bool			dump_diff_tree;
   bool			show_stats;
   bool			do_log;
@@ -159,6 +161,8 @@ struct options
       show_redundant_changes(),
       show_symbols_not_referenced_by_debug_info(true),
       show_impacted_interfaces(),
+      assume_odr_for_cplusplus(true),
+      leverage_dwarf_factorization(true),
       dump_diff_tree(),
       show_stats(),
       do_log()
@@ -259,6 +263,10 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-redundant  do not display redundant changes "
     "(this is the default)\n"
     << " --impacted-interfaces  display interfaces impacted by leaf changes\n"
+    << " --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+    "speed-up the analysis of the binary\n"
+    << " --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
+    "analysis of the binary\n"
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
     <<  " --stats  show statistics about various internal stuff\n"
@@ -615,6 +623,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = false;
       else if (!strcmp(argv[i], "--impacted-interfaces"))
 	opts.show_impacted_interfaces = true;
+      else if (!strcmp(argv[i], "--no-leverage-dwarf-factorization"))
+	opts.leverage_dwarf_factorization = false;
+      else if (!strcmp(argv[i], "--no-assume-odr-for-cplusplus"))
+	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--dump-diff-tree"))
 	opts.dump_diff_tree = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -798,6 +810,23 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     }
 
   ctxt->dump_diff_tree(opts.dump_diff_tree);
+}
+
+/// Set a bunch of tunable buttons on the ELF-based reader from the
+/// command-line options.
+///
+/// @param rdr the reader to tune.
+///
+/// @param opts the command line options.
+static void
+set_generic_options(abigail::elf_based_reader& rdr, options& opts)
+{
+  rdr.options().show_stats = opts.show_stats;
+  rdr.options().do_log = opts.do_log;
+  rdr.options().leverage_dwarf_factorization =
+    opts.leverage_dwarf_factorization;
+  rdr.options().assume_odr_for_cplusplus =
+    opts.assume_odr_for_cplusplus;
 }
 
 /// Set suppression specifications to the @p read_context used to load
@@ -1208,9 +1237,7 @@ main(int argc, char* argv[])
 					   env, requested_fe_kind,
 					   opts.show_all_types);
             ABG_ASSERT(rdr);
-
-	    rdr->options().show_stats = opts.show_stats;
-	    rdr->options().do_log = opts.do_log;
+	    set_generic_options(*rdr, opts);
 	    set_suppressions(*rdr, opts);
 	    c1 = rdr->read_corpus(c1_status);
 
@@ -1283,8 +1310,7 @@ main(int argc, char* argv[])
 					   opts.show_all_types);
             ABG_ASSERT(rdr);
 
-	    rdr->options().show_stats = opts.show_stats;
-	    rdr->options().do_log = opts.do_log;
+	    set_generic_options(*rdr, opts);
 	    set_suppressions(*rdr, opts);
 
 	    c2 = rdr->read_corpus(c2_status);

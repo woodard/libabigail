@@ -327,6 +327,25 @@ Options
     This option is available only if the package was configured with
     the --enable-debug-type-canonicalization option.
 
+  * ``--no-assume-odr-for-cplusplus``
+
+    When analysing a binary originating from C++ code using `DWARF`_
+    debug information, libabigail assumes the `One Definition Rule`_
+    to speed-up the analysis.  In that case, when several types have
+    the same name in the binary, they are assumed to all be equal.
+
+    This option disables that assumption and instructs libabigail to
+    actually actually compare the types to determine if they are
+    equal.
+
+  * ``--no-leverage-dwarf-factorization``
+
+    When analysing a binary which `DWARF`_ debug information was
+    processed with the `DWZ`_ tool, the type information is supposed
+    to be already factorized.  That context is used by libabigail to
+    perform some speed optimizations.
+
+    This option disables those optimizations.
 
   * ``--ctf``
 
@@ -370,3 +389,6 @@ standard `here
 .. _GNU: http://www.gnu.org
 .. _Linux Kernel: https://kernel.org/
 .. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _DWZ: https://sourceware.org/dwz
