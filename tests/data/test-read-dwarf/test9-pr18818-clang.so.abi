@@ -4672,6 +4672,55 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-8'/>
+              <parameter type-id='type-id-71'/>
+              <parameter type-id='type-id-23'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='27' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-57'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='30' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-57'/>
+              <parameter type-id='type-id-309'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='33' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-57'/>
+              <parameter type-id='type-id-23'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='36' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-8'/>
+              <parameter type-id='type-id-71'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='39' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
+              <parameter type-id='type-id-8'/>
+              <parameter type-id='type-id-71'/>
+              <parameter type-id='type-id-309'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' constructor='yes'>
             <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-205' is-artificial='yes'/>
               <parameter type-id='type-id-8'/>
@@ -4721,11 +4770,17 @@
             </function-decl>
           </member-function>
           <member-function access='public' constructor='yes'>
-            <function-decl name='system_error' mangled-name='_ZN5boost6system12system_errorC2EiRKNS0_14error_categoryEPKc' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
+            <function-decl name='system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='43' column='1' visibility='default' binding='global' size-in-bits='64'>
               <parameter type-id='type-id-205' is-artificial='yes'/>
               <parameter type-id='type-id-8'/>
               <parameter type-id='type-id-71'/>
               <parameter type-id='type-id-23'/>
+              <return type-id='type-id-110'/>
+            </function-decl>
+          </member-function>
+          <member-function access='public' destructor='yes' vtable-offset='0'>
+            <function-decl name='~system_error' filepath='src/third_party/boost-1.56.0/boost/system/system_error.hpp' line='47' column='1' visibility='default' binding='global' size-in-bits='64'>
+              <parameter type-id='type-id-205' is-artificial='yes'/>
               <return type-id='type-id-110'/>
             </function-decl>
           </member-function>
@@ -5422,6 +5477,8 @@
         <parameter type-id='type-id-262' name='rhs' filepath='src/third_party/boost-1.56.0/boost/iterator/iterator_facade.hpp' line='832' column='1'/>
         <return type-id='type-id-373'/>
       </function-decl>
+      <namespace-decl name='system'>
+      </namespace-decl>
       <namespace-decl name='detail'>
         <class-decl name='addr_impl_ref&lt;const boost::filesystem::path&gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='25' column='1' id='type-id-410'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -5648,6 +5705,8 @@
           <return type-id='type-id-1'/>
         </function-decl>
       </namespace-decl>
+      <namespace-decl name='system'>
+      </namespace-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/unique_path.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
@@ -5711,11 +5770,12 @@
           <typedef-decl name='reference' type-id='type-id-499' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='192' column='1' id='type-id-509'/>
         </member-type>
       </class-decl>
+      <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-511'/>
       <class-decl name='basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-496'/>
-      <class-decl name='codecvt&lt;wchar_t, char, __mbstate_t&gt;' visibility='default' is-declaration-only='yes' id='type-id-511'/>
+      <class-decl name='codecvt&lt;wchar_t, char, __mbstate_t&gt;' visibility='default' is-declaration-only='yes' id='type-id-512'/>
     </namespace-decl>
     <namespace-decl name='boost'>
-      <class-decl name='enable_if_c&lt;true, void&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/enable_if.hpp' line='28' column='1' id='type-id-512'>
+      <class-decl name='enable_if_c&lt;true, void&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/enable_if.hpp' line='28' column='1' id='type-id-513'>
         <member-type access='public'>
           <typedef-decl name='type' type-id='type-id-110' filepath='src/third_party/boost-1.56.0/boost/core/enable_if.hpp' line='29' column='1' id='type-id-493'/>
         </member-type>
@@ -5737,38 +5797,40 @@
           </function-decl>
         </namespace-decl>
       </namespace-decl>
+      <namespace-decl name='system'>
+      </namespace-decl>
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/utf8_codecvt_facet.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
-    <typedef-decl name='_G_fpos_t' type-id='type-id-21' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-513'/>
-    <typedef-decl name='div_t' type-id='type-id-21' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-514'/>
-    <typedef-decl name='fpos_t' type-id='type-id-513' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-515'/>
-    <type-decl name='unsigned char' size-in-bits='8' id='type-id-516'/>
-    <pointer-type-def type-id='type-id-517' size-in-bits='64' id='type-id-518'/>
-    <reference-type-def kind='lvalue' type-id='type-id-61' size-in-bits='64' id='type-id-519'/>
-    <qualified-type-def type-id='type-id-517' const='yes' id='type-id-520'/>
-    <pointer-type-def type-id='type-id-520' size-in-bits='64' id='type-id-521'/>
-    <reference-type-def kind='lvalue' type-id='type-id-23' size-in-bits='64' id='type-id-522'/>
-    <qualified-type-def type-id='type-id-515' const='yes' id='type-id-523'/>
-    <pointer-type-def type-id='type-id-523' size-in-bits='64' id='type-id-524'/>
-    <qualified-type-def type-id='type-id-8' const='yes' id='type-id-525'/>
-    <qualified-type-def type-id='type-id-526' const='yes' id='type-id-527'/>
-    <qualified-type-def type-id='type-id-528' const='yes' id='type-id-529'/>
-    <reference-type-def kind='lvalue' type-id='type-id-95' size-in-bits='64' id='type-id-530'/>
-    <pointer-type-def type-id='type-id-515' size-in-bits='64' id='type-id-531'/>
-    <qualified-type-def type-id='type-id-531' restrict='yes' id='type-id-532'/>
-    <reference-type-def kind='lvalue' type-id='type-id-37' size-in-bits='64' id='type-id-533'/>
-    <reference-type-def kind='lvalue' type-id='type-id-112' size-in-bits='64' id='type-id-534'/>
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-535'/>
-    <class-decl name='lconv' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-536'/>
+    <typedef-decl name='_G_fpos_t' type-id='type-id-21' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-514'/>
+    <typedef-decl name='div_t' type-id='type-id-21' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-515'/>
+    <typedef-decl name='fpos_t' type-id='type-id-514' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-516'/>
+    <type-decl name='unsigned char' size-in-bits='8' id='type-id-517'/>
+    <pointer-type-def type-id='type-id-518' size-in-bits='64' id='type-id-519'/>
+    <reference-type-def kind='lvalue' type-id='type-id-61' size-in-bits='64' id='type-id-520'/>
+    <qualified-type-def type-id='type-id-518' const='yes' id='type-id-521'/>
+    <pointer-type-def type-id='type-id-521' size-in-bits='64' id='type-id-522'/>
+    <reference-type-def kind='lvalue' type-id='type-id-23' size-in-bits='64' id='type-id-523'/>
+    <qualified-type-def type-id='type-id-516' const='yes' id='type-id-524'/>
+    <pointer-type-def type-id='type-id-524' size-in-bits='64' id='type-id-525'/>
+    <qualified-type-def type-id='type-id-8' const='yes' id='type-id-526'/>
+    <qualified-type-def type-id='type-id-527' const='yes' id='type-id-528'/>
+    <qualified-type-def type-id='type-id-529' const='yes' id='type-id-530'/>
+    <reference-type-def kind='lvalue' type-id='type-id-95' size-in-bits='64' id='type-id-531'/>
+    <pointer-type-def type-id='type-id-516' size-in-bits='64' id='type-id-532'/>
+    <qualified-type-def type-id='type-id-532' restrict='yes' id='type-id-533'/>
+    <reference-type-def kind='lvalue' type-id='type-id-37' size-in-bits='64' id='type-id-534'/>
+    <reference-type-def kind='lvalue' type-id='type-id-112' size-in-bits='64' id='type-id-535'/>
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-536'/>
+    <class-decl name='lconv' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-537'/>
     <namespace-decl name='std'>
-      <enum-decl name='float_denorm_style' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='171' column='1' id='type-id-526'>
+      <enum-decl name='float_denorm_style' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='171' column='1' id='type-id-527'>
         <underlying-type type-id='type-id-135'/>
         <enumerator name='denorm_indeterminate' value='-1'/>
         <enumerator name='denorm_absent' value='0'/>
         <enumerator name='denorm_present' value='1'/>
       </enum-decl>
-      <enum-decl name='float_round_style' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='156' column='1' id='type-id-528'>
+      <enum-decl name='float_round_style' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='156' column='1' id='type-id-529'>
         <underlying-type type-id='type-id-135'/>
         <enumerator name='round_indeterminate' value='-1'/>
         <enumerator name='round_toward_zero' value='0'/>
@@ -5776,18 +5838,18 @@
         <enumerator name='round_toward_infinity' value='2'/>
         <enumerator name='round_toward_neg_infinity' value='3'/>
       </enum-decl>
-      <class-decl name='numeric_limits&lt;wchar_t&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='650' column='1' id='type-id-537'>
+      <class-decl name='numeric_limits&lt;wchar_t&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='650' column='1' id='type-id-538'>
         <data-member access='public' static='yes'>
           <var-decl name='is_specialized' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='652' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='digits' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='665' column='1'/>
+          <var-decl name='digits' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='665' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='digits10' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='666' column='1'/>
+          <var-decl name='digits10' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='666' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='max_digits10' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='669' column='1'/>
+          <var-decl name='max_digits10' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='669' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
           <var-decl name='is_signed' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='671' column='1'/>
@@ -5799,19 +5861,19 @@
           <var-decl name='is_exact' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='673' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='radix' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='674' column='1'/>
+          <var-decl name='radix' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='674' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='min_exponent' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='682' column='1'/>
+          <var-decl name='min_exponent' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='682' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='min_exponent10' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='683' column='1'/>
+          <var-decl name='min_exponent10' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='683' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='max_exponent' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='684' column='1'/>
+          <var-decl name='max_exponent' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='684' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='max_exponent10' type-id='type-id-525' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='685' column='1'/>
+          <var-decl name='max_exponent10' type-id='type-id-526' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='685' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
           <var-decl name='has_infinity' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='687' column='1'/>
@@ -5823,7 +5885,7 @@
           <var-decl name='has_signaling_NaN' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='689' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='has_denorm' type-id='type-id-527' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='690' column='1'/>
+          <var-decl name='has_denorm' type-id='type-id-528' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='690' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
           <var-decl name='has_denorm_loss' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='692' column='1'/>
@@ -5844,7 +5906,7 @@
           <var-decl name='tinyness_before' type-id='type-id-209' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='711' column='1'/>
         </data-member>
         <data-member access='public' static='yes'>
-          <var-decl name='round_style' type-id='type-id-529' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='712' column='1'/>
+          <var-decl name='round_style' type-id='type-id-530' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='712' column='1'/>
         </data-member>
         <member-function access='public' static='yes'>
           <function-decl name='max' mangled-name='_ZNSt14numeric_limitsIwE3maxEv' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/limits' line='658' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt14numeric_limitsIwE3maxEv'>
@@ -5856,100 +5918,100 @@
     <namespace-decl name='boost'>
       <namespace-decl name='filesystem'>
         <namespace-decl name='detail'>
-          <class-decl name='utf8_codecvt_facet' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='106' column='1' id='type-id-517'>
-            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-511'/>
+          <class-decl name='utf8_codecvt_facet' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='106' column='1' id='type-id-518'>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-512'/>
             <member-function access='public' constructor='yes'>
               <function-decl name='utf8_codecvt_facet' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='110' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <parameter type-id='type-id-518' is-artificial='yes'/>
+                <parameter type-id='type-id-519' is-artificial='yes'/>
                 <parameter type-id='type-id-329'/>
                 <return type-id='type-id-110'/>
               </function-decl>
             </member-function>
             <member-function access='protected'>
               <function-decl name='invalid_leading_octet' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet21invalid_leading_octetEh' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='138' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet21invalid_leading_octetEh'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-516'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
+                <parameter type-id='type-id-517'/>
                 <return type-id='type-id-1'/>
               </function-decl>
             </member-function>
             <member-function access='protected' static='yes'>
               <function-decl name='get_cont_octet_count' mangled-name='_ZN5boost10filesystem6detail18utf8_codecvt_facet20get_cont_octet_countEh' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='144' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail18utf8_codecvt_facet20get_cont_octet_countEh'>
-                <parameter type-id='type-id-516'/>
+                <parameter type-id='type-id-517'/>
                 <return type-id='type-id-15'/>
               </function-decl>
             </member-function>
             <member-function access='protected'>
               <function-decl name='invalid_continuing_octet' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24invalid_continuing_octetEh' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='134' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24invalid_continuing_octetEh'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-516'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
+                <parameter type-id='type-id-517'/>
                 <return type-id='type-id-1'/>
               </function-decl>
             </member-function>
             <member-function access='protected'>
               <function-decl name='get_cont_octet_out_count' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24get_cont_octet_out_countEw' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='152' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet24get_cont_octet_out_countEw'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
                 <parameter type-id='type-id-46'/>
                 <return type-id='type-id-8'/>
               </function-decl>
             </member-function>
             <member-function access='protected' static='yes'>
               <function-decl name='get_octet_count' mangled-name='_ZN5boost10filesystem6detail18utf8_codecvt_facet15get_octet_countEh' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='148' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6detail18utf8_codecvt_facet15get_octet_countEh'>
-                <parameter type-id='type-id-516'/>
+                <parameter type-id='type-id-517'/>
                 <return type-id='type-id-15'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='2'>
               <function-decl name='do_out' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet6do_outER11__mbstate_tPKwS6_RS6_PcS8_RS8_' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='124' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet6do_outER11__mbstate_tPKwS6_RS6_PcS8_RS8_'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-533'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
+                <parameter type-id='type-id-534'/>
                 <parameter type-id='type-id-95'/>
                 <parameter type-id='type-id-95'/>
-                <parameter type-id='type-id-530'/>
+                <parameter type-id='type-id-531'/>
                 <parameter type-id='type-id-61'/>
                 <parameter type-id='type-id-61'/>
-                <parameter type-id='type-id-519'/>
+                <parameter type-id='type-id-520'/>
                 <return type-id='type-id-483'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='3'>
               <function-decl name='do_unshift' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet10do_unshiftER11__mbstate_tPcS5_RS5_' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='159' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet10do_unshiftER11__mbstate_tPcS5_RS5_'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-533'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
+                <parameter type-id='type-id-534'/>
                 <parameter type-id='type-id-61'/>
                 <parameter type-id='type-id-61'/>
-                <parameter type-id='type-id-519'/>
+                <parameter type-id='type-id-520'/>
                 <return type-id='type-id-483'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='4'>
               <function-decl name='do_in' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet5do_inER11__mbstate_tPKcS6_RS6_PwS8_RS8_' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet5do_inER11__mbstate_tPKcS6_RS6_PwS8_RS8_'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-533'/>
-                <parameter type-id='type-id-23'/>
-                <parameter type-id='type-id-23'/>
-                <parameter type-id='type-id-522'/>
-                <parameter type-id='type-id-112'/>
-                <parameter type-id='type-id-112'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
                 <parameter type-id='type-id-534'/>
+                <parameter type-id='type-id-23'/>
+                <parameter type-id='type-id-23'/>
+                <parameter type-id='type-id-523'/>
+                <parameter type-id='type-id-112'/>
+                <parameter type-id='type-id-112'/>
+                <parameter type-id='type-id-535'/>
                 <return type-id='type-id-483'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='5'>
               <function-decl name='do_encoding' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet11do_encodingEv' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='169' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet11do_encodingEv'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
                 <return type-id='type-id-8'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='6'>
               <function-decl name='do_always_noconv' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet16do_always_noconvEv' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='154' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet16do_always_noconvEv'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
                 <return type-id='type-id-1'/>
               </function-decl>
             </member-function>
             <member-function access='protected' vtable-offset='7'>
               <function-decl name='do_length' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet9do_lengthER11__mbstate_tPKcS6_m' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='176' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet9do_lengthER11__mbstate_tPKcS6_m'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
-                <parameter type-id='type-id-533'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
+                <parameter type-id='type-id-534'/>
                 <parameter type-id='type-id-23'/>
                 <parameter type-id='type-id-23'/>
                 <parameter type-id='type-id-329'/>
@@ -5958,7 +6020,7 @@
             </member-function>
             <member-function access='protected' vtable-offset='8'>
               <function-decl name='do_max_length' mangled-name='_ZNK5boost10filesystem6detail18utf8_codecvt_facet13do_max_lengthEv' filepath='src/third_party/boost-1.56.0/boost/detail/utf8_codecvt_facet.hpp' line='184' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost10filesystem6detail18utf8_codecvt_facet13do_max_lengthEv'>
-                <parameter type-id='type-id-521' is-artificial='yes'/>
+                <parameter type-id='type-id-522' is-artificial='yes'/>
                 <return type-id='type-id-8'/>
               </function-decl>
             </member-function>
@@ -5968,12 +6030,12 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/windows_file_codecvt.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
-    <typedef-decl name='__mbstate_t' type-id='type-id-21' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-538'/>
-    <typedef-decl name='mbstate_t' type-id='type-id-538' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-539'/>
-    <qualified-type-def type-id='type-id-539' const='yes' id='type-id-540'/>
-    <pointer-type-def type-id='type-id-540' size-in-bits='64' id='type-id-541'/>
-    <pointer-type-def type-id='type-id-539' size-in-bits='64' id='type-id-542'/>
-    <qualified-type-def type-id='type-id-542' restrict='yes' id='type-id-543'/>
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-544'/>
+    <typedef-decl name='__mbstate_t' type-id='type-id-21' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-539'/>
+    <typedef-decl name='mbstate_t' type-id='type-id-539' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-540'/>
+    <qualified-type-def type-id='type-id-540' const='yes' id='type-id-541'/>
+    <pointer-type-def type-id='type-id-541' size-in-bits='64' id='type-id-542'/>
+    <pointer-type-def type-id='type-id-540' size-in-bits='64' id='type-id-543'/>
+    <qualified-type-def type-id='type-id-543' restrict='yes' id='type-id-544'/>
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-545'/>
   </abi-instr>
 </abi-corpus>

@@ -14570,6 +14570,10 @@ build_or_get_fn_decl_if_not_suppressed(reader&	  rdr,
     {
       string linkage_name = die_linkage_name(fn_die);
       fn = klass->find_member_function_sptr(linkage_name);
+      if (fn)
+	// We found a member function that has the same signature.
+	// Let's mark it for update.
+	result = fn;
     }
 
   if (!fn || !fn->get_symbol())

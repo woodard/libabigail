@@ -870,78 +870,6 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='ObbInfo' size-in-bits='288' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='27' column='1' id='65c10d3d'>
-        <base-class access='public' layout-offset-in-bits='0' type-id='f8f7e309'/>
-        <base-class access='public' layout-offset-in-bits='96' is-virtual='yes' type-id='12f619c0'/>
-        <data-member access='private' layout-offset-in-bits='32'>
-          <var-decl name='mFileName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='38' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='64'>
-          <var-decl name='mPackageName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='39' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='96'>
-          <var-decl name='mVersion' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='40' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='128'>
-          <var-decl name='mFlags' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='41' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='160'>
-          <var-decl name='mSaltSize' type-id='b59d7dce' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='42' column='1'/>
-        </data-member>
-        <data-member access='private' layout-offset-in-bits='192'>
-          <var-decl name='mSalt' type-id='9f7200cf' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='43' column='1'/>
-        </data-member>
-        <member-function access='public' constructor='yes'>
-          <function-decl name='ObbInfo' mangled-name='_ZN7android7ObbInfoC1ENS_8String16ES1_iijPKh' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <parameter type-id='a3cec311'/>
-            <parameter type-id='a3cec311'/>
-            <parameter type-id='3ff5601b'/>
-            <parameter type-id='3ff5601b'/>
-            <parameter type-id='b59d7dce'/>
-            <parameter type-id='9f7200cf'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD1Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' destructor='yes' vtable-offset='0'>
-          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD2Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <return type-id='48b5725f'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' vtable-offset='2'>
-          <function-decl name='writeToParcel' mangled-name='_ZNK7android7ObbInfo13writeToParcelEPNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='34' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='a5f3e61a' is-artificial='yes'/>
-            <parameter type-id='1a1ddb91'/>
-            <return type-id='6e9756f6'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' vtable-offset='3'>
-          <function-decl name='readFromParcel' mangled-name='_ZN7android7ObbInfo14readFromParcelEPKNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='35' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='5a61729d' is-artificial='yes'/>
-            <parameter type-id='79927164'/>
-            <return type-id='6e9756f6'/>
-          </function-decl>
-        </member-function>
-      </class-decl>
       <class-decl name='sp&lt;android::IMountServiceListener&gt;' size-in-bits='32' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='31' column='1' id='a2aa88e3'>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='m_ptr' type-id='d3c9a98f' visibility='default' filepath='system/core/libutils/include/utils/StrongPointer.h' line='90' column='1'/>
@@ -1026,8 +954,159 @@
           </function-decl>
         </member-function>
       </class-decl>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb3'/>
+      <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343b'/>
       <class-decl name='IMountServiceListener' visibility='default' is-declaration-only='yes' id='748cb1b7'/>
       <class-decl name='IMountShutdownObserver' visibility='default' is-declaration-only='yes' id='60976dc0'/>
+      <class-decl name='IObbActionListener' size-in-bits='96' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='27' column='1' id='f7c5ae1e'>
+        <base-class access='public' layout-offset-in-bits='0' type-id='40b6343c'/>
+        <data-member access='public' static='yes'>
+          <var-decl name='descriptor' type-id='a3cec311' mangled-name='_ZN7android18IObbActionListener10descriptorE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
+        </data-member>
+        <data-member access='private' static='yes'>
+          <var-decl name='default_impl' type-id='c722890a' mangled-name='_ZN7android18IObbActionListener12default_implE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
+        </data-member>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='IObbActionListener' mangled-name='_ZN7android18IObbActionListenerC2Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' static='yes'>
+          <function-decl name='asInterface' mangled-name='_ZN7android18IObbActionListener11asInterfaceERKNS_2spINS_7IBinderEEE' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='83dafb9a'/>
+            <return type-id='92343ec8'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' static='yes'>
+          <function-decl name='setDefaultImpl' mangled-name='_ZN7android18IObbActionListener14setDefaultImplENSt3__110unique_ptrIS0_NS1_14default_deleteIS0_EEEE' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c722890a'/>
+            <return type-id='c894953d'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' static='yes'>
+          <function-decl name='getDefaultImpl' mangled-name='_ZN7android18IObbActionListener14getDefaultImplEv' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <return type-id='fcd3f6e5'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='IObbActionListener' mangled-name='_ZN7android18IObbActionListenerC2Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~IObbActionListener' mangled-name='_ZN7android18IObbActionListenerD0Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~IObbActionListener' mangled-name='_ZN7android18IObbActionListenerD0Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~IObbActionListener' mangled-name='_ZN7android18IObbActionListenerD1Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~IObbActionListener' mangled-name='_ZN7android18IObbActionListenerD2Ev' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='3'>
+          <function-decl name='getInterfaceDescriptor' mangled-name='_ZNK7android18IObbActionListener22getInterfaceDescriptorEv' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='32d2f295' is-artificial='yes'/>
+            <return type-id='157d4f95'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='4'>
+          <function-decl name='onObbResult' mangled-name='_ZN7android18IObbActionListener11onObbResultERKNS_8String16Eii' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='c70198d4' is-artificial='yes'/>
+            <parameter type-id='157d4f95'/>
+            <parameter type-id='922df12b'/>
+            <parameter type-id='922df12b'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
+      <class-decl name='ObbInfo' size-in-bits='288' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='27' column='1' id='65c10d3d'>
+        <base-class access='public' layout-offset-in-bits='0' type-id='f8f7e309'/>
+        <base-class access='public' layout-offset-in-bits='96' is-virtual='yes' type-id='12f619c0'/>
+        <data-member access='private' layout-offset-in-bits='32'>
+          <var-decl name='mFileName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='38' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='64'>
+          <var-decl name='mPackageName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='39' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='96'>
+          <var-decl name='mVersion' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='40' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='128'>
+          <var-decl name='mFlags' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='41' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='160'>
+          <var-decl name='mSaltSize' type-id='b59d7dce' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='42' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='192'>
+          <var-decl name='mSalt' type-id='9f7200cf' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='43' column='1'/>
+        </data-member>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='ObbInfo' mangled-name='_ZN7android7ObbInfoC1ENS_8String16ES1_iijPKh' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <parameter type-id='a3cec311'/>
+            <parameter type-id='a3cec311'/>
+            <parameter type-id='3ff5601b'/>
+            <parameter type-id='3ff5601b'/>
+            <parameter type-id='b59d7dce'/>
+            <parameter type-id='9f7200cf'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD1Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD2Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='2'>
+          <function-decl name='writeToParcel' mangled-name='_ZNK7android7ObbInfo13writeToParcelEPNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='34' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='a5f3e61a' is-artificial='yes'/>
+            <parameter type-id='1a1ddb91'/>
+            <return type-id='6e9756f6'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='3'>
+          <function-decl name='readFromParcel' mangled-name='_ZN7android7ObbInfo14readFromParcelEPKNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='35' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <parameter type-id='79927164'/>
+            <return type-id='6e9756f6'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
       <typedef-decl name='status_t' type-id='3ff5601b' filepath='system/core/libutils/include/utils/Errors.h' line='30' column='1' id='6e9756f6'/>
     </namespace-decl>
     <namespace-decl name='std'>
@@ -2054,7 +2133,7 @@
         </member-function>
       </class-decl>
       <class-decl name='IObbActionListener' size-in-bits='96' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='27' column='1' id='f7c5ae1e'>
-        <base-class access='public' layout-offset-in-bits='0' type-id='40b6343b'/>
+        <base-class access='public' layout-offset-in-bits='0' type-id='40b6343c'/>
         <data-member access='public' static='yes'>
           <var-decl name='descriptor' type-id='a3cec311' mangled-name='_ZN7android18IObbActionListener10descriptorE' visibility='default' filepath='frameworks/base/libs/storage/include/storage/IObbActionListener.h' line='30' column='1'/>
         </data-member>
@@ -2138,6 +2217,7 @@
           </function-decl>
         </member-function>
       </class-decl>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb4'/>
       <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343a'/>
       <class-decl name='IPCThreadState' visibility='default' is-declaration-only='yes' id='b5977877'/>
       <class-decl name='Parcelable' size-in-bits='32' visibility='default' filepath='frameworks/native/libs/binder/include/binder/Parcelable.h' line='35' column='1' id='f8f7e309'>
@@ -3040,6 +3120,78 @@
     <qualified-type-def type-id='65c10d3d' const='yes' id='dda33994'/>
     <pointer-type-def type-id='dda33994' size-in-bits='32' id='a5f3e61a'/>
     <namespace-decl name='android'>
+      <class-decl name='ObbInfo' size-in-bits='288' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='27' column='1' id='65c10d3d'>
+        <base-class access='public' layout-offset-in-bits='0' type-id='f8f7e309'/>
+        <base-class access='public' layout-offset-in-bits='96' is-virtual='yes' type-id='12f619c0'/>
+        <data-member access='private' layout-offset-in-bits='32'>
+          <var-decl name='mFileName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='38' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='64'>
+          <var-decl name='mPackageName' type-id='a3cec311' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='39' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='96'>
+          <var-decl name='mVersion' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='40' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='128'>
+          <var-decl name='mFlags' type-id='3ff5601b' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='41' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='160'>
+          <var-decl name='mSaltSize' type-id='b59d7dce' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='42' column='1'/>
+        </data-member>
+        <data-member access='private' layout-offset-in-bits='192'>
+          <var-decl name='mSalt' type-id='9f7200cf' visibility='default' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='43' column='1'/>
+        </data-member>
+        <member-function access='public' constructor='yes'>
+          <function-decl name='ObbInfo' mangled-name='_ZN7android7ObbInfoC1ENS_8String16ES1_iijPKh' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='30' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <parameter type-id='a3cec311'/>
+            <parameter type-id='a3cec311'/>
+            <parameter type-id='3ff5601b'/>
+            <parameter type-id='3ff5601b'/>
+            <parameter type-id='b59d7dce'/>
+            <parameter type-id='9f7200cf'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD0Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD1Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' destructor='yes' vtable-offset='0'>
+          <function-decl name='~ObbInfo' mangled-name='_ZN7android7ObbInfoD2Ev' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='32' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <return type-id='48b5725f'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='2'>
+          <function-decl name='writeToParcel' mangled-name='_ZNK7android7ObbInfo13writeToParcelEPNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='34' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='a5f3e61a' is-artificial='yes'/>
+            <parameter type-id='1a1ddb91'/>
+            <return type-id='6e9756f6'/>
+          </function-decl>
+        </member-function>
+        <member-function access='public' vtable-offset='3'>
+          <function-decl name='readFromParcel' mangled-name='_ZN7android7ObbInfo14readFromParcelEPKNS_6ParcelE' filepath='frameworks/base/libs/storage/include/storage/ObbInfo.h' line='35' column='1' visibility='default' binding='global' size-in-bits='32'>
+            <parameter type-id='5a61729d' is-artificial='yes'/>
+            <parameter type-id='79927164'/>
+            <return type-id='6e9756f6'/>
+          </function-decl>
+        </member-function>
+      </class-decl>
       <class-decl name='Parcelable' size-in-bits='32' visibility='default' filepath='frameworks/native/libs/binder/include/binder/Parcelable.h' line='35' column='1' id='f8f7e309'>
         <member-function access='public' constructor='yes'>
           <function-decl name='Parcelable' mangled-name='_ZN7android10ParcelableC2Ev' filepath='frameworks/native/libs/binder/include/binder/Parcelable.h' line='39' column='1' visibility='default' binding='global' size-in-bits='32'>
@@ -3081,7 +3233,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb3'/>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb5'/>
       <class-decl name='IPCThreadState' visibility='default' is-declaration-only='yes' id='b5977878'/>
       <class-decl name='TextOutput' visibility='default' is-declaration-only='yes' id='32215dcb'/>
       <namespace-decl name='base'>
@@ -3182,12 +3334,6 @@
     <type-decl name='long long int' size-in-bits='64' id='95e97e60'/>
     <type-decl name='short int' size-in-bits='16' id='95e97e61'/>
     <type-decl name='signed char' size-in-bits='8' id='28577a57'/>
-    <array-type-def dimensions='1' type-id='0ad725ff' size-in-bits='96' id='5da85797'>
-      <subrange length='3' type-id='7ff19f0f' id='56f209d2'/>
-    </array-type-def>
-    <array-type-def dimensions='1' type-id='97219ec5' size-in-bits='88' id='8c04a868'>
-      <subrange length='11' type-id='7ff19f0f' id='847bc017'/>
-    </array-type-def>
     <array-type-def dimensions='1' type-id='06725de7' size-in-bits='96' id='048eea03'>
       <subrange length='3' type-id='7ff19f0f' id='56f209d2'/>
     </array-type-def>
@@ -10890,7 +11036,17 @@
           <member-type access='private'>
             <class-decl name='__short' size-in-bits='96' is-struct='yes' visibility='default' filepath='external/libcxx/include/string' line='754' column='1' id='801f5164'>
               <member-type access='public'>
-                <union-decl name='__anonymous_union__' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='external/libcxx/include/string' line='756' column='1' id='ac5ab59f'>
+                <union-decl name='__anonymous_union__1' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='external/libcxx/include/string' line='756' column='1' id='ac5ab59f'>
+                  <data-member access='public'>
+                    <var-decl name='__size_' type-id='002ac4a6' visibility='default' filepath='external/libcxx/include/string' line='758' column='1'/>
+                  </data-member>
+                  <data-member access='public'>
+                    <var-decl name='__lx' type-id='97219ec5' visibility='default' filepath='external/libcxx/include/string' line='759' column='1'/>
+                  </data-member>
+                </union-decl>
+              </member-type>
+              <member-type access='public'>
+                <union-decl name='__anonymous_union__' size-in-bits='16' is-anonymous='yes' visibility='default' filepath='external/libcxx/include/string' line='756' column='1' id='ac5ab5a0'>
                   <data-member access='public'>
                     <var-decl name='__size_' type-id='002ac4a6' visibility='default' filepath='external/libcxx/include/string' line='758' column='1'/>
                   </data-member>
@@ -10900,10 +11056,13 @@
                 </union-decl>
               </member-type>
               <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='' type-id='ac5ab59f' visibility='default' filepath='external/libcxx/include/string' line='756' column='1'/>
+                <var-decl name='' type-id='ac5ab5a0' visibility='default' filepath='external/libcxx/include/string' line='756' column='1'/>
               </data-member>
               <data-member access='public' layout-offset-in-bits='16'>
                 <var-decl name='__data_' type-id='72631341' visibility='default' filepath='external/libcxx/include/string' line='761' column='1'/>
+              </data-member>
+              <data-member access='public' layout-offset-in-bits='0'>
+                <var-decl name='' type-id='ac5ab59f' visibility='default' filepath='external/libcxx/include/string' line='756' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
@@ -16494,62 +16653,9 @@
         <class-decl name='__wrap_iter&lt;int *&gt;' visibility='default' is-declaration-only='yes' id='a55d0f63'/>
         <class-decl name='basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='27619c1f'>
           <member-type access='private'>
-            <class-decl name='__long' size-in-bits='96' is-struct='yes' visibility='default' filepath='external/libcxx/include/string' line='736' column='1' id='b1d75bc8'>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='__cap_' type-id='0ad725ff' visibility='default' filepath='external/libcxx/include/string' line='738' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='32'>
-                <var-decl name='__size_' type-id='0ad725ff' visibility='default' filepath='external/libcxx/include/string' line='739' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='64'>
-                <var-decl name='__data_' type-id='fbcf9148' visibility='default' filepath='external/libcxx/include/string' line='740' column='1'/>
-              </data-member>
-            </class-decl>
-          </member-type>
-          <member-type access='private'>
-            <class-decl name='__raw' size-in-bits='96' is-struct='yes' visibility='default' filepath='external/libcxx/include/string' line='770' column='1' id='5eacdba8'>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='__words' type-id='5da85797' visibility='default' filepath='external/libcxx/include/string' line='772' column='1'/>
-              </data-member>
-            </class-decl>
-          </member-type>
-          <member-type access='private'>
             <class-decl name='__rep' size-in-bits='96' is-struct='yes' visibility='default' filepath='external/libcxx/include/string' line='775' column='1' id='4da3c689'>
-              <member-type access='public'>
-                <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='external/libcxx/include/string' line='777' column='1' id='ac5ab5a0'>
-                  <data-member access='public'>
-                    <var-decl name='__l' type-id='b1d75bc8' visibility='default' filepath='external/libcxx/include/string' line='779' column='1'/>
-                  </data-member>
-                  <data-member access='public'>
-                    <var-decl name='__s' type-id='6582ed08' visibility='default' filepath='external/libcxx/include/string' line='780' column='1'/>
-                  </data-member>
-                  <data-member access='public'>
-                    <var-decl name='__r' type-id='5eacdba8' visibility='default' filepath='external/libcxx/include/string' line='781' column='1'/>
-                  </data-member>
-                </union-decl>
-              </member-type>
               <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='' type-id='ac5ab5a0' visibility='default' filepath='external/libcxx/include/string' line='777' column='1'/>
-              </data-member>
-            </class-decl>
-          </member-type>
-          <member-type access='private'>
-            <class-decl name='__short' size-in-bits='96' is-struct='yes' visibility='default' filepath='external/libcxx/include/string' line='754' column='1' id='6582ed08'>
-              <member-type access='public'>
-                <union-decl name='__anonymous_union__' size-in-bits='8' is-anonymous='yes' visibility='default' filepath='external/libcxx/include/string' line='756' column='1' id='ac5ab5a1'>
-                  <data-member access='public'>
-                    <var-decl name='__size_' type-id='002ac4a6' visibility='default' filepath='external/libcxx/include/string' line='758' column='1'/>
-                  </data-member>
-                  <data-member access='public'>
-                    <var-decl name='__lx' type-id='97219ec5' visibility='default' filepath='external/libcxx/include/string' line='759' column='1'/>
-                  </data-member>
-                </union-decl>
-              </member-type>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='' type-id='ac5ab5a1' visibility='default' filepath='external/libcxx/include/string' line='756' column='1'/>
-              </data-member>
-              <data-member access='public' layout-offset-in-bits='8'>
-                <var-decl name='__data_' type-id='8c04a868' visibility='default' filepath='external/libcxx/include/string' line='761' column='1'/>
+                <var-decl name='' type-id='ac5ab59e' visibility='default' filepath='external/libcxx/include/string' line='777' column='1'/>
               </data-member>
             </class-decl>
           </member-type>
@@ -21801,7 +21907,7 @@
     </array-type-def>
     <class-decl name='AAdditionalInfoEvent' size-in-bits='512' is-struct='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='419' column='1' id='fa893a23'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='448' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='422' column='1' id='ac5ab5a2'>
+        <union-decl name='__anonymous_union__' size-in-bits='448' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='422' column='1' id='ac5ab5a1'>
           <data-member access='public'>
             <var-decl name='data_int32' type-id='75a6af5f' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='423' column='1'/>
           </data-member>
@@ -21817,7 +21923,7 @@
         <var-decl name='serial' type-id='3ff5601b' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='421' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='' type-id='ac5ab5a2' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='422' column='1'/>
+        <var-decl name='' type-id='ac5ab5a1' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='422' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='ADynamicSensorEvent' size-in-bits='64' is-struct='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='414' column='1' id='984bb689'>
@@ -21847,9 +21953,9 @@
     <class-decl name='ASensor' size-in-bits='8' is-struct='yes' visibility='default' filepath='frameworks/native/libs/sensor/include/sensor/Sensor.h' line='34' column='1' id='68510cba'/>
     <class-decl name='ASensorEvent' size-in-bits='832' is-struct='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='429' column='1' id='38b55796'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='435' column='1' id='ac5ab5a3'>
+        <union-decl name='__anonymous_union__' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='435' column='1' id='ac5ab5a2'>
           <member-type access='public'>
-            <union-decl name='__anonymous_union__' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='436' column='1' id='ac5ab5a4'>
+            <union-decl name='__anonymous_union__' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='436' column='1' id='ac5ab5a3'>
               <data-member access='public'>
                 <var-decl name='data' type-id='73273128' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='437' column='1'/>
               </data-member>
@@ -21898,7 +22004,7 @@
             </union-decl>
           </member-type>
           <member-type access='public'>
-            <union-decl name='__anonymous_union__1' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='453' column='1' id='ac5ab5a5'>
+            <union-decl name='__anonymous_union__1' size-in-bits='512' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='453' column='1' id='ac5ab5a4'>
               <data-member access='public'>
                 <var-decl name='data' type-id='c5d13f42' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='454' column='1'/>
               </data-member>
@@ -21908,10 +22014,10 @@
             </union-decl>
           </member-type>
           <data-member access='public'>
-            <var-decl name='' type-id='ac5ab5a4' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='436' column='1'/>
+            <var-decl name='' type-id='ac5ab5a3' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='436' column='1'/>
           </data-member>
           <data-member access='public'>
-            <var-decl name='u64' type-id='ac5ab5a5' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='456' column='1'/>
+            <var-decl name='u64' type-id='ac5ab5a4' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='456' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -21931,7 +22037,7 @@
         <var-decl name='timestamp' type-id='9da381c4' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='434' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='' type-id='ac5ab5a3' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='435' column='1'/>
+        <var-decl name='' type-id='ac5ab5a2' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='435' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
         <var-decl name='flags' type-id='8f92235e' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='459' column='1'/>
@@ -21951,7 +22057,7 @@
     <class-decl name='ASensorManager' size-in-bits='8' is-struct='yes' visibility='default' filepath='frameworks/native/libs/sensor/include/sensor/SensorManager.h' line='39' column='1' id='85c2b5e1'/>
     <class-decl name='ASensorVector' size-in-bits='128' is-struct='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='367' column='1' id='b6b8bef1'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='368' column='1' id='ac5ab5a6'>
+        <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='368' column='1' id='ac5ab5a5'>
           <member-type access='public'>
             <class-decl name='__anonymous_struct__1' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='375' column='1' id='e7f43f7c'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -21990,7 +22096,7 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='' type-id='ac5ab5a6' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='368' column='1'/>
+        <var-decl name='' type-id='ac5ab5a5' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='368' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
         <var-decl name='status' type-id='ee31ee44' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='381' column='1'/>
@@ -22001,7 +22107,7 @@
     </class-decl>
     <class-decl name='AUncalibratedEvent' size-in-bits='192' is-struct='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='390' column='1' id='225d4590'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__1' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='399' column='1' id='ac5ab5a7'>
+        <union-decl name='__anonymous_union__1' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='399' column='1' id='ac5ab5a6'>
           <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='401' column='1' id='e7f43f7e'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -22024,7 +22130,7 @@
         </union-decl>
       </member-type>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='391' column='1' id='ac5ab5a8'>
+        <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='391' column='1' id='ac5ab5a7'>
           <member-type access='public'>
             <class-decl name='__anonymous_struct__' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='393' column='1' id='e7f43f7f'>
               <data-member access='public' layout-offset-in-bits='0'>
@@ -22047,10 +22153,10 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='' type-id='ac5ab5a8' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='391' column='1'/>
+        <var-decl name='' type-id='ac5ab5a7' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='391' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
-        <var-decl name='' type-id='ac5ab5a7' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='399' column='1'/>
+        <var-decl name='' type-id='ac5ab5a6' visibility='default' filepath='frameworks/native/include/android/sensor.h' line='399' column='1'/>
       </data-member>
     </class-decl>
     <typedef-decl name='AAdditionalInfoEvent' type-id='fa893a23' filepath='frameworks/native/include/android/sensor.h' line='426' column='1' id='1f241bc2'/>
@@ -22737,10 +22843,10 @@
     <reference-type-def kind='lvalue' type-id='547a22ad' size-in-bits='32' id='874460d1'/>
     <pointer-type-def type-id='547a22ad' size-in-bits='32' id='83445a85'/>
     <pointer-type-def type-id='2144ef38' size-in-bits='32' id='3ab04eee'/>
-    <reference-type-def kind='lvalue' type-id='edff7cb4' size-in-bits='32' id='c1a5cef7'/>
-    <pointer-type-def type-id='edff7cb4' size-in-bits='32' id='b5a5bc13'/>
-    <reference-type-def kind='lvalue' type-id='40b6343b' size-in-bits='32' id='695a352c'/>
-    <pointer-type-def type-id='40b6343b' size-in-bits='32' id='6d5a3b78'/>
+    <reference-type-def kind='lvalue' type-id='edff7cb6' size-in-bits='32' id='c1a5cef7'/>
+    <pointer-type-def type-id='edff7cb6' size-in-bits='32' id='b5a5bc13'/>
+    <reference-type-def kind='lvalue' type-id='40b6343c' size-in-bits='32' id='695a352c'/>
+    <pointer-type-def type-id='40b6343c' size-in-bits='32' id='6d5a3b78'/>
     <reference-type-def kind='lvalue' type-id='bf075117' size-in-bits='32' id='a0b91aeb'/>
     <pointer-type-def type-id='bf075117' size-in-bits='32' id='9cb9149f'/>
     <reference-type-def kind='lvalue' type-id='f7c5ae1e' size-in-bits='32' id='bb0185f0'/>
@@ -22841,29 +22947,10 @@
             <return type-id='b5a5bc13'/>
           </function-decl>
         </member-function>
-        <member-function access='protected' vtable-offset='2'>
-          <function-decl name='onAsBinder' mangled-name='_ZN7android11BnInterfaceINS_18IObbActionListenerEE10onAsBinderEv' filepath='frameworks/native/libs/binder/include/binder/IInterface.h' line='80' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='3ab04eee' is-artificial='yes'/>
-            <return type-id='b5a5bc13'/>
-          </function-decl>
-        </member-function>
         <member-function access='public' vtable-offset='3'>
           <function-decl name='getInterfaceDescriptor' mangled-name='_ZNK7android11BnInterfaceINS_18IObbActionListenerEE22getInterfaceDescriptorEv' filepath='frameworks/native/libs/binder/include/binder/IInterface.h' line='76' column='1' visibility='default' binding='global' size-in-bits='32'>
             <parameter type-id='eac80e0f' is-artificial='yes'/>
             <return type-id='157d4f95'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' vtable-offset='3'>
-          <function-decl name='getInterfaceDescriptor' mangled-name='_ZNK7android11BnInterfaceINS_18IObbActionListenerEE22getInterfaceDescriptorEv' filepath='frameworks/native/libs/binder/include/binder/IInterface.h' line='76' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='eac80e0f' is-artificial='yes'/>
-            <return type-id='157d4f95'/>
-          </function-decl>
-        </member-function>
-        <member-function access='public' vtable-offset='5'>
-          <function-decl name='queryLocalInterface' mangled-name='_ZN7android11BnInterfaceINS_18IObbActionListenerEE19queryLocalInterfaceERKNS_8String16E' filepath='frameworks/native/libs/binder/include/binder/IInterface.h' line='75' column='1' visibility='default' binding='global' size-in-bits='32'>
-            <parameter type-id='3ab04eee' is-artificial='yes'/>
-            <parameter type-id='157d4f95'/>
-            <return type-id='12dbd264'/>
           </function-decl>
         </member-function>
         <member-function access='public' vtable-offset='5'>
@@ -23873,8 +23960,8 @@
         </member-function>
       </class-decl>
       <class-decl name='BBinder' visibility='default' is-declaration-only='yes' id='a4d376c6'/>
-      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb4'/>
-      <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343b'/>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb6'/>
+      <class-decl name='IInterface' visibility='default' is-declaration-only='yes' id='40b6343c'/>
       <class-decl name='IServiceManager' visibility='default' is-declaration-only='yes' id='3ac5546d'/>
       <class-decl name='ObbFile' visibility='default' is-declaration-only='yes' id='c02827ac'>
         <member-function access='public'>
@@ -24391,7 +24478,7 @@
     <qualified-type-def type-id='6164fbd7' const='yes' id='54dcec02'/>
     <reference-type-def kind='lvalue' type-id='54dcec02' size-in-bits='32' id='bbc7bcac'/>
     <pointer-type-def type-id='54dcec02' size-in-bits='32' id='bfc7c2f8'/>
-    <qualified-type-def type-id='edff7cb5' const='yes' id='be4386a6'/>
+    <qualified-type-def type-id='edff7cb7' const='yes' id='be4386a6'/>
     <pointer-type-def type-id='be4386a6' size-in-bits='32' id='104cce64'/>
     <qualified-type-def type-id='f33aa522' const='yes' id='0aa84ac9'/>
     <pointer-type-def type-id='0aa84ac9' size-in-bits='32' id='a9ede359'/>
@@ -27027,7 +27114,7 @@
         <member-type access='private'>
           <class-decl name='fp32' size-in-bits='32' is-struct='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='69' column='1' id='908282ea'>
             <member-type access='public'>
-              <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='70' column='1' id='ac5ab5a9'>
+              <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='70' column='1' id='ac5ab5a8'>
                 <data-member access='public'>
                   <var-decl name='bits' type-id='8f92235e' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='71' column='1'/>
                 </data-member>
@@ -27037,7 +27124,7 @@
               </union-decl>
             </member-type>
             <data-member access='public' layout-offset-in-bits='0'>
-              <var-decl name='' type-id='ac5ab5a9' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='70' column='1'/>
+              <var-decl name='' type-id='ac5ab5a8' visibility='default' filepath='frameworks/native/libs/math/include/math/half.h' line='70' column='1'/>
             </data-member>
             <member-function access='public' constructor='yes'>
               <function-decl name='fp32' filepath='frameworks/native/libs/math/include/math/half.h' line='74' column='1' visibility='default' binding='global' size-in-bits='32'>
@@ -27903,7 +27990,7 @@
         </member-function>
       </class-decl>
       <class-decl name='GraphicBuffer' visibility='default' is-declaration-only='yes' id='8eea5426'/>
-      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb5'/>
+      <class-decl name='IBinder' visibility='default' is-declaration-only='yes' id='edff7cb7'/>
       <class-decl name='IGraphicBufferProducer' visibility='default' is-declaration-only='yes' id='b24794a9'/>
       <class-decl name='IPCThreadState' visibility='default' is-declaration-only='yes' id='b5977879'/>
       <class-decl name='ISurfaceComposerClient' visibility='default' is-declaration-only='yes' id='e381e1eb'/>
@@ -27915,6 +28002,7 @@
       </class-decl>
       <class-decl name='ReferenceRenamer' visibility='default' is-declaration-only='yes' id='fe4eabab'/>
       <class-decl name='SortedVectorImpl' visibility='default' is-declaration-only='yes' id='77b46eb8'/>
+      <class-decl name='Surface' visibility='default' is-declaration-only='yes' id='7dd446dc'/>
       <class-decl name='SurfaceComposerClient' visibility='default' is-declaration-only='yes' id='7203e7be'>
         <member-type access='private'>
           <class-decl name='Transaction' size-in-bits='896' visibility='default' filepath='frameworks/native/libs/gui/include/gui/SurfaceComposerClient.h' line='288' column='1' id='88d5fc7e'>
@@ -28248,7 +28336,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='65' column='1' id='ac5ab5aa'>
+            <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='65' column='1' id='ac5ab5a9'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='66' column='1' id='e7f43f81'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28280,7 +28368,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5aa' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='65' column='1'/>
+            <var-decl name='' type-id='ac5ab5a9' visibility='default' filepath='frameworks/native/libs/math/include/math/quat.h' line='65' column='1'/>
           </data-member>
           <member-function access='public'>
             <function-decl name='TQuaternion' filepath='frameworks/native/libs/math/include/math/quat.h' line='91' column='1' visibility='default' binding='global' size-in-bits='32'>
@@ -28323,7 +28411,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5ab'>
+            <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5aa'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__2' size-in-bits='32' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f82'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28366,7 +28454,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5ab' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1'/>
+            <var-decl name='' type-id='ac5ab5aa' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1'/>
           </data-member>
           <data-member access='public' static='yes'>
             <var-decl name='SIZE' type-id='d0fa5dde' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='55' column='1'/>
@@ -28412,7 +28500,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5ac'>
+            <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1' id='ac5ab5ab'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__2' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='52' column='1' id='e7f43f85'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28455,7 +28543,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5ac' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1'/>
+            <var-decl name='' type-id='ac5ab5ab' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='49' column='1'/>
           </data-member>
           <data-member access='public' static='yes'>
             <var-decl name='SIZE' type-id='d0fa5dde' visibility='default' filepath='frameworks/native/libs/math/include/math/vec2.h' line='55' column='1'/>
@@ -28501,7 +28589,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='48' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ad'>
+            <union-decl name='__anonymous_union__' size-in-bits='48' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ac'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__2' size-in-bits='48' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f88'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28562,7 +28650,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5ad' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1'/>
+            <var-decl name='' type-id='ac5ab5ac' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1'/>
           </data-member>
           <data-member access='public' static='yes'>
             <var-decl name='SIZE' type-id='d0fa5dde' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='56' column='1'/>
@@ -28608,7 +28696,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ae'>
+            <union-decl name='__anonymous_union__' size-in-bits='96' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1' id='ac5ab5ad'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__2' size-in-bits='96' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='50' column='1' id='e7f43f8b'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28656,7 +28744,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5ae' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1'/>
+            <var-decl name='' type-id='ac5ab5ad' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='47' column='1'/>
           </data-member>
           <data-member access='public' static='yes'>
             <var-decl name='SIZE' type-id='d0fa5dde' visibility='default' filepath='frameworks/native/libs/math/include/math/vec3.h' line='56' column='1'/>
@@ -28702,7 +28790,7 @@
             </enum-decl>
           </member-type>
           <member-type access='private'>
-            <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='47' column='1' id='ac5ab5af'>
+            <union-decl name='__anonymous_union__' size-in-bits='128' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='47' column='1' id='ac5ab5ae'>
               <member-type access='public'>
                 <class-decl name='__anonymous_struct__2' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='50' column='1' id='e7f43f8d'>
                   <data-member access='public' layout-offset-in-bits='0'>
@@ -28765,7 +28853,7 @@
             </union-decl>
           </member-type>
           <data-member access='public' layout-offset-in-bits='0'>
-            <var-decl name='' type-id='ac5ab5af' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='47' column='1'/>
+            <var-decl name='' type-id='ac5ab5ae' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='47' column='1'/>
           </data-member>
           <data-member access='public' static='yes'>
             <var-decl name='SIZE' type-id='d0fa5dde' visibility='default' filepath='frameworks/native/libs/math/include/math/vec4.h' line='59' column='1'/>
@@ -38677,7 +38765,7 @@
         </member-function>
       </class-decl>
       <class-decl name='IGraphicBufferProducer' visibility='default' is-declaration-only='yes' id='b24794aa'/>
-      <class-decl name='Surface' visibility='default' is-declaration-only='yes' id='7dd446dc'/>
+      <class-decl name='Surface' visibility='default' is-declaration-only='yes' id='7dd446dd'/>
       <class-decl name='SurfaceTexture' visibility='default' is-declaration-only='yes' id='cc9b054a'/>
     </namespace-decl>
     <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c2d'/>
