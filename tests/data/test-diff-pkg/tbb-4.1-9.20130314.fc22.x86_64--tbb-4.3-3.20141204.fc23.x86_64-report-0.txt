@@ -30,10 +30,6 @@
       implicit parameter 0 of type 'tbb::filter*' has sub-type changes:
         in pointed to type 'class tbb::filter' at pipeline.h:65:1:
           type size hasn't changed
-          1 member function deletion:
-            'method virtual tbb::filter::~filter(int)' at pipeline.cpp:698:1
-          1 member function insertion:
-            'method virtual tbb::filter::~filter(int)' at pipeline.cpp:688:1
           no member function changes (4 filtered);
           1 data member changes (4 filtered):
             type of 'tbb::internal::input_buffer* my_input_buffer' changed:
@@ -171,10 +167,6 @@
       implicit parameter 0 of type 'tbb::internal::concurrent_queue_base_v3*' has sub-type changes:
         in pointed to type 'class tbb::internal::concurrent_queue_base_v3' at _concurrent_queue_impl.h:834:1:
           type size hasn't changed
-          1 member function deletion:
-            'method virtual tbb::internal::concurrent_queue_base_v3::~concurrent_queue_base_v3(int)' at concurrent_queue.cpp:361:1
-          1 member function insertion:
-            'method virtual tbb::internal::concurrent_queue_base_v3::~concurrent_queue_base_v3(int)' at concurrent_queue.cpp:370:1
           no member function changes (7 filtered);
           1 data member change:
             type of 'tbb::internal::concurrent_queue_rep* my_rep' changed:
