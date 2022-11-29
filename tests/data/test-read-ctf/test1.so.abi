@@ -6,9 +6,8 @@
     <elf-symbol name='fn' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>
   <abi-instr address-size='64' language='LANG_C'>
-    <type-decl name='' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
-    <enum-decl name='opaque_enum' linkage-name='opaque_enum' id='type-id-2'>
-      <underlying-type type-id='type-id-1'/>
+    <enum-decl name='opaque_enum' linkage-name='opaque_enum' id='type-id-1'>
+      <underlying-type type-id='type-id-2'/>
       <enumerator name='e0' value='0'/>
       <enumerator name='e1' value='1'/>
     </enum-decl>
@@ -17,8 +16,9 @@
         <var-decl name='m0' type-id='type-id-4' visibility='default'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='opaque_enum' type-id='type-id-2' id='type-id-4'/>
+    <typedef-decl name='opaque_enum' type-id='type-id-1' id='type-id-4'/>
     <typedef-decl name='opaque_struct' type-id='type-id-3' id='type-id-5'/>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-2'/>
     <pointer-type-def type-id='type-id-4' size-in-bits='64' alignment-in-bits='64' id='type-id-6'/>
     <pointer-type-def type-id='type-id-5' size-in-bits='64' alignment-in-bits='64' id='type-id-7'/>
     <function-decl name='fn' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='fn'>

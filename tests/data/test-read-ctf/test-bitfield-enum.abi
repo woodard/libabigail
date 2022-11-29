@@ -1,0 +1,18 @@
+<abi-corpus version='2.1' path='data/test-read-ctf/test-bitfield-enum.o'>
+  <elf-variable-symbols>
+    <elf-symbol name='e' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
+  </elf-variable-symbols>
+  <abi-instr address-size='64' language='LANG_C'>
+    <enum-decl name='event_kind' linkage-name='event_kind' id='type-id-1'>
+      <underlying-type type-id='type-id-2'/>
+      <enumerator name='NO_EVENT' value='0'/>
+    </enum-decl>
+    <class-decl name='input' size-in-bits='32' is-struct='yes' visibility='default' id='type-id-3'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='kind' type-id='type-id-1' visibility='default'/>
+      </data-member>
+    </class-decl>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-2'/>
+    <var-decl name='e' type-id='type-id-3' mangled-name='e' visibility='default' elf-symbol-id='e'/>
+  </abi-instr>
+</abi-corpus>

@@ -704,6 +704,12 @@ test-read-ctf/test-linux-module.ko		\
 test-read-ctf/test-fallback.abi		\
 test-read-ctf/test-fallback.c		\
 test-read-ctf/test-fallback.o		\
+test-read-ctf/test-bitfield.abi		\
+test-read-ctf/test-bitfield.c		\
+test-read-ctf/test-bitfield.o		\
+test-read-ctf/test-bitfield-enum.abi	\
+test-read-ctf/test-bitfield-enum.c	\
+test-read-ctf/test-bitfield-enum.o	\
 \
 test-annotate/test0.abi			\
 test-annotate/test1.abi			\
