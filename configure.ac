@@ -3,7 +3,7 @@
 dnl Libabigail version number is handled here with the major and minor
 dnl version numbers.
 m4_define([version_major],   [2])
-m4_define([version_minor],   [2])
+m4_define([version_minor],   [3])
 
 dnl Below are the numbers to handle libabigail.so's versionning
 dnl following the libtool's versionning scheme to handle shared
