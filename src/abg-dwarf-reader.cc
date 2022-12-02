@@ -11632,7 +11632,8 @@ get_scope_for_die(reader& rdr,
   scope_decl_sptr s;
   type_or_decl_base_sptr d;
   if (dwarf_tag(&parent_die) == DW_TAG_subprogram
-      || dwarf_tag(&parent_die) == DW_TAG_array_type)
+      || dwarf_tag(&parent_die) == DW_TAG_array_type
+      || dwarf_tag(&parent_die) == DW_TAG_lexical_block)
     // this is an entity defined in a scope that is a function.
     // Normally, I would say that this should be dropped.  But I have
     // seen a case where a typedef DIE needed by a function parameter
