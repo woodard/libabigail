@@ -7136,6 +7136,8 @@ die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die)
   else
     return false;
 
+  memcpy(&peeled_die, die, sizeof(peeled_die));
+
   while (tag == DW_TAG_const_type
 	 || tag == DW_TAG_volatile_type
 	 || tag == DW_TAG_restrict_type
@@ -7166,6 +7168,8 @@ die_peel_typedef(Dwarf_Die *die, Dwarf_Die& peeled_die)
     return false;
 
   int tag = dwarf_tag(die);
+
+  memcpy(&peeled_die, die, sizeof(peeled_die));
 
   if (tag == DW_TAG_typedef)
     {
