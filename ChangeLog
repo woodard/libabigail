@@ -1,3 +1,1217 @@
+2022-12-02  Dodji Seketeli <dodji@redhat.com>
+
+	NEWS: Update for 2.2 release
+	* NEWS: Update for 2.2 release, with the output of
+	`git shortlog libabigail-2.1..HEAD`
+
+2022-12-02  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 29829 - dwarf-reader: Allow DIEs to be in a lexical block
+	* src/abg-dwarf-reader.cc (get_scope_for_die): Support
+	DW_TAG_lexical_block as DIE scope.
+
+2022-12-02  Dodji Seketeli <dodji@redhat.com>
+
+	dwarf-reader: Make die_peel_{qual_ptr,typedef} always set peeled type
+	* src/abg-dwarf-reader.cc (die_peel_qual_ptr, die_peel_typedef):
+	If the function returned true, then set the peeled argument even
+	if the function hasn't peeled anything.
+
+2022-11-24  Dodji Seketeli <dodji@redhat.com>
+
+	dwarf-reader: Avoid duplicating member functions
+	* src/abg-dwarf-reader.cc
+	(build_or_get_fn_decl_if_not_suppressed): Fix the code that is
+	supposed to avoid duplicating a member function.
+	* tests/data/test-annotate/test14-pr18893.so.abi: Adjust.
+	* tests/data/test-annotate/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-annotate/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-read-dwarf/PR22122-libftdc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test-libandroid.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test12-pr18844.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test16-pr18904.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test21-pr19092.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test9-pr18818-clang.so.abi: Likewise.
+
+2022-11-23  Dodji Seketeli <dodji@redhat.com>
+
+	dwarf-reader: Leverage ODR & DWZ
+	* doc/manuals/abidiff.rst: Add documentation for
+	--no-leverage-dwarf-factorization and
+	--no-assume-odr-for-cplusplus
+	* doc/manuals/abidw.rst: Likewise.
+	* doc/manuals/abipkgdiff.rst: Likewise.
+	* include/abg-fe-iface.h (options::{leverage_dwarf_factorization,
+	assume_odr_for_cplusplus}): New data members.
+	* src/abg-dwarf-reader.cc (reader::leverage_dwarf_factorization_):
+	New data member.
+	(reader::leverage_dwarf_factorization): New accessor.
+	(compare_dies): If we are allowed to leverage the DWARF
+	factorization and if two type DIEs coming from the
+	.gnu_debugaltlink DWARF section have different offset, then they
+	are different.  Also, if we are allowed to assume ODR, use it to
+	speed up class/struct/unions comparisons.
+	* tools/abidiff.cc (options::{assume_odr_for_cplusplus,
+	leverage_dwarf_factorization}): Define new data members.
+	(options::options): Initialize them.
+	(display_usage): Add new help strings for
+	--no-leverage-dwarf-factorization and
+	--no-assume-odr-for-cplusplus.
+	(parse_command_line): Parse these new options.
+	(set_generic_options): New function.
+	(main): Use the new set_generic_options function.
+	* tools/abidw.cc (options::{assume_odr_for_cplusplus,
+	leverage_dwarf_factorization}): Define new data members.
+	(options::options): Initialize them.
+	(display_usage): Add new help strings for
+	--no-leverage-dwarf-factorization and
+	--no-assume-odr-for-cplusplus.
+	(parse_command_line): Parse these new options.
+	(set_generic_options): New function.
+	(load_corpus_and_write_abixml): Use the new set_generic_options
+	function.
+	* tools/abipkgdiff.cc (options::{assume_odr_for_cplusplus,
+	leverage_dwarf_factorization}): Define new data members.
+	(options::options): Initialize them.
+	(display_usage): Add new help strings for
+	--no-leverage-dwarf-factorization and
+	--no-assume-odr-for-cplusplus.
+	(parse_command_line): Parse these new options.
+	(set_generic_options): New function.
+	(compare): Use it.
+
+2022-11-25  Dodji Seketeli <dodji@redhat.com>
+
+	Fix spurious deleted/added virtual destructor change report
+	* src/abg-comparison.cc (find_virtual_dtor_in_map): Define new
+	static function.
+	(class_diff::ensure_lookup_tables_populated): If a virtual
+	destructor is removed from the old binary version but is added to
+	the new one (but through a different name), let's assume the
+	virtual destructor is still there so there is no ABI issue
+	from that point of view.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt: Adjust.
+
+2022-11-16  Guillermo E. Martinez via Libabigail <libabigail@sourceware.org>
+
+	ctf-reader: Fix array size representation
+	* src/abg-ctf-reader.cc (build_array_ctf_range): Use
+	* tests/data/Makefile.am: Add new test.
+	`upper_bound' and number of elements to indicate infinite
+	array size.
+	* tests/data/test-read-ctf/test-array-size.abi: New test.
+	* tests/data/test-read-ctf/test-array-size.c: Likewise.
+	* tests/data/test-read-ctf/test-array-size.o: Likewise.
+	* tests/test-read-ctf.cc: Update testsuite.
+
+2022-11-16  Guillermo E. Martinez <guillermo.e.martinez@oracle.com>
+
+	ctf-reader: Fix representation of multidimensional arrays
+	* src/abg-ctf-reader.cc (+build_array_ctf_range): New definition.
+	* tests/data/Makefile.am: Add new testcase.
+	* tests/data/test-read-ctf/test-array-mdimension.abi: New testcase.
+	* tests/data/test-read-ctf/test-array-mdimension.c: Likewise.
+	* tests/data/test-read-ctf/test-array-mdimension.o: Likewise.
+	* tests/data/test-read-ctf/test9.o.abi: Adjust.
+	* tests/test-read-ctf.cc: Update testsuite.
+
+2022-11-16  Guillermo E. Martinez <guillermo.e.martinez@oracle.com>
+
+	ctf-reader: Strip qualification from a qualified array type
+	* src/abg-ctf-reader.cc (maybe_strip_qualification): New
+	definition.
+	(process_ctf_qualified_type): Strip redundant qualifiers.
+	* tests/data/test-read-ctf/test-const-array.abi: New test.
+	* tests/data/test-read-ctf/test-const-array.c: Likewise.
+	* tests/data/test-read-ctf/test-const-array.o: Likewise.
+	* tests/Makefile.am: Add the new test material to source
+	distribution.
+
+2022-11-29  Dodji Seketeli <dodji@redhat.com>
+
+	test-read-ctf: Update tests for fixing size and name for underlying types
+	* src/abg-ctf-reader.cc (process_ctf_{base_type,enum_type}):
+	Look at ctf refence type to build the underlying type if present.
+	* tests/data/Makefile.am: New test cases.
+	* tests/data/test-read-ctf/PR27700/test-PR27700.abi: New test input.
+	* tests/data/test-read-ctf/test-bitfield-enum.abi: Likewise.
+	* tests/data/test-read-ctf/test-bitfield-enum.c: Likewise.
+	* tests/data/test-read-ctf/test-bitfield-enum.o: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.abi: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.c: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.o: Likewise.
+	* tests/data/test-read-ctf/test-enum-many.o.hash.abi: Adjust.
+	* tests/data/test-read-ctf/test-enum-symbol.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-enum.o.abi: Likewise:
+	* tests/data/test-read-ctf/test0.abi: Likewise.
+	* tests/data/test-read-ctf/test0.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test5.o.abi: Likewise.
+	* tests/test-read-ctf.cc: Update test suite.
+
+2022-11-16  Guillermo E. Martinez <guillermo.e.martinez@oracle.com>
+
+	ctf-reader: Fix size and name for underlying types
+	* src/abg-ctf-reader.cc (process_ctf_{base_type,enum_type}):
+	Look at ctf refence type to build the underlying type if present.
+	* tests/data/Makefile.am: New test cases.
+	* tests/data/test-read-ctf/PR27700/test-PR27700.abi: New test input.
+	* tests/data/test-read-ctf/test-bitfield-enum.abi: Likewise.
+	* tests/data/test-read-ctf/test-bitfield-enum.c: Likewise.
+	* tests/data/test-read-ctf/test-bitfield-enum.o: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.abi: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.c: Likewise.
+	* tests/data/test-read-ctf/test-bitfield.o: Likewise.
+	* tests/data/test-read-ctf/test-enum-many.o.hash.abi: Adjust.
+	* tests/data/test-read-ctf/test-enum-symbol.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-enum.o.abi: Likewise:
+	* tests/data/test-read-ctf/test0.abi: Likewise.
+	* tests/data/test-read-ctf/test0.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test5.o.abi: Likewise.
+	* tests/test-read-ctf.cc: Update test suite.
+
+2022-11-16  Guillermo E. Martinez <guillermo.e.martinez@oracle.com>
+
+	ctf-reader: Set alignment-in-bits property to 0
+	* src/abg-ctf-reader.cc (process_ctf_base_type)
+	(process_ctf_function_type, process_ctf_struct_type): Adjust
+	`align_in_bits' argument to `0'.
+	* tests/data/test-diff-pkg-ctf/dirpkg-3-report-1.txt: Adjust test.
+	* tests/data/test-diff-pkg-ctf/dirpkg-3-report-2.txt: Likewise.
+	* tests/data/test-diff-pkg-ctf/gmp-6.x.x86_64-report-0.txt: Likewise.
+	* tests/data/test-read-ctf/PR27700/test-PR27700.abi: Likewise.
+	* tests/data/test-read-ctf/test-PR26568-1.o.abi: Likewise.
+	* tests/data/test-read-ctf/test-PR26568-2.o.abi: Likewise.
+	* tests/data/test-read-ctf/test-ambiguous-struct-A.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-ambiguous-struct-B.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-anonymous-fields.o.abi: Likewise.
+	* tests/data/test-read-ctf/test-array-of-pointers.abi: Likewise.
+	* tests/data/test-read-ctf/test-callback.abi: Likewise.
+	* tests/data/test-read-ctf/test-callback2.abi: Likewise.
+	* tests/data/test-read-ctf/test-conflicting-type-syms-a.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-conflicting-type-syms-b.o.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test-dynamic-array.o.abi: Likewise.
+	* tests/data/test-read-ctf/test-fallback.abi: Likewise.
+	* tests/data/test-read-ctf/test-forward-type-decl.abi: Likewise.
+	* tests/data/test-read-ctf/test-functions-declaration.abi: Likewise.
+	* tests/data/test-read-ctf/test-linux-module.abi: Likewise.
+	* tests/data/test-read-ctf/test-linux-module.abi: Likewise.
+	* tests/data/test-read-ctf/test-list-struct.abi: Likewise.
+	* tests/data/test-read-ctf/test0.abi: Likewise.
+	* tests/data/test-read-ctf/test0.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test2.so.abi: Likewise.
+	* tests/data/test-read-ctf/test2.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test3.so.abi: Likewise.
+	* tests/data/test-read-ctf/test3.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test4.so.abi: Likewise.
+	* tests/data/test-read-ctf/test4.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test5.o.abi: Likewise.
+	* tests/data/test-read-ctf/test7.o.abi: Likewise.
+	* tests/data/test-read-ctf/test8.o.abi: Likewise.
+	* tests/data/test-read-ctf/test9.o.abi: Likewise.
+
+2022-11-22  Guillermo E. Martinez <guillermo.e.martinez@oracle.com>
+
+	Use the CTF reader by default when applicable
+	* doc/manuals/abidiff.rst: Adjust.
+	* doc/manuals/abidw.rst: Likewise.
+	* doc/manuals/abipkgdiff.rst: Likewise.
+	* doc/manuals/kmidiff.rst: Likewise.
+	* include/abg-elf-based-reader.h (initialize): Add member function.
+	* include/abg-elf-reader.h (has_{dwarf,ctf}_debug_info): Add predicate
+	functions.
+	* include/abg-tools-utils.h (create_best_elf_based_reader): Add arguments.
+	* src/abg-ctf-reader.cc (process_ctf_typedef, process_ctf_base_type)
+	(process_ctf_function_type, process_ctf_sou_members, process_ctf_forward_type)
+	(process_ctf_struct_type, process_ctf_union_type, process_ctf_array_type)
+	(process_ctf_qualified_type, process_ctf_pointer_type, process_ctf_enum_type):
+	Remove arguments. Using getters to access required information instead.
+	(reader::cur_tu_): Add data member.
+	(initialize): Add arguments.
+	(cur_transl_unit): Add {get,set)ter.
+	(slurp_elf_info): Clear `STATUS_DEBUG_INFO_NOT_FOUND' if corpus is
+	`LINUX_KERNEL_BINARY_ORIGIN'.
+	(reader::lookup_type): Remove.
+	(reader::build_type): New member function.
+	* src/abg-elf-reader.cc (reader::reader): Locate ctf debug info
+	from binary file.
+	(reader::reader): Reset base `fe_iface' constructor.
+	(reader::has_{dwarf,ctf}_debug_info): New definitions.
+	(reader::read_corpus): Set `STATUS_DEBUG_INFO_NOT_FOUND' according
+	to corpus::origin.
+	* src/abg-tools-utils.cc (dir_contains_ctf_archive): Define new member.
+	(file_has_ctf_debug_info): Looks for kernel ctf debug information archive.
+	(maybe_load_vmlinux_{dwarf,ctf}_corpus): Remove.
+	(load_vmlinux_corpus): Define function to load IR from kernel
+	regardless of the corpus::origin.
+	(build_corpus_group_from_kernel_dist_under): Use
+	create_best_elf_based_reader to select the front-end.
+	(create_best_elf_based_reader): Adjust to allow fallback behaviour
+	for different front-ends.
+	* tests/data/Makefile.am: Add tests.
+	* tests/data/test-diff-pkg-ctf/dirpkg-3-report-2.txt: Adjust.
+	* tests/data/test-read-ctf/test-fallback.abi: New test case.
+	* tests/data/test-read-ctf/test-fallback.c: Likewise.
+	* tests/data/test-read-ctf/test-fallback.o: Likewise.
+	* tests/data/test-read-dwarf/test-fallback.abi: Likewise.
+	* tests/data/test-read-dwarf/test-fallback.c: Likewise.
+	* tests/data/test-read-dwarf/test-fallback.o: Likewise.
+	* tests/test-diff-pkg.cc: Adjust.
+	* tests/test-read-common.cc (test_task::run_abidw): Use the
+	`options:option' field.
+	* tests/test-read-common.h (InOutSpec): Add new member.
+	* tests/test-read-ctf.cc (in_out_specs): Add option field to test
+	suite.  Add new test case.
+	* tests/test-read-dwarf.cc: Likewise.
+	* tools/abidiff.cc (main): Use create_best_elf_based_reader.
+	* tools/abidw.cc: Likewise.
+	* tools/abipkgdiff.cc: Likewise.
+
+2022-11-15  Dodji Seketeli <dodji@redhat.com>
+
+	Make Front Ends first class citizens
+	* include/abg-fwd.h (build_internal_underlying_enum_type_name):
+	Move this here from src/abg-dwarf-reader.cc.
+	* include/abg-elf-reader-common.h: Delete this file.  Its content
+	is going to be put in the new include/abg-elf-reader.h.
+	* src/abg-elf-reader-common.cc: Likewise.
+	* include/abg-{elf-based-reader, elf-reader, fe-iface}.h: Add new
+	files.
+	* src/abg-fe-iface.cc: Likewise.
+	* include/Makefile.am: Add the new file abg-fe-iface.h,
+	abg-elf-based-reader.h and abg-elf-reader.h to source distribution
+	and remove include/abg-elf-reader-common.h from source
+	distribution.
+	* src/abg-ir.cc (build_internal_underlying_enum_type_name): Move
+	this here from abg-dwarf-reader.cc so that it can be used by other
+	readers.
+	* include/abg-reader.h (abigail::abixml::reader): Rename the
+	namespace abigail::xml_reader into this one.
+	(read_context, create_native_xml_read_context)
+	(read_context_get_path, read_corpus_from_native_xml)
+	(read_corpus_from_native_xml_file)
+	(read_corpus_group_from_native_xml)
+	(read_corpus_group_from_native_xml_file): Remove.
+	(read_translation_unit_from_file)
+	(read_translation_unit_from_buffer)
+	(read_translation_unit_from_istream)
+	(read_translation_unit)
+	(consider_types_not_reachable_from_public_interfaces)
+	(get_types_from_type_id, get_artifact_used_by_relation_map)
+	(load_canonical_type_ids): Take an fe_iface&, not a read_context.
+	(create_reader): Declare new function that returns a
+	fe_iface_sptr.
+	(read_corpus_from_abixml, read_corpus_from_abixml_file)
+	(read_corpus_group_from_abixml)
+	(read_corpus_group_from_abixml_file): Declare new functions.
+	* src/abg-reader.cc (namespace abixml): Rename the
+	xml_reader namespace into this.
+	(abixml::reader_sptr): New typedef.
+	(abixml::reader): Rename read_context into this.  Make it
+	inherit the fe_iface interface.
+	(abixml::reader::{m_path, m_env, m_corpus, m_corpus_group,
+	m_exported_decls_builder, m_supprs}): Remove these data members
+	that are now part of the fe_iface parent type.
+	(abixml::reader::{set_environment, get_corpus, set_corpus,
+	set_corpus_group, maybe_add_fn_to_exported_decls,
+	maybe_add_var_to_exported_decls,
+	maybe_check_abixml_canonical_type_stability,
+	suppression_matches_function_sym_name,
+	suppression_matches_variable_name,
+	suppression_matches_variable_sym_name}): Remove.
+	(read_corpus_from_input): Remove.  Actually the code of this went
+	into abixml::reader::read_context().
+	(abixml::reader::get_libxml_reader): Rename the get_reader
+	member function into this.
+	(abixml::add_reader_suppressions): Rename
+	add_read_context_suppressions into this.
+	(abixml::reader::read_corpus): Implement this virtual
+	member function if the fe_iface parent interface.
+	(maybe_set_naming_typedef, advance_cursor)
+	(handle_version_attribute, walk_xml_node_to_map_type_ids)
+	(read_elf_needed_from_input, read_symbol_db_from_input)
+	(get_or_read_and_add_translation_unit, build_needed)
+	(read_elf_needed_from_input, add_read_context_suppressions)
+	(maybe_set_artificial_location, maybe_set_naming_typedef)
+	(build_namespace_decl, build_elf_symbol)
+	(build_elf_symbol_from_reference, build_elf_symbol_db)
+	(build_function_parameter, build_function_decl)
+	(build_function_decl_if_not_suppressed, function_is_suppressed)
+	(type_is_suppressed, build_var_decl_if_not_suppressed)
+	(variable_is_suppressed, variable_is_suppressed, build_var_decl)
+	(build_type_decl, build_qualified_type_decl)
+	(build_pointer_type_def, build_reference_type_def)
+	(build_function_type, build_subrange_type, build_array_type_def)
+	(build_enum_type_decl_if_not_suppressed, build_enum_type_decl)
+	(build_typedef_decl, build_class_decl_if_not_suppressed)
+	(build_union_decl_if_not_suppressed, build_class_decl)
+	(build_union_decl, build_function_tdecl, build_class_tdecl)
+	(build_type_tparameter, build_type_composition)
+	(build_non_type_tparameter, build_non_type_tparameter)
+	(build_template_tparameter, build_template_parameter, build_type)
+	(handle_type_decl, handle_namespace_decl)
+	(handle_qualified_type_decl, handle_pointer_type_def)
+	(handle_reference_type_def, handle_function_type)
+	(handle_array_type_def, handle_enum_type_decl)
+	(handle_typedef_decl, handle_var_decl, handle_function_decl)
+	(handle_class_decl, handle_union_decl, handle_function_tdecl)
+	(read_translation_unit_from_istream): Take or use an
+	abixml::reader rather than a read_context.
+	(read_translation_unit, read_translation_unit_from_input)
+	(consider_types_not_reachable_from_public_interfaces)
+	(get_types_from_type_id, get_artifact_used_by_relation_map)
+	(read_corpus_group_from_input, read_translation_unit)
+	(handle_element_node, read_location, read_artificial_location)
+	(load_canonical_type_ids) : Take an fe_iface&, not a read_context.
+	(create_abixml_reader): Rename create_native_xml_read_context
+	into this.  Make it return a fe_iface_sptr.
+	(read_corpus_from_abixml): Rename read_corpus_from_abixml into
+	this.
+	(read_corpus_from_abixml_file): Rename
+	read_corpus_from_native_xml_file into this.
+	(read_context_get_path): Remove.
+	* include/abg-tools-utils.h
+	(abigail::tools_utils::{file_has_dwarf_debug_info,
+	file_has_ctf_debug_info}): Declare new functions.
+	(create_best_elf_based_reader): Declare new function.
+	* include/abg-corpus.h (corpus::add): Pass the translation unit by
+	reference.
+	(corpus::exported_decls_builder::maybe_add_{fn,var}_to_exported_fns):
+	Take a const parameter.
+	* src/abg-corpus-priv.h
+	(corpus::exported_decls_builder::priv::add_{fn,var}_to_exported):
+	Take a const parameter and adjust.
+	* src/abg-corpus.cc
+	(corpus::exported_decls_builder::maybe_add_{fn,var}_to_exported_fns):
+	Take a const parameter.
+	(corpus::add): Take a reference to translation_unit_sptr.
+	* include/abg-suppression.h (abigail::fe_iface): Forward-declare
+	this.
+	(abigail::{suppression_sptr, suppressions_type}): Declare these
+	types here.
+	(abigail::suppr::{suppression_can_match,
+	suppression_matches_function_name,
+	suppression_matches_function_sym_name,
+	suppression_matches_variable_name,
+	suppression_matches_variable_sym_name,
+	suppression_matches_type_name_or_location,
+	is_elf_symbol_suppressed, is_elf_symbol_suppressed,
+	is_function_suppressed, is_variable_suppressed,
+	is_type_suppressed}): Declare these functions here.
+	* src/abg-suppression-priv.h (function_is_suppressed)
+	(variable_is_suppressed, type_is_suppressed)
+	(is_elf_symbol_suppressed): Remove these template functions.
+	* src/abg-suppression.cc (suppression_matches_function_name)
+	(suppression_matches_function_sym_name): Remove.
+	(variable_is_suppressed, suppression_can_match)
+	(suppression_matches_function_name)
+	(suppression_matches_function_sym_name)
+	(suppression_matches_variable_name)
+	(suppression_matches_variable_sym_name)
+	(suppression_matches_type_name_or_location)
+	(is_elf_symbol_suppressed, is_elf_symbol_suppressed)
+	(is_function_suppressed, is_variable_suppressed)
+	(is_type_suppressed): New functions.
+	* include/abg-ctf-reader.h (abigail::ctf::{read_context,
+	create_read_context, read_corpus,
+	read_and_add_corpus_to_group_from_elf,
+	set_read_context_corpus_group, reset_read_context, dic_type_key}):
+	Remove.
+	(ctf::{create_reader, reset_reader}): Declare new
+	functions.
+	* src/abg-ctf-reader.cc (read_context): Remove.
+	(process_ctf_typedef, process_ctf_base_type)
+	(build_ir_node_for_variadic_parameter_type)
+	(process_ctf_function_type, process_ctf_sou_members)
+	(process_ctf_forward_type, process_ctf_struct_type)
+	(process_ctf_union_type, process_ctf_array_type)
+	(process_ctf_qualified_type, process_ctf_pointer_type)
+	(process_ctf_enum_type, fill_ctf_section)
+	(lookup_symbol_in_ctf_archive, dic_type_key): Forward-declare
+	these static functions.
+	(ctf::reader): New class that is the abstraction
+	of the CTF reader.  It extends the abigail::elf_based_reader
+	class.  This is a renaming of the
+	abigail::ctf::read_context class.
+	(ctf::reader::{elf_handler, elf_fd,
+	elf_handler_dbg, elf_fd_dbg, symtab, debug_info_root_paths_,
+	debug_info_root_paths_}): Remove these data members as they are
+	now properties of the abigail::elf_reader class, which is a parent
+	class of this abigail::ctf::reader class.
+	(ctf::reader::{exported_decls_builder,
+	maybe_add_fn_to_exported_decls, current_corpus_group,
+	has_corpus_group, main_corpus_from_current_group,
+	current_corpus_is_main_corpus_from_current_group,
+	should_reuse_type_from_corpus_group}): Remove these accessors
+	that can now be used from the parent classes abigail::{elf_reader,
+	elf_based_reader}.
+	(ctf::reader::reader): This now delegates to the constructor of
+	elf_based_reader.  It doesn't pass any argument to initialize()
+	anymore.
+	(ctf::reader::initialize): Add an overload with no
+	parameter.  In the other overload, do not take a pointer to an
+	environment as no new environment can be passed to the instance of
+	reader that is being reset.  Adjust the code of the initializer to
+	reflect all the data members that got removed.
+	(ctf::{env, find_ctfa_file, slurp_elf_info,
+	process_ctf_archive, process_ctf_type, lookup_type, read_corpus,
+	~reader}): New member functions.  Most of these were free-form
+	functions that took ctf::read_context as first parameter.
+	In read_corpus, do not set the corpus::LINUX_KERNEL_BINARY_ORIGIN
+	origin as that is now done by elf::reader when it reads the
+	binary.
+	(lookup_type): Remove.  These are now member functions of the
+	ctf::reader class.
+	(process_ctf_typedef, process_ctf_base_type)
+	(build_ir_node_for_variadic_parameter_type)
+	(process_ctf_function_type, process_ctf_sou_members)
+	(process_ctf_forward_type, process_ctf_struct_type)
+	(process_ctf_union_type, process_ctf_array_type)
+	(process_ctf_qualified_type, process_ctf_pointer_type): Take a
+	ctf::reader rather an ctf::read_context.  Adjust the
+	content of the functions.
+	(process_ctf_type, lookup_type, process_ctf_archive): Remove these
+	and turn them into member functions of ctf::reader.
+	(open_elf_handler, close_elf_handler, find_alt_debuginfo): Remove
+	these ELF handling functions as ELF handling is now done by the
+	elf_reader parent class.
+	(fill_ctf_section): Take a const pointer to Elf_Scn.
+	(slurp_elf_info, find_ctfa_file): Remove this and make it be a
+	member of ctf::reader.  Also, make it handle only CTF
+	reader specific pieces.  slurp_elf_info now delegates the reading
+	of generic ELF properties to elf::reader by calling
+	elf::reader::read_corpus().
+	(create_read_context, read_corpus, set_read_context_corpus_group)
+	(read_and_add_corpus_to_group_from_elf): Remove these functions.
+	(create_reader, reset_reader): Create new functions
+	(dic_type_key): Make this static.
+	* include/abg-dwarf-reader.h (abigail::dwarf::elf_type):
+	Move this enum into the namespace abigail::elf_reader in the file
+	include/abg-elf-reader.h.
+	(abigail::dwarf::{read_context, read_context_sptr,
+	create_read_context, read_context_get_path, reset_read_context,
+	add_read_context_suppressions, set_read_context_corpus_group,
+	read_corpus_from_elf, read_and_add_corpus_to_group_from_elf,
+	read_and_add_corpus_to_group_from_elf,
+	add_read_context_suppressions, refers_to_alt_debug_info,
+	has_alt_debug_info, get_soname_of_elf_file, get_type_of_elf_file,
+	set_debug_info_root_path, get_debug_info_root_path,
+	get_show_stats, set_show_stats, set_drop_undefined_syms,
+	set_do_log, set_environment, get_environment}): Remove.
+	* src/abg-dwarf-reader.cc (struct dwfl_deleter, dwfl_sptr)
+	(addr_elf_symbol_sptr_map_type, address_set_type)
+	(address_set_sptr): Delete these types.
+	(read_context::options_type): Remove.  The data members of this
+	type got moved to struct fe_iface::options_type.
+	(find_alt_debug_info_link, find_alt_debug_info_path)
+	(find_alt_debug_info, lookup_data_tag_from_dynamic_segment)
+	(elf_file_type, refers_to_alt_debug_info, has_alt_debug_info)
+	(get_soname_of_elf_file, get_type_of_elf_file) : Remove these ELF
+	specific functions from here; move them to the elf_reader
+	namespace.
+	(dwarf::reader): Create new class that extends
+	elf_based_reader.  dwarf::read_context is renamed into this
+	type, actually.
+	(dwarf::reader::die_source_dependant_container_set::get_container):
+	Adjust.
+	(dwarf::reader::{supprs_, dwarf_version_,
+	offline_callbacks_, debug_info_root_paths_, handle_, dwarf_,
+	alt_fd_, alt_dwarf_, alt_debug_info_path_, elf_module_,
+	elf_handle_, elf_path_, symtab_section_, cur_corpus_group_,
+	cur_corpus_, dt_needed_, dt_soname_, elf_architecture_,
+	exported_decls_builder_, options_, drop_undefined_syms_}): Remove
+	these ELF-related data members to move them into the elf_reader
+	namespace.
+	(maybe_propagate_canonical_type)
+	(build_translation_unit_and_add_to_ir, build_ir_node_from_die)
+	(add_or_update_class_type, add_or_update_union_type)
+	(build_ir_node_for_void_type)
+	(build_ir_node_for_variadic_parameter_type, build_function_decl)
+	(function_is_suppressed, build_or_get_fn_decl_if_not_suppressed)
+	(build_var_decl, build_or_get_var_decl_if_not_suppressed)
+	(variable_is_suppressed)
+	(propagate_canonical_type)
+	(get_parent_die, get_scope_die, die_is_at_class_scope)
+	(die_location, die_qualified_type_name, die_qualified_name)
+	(die_qualified_type_name_empty)
+	(die_return_and_parm_names_from_fn_type_die)
+	(die_function_signature, die_function_type_is_method_type)
+	(die_pretty_print_type, die_pretty_print_decl, die_pretty_print)
+	(maybe_canonicalize_type, build_subrange_type)
+	(build_subranges_from_array_type_die, compare_dies, die_location)
+	(die_loc_and_name, die_is_effectively_public_decl)
+	(maybe_cache_type_comparison_result)
+	(get_cached_type_comparison_result)
+	(maybe_get_cached_type_comparison_result, die_is_at_class_scope)
+	(die_function_type_is_method_type, die_member_offset)
+	(die_qualified_type_name, die_qualified_decl_name)
+	(die_qualified_name, die_qualified_type_name_empty)
+	(die_return_and_parm_names_from_fn_type_die)
+	(die_function_signature, die_pretty_print_type)
+	(die_pretty_print_decl, die_pretty_print)
+	(at_least_one_decl_only_among_odr_relevant_dies)
+	(compare_as_type_dies, compare_as_decl_and_type_dies)
+	(fn_die_equal_by_linkage_name, try_canonical_die_comparison)
+	(maybe_propagate_canonical_type, propagate_canonical_type)
+	(compare_dies, compare_dies_during_canonicalization)
+	(find_import_unit_point_between_dies, get_parent_die)
+	(get_scope_die, find_lower_bound_in_imported_unit_points)
+	(build_translation_unit_and_add_to_ir)
+	(build_namespace_decl_and_add_to_ir, build_type_decl)
+	(build_enum_underlying_type, build_enum_type)
+	(finish_member_function_reading)
+	(maybe_finish_function_decl_reading)
+	(lookup_class_or_typedef_from_corpus)
+	(is_function_for_die_a_member_of_class)
+	(add_or_update_member_function, add_or_update_class_type)
+	(add_or_update_union_type, build_qualified_type)
+	(schedule_array_tree_for_late_canonicalization)
+	(maybe_strip_qualification, build_pointer_type_def)
+	(build_reference_type, build_function_type, build_subrange_type)
+	(build_subranges_from_array_type_die, build_array_type)
+	(build_typedef_type, build_or_get_var_decl_if_not_suppressed)
+	(build_var_decl, function_is_suppressed)
+	(build_or_get_fn_decl_if_not_suppressed, variable_is_suppressed)
+	(type_is_suppressed, type_is_suppressed)
+	(get_opaque_version_of_type, create_default_fn_sym)
+	(build_function_decl, maybe_canonicalize_type)
+	(build_ir_node_from_die)
+	(build_ir_node_for_variadic_parameter_type): Take a reference to
+	the new dwarf::reader rather than to the previous
+	read_context.  Adjust the function body.
+	(return_comparison_result): Adjust.
+	(dwarf::reader::reader): Adjust this from
+	read_context::read_context.
+	(dwarf::reader::initialize): Adjust from
+	dwarf::read_context::initialize.
+	(dwarf::reader::create): New factory static member
+	function.
+	(dwarf::reader::~reader): This doesn't have to clear
+	anything for now.
+	(dwarf::reader::read_corpus): New virtual member function
+	which implements the fe_iface::read_corpus pure virtual interface.
+	This now delegates the reading of the generic ELF properties to
+	elf::reader by calling elf::reader::read_corpus().
+	Newer front-ends will be able to do the same.
+	(dwarf::reader::reset_corpus): New member function.
+	(dwarf::reader::read_debug_info_into_corpus): Adjust.  This
+	is now a member function.  Also, do not set the
+	corpus::LINUX_KERNEL_BINARY_ORIGIN here as it's now set by the
+	elf::reader when it loads the binary.
+	(dwarf::reader::{env, drop_undefined_syms,
+	drop_undefined_syms, dwarf_elf_handle, dwarf_per_die_source,
+	elf_path, compute_canonical_die_offset, get_die_source,
+	get_die_from_offset, get_die_qualified_name,
+	get_die_pretty_type_representation, get_die_qualified_type_name,
+	get_die_pretty_representation, odr_is_relevant,
+	set_canonical_die_offset, get_canonical_die_offset,
+	erase_canonical_die_offset, die_wip_classes_map,
+	die_wip_function_types_map, compare_before_canonicalisation,
+	resolve_declaration_only_classes, resolve_declaration_only_enums,
+	symbol_already_belongs_to_a_function,
+	fixup_functions_with_no_symbols, canonicalize_types_scheduled,
+	tu_die_imported_unit_points_map, die_parent_map,
+	find_symbol_table_section, get_variable_address,
+	exported_decls_builder, load_all_types, load_in_linux_kernel_mode,
+	show_stats, do_log, build_die_parent_maps): Adjust.
+	(offset_pairs_stack_type::rdr_): Changed the ctxt_ into this.
+	(offset_pairs_stack_type::offset_pairs_stack_type): Adjust.
+	(offset_pairs_stack_type::{erase_redundant_type_pair_entry,
+	cancel_canonical_propagated_type}): Adjust.
+	(dwarf::reader::{get_suppressions, offline_callbacks,
+	create_default_dwfl, dwfl_handle, elf_module, elf_handle,
+	add_debug_info_root_paths, add_debug_info_root_path,
+	find_alt_debug_info, dwarf, alt_dwarf, alt_debug_info_path,
+	current_corpus, reset_current_corpus, current_corpus_group,
+	has_corpus_group, main_corpus_from_current_group,
+	current_corpus_is_main_corpus_from_current_group,
+	should_reuse_type_from_corpus_group, function_symbol_is_exported,
+	variable_symbol_is_exported, symtab, dt_needed, dt_soname,
+	elf_architecture, is_elf_symbol_suppressed,
+	load_dt_soname_and_needed, load_elf_architecture,
+	load_elf_properties, maybe_add_fn_to_exported_decls,
+	maybe_add_var_to_exported_decls}): Remove these member functions
+	as they got moved into the elf_reader namespace or into the
+	fe_iface class.
+	(dwarf::read_context::{suppression_can_match,
+	suppression_matches_function_sym_name,
+	suppression_matches_function_name,
+	suppression_matches_variable_name,
+	suppression_matches_variable_sym_name,
+	suppression_matches_type_name_or_location}): Move these into the
+	suppr namespace.  Make it take an additional parameter that is
+	reference fe_iface.
+	(dwarf::reader::load_debug_info): Remove.  This became
+	merged into dwarf::read_debug_info_into_corpus.
+	(dwarf::{set_debug_info_root_path,
+	get_debug_info_root_path, get_show_stats, set_drop_undefined_syms,
+	set_do_log}): Remove.
+	(add_read_context_suppressions)
+	(set_read_context_corpus_group, read_corpus_from_elf): Remove.
+	(read_debug_info_into_corpus): This became a member function of
+	dwarf::reader.
+	(create_reader): Renamed create_read_context into this.
+	Make it return an elf_based_reader_sptr, like the other front-end
+	factory functions.  Adjust.
+	(reset_dwarf_reader): Renamed reset_read_context into this.
+	Adjust.
+	(read_corpus_from_elf): Adjust.
+	* src/abg-elf-based-reader.cc: New file.
+	* src/abg-elf-helpers.h (struct dwfl_deleter, dwfl_sptr)
+	(addr_elf_symbol_sptr_map_type, address_set_sptr): Move these
+	types here from abg-dwarf-reader.cc
+	(initialize_dwfl_callbacks, lookup_data_tag_from_dynamic_segment):
+	* src/abg-elf-helpers.cc (lookup_data_tag_from_dynamic_segment)
+	(lookup_data_tag_from_dynamic_segment, initialize_dwfl_callbacks)
+	(create_new_dwfl_handle, get_soname_of_elf_file): New functions
+	that got moved here from the factorizing of abg-dwarf-reader.cc
+	and abg-ctf-reader.cc.
+	* src/abg-tools-utils.cc (file_has_dwarf_debug_info)
+	(file_has_ctf_debug_info): New functions.
+	(load_generate_apply_suppressions): Take an elf_based_reader, not
+	a dwarf::read_context.
+	(maybe_load_vmlinux_dwarf_corpus): Adjust the body to use the new
+	front-end types.
+	* src/Makefile.am: Add the new files src/abg-{fe-iface,
+	elf-based-reader, elf-reader}.cc to source distribution. Remove
+	src/abg-elf-reader-common.cc.
+	* tools/Makefile.am: Factorize linking to libabigail.so by using
+	LDADD.
+	* tools/abicompat.cc (read_corpus, main): Adjust.
+	* tools/abidiff.cc (set_suppressions)
+	(set_native_xml_reader_options, handle_error, main): Adjust.
+	* tools/abidw.cc (set_suppressions, load_corpus_and_write_abixml)
+	(load_kernel_corpus_group_and_write_abixml): Adjust.
+	* tools/abilint.cc (build_type_use_tree, show_how_type_is_used)
+	(set_suppressions, main): Adjust.
+	* tools/abipkgdiff.cc (elf_file::type, compare, compare_to_self)
+	(create_maps_of_package_content)
+	(compare_prepared_userspace_packages)
+	(self_compare_prepared_userspace_package): Adjust.
+	* tools/abisym.cc: Adjust invocation to
+	abigail::dwarf::lookup_symbol_from_elf, from
+	abigail::dwarf_reader::lookup_symbol_from_elf.
+	* tools/kmidiff.cc (main): Adjust.
+	* tests/print-diff-tree.cc (main): Adjust.
+	* tests/test-abidiff.cc (main): Likewise.
+	* tests/test-diff-dwarf.cc (main): Likewise.
+	* tests/test-ir-walker.cc (main): Likewise.
+	* tests/test-read-ctf.cc (test_task_ctf::perform): Likewise.
+	* tests/test-read-dwarf.cc: Remove the useless "using" statements.
+	* tests/test-read-write.cc: Likewise.
+	* tests/test-symtab.cc (read_corpus, TEST_CASE)
+	(assert_symbol_count): Adjust.
+	* tests/data/test-read-ctf/test0.abi: Adjust.
+	* tests/data/test-read-ctf/test0.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.abi: Likewise.
+	* tests/data/test-read-ctf/test1.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test2.so.abi: Likewise.
+	* tests/data/test-read-ctf/test2.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test3.so.abi: Likewise.
+	* tests/data/test-read-ctf/test3.so.hash.abi: Likewise.
+	* tests/data/test-read-ctf/test4.so.abi: Likewise.
+	* tests/data/test-read-ctf/test4.so.hash.abi: Likewise.
+
+2022-11-10  Dodji Seketeli <dodji@redhat.com>
+
+	Use environment by reference.
+	* include/abg-corpus.h (corpus::corpus)
+	(corpus_group::corpus_group): Take environment&, not environment*
+	as parameter.
+	(corpus::{get_environment, set_environment}): Take or return
+	environment&, not environment*.
+	* src/abg-corpus.cc (corpus::corpus): Likewise.
+	(corpus::{get_environment, set_environment}): Likewise.
+	(corpus::add): Don't update the environment of the translation
+	unit.
+	(corpus::{record_type_as_reachable_from_public_interfaces,
+	type_is_reachable_from_public_interfaces, init_format_version,
+	add_corpus}): Adjust for accessing a reference to environment,
+	rather than a pointer.
+	* include/abg-ctf-reader.h (create_read_context): Take or return
+	environment&, not environment*.
+	* src/abg-ctf-reader.cc (read_context::ir_env): Make this a
+	reference to environment, not pointer anymore.
+	(read_context::read_context): Initialize the reference to
+	environment.
+	(read_context::initialize): Do not re-set the environment.
+	(process_ctf_base_type)
+	(build_ir_node_for_variadic_parameter_type)
+	(process_ctf_enum_type, read_corpus): Adjust for accessing a
+	reference to environment, rather than a pointer.
+	(create_read_context, reset_read_context): Take environment&, not
+	environment*.
+	* include/abg-dwarf-reader.h (create_read_context)
+	(reset_read_context, read_corpus_from_elf)
+	(lookup_symbol_from_elf, lookup_public_function_symbol_from_elf):
+	Likewise.
+	* src/abg-dwarf-reader.cc (lookup_symbol_from_sysv_hash_tab)
+	(lookup_symbol_from_gnu_hash_tab)
+	(lookup_symbol_from_elf_hash_tab, lookup_symbol_from_symtab)
+	(lookup_symbol_from_elf, lookup_public_function_symbol_from_elf):
+	Likewise.
+	(read_context::options_type::env): Make this be a reference to
+	environment, not a pointer.
+	(read_context::options::options): Remove the default constructor.
+	Add a new one to initialize the environment data member.
+	(read_context::read_context): Take environment&, not environment*.
+	Initialize the options_ data member.
+	(read_context::initialize): Do not take or initialize an
+	environment anymore.
+	(read_context::env): Return or take environment&, not
+	environment*.
+	(read_context::{get_die_qualified_name,
+	get_die_qualified_type_name, get_die_pretty_type_representation,
+	get_die_pretty_representation, compare_before_canonicalisation})
+	(build_translation_unit_and_add_to_ir, build_function_type)
+	(build_typedef_type, read_debug_info_into_corpus)
+	(read_debug_info_into_corpus, build_ir_node_from_die)
+	(build_ir_node_for_variadic_parameter_type, has_alt_debug_info):
+	Adjust to use an environment&, not a pointer.
+	(create_default_fn_sym, create_read_context)
+	(read_corpus_from_elf, lookup_symbol_from_elf)
+	(lookup_public_function_symbol_from_elf): Take environment&, not
+	environment*.
+	(reset_read_context): Do not take or reset environment* anymore.
+	* include/abg-fwd.h (type_or_void): Likewise.
+	* include/abg-ir.h (translation_unit::translation_unit): Likewise.
+	(translation_unit::{get_environment, set_environment}): Likewise.
+	(elf_symbol::elf_symbol): Likewise.
+	(elf_symbol::create): Remove the overload that takes no
+	parameter.  Then for overload that take parameters then take
+	environment&, not environment*.
+	(elf_symbol::get_environment): Take environment&, not
+	environment*.
+	(type_or_decl_base::type_or_decl_base): Make the copy constructor
+	and assignment operator private.
+	(type_or_decl_base::{s,g}et_environment): Take or return
+	environment& not environment*.
+	(type_or_decl_base::set_environment_for_artifact): Erase these
+	methods.
+	(decl_base::decl_base): Make copy constructor private.  Take or
+	return environment&, not environment* for the other constructors.
+	(scope_decl::scope_decl): Take or return environment&, not
+	environment*.
+	(type_base::type_base): Likewise.
+	(scope_type_decl::scope_type_decl): Likewise.
+	(namespace_decl::namespace_decl): Likewise.
+	(qualified_type_def::qualified_type_def): Likewise.
+	(pointer_type_def::pointer_type_def): Likewise.
+	(reference_type_def::reference_type_def): Likewise.
+	(array_type_def::subrange_type::subrange_type): Likewise.
+	(enum_type_def::enumerator::enumerator): Likewise.
+	(enum_type_def::enumerator::{get_name, get_qualified_name}):
+	Return a string&, no more interned_string&.  As the enumerator
+	don't have an enumerator anymore, there is no way to intern the
+	string anymore.  Hopefully this won't incur a performance loss.
+	(typedef_decl::typedef_decl, function_type::function_type)
+	(method_type::method_type, template_decl::template_decl)
+	(function_tdecl::function_tdecl, class_tdecl::class_tdecl)
+	(class_or_union::class_or_union, class_decl::class_decl)
+	(union_decl::union_decl): Take or return environment&, not
+	environment*.
+	* include/abg-reader.h (read_translation_unit_from_file)
+	(read_translation_unit_from_buffer)
+	(read_translation_unit_from_istream)
+	(create_native_xml_read_context, create_native_xml_read_context)
+	(read_corpus_from_native_xml, read_corpus_from_native_xml_file)
+	(read_corpus_group_from_native_xml)
+	(read_corpus_group_from_native_xml_file): Likewise.
+	* include/abg-tools-utils.h
+	(build_corpus_group_from_kernel_dist_under): Likewise.
+	* src/abg-tools-utils.cc (maybe_load_vmlinux_dwarf_corpus)
+	(maybe_load_vmlinux_ctf_corpus)
+	(build_corpus_group_from_kernel_dist_under): Likewise.
+	* include/abg-writer.h (create_write_context): Likewise.
+	* src/abg-writer.cc (id_manager::m_env, id_manager::id_manager)
+	(id_manager::get_environment, id_manager::get_id)
+	(id_manager::get_id_with_prefix): Adjust.
+	(write_context::m_env, write_context::write_context)
+	(write_context::get_environment, write_context::get_config)
+	(write_context::get_id_for_type, write_context::decl_is_emitted)
+	(write_context::record_decl_as_emitted, create_write_context)
+	(write_class_decl): Likewise.
+	* src/abg-comparison.cc (compute_diff): Stop ensuring that the two
+	artifacts being compare are in the same environment.  Now that the
+	environment is passed by reference, the potential for
+	accendentally comparing artifacts coming from different
+	environments is very low, given how the API is used in practice.
+	This is in the overloads for decl_base_sptr, type_base_sptr,
+	var_decl_sptr, pointer_type_def_sptr, array_type_def_sptr,
+	reference_type_def_sptr, qualified_type_def_sptr,
+	enum_type_decl_sptr, class_decl_sptr, class_decl::base_spec_sptr,
+	union_decl_sptr, scope_decl_sptr, function_decl::parameter_sptr,
+	function_type_sptr, function_decl_sptr, type_decl_sptr,
+	typedef_decl_sptr, translation_unit_sptr, corpus_sptr.
+	* src/abg-corpus-priv.h (corpus::priv::env): Make this be a
+	reference to environments, not a pointer.
+	(corpus::priv::priv): Pass environment&, not environment*.
+	* src/abg-ir-priv.h (translation_unit::priv::env_): Make this an
+	environment&, not an environment* anymore.
+	(translation_unit::priv::priv): Take an environment&, not an
+	environment*.
+	(environment::priv::{confirm_ct_propagation_for_types_dependant_on,
+	confirm_ct_propagation,
+	cancel_ct_propagation_for_types_dependant_on,
+	mark_as_being_compared, unmark_as_being_compared,
+	comparison_started, mark_as_being_compared, comparison_started}):
+	Adjust to use an environment&, not a pointer.
+	* src/abg-ir.cc (class environment_setter): Remove this class.
+	(push_composite_type_comparison_operands)
+	(pop_composite_type_comparison_operands, try_canonical_compare)
+	(return_comparison_result, translation_unit::{get_global_scope,
+	bind_function_type_life_time}): Adjust.
+	(translation_unit::{translation_unit, get_environment}): Take or
+	get an environment&, not an environment*.  Remove the getter that
+	returns an environment*.
+	(elf_symbol::priv::env_): Make this an environment&, not an
+	environment*.
+	(elf_symbol::priv::priv): Adjust.
+	(elf_symbol::elf_symbol): Remove the default constructor.  Change
+	the one that takes an environment.
+	(elf_symbol::create): Remove the default one.  Adjust the one that
+	takes an environment.
+	(elf_symbol::get_environment): Adjust.
+	(elf_symbol::set_environment_for_artifact): Remove.
+	(environment::{get_void_type, get_variadic_parameter_type}):
+	Adjust.
+	(type_or_decl_base::priv::env_): Make this be a const
+	environment&, not a const environment*.
+	(type_or_decl_base::priv::priv): Adjust.
+	(type_or_decl_base::type_or_decl_base): Remove the default and
+	copy constructor.
+	(type_or_decl_base::{set_environment, operator=})
+	(set_environment_for_artifact): Remove.
+	(type_or_decl_base::get_environment): Adjust.
+	(decl_base::{decl_base, set_name, set_naming_typedef,
+	set_linkage_name}): Adjust.
+	(get_decl_name_for_comparison, strip_typedef)
+	(strip_useless_const_qualification): Adjust.
+	(scope_decl::{scope_decl, add_member_decl, insert_member_decl}):
+	Adjust.
+	(get_generic_anonymous_internal_type_name, get_type_name)
+	(get_name_of_pointer_to_type, get_name_of_reference_to_type)
+	(get_name_of_qualified_type, get_function_type_name)
+	(get_method_type_name, is_void_pointer_type, lookup_basic_type)
+	(lookup_union_type, lookup_union_type_per_location)
+	(lookup_enum_type, lookup_typedef_type, lookup_pointer_type)
+	(lookup_type, lookup_basic_type_per_location)
+	(lookup_basic_type_per_location, lookup_basic_type)
+	(lookup_class_type, lookup_class_types)
+	(lookup_class_type_per_location, lookup_union_type)
+	(lookup_enum_type, lookup_enum_types)
+	(lookup_enum_type_per_location, lookup_typedef_type)
+	(lookup_typedef_type_per_location, maybe_update_types_lookup_map)
+	(maybe_update_types_lookup_map)
+	(synthesize_type_from_translation_unit)
+	(synthesize_function_type_from_translation_unit)
+	(demangle_cplus_mangled_name, type_or_void)
+	(types_defined_same_linux_kernel_corpus_public)
+	(compare_types_during_canonicalization)
+	(type_base::get_canonical_type_for, type_base::type_base)
+	(type_base::get_cached_pretty_representation)
+	(type_decl::type_decl, type_decl::get_qualified_name): Adjust.
+	(scope_type_decl::scope_type_decl)
+	(namespace_decl::namespace_decl, qualified_type_def::build_name)
+	(qualified_type_def::qualified_type_def)
+	(qualified_type_def::get_qualified_name)
+	(qualified_type_def::set_underlying_type)
+	(pointer_type_def::pointer_type_def)
+	(pointer_type_def::set_pointed_to_type)
+	(reference_type_def::reference_type_def)
+	(reference_type_def::set_pointed_to_type)
+	(array_type_def::subrange_type::subrange_type)
+	(array_type_def::array_type_def, array_type_def::update_size)
+	(array_type_def::set_element_type)
+	(array_type_def::append_subranges)
+	(array_type_def::get_qualified_name, enum_has_non_name_change):
+	Adjust.
+	(enum_type_decl::enumerator::priv::env_): Remove this pointer to
+	env.  This is because the enumerator must be copy-able.  As the
+	enumerator doesn't have an env anymore, it can't intern strings.
+	So the enumerator name and qualified name is not going to be
+	interned.  If that incurs a performance hit, we'll reconsider this
+	decision.  For now, it seems to work OK.  As it simplifies things,
+	I am keeping this for now.
+	(enum_type_decl::enumerator::priv::{name, qualified_name}): Make
+	this be string, not interned_string.
+	(enum_type_decl::enumerator::get_environment): Remove.
+	(enum_type_decl::enumerator::priv::priv): Adjust.
+	(enum_type_decl::enumerator::enumerator)
+	(enum_type_decl::enumerator::operator=)
+	(enum_type_decl::enumerator::get_name)
+	(enum_type_decl::enumerator::get_qualified_name)
+	(enum_type_decl::enumerator::set_name): Likewise.
+	(typedef_decl::typedef_decl): Adjust.
+	(var_decl::get_id, var_decl::get_qualified_name): Adjust.
+	(function_type::function_type, method_type::method_type)
+	(function_decl::get_pretty_representation_of_declarator)
+	(function_decl::set_symbol): Likewise.
+	(function_decl::get_id, function_decl::parameter::get_type)
+	(function_decl::parameter::get_type_name)
+	(function_decl::parameter::get_type_pretty_representation)
+	(function_decl::parameter::get_name_id)
+	(class_or_union::class_or_union, class_decl::class_decl)
+	(class_decl::add_base_specifier, union_decl::union_decl)
+	(union_decl::union_decl, template_decl::template_decl)
+	(class_tdecl::class_tdecl)
+	(maybe_cancel_propagated_canonical_type)
+	(dump_classes_being_compared)
+	(dump_fn_types_being_compared, copy_member_function)
+	(maybe_propagate_canonical_type, keep_type_alive)
+	(is_non_canonicalized_type, qualified_name_setter::do_update):
+	Likewise.
+	(equals): Adjust the overloads for var_decl, function_type,
+	class_or_union, class_decl, union_decl.
+	* src/abg-reader.cc (read_context::m_env): Make this be an
+	environment&, not an environment*.
+	(read_context::read_context): Adjust
+	(read_context::set_environment): Remove.
+	(read_context::{get_environment,
+	maybe_check_abixml_canonical_type_stability}): Adjust.
+	(read_corpus_from_input, read_corpus_group_from_native_xml)
+	(read_corpus_group_from_native_xml_file)
+	(read_translation_unit_from_file)
+	(read_translation_unit_from_buffer, read_translation_unit)
+	(maybe_map_type_with_type_id, build_namespace_decl)
+	(build_elf_symbol, build_function_parameter, build_function_decl)
+	(build_function_type, build_enum_type_decl, build_class_decl)
+	(build_union_decl, build_function_tdecl, build_class_tdecl)
+	(build_type_tparameter, read_translation_unit_from_istream)
+	(create_native_xml_read_context, read_corpus_from_native_xml):
+	Likewise.
+	* src/abg-symtab-reader.h (symtab::load): Likewise.
+	* src/abg-symtab-reader.cc (symtab::load): Likewise.
+	* tests/print-diff-tree.cc (main): Likewise.
+	* tests/test-abidiff.cc (main): Likewise.
+	* tests/test-diff-dwarf.cc (main): Likewise.
+	* tests/test-ir-walker.cc (main): Likewise.
+	* tests/test-read-ctf.cc (test_task_ctf::perform): Likewise.
+	* tests/test-symtab.cc (read_corpus): Likewise.
+	* tools/abicompat.cc (read_corpus, main): Likewise.
+	* tools/abidiff.cc (main): Likewise.
+	* tools/abidw.cc (load_corpus_and_write_abixml)
+	(load_kernel_corpus_group_and_write_abixml, main): Likewise.
+	* tools/abilint.cc (main): Likewise.
+	* tools/abipkgdiff.cc (compare, compare_to_self)
+	(compare_prepared_linux_kernel_packages,  compare_task::perform):
+	Likewise.
+	* tools/abisym.cc (main): Likewise.
+	* tools/kmidiff.cc (main): Likewise.
+
+2022-11-18  Aleksei Vetrov <vvvvvv@google.com>
+
+	symtab: add support for CRC values from __kcrctab
+	* src/abg-elf-helpers.h (get_crc_for_symbol): Defined new
+	helper function to extract CRC from ELF symbol.
+	* src/abg-elf-helpers.cc (get_crc_for_symbol): Implemented this
+	function with support of old and new CRC values format.
+	* src/abg-symtab-reader.cc (symtab::load_): Used the new
+	function when building CRC values map.
+	Change-Id: I7de5c737d5caaef0c5b7b2ea0d448368889a16be
+
+2022-11-08  Sam James <sam@gentoo.org>
+
+	Use xz as the default tarball compression format
+	* configure.ac: add dist-xz to AM_INIT_AUTOMAKE.
+	* Makefile.am: adjust $(TARBALL) to new extension.
+	* Makefile.am: pass XZ_OPT="-0" for distcheck-fast.
+
+2022-11-11  Giuliano Procida <gprocida@google.com>
+
+	Narrow Linux symbol CRCs to 32 bits
+	* include/abg-ir.h (elf_symbol::elf_symbol): Change CRC type
+	from optional<uint64_t> to optional<uint32_t>.
+	(elf_symbol::create): Likewise.
+	(elf_symbol::get_crc): Likewise.
+	(elf_symbol::set_crc): Likewise.
+	* src/abg-ir.cc (elf_symbol::priv) Change CRC type from
+	optional<uint64_t> to optional<uint32_t>.
+	(elf_symbol::priv::priv): Likewise.
+	(elf_symbol::elf_symbol): Likewise.
+	(elf_symbol::create): Likewise.
+	(elf_symbol::get_crc): Likewise.
+	(elf_symbol::set_crc): Likewise.
+	* src/abg-reporter-priv.cc (maybe_report_diff_for_symbol):
+	Change CRC type from optional<uint64_t> to
+	optional<uint32_t>.
+	* src/abg-symtab-reader.cc (symtab::load_): Change crc_values
+	value type from uint64_t to uint32_t.
+
+2022-11-08  Dodji Seketeli <dodji@redhat.com>
+
+	kmidiff: Fix spacing in the help string
+	* tools/kmidiff.cc (display_usage): Fix spacing.
+
+2022-10-14  Dodji Seketeli <dodji@redhat.com>
+
+	ir: Don't crash when looking at corpus-less translation units
+	* src/abg-ir.cc ({decl,type}_topo_comp::operator()): Support types
+	that inherits from an empty corpus.
+
+2022-10-20  Dodji Seketeli <dodji@redhat.com>
+
+	rhbz2114909 - Refer to changed base classes using their non-qualified names
+	* src/abg-comparison.cc
+	(class_diff::ensure_lookup_tables_populated): Refer to the added
+	or removed base class using its qualified name.
+	* src/abg-ir.cc (class_decl::base_spec::base_spec): Set the
+	qualified name of the base_spec.
+	* tests/data/test-abidiff-exit/test-rhbz2114909-report-1.txt: New
+	reference test output.
+	* tests/data/test-abidiff-exit/test-rhbz2114909-v{0,1}.o: New
+	input test binaries.
+	* tests/data/test-abidiff-exit/test-rhbz2114909-v{0,1}.cc: Source
+	code of the binaries, above.
+	* tests/data/Makefile.am: Add the new test materials above to
+	source distribution.
+	* tests/test-abidiff-exit.cc (in_out_specs): Add the new tests to
+	this harness.
+	* tests/data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt: Adjust.
+
+2022-10-16  Xiaole He <hexiaole@kylinos.cn>
+
+	abg-diff-utils: fix typo in comments
+	* src/abg-diff-utils.h: fix typo in comments
+
+2022-10-16  Xiaole He <hexiaole@kylinos.cn>
+
+	abg-reader: optimize if construction
+	* src/abg-reader.cc:
+
+2022-10-16  Xiaole He <hexiaole@kylinos.cn>
+
+	abg-ir: add missing else
+	* src/abg-ir.cc (bind_function_type_life_time): add missing
+	else
+	Tested-by: Xiaole He <hexiaole@kylinos.cn>
+
+2022-10-12  Dodji Seketeli <dodji@redhat.com>
+
+	dwarf-reader: Fix class size setting bug
+	* src/abg-dwarf-reader.cc (add_or_update_class_type): If we are
+	looking at a class DIE with children node, if it's advertized as
+	having non-zero size, then update the size.
+	* tests/data/test-annotate/libtest23.so.abi: Adjust.
+	* tests/data/test-annotate/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-annotate/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-annotate/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt:
+	Likewise.
+	* tests/data/test-read-dwarf/libtest23.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+
+2022-10-10  Dodji Seketeli <dodji@redhat.com>
+
+	ir: Properly indent overload of equals() for class_decl
+	* src/abg-ir.cc (equals): Fix indentation.
+
+2022-10-10  Dodji Seketeli <dodji@redhat.com>
+
+	ir: Fix a wrong comment in canonicalize()
+	* src/abg-ir.cc (canonicalize): Fix a comment.
+
+2022-10-10  Dodji Seketeli <dodji@redhat.com>
+
+	ir: remove redundant cycle detection code in equals
+	* src/abg-ir.cc (equals):  In the overload for class_or_union
+	remove redundant cycle detection code when comparison a decl-only
+	class to another class.
+
+2022-10-07  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 29650 - Caching class comparison result potentially too early
+	* src/abg-ir.cc (equal): In the overload of class_or_union do not
+	cache the result comparing just the data members sub-types of of
+	classes. In the overload for class_decl, put cycle detection
+	management code /after/ the call to equals for class_or_union,
+	because that called function does perform the cycle detection
+	management as well; otherwise, that introduces an unwarranted
+	redundancy.  In the overload of equals for union_decl, cache the
+	result of the comparison.
+	* tests/data/test-abidiff/test-PR18791-report0.txt: Adjust.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt:
+	Adjust.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt:
+	Adjust.
+
+2022-10-07  Dodji Seketeli <dodji@redhat.com>
+
+	abidiff: add a --debug-tc option
+	* doc/manuals/abidiff.rst: Add documentation for the new
+	--debug-tc option.  Fix the existing documentation for
+	--debug-self-comparison.
+	* tools/abidiff.cc (options::do_debug_self_comparison): Renamed
+	options::do_debug into this.
+	(options::do_debug_type_canonicalization): Add new data member.
+	(display_usage): Fix help string for the --debug option that is
+	now --debug-self-comparison.  Also, add a help string for the new
+	option --debug-tc option.
+	(main): Adjust use options::do_debug into
+	options::do_debug_self_comparison.  Call
+	environment::debug_type_canonicalization() if the user provided
+	the --debug-tc option.
+
+2022-10-02  Dodji Seketeli <dodji@redhat.com>
+
+	ir: Fix documentation of canonical type propagation
+	* src/abg-ir.cc (on-the-fly-canonicalization): Enclose the comment
+	into <pre> html tag to make the ascii-art graph look good.
+
+2022-10-02  Dodji Seketeli <dodji@redhat.com>
+
+	Update website for 2.1 release.
+	* doc/website/mainpage.txt:
+
+2022-09-26  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 2.2
+	* configure.ac: Bump version number to 2.2
+
+2022-09-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 2.1
+	* NEWS: Update for 2.1.
+
+2022-09-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 2.1 release.
+	* ChangeLog: Update by running "make update-changelog".
+
 2022-09-24  Dodji Seketeli <dodji@redhat.com>
 
 	ir: Avoid cancelling a "confirmed" propagated canonical type
