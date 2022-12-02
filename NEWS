@@ -1,3 +1,49 @@
+2.2
+===
+Aleksei Vetrov (1):
+      symtab: add support for CRC values from __kcrctab
+
+Dodji Seketeli (20):
+      Bump version number to 2.2
+      Update website for 2.1 release.
+      ir: Fix documentation of canonical type propagation
+      abidiff: add a --debug-tc option
+      Bug 29650 - Caching class comparison result potentially too early
+      ir: remove redundant cycle detection code in equals
+      ir: Fix a wrong comment in canonicalize()
+      ir: Properly indent overload of equals() for class_decl
+      dwarf-reader: Fix class size setting bug
+      rhbz2114909 - Refer to changed base classes using their non-qualified names
+      ir: Don't crash when looking at corpus-less translation units
+      kmidiff: Fix spacing in the help string
+      Use environment by reference.
+      Make Front Ends first class citizens
+      test-read-ctf: Update tests for fixing size and name for underlying types
+      Fix spurious deleted/added virtual destructor change report
+      dwarf-reader: Leverage ODR & DWZ
+      dwarf-reader: Avoid duplicating member functions
+      dwarf-reader: Make die_peel_{qual_ptr,typedef} always set peeled type
+      Bug 29829 - dwarf-reader: Allow DIEs to be in a lexical block
+
+Giuliano Procida (1):
+      Narrow Linux symbol CRCs to 32 bits
+
+Guillermo E. Martinez (6):
+      Use the CTF reader by default when applicable
+      ctf-reader: Set alignment-in-bits property to 0
+      ctf-reader: Fix size and name for underlying types
+      ctf-reader: Strip qualification from a qualified array type
+      ctf-reader: Fix representation of multidimensional arrays
+      ctf-reader: Fix array size representation
+
+Sam James (1):
+      Use xz as the default tarball compression format
+
+Xiaole He (3):
+      abg-ir: add missing else
+      abg-reader: optimize if construction
+      abg-diff-utils: fix typo in comments
+
 2.1
 ===
 Ben Woodard (7):
