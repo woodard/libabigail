@@ -9303,6 +9303,15 @@ get_debug_representation(const type_or_decl_base* artifact)
       class_decl *clazz = is_class_type(c);
       string name = c->get_qualified_name();
       std::ostringstream o;
+      if (clazz)
+	{
+	  if (clazz->is_struct())
+	    o << "struct ";
+	  else
+	    o << "class ";
+	}
+      else if (is_union_type(c))
+	o << "union ";
       o << name;
 
       if (clazz)
@@ -9362,7 +9371,7 @@ get_debug_representation(const type_or_decl_base* artifact)
     {
       string name = e->get_qualified_name();
       std::ostringstream o;
-      o << name
+      o << "union " << name
 	<< " : "
 	<< e->get_underlying_type()->get_pretty_representation(/*internal=*/false,
 							       true)
