@@ -12419,6 +12419,22 @@ lookup_decl_only_class_types(const interned_string& qualified_name,
   return !result.empty();
 }
 
+/// Look into a given corpus to find the union type*s* that have a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of union types named @p qualified_name.
+const type_base_wptrs_type *
+lookup_union_types(const interned_string& qualified_name, const corpus& corp)
+{
+  const istring_type_base_wptrs_map_type& m = corp.get_types().union_types();
+
+  return lookup_types_in_map(qualified_name, m);
+}
+
 /// Look into a given corpus to find the class type*s* that have a
 /// given qualified name.
 ///
@@ -12426,12 +12442,27 @@ lookup_decl_only_class_types(const interned_string& qualified_name,
 ///
 /// @param corp the corpus to look into.
 ///
-/// @return the vector of class types that which name is @p qualified_name.
+/// @return the vector of class types which name is @p qualified_name.
 const type_base_wptrs_type*
 lookup_class_types(const string& qualified_name, const corpus& corp)
 {
   interned_string s = corp.get_environment().intern(qualified_name);
   return lookup_class_types(s, corp);
+}
+
+/// Look into a given corpus to find the union types that have a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the vector of union types which name is @p qualified_name.
+const type_base_wptrs_type *
+lookup_union_types(const string& qualified_name, const corpus& corp)
+{
+  interned_string s = corp.get_environment().intern(qualified_name);
+  return lookup_union_types(s, corp);
 }
 
 /// Look up a @ref class_decl from a given corpus by its location.

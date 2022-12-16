@@ -162,6 +162,9 @@ typedef shared_ptr<class_decl> class_decl_sptr;
 /// Convenience typedef for a vector of @ref class_decl_sptr
 typedef vector<class_decl_sptr> classes_type;
 
+/// Convenience typedef for a vector of @ref class_or_union_sptr
+typedef vector<class_or_union_sptr> classes_or_unions_type;
+
 /// Convenience typedef for a weak pointer on a @ref class_decl.
 typedef weak_ptr<class_decl> class_decl_wptr;
 
@@ -1140,6 +1143,9 @@ lookup_class_type(const interned_string&, const corpus&);
 const type_base_wptrs_type*
 lookup_class_types(const interned_string&, const corpus&);
 
+const type_base_wptrs_type*
+lookup_union_types(const interned_string&, const corpus&);
+
 bool
 lookup_decl_only_class_types(const interned_string&,
 			     const corpus&,
@@ -1147,6 +1153,9 @@ lookup_decl_only_class_types(const interned_string&,
 
 const type_base_wptrs_type*
 lookup_class_types(const string&, const corpus&);
+
+const type_base_wptrs_type*
+lookup_union_types(const string&, const corpus&);
 
 class_decl_sptr
 lookup_class_type_per_location(const interned_string&, const corpus&);

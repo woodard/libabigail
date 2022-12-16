@@ -264,6 +264,10 @@ typedef stack<scope_decl*> scope_stack_type;
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map_type;
 
 /// Convenience typedef for a map which key is a string and which
+/// value is a vector of smart pointer to a class_or_union_sptr.
+typedef unordered_map<string, classes_or_unions_type> string_classes_or_unions_map;
+
+/// Convenience typedef for a map which key is a string and which
 /// value is a vector of smart pointer to a class.
 typedef unordered_map<string, classes_type> string_classes_map;
 
@@ -1832,7 +1836,7 @@ public:
   die_function_type_map_type	type_unit_die_wip_function_types_map_;
   die_function_decl_map_type	die_function_with_no_symbol_map_;
   vector<type_base_sptr>	types_to_canonicalize_;
-  string_classes_map		decl_only_classes_map_;
+  string_classes_or_unions_map	decl_only_classes_map_;
   string_enums_map		decl_only_enums_map_;
   die_tu_map_type		die_tu_map_;
   translation_unit_sptr	cur_tu_;
@@ -3879,7 +3883,7 @@ public:
   /// @return a map of string -> vector of classes where the key is
   /// the fully qualified name of the class and the value is the
   /// vector of declaration-only class.
-  const string_classes_map&
+  const string_classes_or_unions_map&
   declaration_only_classes() const
   {return decl_only_classes_map_;}
 
@@ -3890,7 +3894,7 @@ public:
   /// @return a map of string -> vector of classes where the key is
   /// the fully qualified name of the class and the value is the
   /// vector of declaration-only class.
-  string_classes_map&
+  string_classes_or_unions_map&
   declaration_only_classes()
   {return decl_only_classes_map_;}
 
@@ -3900,18 +3904,18 @@ public:
   ///
   /// @param klass the class to consider.
   void
-  maybe_schedule_declaration_only_class_for_resolution(class_decl_sptr& klass)
+  maybe_schedule_declaration_only_class_for_resolution(const class_or_union_sptr& cou)
   {
-    if (klass->get_is_declaration_only()
-	&& klass->get_definition_of_declaration() == 0)
+    if (cou->get_is_declaration_only()
+	&& cou->get_definition_of_declaration() == 0)
       {
-	string qn = klass->get_qualified_name();
-	string_classes_map::iterator record =
+	string qn = cou->get_qualified_name();
+	string_classes_or_unions_map::iterator record =
 	  declaration_only_classes().find(qn);
 	if (record == declaration_only_classes().end())
-	  declaration_only_classes()[qn].push_back(klass);
+	  declaration_only_classes()[qn].push_back(cou);
 	else
-	  record->second.push_back(klass);
+	  record->second.push_back(cou);
       }
   }
 
@@ -3923,10 +3927,10 @@ public:
   /// @return true iff @p klass is a declaration-only class and if
   /// it's been scheduled for resolution to a defined class.
   bool
-  is_decl_only_class_scheduled_for_resolution(class_decl_sptr& klass)
+  is_decl_only_class_scheduled_for_resolution(const class_or_union_sptr& cou)
   {
-    if (klass->get_is_declaration_only())
-      return (declaration_only_classes().find(klass->get_qualified_name())
+    if (cou->get_is_declaration_only())
+      return (declaration_only_classes().find(cou->get_qualified_name())
 	      != declaration_only_classes().end());
 
     return false;
@@ -3967,13 +3971,13 @@ public:
   {
     vector<string> resolved_classes;
 
-    for (string_classes_map::iterator i =
+    for (string_classes_or_unions_map::iterator i =
 	   declaration_only_classes().begin();
 	 i != declaration_only_classes().end();
 	 ++i)
       {
 	bool to_resolve = false;
-	for (classes_type::iterator j = i->second.begin();
+	for (classes_or_unions_type::iterator j = i->second.begin();
 	     j != i->second.end();
 	     ++j)
 	  if ((*j)->get_is_declaration_only()
@@ -4016,6 +4020,9 @@ public:
 	const type_base_wptrs_type *classes =
 	  lookup_class_types(i->first, *corpus());
 	if (!classes)
+	  classes = lookup_union_types(i->first, *corpus());
+
+	if (!classes)
 	  continue;
 
 	// This is a map that associates the translation unit path to
@@ -4024,15 +4031,15 @@ public:
 	// should stay ordered by using the TU path as key to ensure
 	// stability of the order of classe definitions in ABIXML
 	// output.
-	map<string, class_decl_sptr> per_tu_class_map;
+	map<string, class_or_union_sptr> per_tu_class_map;
 	for (type_base_wptrs_type::const_iterator c = classes->begin();
 	     c != classes->end();
 	     ++c)
 	  {
-	    class_decl_sptr klass = is_class_type(type_base_sptr(*c));
+	    class_or_union_sptr klass = is_class_or_union_type(type_base_sptr(*c));
 	    ABG_ASSERT(klass);
 
-	    klass = is_class_type(look_through_decl_only_class(klass));
+	    klass = is_class_or_union_type(look_through_decl_only_class(klass));
 	    if (klass->get_is_declaration_only())
 	      continue;
 
@@ -4052,7 +4059,7 @@ public:
 	    // either to the definitions that are in the same TU as
 	    // the declaration, or to the definition found elsewhere,
 	    // if there is only one such definition.
-	    for (classes_type::iterator j = i->second.begin();
+	    for (classes_or_unions_type::iterator j = i->second.begin();
 		 j != i->second.end();
 		 ++j)
 	      {
@@ -4061,7 +4068,7 @@ public:
 		  {
 		    string tu_path =
 		      (*j)->get_translation_unit()->get_absolute_path();
-		    map<string, class_decl_sptr>::const_iterator e =
+		    map<string, class_or_union_sptr>::const_iterator e =
 		      per_tu_class_map.find(tu_path);
 		    if (e != per_tu_class_map.end())
 		      (*j)->set_definition_of_declaration(e->second);
@@ -4077,8 +4084,8 @@ public:
 			// definition.  Otherwise, we are in the case
 			// 3/ described above.
 			map<string,
-			    class_decl_sptr>::const_iterator it;
-			class_decl_sptr first_class =
+			    class_or_union_sptr>::const_iterator it;
+			class_or_union_sptr first_class =
 			  per_tu_class_map.begin()->second;
 			bool all_class_definitions_are_equal = true;
 			for (it = per_tu_class_map.begin();
@@ -4124,7 +4131,8 @@ public:
 	cerr << "Here are the "
 	     << num_decl_only_classes - num_resolved
 	     << " unresolved class declarations:\n";
-	for (string_classes_map::iterator i = declaration_only_classes().begin();
+	for (string_classes_or_unions_map::iterator i =
+	       declaration_only_classes().begin();
 	     i != declaration_only_classes().end();
 	     ++i)
 	  cerr << "    " << i->first << "\n";
@@ -13230,9 +13238,7 @@ add_or_update_union_type(reader&	 rdr,
 
   rdr.associate_die_to_type(die, result, where_offset);
 
-  // TODO: maybe schedule declaration-only union for result like we do
-  // for classes:
-  // rdr.maybe_schedule_declaration_only_class_for_resolution(result);
+  rdr.maybe_schedule_declaration_only_class_for_resolution(result);
 
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
@@ -14779,7 +14785,7 @@ get_opaque_version_of_type(reader	&rdr,
   //
   if (tag == DW_TAG_structure_type || tag == DW_TAG_class_type)
     {
-      string_classes_map::const_iterator i =
+      string_classes_or_unions_map::const_iterator i =
 	rdr.declaration_only_classes().find(qualified_name);
       if (i != rdr.declaration_only_classes().end())
 	result = i->second.back();
