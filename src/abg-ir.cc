@@ -9533,6 +9533,52 @@ debug_equals(const type_or_decl_base *l, const type_or_decl_base *r)
   return (*l == *r);
 }
 
+/// Emit a trace of a comparison operand stack.
+///
+/// @param vect the operand stack to emit the trace for.
+///
+/// @param o the output stream to emit the trace to.
+static void
+debug_comp_vec(const vector<const type_base*>& vect, std::ostringstream& o)
+{
+  for (auto t : vect)
+    {
+      o << "|" << t->get_pretty_representation()
+	<< "@" << std::hex << t << std::dec;
+    }
+  if (!vect.empty())
+    o << "|";
+}
+
+/// Construct a trace of the two comparison operand stacks.
+///
+/// @param the environment in which the comparison operand stacks are.
+///
+/// @return a string representing the trace.
+static string
+print_comp_stack(const environment& env)
+{
+  std::ostringstream o;
+  o << "left-operands: ";
+  debug_comp_vec(env.priv_->left_type_comp_operands_, o);
+  o << "\n" << "right-operands: ";
+  debug_comp_vec(env.priv_->right_type_comp_operands_, o);
+  o << "\n";
+  return o.str();
+}
+
+/// Emit a trace of the two comparison operands stack on the standard
+/// error stream.
+///
+/// @param env the environment the comparison operands stack belong
+/// to.
+void
+debug_comp_stack(const environment& env)
+{
+  std::cerr << print_comp_stack(env);
+  std::cerr << std::endl;
+}
+
 /// By looking at the language of the TU a given ABI artifact belongs
 /// to, test if the ONE Definition Rule should apply.
 ///

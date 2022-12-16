@@ -1056,6 +1056,9 @@ debug(const decl_base* artifact);
 bool
 debug_equals(const type_or_decl_base *l, const type_or_decl_base *r);
 
+void
+debug_comp_stack(const environment& env);
+
 bool
 odr_is_relevant(const type_or_decl_base&);
 
