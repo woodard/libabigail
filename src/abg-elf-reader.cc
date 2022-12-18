@@ -225,10 +225,10 @@ find_alt_dwarf_debug_info(Dwfl_Module *elf_module,
       // If we reach this point it means we have found the path to the
       // alternate debuginfo file and it's in alt_file_path.  So let's
       // open it and read it.
-      int fd = open(alt_file_path.c_str(), O_RDONLY);
-      if (fd == -1)
+      alt_fd = open(alt_file_path.c_str(), O_RDONLY);
+      if (alt_fd == -1)
 	return result;
-      result = dwarf_begin(fd, DWARF_C_READ);
+      result = dwarf_begin(alt_fd, DWARF_C_READ);
 
 #ifdef LIBDW_HAS_DWARF_GETALT
       Dwarf_Addr bias = 0;
@@ -281,6 +281,11 @@ struct reader::priv
     initialize(debug_info_roots);
   }
 
+  ~priv()
+  {
+    clear_alt_dwarf_debug_info_data();
+  }
+
   /// Reset the private data of @elf elf::reader.
   ///
   /// @param debug_info_roots the vector of new directories where to
@@ -288,11 +293,23 @@ struct reader::priv
   void
   initialize(const vector<char**>& debug_info_roots)
   {
-    debug_info_root_paths = debug_info_roots;
+    clear_alt_dwarf_debug_info_data();
+
+    elf_handle = nullptr;
+    symtab_section = nullptr;
+    elf_architecture.clear();
+    dt_needed.clear();
     symt.reset();
+    debug_info_root_paths = debug_info_roots;
+    offline_callbacks = {};
     dwfl_handle.reset();
     elf_module = nullptr;
-    elf_handle = nullptr;
+    dwarf_handle = nullptr;
+    alt_dwarf_handle = nullptr;
+    alt_dwarf_path.clear();
+    alt_dwarf_fd = 0;
+    ctf_section = nullptr;
+    alt_ctf_section = nullptr;
   }
 
   /// Setup the necessary plumbing to open the ELF file and find all
@@ -346,6 +363,23 @@ struct reader::priv
 					    debug_info_root_paths,
 					    alt_file_name, alt_fd);
     return result;
+  }
+
+  /// Clear the resources related to the alternate DWARF data.
+  void
+  clear_alt_dwarf_debug_info_data()
+  {
+    if (alt_dwarf_fd)
+      {
+        if (alt_dwarf_handle)
+          {
+            dwarf_end(alt_dwarf_handle);
+            alt_dwarf_handle = nullptr;
+          }
+        close(alt_dwarf_fd);
+        alt_dwarf_fd = 0;
+      }
+    alt_dwarf_path.clear();
   }
 
   /// Locate the DWARF debug info in the ELF file.
