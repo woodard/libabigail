@@ -369,6 +369,13 @@ typedef std::pair<uint64_t, uint64_t> uint64_t_pair_type;
 /// A convenience typedef for a set of @ref uint64_t_pair
 typedef unordered_set<uint64_t_pair_type,
 		      uint64_t_pair_hash> uint64_t_pairs_set_type;
+
+/// A convenience typedef for a set of pointer to @ref class_or_union
+typedef unordered_set<const class_or_union*> class_set_type;
+
+/// A convenience typedef for a set of pointer to @ref function_type.
+typedef unordered_set<const function_type*> fn_set_type;
+
 /// A convenience typedef for a map which key is a pair of uint64_t
 /// and which value is a boolean.  This is initially intended to cache
 /// the result of comparing two (sub-)types.
@@ -387,12 +394,14 @@ struct environment::priv
   // used to avoid endless loops while recursively comparing types.
   // This should be empty when none of the 'equal' overloads are
   // currently being invoked.
-  uint64_t_pairs_set_type		classes_being_compared_;
+  class_set_type			left_classes_being_compared_;
+  class_set_type			right_classes_being_compared_;
   // The set of pairs of function types being currently compared.  It's used
   // to avoid endless loops while recursively comparing types.  This
   // should be empty when none of the 'equal' overloads are currently
   // being invoked.
-  uint64_t_pairs_set_type		fn_types_being_compared_;
+  fn_set_type				left_fn_types_being_compared_;
+  fn_set_type				right_fn_types_being_compared_;
   // This is a cache for the result of comparing two sub-types (of
   // either class or function types) that are designated by their
   // memory address in the IR.
@@ -604,48 +613,6 @@ struct environment::priv
   void
   clear_type_comparison_results_cache()
   {type_comparison_results_cache_.clear();}
-
-  /// Dumps a textual representation (to the standard error output) of
-  /// the content of the set of classes being currently compared using
-  /// the @ref equal overloads.
-  ///
-  /// This function is for debugging purposes.
-  void
-  dump_classes_being_compared()
-  {
-    std::cerr << "classes being compared: " << classes_being_compared_.size()
-	      << "\n"
-	      << "=====================================\n";
-    for (auto& p : classes_being_compared_)
-      {
-	class_or_union* c = reinterpret_cast<class_or_union*>(p.first);
-	std::cerr << "'" << c->get_pretty_representation()
-		  << " / (" << std::hex << p.first << "," << p.second << ")"
-		  << "'\n";
-      }
-    std::cerr << "=====================================\n";
-  }
-
-  /// Dumps a textual representation (to the standard error output) of
-  /// the content of the set of classes being currently compared using
-  /// the @ref equal overloads.
-  ///
-  /// This function is for debugging purposes.
-  void
-  dump_fn_types_being_compared()
-  {
-    std::cerr << "fn_types being compared: " << fn_types_being_compared_.size()
-	      << "\n"
-	      << "=====================================\n";
-    for (auto& p : fn_types_being_compared_)
-      {
-	function_type* c = reinterpret_cast<function_type*>(p.first);
-	std::cerr << "'" << c->get_pretty_representation()
-		  << " / (" << std::hex << p.first << "," << p.second << ")"
-		  << "'\n";
-      }
-    std::cerr << "=====================================\n";
-  }
 
   /// Push a pair of operands on the stack of operands of the current
   /// type comparison, during type canonicalization.
@@ -1174,9 +1141,9 @@ struct class_or_union::priv
 			 const class_or_union& second) const
   {
     const environment& env = first.get_environment();
-    env.priv_->classes_being_compared_.insert
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+
+    env.priv_->left_classes_being_compared_.insert(&first);
+    env.priv_->right_classes_being_compared_.insert(&second);
   }
 
   /// Mark a pair of classes or unions as being currently compared
@@ -1236,9 +1203,9 @@ struct class_or_union::priv
 			   const class_or_union& second) const
   {
     const environment& env = first.get_environment();
-    env.priv_->classes_being_compared_.erase
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+
+    env.priv_->left_classes_being_compared_.erase(&first);
+    env.priv_->right_classes_being_compared_.erase(&second);
   }
 
   /// If a pair of class_or_union has been previously marked as
@@ -1277,10 +1244,10 @@ struct class_or_union::priv
 		     const class_or_union& second) const
   {
     const environment& env = first.get_environment();
-    return env.priv_->
-      classes_being_compared_.count
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>((&second))));
+
+    return (env.priv_->left_classes_being_compared_.count(&first)
+	    ||
+	    env.priv_->right_classes_being_compared_.count(&second));
   }
 
   /// Test if a pair of class_or_union is being currently compared.
@@ -1337,9 +1304,9 @@ struct function_type::priv
 			 const function_type& second) const
   {
     const environment& env = first.get_environment();
-    env.priv_->fn_types_being_compared_.insert
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+
+    env.priv_->left_fn_types_being_compared_.insert(&first);
+    env.priv_->right_fn_types_being_compared_.insert(&second);
   }
 
   /// Mark a given pair of @ref function_type as being compared.
@@ -1354,9 +1321,9 @@ struct function_type::priv
 			   const function_type& second) const
   {
     const environment& env = first.get_environment();
-    env.priv_->fn_types_being_compared_.erase
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+
+    env.priv_->left_fn_types_being_compared_.erase(&first);
+    env.priv_->right_fn_types_being_compared_.erase(&second);
   }
 
   /// Tests if a @ref function_type is currently being compared.
@@ -1369,9 +1336,10 @@ struct function_type::priv
 		     const function_type& second) const
   {
     const environment& env = first.get_environment();
-    return env.priv_->fn_types_being_compared_.count
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+
+    return (env.priv_->left_fn_types_being_compared_.count(&first)
+	    ||
+	    env.priv_->right_fn_types_being_compared_.count(&second));
   }
 };// end struc function_type::priv
 

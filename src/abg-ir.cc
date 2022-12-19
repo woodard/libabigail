@@ -21941,30 +21941,6 @@ class_or_union::operator==(const class_or_union& other) const
   return class_or_union::operator==(o);
 }
 
-/// Dumps a textual representation (to the standard error output) of
-/// the content of the set of classes being currently compared using
-/// the @ref equal overloads.
-///
-/// This function is for debugging purposes.
-///
-/// @param c an artifact that belongs to the environment in which the
-/// classes of interest are being compared.
-void
-dump_classes_being_compared(const type_or_decl_base& c)
-{c.get_environment().priv_->dump_classes_being_compared();}
-
-/// Dumps a textual representation (to the standard error output) of
-/// the content of the set of function types being currently compared
-/// using the @ref equal overloads.
-///
-/// This function is for debugging purposes.
-///
-/// @param c an artifact that belongs to the environment in which the
-/// function types of interest are being compared.
-void
-dump_fn_types_being_compared(const type_or_decl_base& t)
-{t.get_environment().priv_->dump_fn_types_being_compared();}
-
 /// Compares two instances of @ref class_or_union.
 ///
 /// If the two intances are different, set a bitfield to give some
