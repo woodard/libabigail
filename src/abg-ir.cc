@@ -1081,6 +1081,13 @@ return_comparison_result(T& l, T& r, bool value,
   ABG_RETURN(value);
 }
 
+#define CACHE_AND_RETURN_COMPARISON_RESULT(value)			\
+  do									\
+    {									\
+      bool res = return_comparison_result(l, r, value);		\
+      l.get_environment().priv_->cache_type_comparison_result(l, r, res); \
+      return res;							\
+    } while (false)
 /// Getter of all types types sorted by their pretty representation.
 ///
 /// @return a sorted vector of all types sorted by their pretty
@@ -19584,11 +19591,9 @@ function_type::is_variadic() const
 ///
 ///@return true if lhs == rhs, false otherwise.
 bool
-equals(const function_type& l,
-       const function_type& r,
-       change_kind* k)
+equals(const function_type& l, const function_type& r, change_kind* k)
 {
-#define RETURN(value) return return_comparison_result(l, r, value)
+#define RETURN(value) CACHE_AND_RETURN_COMPARISON_RESULT(value)
 
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
 
@@ -19730,17 +19735,6 @@ equals(const function_type& l,
       else
 	RETURN(result);
     }
-
-  // We are done comparing these two types and we have a full
-  // understanding of how they might be different, if they are.  Let's
-  // cache the result of this comparison -- in case we are asked in a
-  // very near future to compare them again.
-  //
-  // TODO: If further profiling shows its necessity, maybe we should
-  // perform this caching also on the earlier return points of this
-  // function.  That would basically mean to redefine the RETURN macro
-  // to make it perform this caching for us.
-  l.get_environment().priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -21963,9 +21957,6 @@ class_or_union::operator==(const class_or_union& other) const
 bool
 equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 {
-#define RETURN(value) return return_comparison_result(l, r, value,	\
-						      /*propagate_canonical_type=*/false);
-
   // if one of the classes is declaration-only, look through it to
   // get its definition.
   bool l_is_decl_only = l.get_is_declaration_only();
@@ -22063,6 +22054,15 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
 
   if (types_defined_same_linux_kernel_corpus_public(l, r))
     return true;
+
+  //TODO: Maybe remove this (cycle detection and canonical type
+  //propagation handling) from here and have it only in the equal
+  //overload for class_decl and union_decl because this one ( the
+  //equal overload for class_or_union) is just a sub-routine of these
+  //two above.
+#define RETURN(value)							\
+  return return_comparison_result(l, r, value,				\
+				  /*propagate_canonical_type=*/false);
 
   RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
 
@@ -23621,7 +23621,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 
   mark_types_as_being_compared(l, r);
 
-#define RETURN(value) return return_comparison_result(l, r, value);
+#define RETURN(value) CACHE_AND_RETURN_COMPARISON_RESULT(value)
 
   // Compare bases.
   if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
@@ -23734,17 +23734,6 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	    RETURN(result);
 	}
     }
-
-  // We are done comparing these two types and we have a full
-  // understanding of how they might be different, if they are.  Let's
-  // cache the result of this comparison -- in case we are asked in a
-  // very near future to compare them again.
-  //
-  // TODO: If further profiling shows its necessity, maybe we should
-  // perform this caching also on the earlier return points of this
-  // function.  That would basically mean to redefine the RETURN macro
-  // to make it perform this caching for us.
-  l.get_environment().priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 #undef RETURN
@@ -24746,25 +24735,13 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
       return result;
   }
 
-#define RETURN(value)				\
-  return return_comparison_result(l, r, value);
+#define RETURN(value) CACHE_AND_RETURN_COMPARISON_RESULT(value)
 
   bool result = equals(static_cast<const class_or_union&>(l),
 		       static_cast<const class_or_union&>(r),
 		       k);
 
   mark_types_as_being_compared(l, r);
-
-  // We are done comparing these two types and we have a full
-  // understanding of how they might be different, if they are.  Let's
-  // cache the result of this comparison -- in case we are asked in a
-  // very near future to compare them again.
-  //
-  // TODO: If further profiling shows its necessity, maybe we should
-  // perform this caching also on the earlier return points of this
-  // function.  That would basically mean to redefine the RETURN macro
-  // to make it perform this caching for us.
-  l.get_environment().priv_->cache_type_comparison_result(l, r, result);
 
   RETURN(result);
 }
