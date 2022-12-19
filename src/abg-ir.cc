@@ -22042,7 +22042,7 @@ equals(const class_or_union& l, const class_or_union& r, change_kind* k)
       if (!val)
 	if (k)
 	  *k |= LOCAL_TYPE_CHANGE_KIND;
-      RETURN(val);
+      ABG_RETURN(val);
     }
 
   // No need to go further if the classes have different names or
