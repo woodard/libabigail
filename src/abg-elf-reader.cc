@@ -420,6 +420,9 @@ struct reader::priv
   void
   locate_alt_ctf_debug_info()
   {
+    if (alt_ctf_section)
+      return;
+
     Elf_Scn *section =
       elf_helpers::find_section(elf_handle,
 				".gnu_debuglink",
@@ -453,10 +456,12 @@ struct reader::priv
 	  // unlikely .ctf was designed to be present in stripped file
 	  alt_ctf_section =
 	    elf_helpers::find_section(hdl, ".ctf", SHT_PROGBITS);
-          break;
 
 	  elf_end(hdl);
 	  close(fd);
+
+	  if (alt_ctf_section)
+	    break;
 	}
   }
 
