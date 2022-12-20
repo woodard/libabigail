@@ -1246,8 +1246,9 @@ struct class_or_union::priv
     const environment& env = first.get_environment();
 
     return (env.priv_->left_classes_being_compared_.count(&first)
-	    ||
-	    env.priv_->right_classes_being_compared_.count(&second));
+	    || env.priv_->right_classes_being_compared_.count(&second)
+	    || env.priv_->right_classes_being_compared_.count(&first)
+	    || env.priv_->left_classes_being_compared_.count(&second));
   }
 
   /// Test if a pair of class_or_union is being currently compared.
