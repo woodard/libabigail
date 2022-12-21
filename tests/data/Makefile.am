@@ -643,6 +643,7 @@ test-read-ctf/test9.c		\
 test-read-ctf/test9.o		\
 test-read-ctf/test9.o.abi	\
 test-read-ctf/test-alias.c	\
+test-read-ctf/test-alias.o	\
 test-read-ctf/test-alias.o.abi	\
 test-read-ctf/test-ambiguous-struct-A.c	\
 test-read-ctf/test-ambiguous-struct-A.o	\

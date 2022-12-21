@@ -335,6 +335,14 @@ static InOutSpec in_out_specs[] =
     "output/test-read-ctf/test-linux-module.abi",
     "--ctf"
   },
+  {
+    "data/test-read-ctf/test-alias.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-ctf/test-alias.o.abi",
+    "output/test-read-ctf/test-alias.o.abi",
+  },
   // CTF fallback feature.
   {
     "data/test-read-ctf/test-fallback.o",
