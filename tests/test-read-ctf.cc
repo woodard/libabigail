@@ -342,6 +342,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-ctf/test-alias.o.abi",
     "output/test-read-ctf/test-alias.o.abi",
+    "--ctf"
   },
   // CTF fallback feature.
   {
