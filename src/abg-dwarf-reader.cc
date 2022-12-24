@@ -3509,8 +3509,9 @@ public:
     if (!die_is_function_type(die))
       return function_type_sptr();
 
-    interned_string repr =
-      get_die_pretty_representation(die, /*where=*/0);
+    interned_string repr = die_name(die).empty() ?
+      get_die_pretty_type_representation(die, /*where=*/0)
+      : get_die_pretty_representation(die, /*where=*/0);
     ABG_ASSERT(!repr.empty());
 
     istring_fn_type_map_type::const_iterator i =
