@@ -383,6 +383,9 @@ static bool
 die_is_anonymous(const Dwarf_Die* die);
 
 static bool
+die_is_anonymous_data_member(const Dwarf_Die* die);
+
+static bool
 die_is_type(const Dwarf_Die* die);
 
 static bool
@@ -485,6 +488,11 @@ die_constant_attribute(const Dwarf_Die *die,
 		       unsigned attr_name,
 		       bool is_signed,
 		       array_type_def::subrange_type::bound_value &value);
+
+static bool
+die_member_offset(const reader& rdr,
+		  const Dwarf_Die* die,
+		  int64_t& offset);
 
 static bool
 form_is_DW_FORM_strx(unsigned form);
@@ -3876,6 +3884,61 @@ public:
     return (i != die_wip_function_types_map(source).end());
   }
 
+  /// Sometimes, a data member die can erroneously have an empty name as
+  /// a result of a bug of the DWARF emitter.
+  ///
+  /// This is what happens in
+  /// https://sourceware.org/bugzilla/show_bug.cgi?id=29934.
+  ///
+  /// In that case, this function constructs an artificial name for that
+  /// data member.  The pattern of the name is as follows:
+  ///
+  ///          "unnamed-@-<location>".
+  ///
+  ///location is either the value of the data member location of the
+  ///data member if it has one or  concatenation of its source location
+  ///if it has none.  If no location can be calculated then the function
+  ///returns the empty string.
+  string
+  build_name_for_buggy_anonymous_data_member(Dwarf_Die *die)
+  {
+    string result;
+    // Let's make sure we are looking at a data member with an empty
+    // name ...
+    if (!die
+	|| dwarf_tag(die) != DW_TAG_member
+	|| !die_name(die).empty())
+      return result;
+
+    // ... and yet, it's not an anonymous data member (aka unnamed
+    // field) as described in
+    // https://gcc.gnu.org/onlinedocs/gcc/Unnamed-Fields.html.
+    if (die_is_anonymous_data_member(die))
+      return result;
+
+    // If we come this far, it means we are looking at a buggy data
+    // member with no name.  Let's build a name for it so that it can be
+    // addressed.
+    int64_t offset_in_bits = 0;
+    bool has_offset = die_member_offset(*this, die, offset_in_bits);
+    location loc;
+    if (!has_offset)
+      {
+	loc = die_location(*this, die);
+	if (!loc)
+	  return result;
+      }
+
+    std::ostringstream o;
+    o << "unnamed-dm-@-";
+    if (has_offset)
+      o << "offset-" << offset_in_bits << "bits";
+    else
+      o << "loc-" << loc.expand();
+
+    return o.str();
+  }
+
   /// Getter for the map of declaration-only classes that are to be
   /// resolved to their definition classes by the end of the corpus
   /// loading.
@@ -5851,6 +5914,33 @@ die_is_anonymous(const Dwarf_Die* die)
   if (!dwarf_attr_integrate(const_cast<Dwarf_Die*>(die), DW_AT_name, &attr))
     return true;
   return false;
+}
+
+/// Test if a DIE is an anonymous data member, aka, "unnamed field".
+///
+/// Unnamed fields are specified at
+/// https://gcc.gnu.org/onlinedocs/gcc/Unnamed-Fields.html.
+///
+/// @param die the DIE to consider.
+///
+/// @return true iff @p die is an anonymous data member.
+static bool
+die_is_anonymous_data_member(const Dwarf_Die* die)
+{
+  if (!die
+      || dwarf_tag(const_cast<Dwarf_Die*>(die)) != DW_TAG_member
+      || !die_name(die).empty())
+    return false;
+
+  Dwarf_Die type_die;
+  if (!die_die_attribute(die, DW_AT_type, type_die))
+    return false;
+
+  if (dwarf_tag(&type_die) != DW_TAG_structure_type
+      && dwarf_tag(&type_die) != DW_TAG_union_type)
+  return false;
+
+  return true;
 }
 
 /// Get the value of an attribute that is supposed to be a string, or
@@ -13008,6 +13098,16 @@ add_or_update_class_type(reader&	 rdr,
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
 		continue;
+
+	      if (n.empty() && !die_is_anonymous_data_member(&child))
+		{
+		  // We must be in a case where the data member has an
+		  // empty name because the DWARF emitter has a bug.
+		  // Let's generate an artificial name for that data
+		  // member.
+		  n = rdr.build_name_for_buggy_anonymous_data_member(&child);
+		  ABG_ASSERT(!n.empty());
+		}
 
 	      // The call to build_ir_node_from_die above could have
 	      // triggered the adding of a data member named 'n' into
