@@ -1040,15 +1040,30 @@ return_comparison_result(T& l, T& r, bool value,
 	  // eventually fails.
 	  env.priv_->add_to_types_with_non_confirmed_propagated_ct(is_type(&r));
 	}
-      else if (value == true && env.priv_->right_type_comp_operands_.empty())
+      else if (value == true
+	       && (// The type is neither recursive nor dependant on a
+		   // recursive type ...
+		   (!env.priv_->is_recursive_type(&r)
+		    && !is_type(&r)->priv_->depends_on_recursive_type()
+		    && is_type(&r)->priv_->canonical_type_propagated()
+		    && !is_type(&r)->priv_->propagated_canonical_type_confirmed())
+		   ||
+		   // ... or the comparison stack is empty, meaning,
+		   // comparing r & l is completely done.
+		   env.priv_->right_type_comp_operands_.empty()))
 	{
-	  // The type provided in the 'r' argument is the type that is
-	  // being canonicalized; 'r' is not a mere subtype being
-	  // compared, it's the whole type being canonicalized.  And
-	  // its canonicalization has just succeeded.  So let's
-	  // confirm the "canonical type propagation" of all the
-	  // sub-types that were compared during the comparison of
-	  // 'r'.
+	  // Either:
+	  // 
+	  // A/ 'r' is neither recursive nor dependant on a
+	  // recursive type
+	  //
+	  // B/ Or the type provided in the 'r' argument is the type
+	  // that is being canonicalized; 'r' is not a mere subtype
+	  // being compared, it's the whole type being canonicalized.
+	  // And its canonicalization has just succeeded.
+	  //
+	  // In both cases, let's confirm the canonical type resulting
+	  // from the "canonical type propagation" optimization.
 	  env.priv_->confirm_ct_propagation(&r);
 	}
       else if (value == false)
