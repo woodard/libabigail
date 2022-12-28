@@ -1684,9 +1684,6 @@ public:
   void
   set_is_declaration_only(bool f);
 
-  friend type_base_sptr
-  canonicalize(type_base_sptr);
-
   friend bool
   equals(const decl_base&, const decl_base&, change_kind*);
 
@@ -1884,9 +1881,6 @@ public:
 
   friend void
   remove_decl_from_scope(decl_base_sptr decl);
-
-  friend type_base_sptr
-  canonicalize(type_base_sptr);
 };//end class scope_decl
 
 bool
