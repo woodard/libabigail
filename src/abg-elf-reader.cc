@@ -271,6 +271,8 @@ struct reader::priv
   string				alt_dwarf_path;
   int					alt_dwarf_fd		= 0;
   Elf_Scn*				ctf_section		= nullptr;
+  int					alt_ctf_fd		= 0;
+  Elf*					alt_ctf_handle		= nullptr;
   Elf_Scn*				alt_ctf_section	= nullptr;
 
   priv(reader& reeder, const std::string& elf_path,
@@ -284,6 +286,7 @@ struct reader::priv
   ~priv()
   {
     clear_alt_dwarf_debug_info_data();
+    clear_alt_ctf_debug_info_data();
   }
 
   /// Reset the private data of @elf elf::reader.
@@ -294,6 +297,7 @@ struct reader::priv
   initialize(const vector<char**>& debug_info_roots)
   {
     clear_alt_dwarf_debug_info_data();
+    clear_alt_ctf_debug_info_data();
 
     elf_handle = nullptr;
     symtab_section = nullptr;
@@ -310,6 +314,8 @@ struct reader::priv
     alt_dwarf_fd = 0;
     ctf_section = nullptr;
     alt_ctf_section = nullptr;
+    alt_ctf_handle = nullptr;
+    alt_ctf_fd = 0;
   }
 
   /// Setup the necessary plumbing to open the ELF file and find all
@@ -413,6 +419,22 @@ struct reader::priv
 						 alt_dwarf_fd);
   }
 
+  /// Clear the resources related to the alternate CTF data.
+  void
+  clear_alt_ctf_debug_info_data()
+  {
+    if (alt_ctf_fd)
+      {
+	close(alt_ctf_fd);
+	alt_ctf_fd = 0;
+      }
+    if (alt_ctf_handle)
+      {
+	elf_end(alt_ctf_handle);
+	alt_ctf_handle = nullptr;
+      }
+  }
+
   /// Locate the CTF "alternate" debug information associated with the
   /// current ELF file ( and split out somewhere else).
   ///
@@ -442,23 +464,17 @@ struct reader::priv
 	  if (!tools_utils::find_file_under_dir(*path, name, file_path))
 	    continue;
 
-	  int fd;
-	  if ((fd = open(file_path.c_str(), O_RDONLY)) == -1)
+	  if ((alt_ctf_fd = open(file_path.c_str(), O_RDONLY)) == -1)
 	    continue;
 
-	  Elf *hdl;
-	  if ((hdl = elf_begin(fd, ELF_C_READ, nullptr)) == nullptr)
-	    {
-	      close(fd);
-	      continue;
-	    }
+	  if ((alt_ctf_handle = elf_begin(alt_ctf_fd,
+					  ELF_C_READ,
+					  nullptr)) == nullptr)
+	    continue;
 
 	  // unlikely .ctf was designed to be present in stripped file
 	  alt_ctf_section =
-	    elf_helpers::find_section(hdl, ".ctf", SHT_PROGBITS);
-
-	  elf_end(hdl);
-	  close(fd);
+	    elf_helpers::find_section(alt_ctf_handle, ".ctf", SHT_PROGBITS);
 
 	  if (alt_ctf_section)
 	    break;
