@@ -4591,37 +4591,10 @@ public:
       }
 
     if (!types_to_canonicalize().empty())
-      {
-	tools_utils::timer single_type_cn_timer;
-	size_t total = types_to_canonicalize().size();
-	if (do_log())
-	  cerr << total << " Types to canonicalize\n";
-	size_t i = 1;
-	for (vector<type_base_sptr>::const_iterator it =
-	       types_to_canonicalize().begin();
-	     it != types_to_canonicalize().end();
-	     ++it, ++i)
-	  {
-	    if (do_log())
-	      {
-		cerr << "canonicalizing type "
-		     << get_pretty_representation(*it, false)
-		     << " [" << i << "/" << total << "]";
-		if (corpus_sptr c = corpus())
-		  cerr << "@" << c->get_path();
-		cerr << " ...";
-		single_type_cn_timer.start();
-	      }
-	    canonicalize(*it);
-	    if (do_log())
-	      {
-		single_type_cn_timer.stop();
-		cerr << "DONE:"
-		     << single_type_cn_timer
-		     << "\n";
-	      }
-	  }
-      }
+      canonicalize_types(types_to_canonicalize().begin(),
+			 types_to_canonicalize().end(),
+			 [](const vector<type_base_sptr>::const_iterator& i)
+			 {return *i;});
 
     if (do_log())
       {

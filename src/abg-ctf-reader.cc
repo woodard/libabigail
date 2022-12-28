@@ -131,7 +131,7 @@ class reader : public elf_based_reader
 
   /// A map associating CTF type ids with libabigail IR types.  This
   /// is used to reuse already generated types.
-  unordered_map<string,type_base_sptr> types_map;
+  string_type_base_sptr_map_type types_map;
 
   /// A set associating unknown CTF type ids
   std::set<ctf_id_t> unknown_types_set;
@@ -203,8 +203,10 @@ public:
   void
   canonicalize_all_types(void)
   {
-    for (auto t = types_map.begin(); t != types_map.end(); t++)
-      canonicalize (t->second);
+    canonicalize_types
+      (types_map.begin(), types_map.end(),
+       [](const string_type_base_sptr_map_type::const_iterator& i)
+       {return i->second;});
   }
 
   /// Constructor.

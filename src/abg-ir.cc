@@ -14564,36 +14564,49 @@ canonicalize(type_base_sptr t)
 	}
 
   if (canonical)
-    if (decl_base_sptr d = is_decl_slow(canonical))
-      {
-	scope_decl *scope = d->get_scope();
-	// Add the canonical type to the set of canonical types
-	// belonging to its scope.
-	if (scope)
-	  {
-	    if (is_type(scope))
-	      // The scope in question is itself a type (e.g, a class
-	      // or union).  Let's call that type ST.  We want to add
-	      // 'canonical' to the set of canonical types belonging
-	      // to ST.
-	      if (type_base_sptr c = is_type(scope)->get_canonical_type())
-		// We want to add 'canonical' to set of canonical
-		// types belonging to the canonical type of ST.  That
-		// way, just looking at the canonical type of ST is
-		// enough to get the types that belong to the scope of
-		// the class of equivalence of ST.
-		scope = is_scope_decl(is_decl(c)).get();
-	    scope->get_canonical_types().insert(canonical);
-	  }
-	// else, if the type doesn't have a scope, it's not meant to be
-	// emitted.  This can be the case for the result of the
-	// function strip_typedef, for instance.
-      }
+    {
+      if (decl_base_sptr d = is_decl_slow(canonical))
+	{
+	  scope_decl *scope = d->get_scope();
+	  // Add the canonical type to the set of canonical types
+	  // belonging to its scope.
+	  if (scope)
+	    {
+	      if (is_type(scope))
+		// The scope in question is itself a type (e.g, a class
+		// or union).  Let's call that type ST.  We want to add
+		// 'canonical' to the set of canonical types belonging
+		// to ST.
+		if (type_base_sptr c = is_type(scope)->get_canonical_type())
+		  // We want to add 'canonical' to set of canonical
+		  // types belonging to the canonical type of ST.  That
+		  // way, just looking at the canonical type of ST is
+		  // enough to get the types that belong to the scope of
+		  // the class of equivalence of ST.
+		  scope = is_scope_decl(is_decl(c)).get();
+	      scope->get_canonical_types().insert(canonical);
+	    }
+	  // else, if the type doesn't have a scope, it's not meant to be
+	  // emitted.  This can be the case for the result of the
+	  // function strip_typedef, for instance.
+	}
+
+#ifdef WITH_DEBUG_CT_PROPAGATION
+      // Update the book-keeping of the set of the types which
+      // propagated canonical type has been cleared.
+      //
+      // If this type 't' which has just been canonicalized was
+      // previously in the set of types which propagated canonical
+      // type has been cleared, then remove it from that set because
+      // its canonical type is now computed and definitely set.
+      const environment& env = t->get_environment();
+      env.priv_->erase_type_with_cleared_propagated_canonical_type(t.get());
+#endif
+    }
 
   t->on_canonical_type_set();
   return canonical;
 }
-
 
 /// Set the definition of this declaration-only @ref decl_base.
 ///

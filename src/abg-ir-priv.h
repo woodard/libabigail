@@ -337,7 +337,7 @@ struct type_base::priv
 
   /// If the current canonical type was set as the result of the
   /// "canonical type propagation optimization", then clear it.
-  void
+  bool
   clear_propagated_canonical_type()
   {
     if (canonical_type_propagated_ && !propagated_canonical_type_confirmed_)
@@ -345,7 +345,9 @@ struct type_base::priv
 	canonical_type.reset();
 	naked_canonical_type = nullptr;
 	set_canonical_type_propagated(false);
+	return true;
       }
+    return false;
   }
 }; // end struct type_base::priv
 
@@ -458,6 +460,14 @@ struct environment::priv
   // must be cleared.
   pointer_set		types_with_non_confirmed_propagated_ct_;
   pointer_set		recursive_types_;
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  // Set of types which propagated canonical type has been cleared
+  // during the "canonical type propagation optimization" phase. Those
+  // types are tracked in this set to ensure that they are later
+  // canonicalized.  This means that at the end of the
+  // canonicalization process, this set must be empty.
+  mutable pointer_set	types_with_cleared_propagated_ct_;
+#endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
   // This is used for debugging purposes.
   // When abidw is used with the option --debug-abidiff, some
@@ -794,6 +804,11 @@ struct environment::priv
     dest.priv_->canonical_type = canonical;
     dest.priv_->naked_canonical_type = canonical.get();
     dest.priv_->set_canonical_type_propagated(true);
+#ifdef WITH_DEBUG_CT_PROPAGATION
+    // If dest was previously a type which propagated canonical type
+    // has been cleared, let the book-keeping system know.
+    erase_type_with_cleared_propagated_canonical_type(&dest);
+#endif
     return true;
   }
 
@@ -874,6 +889,56 @@ struct environment::priv
     types_with_non_confirmed_propagated_ct_.clear();
   }
 
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  /// Getter for the set of types which propagated canonical type has
+  /// been cleared during the "canonical type propagation
+  /// optimization" phase. Those types are tracked in this set to
+  /// ensure that they are later canonicalized.  This means that at
+  /// the end of the canonicalization process, this set must be empty.
+  ///
+  /// @return the set of types which propagated canonical type has
+  /// been cleared.
+  const pointer_set&
+  types_with_cleared_propagated_ct() const
+  {return types_with_cleared_propagated_ct_;}
+
+  /// Getter for the set of types which propagated canonical type has
+  /// been cleared during the "canonical type propagation
+  /// optimization" phase. Those types are tracked in this set to
+  /// ensure that they are later canonicalized.  This means that at
+  /// the end of the canonicalization process, this set must be empty.
+  ///
+  /// @return the set of types which propagated canonical type has
+  /// been cleared.
+  pointer_set&
+  types_with_cleared_propagated_ct()
+  {return types_with_cleared_propagated_ct_;}
+
+  /// Record a type which propagated canonical type has been cleared
+  /// during the "canonical type propagation optimization phase".
+  ///
+  /// @param t the type to record.
+  void
+  record_type_with_cleared_propagated_canonical_type(const type_base* t)
+  {
+    uintptr_t ptr = reinterpret_cast<uintptr_t>(t);
+    types_with_cleared_propagated_ct_.insert(ptr);
+  }
+
+  /// Erase a type (which propagated canonical type has been cleared
+  /// during the "canonical type propagation optimization phase") from
+  /// the set of types that have been recorded by the invocation of
+  /// record_type_with_cleared_propagated_canonical_type()
+  ///
+  /// @param t the type to erase from the set.
+  void
+  erase_type_with_cleared_propagated_canonical_type(const type_base* t)
+  {
+    uintptr_t ptr = reinterpret_cast<uintptr_t>(t);
+    types_with_cleared_propagated_ct_.erase(ptr);
+  }
+#endif //WITH_DEBUG_CT_PROPAGATION
+
   /// Collect the types that depends on a given "target" type.
   ///
   /// Walk a set of types and if they depend directly or indirectly on
@@ -941,7 +1006,7 @@ struct environment::priv
 	type_base_sptr canonical = t->priv_->canonical_type.lock();
 	if (canonical)
 	  {
-	    t->priv_->clear_propagated_canonical_type();
+	    clear_propagated_canonical_type(t);
 	    t->priv_->set_does_not_depend_on_recursive_type();
 	  }
       }
@@ -980,13 +1045,35 @@ struct environment::priv
       {
 	// This cannot carry any tentative canonical type at this
 	// point.
-	if (t->priv_->canonical_type_propagated()
-	    && !t->priv_->propagated_canonical_type_confirmed())
-	  t->priv_->clear_propagated_canonical_type();
+	clear_propagated_canonical_type(t);
 	// Reset the marking of the type as it no longer carries a
 	// tentative canonical type that might be later cancelled.
 	t->priv_->set_does_not_depend_on_recursive_type();
 	env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+      }
+  }
+
+  /// Clear the propagated canonical type of a given type.
+  ///
+  /// This function also updates the book-keeping of the set of types
+  /// which propagated canonical types have been cleared.
+  ///
+  /// Please note that at the end of the canonicalization of all the
+  /// types in the system, all the types which propagated canonical
+  /// type has been cleared must be canonicalized.
+  ///
+  /// @param t the type to
+  void
+  clear_propagated_canonical_type(const type_base *t)
+  {
+    if (t->priv_->clear_propagated_canonical_type())
+      {
+#ifdef WITH_DEBUG_CT_PROPAGATION
+	// let the book-keeping system know that t has its propagated
+	// canonical type cleared.
+	record_type_with_cleared_propagated_canonical_type(t)
+#endif
+	  ;
       }
   }
 
@@ -1091,6 +1178,64 @@ struct environment::priv
   }
 #endif
 };// end struct environment::priv
+
+/// Compute the canonical type for all the IR types of the system.
+///
+/// After invoking this function, the time it takes to compare two
+/// types of the IR is equivalent to the time it takes to compare
+/// their pointer value.  That is faster than performing a structural
+/// (A.K.A. member-wise) comparison.
+///
+/// Note that this function performs some sanity checks after* the
+/// canonicalization process.  It ensures that at the end of the
+/// canonicalization process, all types have been canonicalized.  This
+/// is important because the canonicalization algorithm sometimes
+/// clears some canonical types after having speculatively set them
+/// for performance purposes.  At the end of the process however, all
+/// types must be canonicalized, and this function detects violations
+/// of that assertion.
+///
+/// @tparam input_iterator the type of the input iterator of the @p
+/// beging and @p end.
+///
+/// @tparam deref_lambda a lambda function which takes in parameter
+/// the input iterator of type @p input_iterator and dereferences it
+/// to return the type to canonicalize.
+///
+/// @param begin an iterator pointing to the first type of the set of types
+/// to canonicalize.
+///
+/// @param end an iterator pointing to the end (after the last type) of
+/// the set of types to canonicalize.
+///
+/// @param deref a lambda function that knows how to dereference the
+/// iterator @p begin to return the type to canonicalize.
+template<typename input_iterator,
+	 typename deref_lambda>
+void
+canonicalize_types(const input_iterator& begin,
+		   const input_iterator& end,
+		   deref_lambda deref)
+{
+  if (begin == end)
+    return;
+
+  // First, let's compute the canonical type of this type.
+  for (auto t = begin; t != end; ++t)
+    canonicalize(deref(t));
+
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  // Then now, make sure that all types -- which propagated canonical
+  // type has been cleared -- have been canonicalized.  In other
+  // words, the set of types which have been recorded because their
+  // propagated canonical type has been cleared must be empty.
+  const environment& env = deref(begin)->get_environment();
+  pointer_set to_canonicalize =
+    env.priv_->types_with_cleared_propagated_ct();
+
+  ABG_ASSERT(to_canonicalize.empty());
+#endif // WITH_DEBUG_CT_PROPAGATION
+}
 
 // <class_or_union::priv definitions>
 struct class_or_union::priv

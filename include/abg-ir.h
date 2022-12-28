@@ -537,6 +537,10 @@ typedef unordered_set<const type_or_decl_base*,
 /// value is a @ref type_base_wptr.
 typedef unordered_map<string, type_base_wptr> string_type_base_wptr_map_type;
 
+/// A convenience typedef for a map which key is a string and which
+/// value is a @ref type_base_sptr.
+typedef unordered_map<string, type_base_sptr> string_type_base_sptr_map_type;
+
 /// A convenience typedef for a map which key is an @ref
 /// interned_string and which value is a @ref type_base_wptr.
 typedef unordered_map<interned_string, type_base_wptr, hash_interned_string>
