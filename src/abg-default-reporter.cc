@@ -1658,6 +1658,8 @@ default_reporter::report(const var_diff& d, ostream& out,
 
   maybe_report_diff_for_member(first, second, d.context(), out, indent);
 
+  maybe_report_diff_for_variable(first, second, d.context(), out, indent);
+
   if (diff_sptr dif = d.type_diff())
     {
       if (dif->to_be_reported())

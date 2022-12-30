@@ -206,6 +206,13 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 			     ostream&			out,
 			     const string&		indent);
 
+bool
+maybe_report_diff_for_variable(const decl_base_sptr&	decl1,
+			       const decl_base_sptr&	decl2,
+			       const diff_context_sptr& ctxt,
+			       ostream&		out,
+			       const string&		indent);
+
 void
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 			     const elf_symbol_sptr&	symbol2,

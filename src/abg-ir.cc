@@ -19052,10 +19052,12 @@ var_decl::set_scope(scope_decl* scope)
     get_context_rel()->set_scope(scope);
 }
 
-/// Compares two instances of @ref var_decl.
+/// Compares two instances of @ref var_decl without taking their type
+/// into account.
 ///
-/// If the two intances are different, set a bitfield to give some
-/// insight about the kind of differences there are.
+/// If the two intances are different modulo their type, set a
+/// bitfield to give some insight about the kind of differences there
+/// are.
 ///
 /// @param l the first artifact of the comparison.
 ///
@@ -19072,26 +19074,9 @@ var_decl::set_scope(scope_decl* scope)
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const var_decl& l, const var_decl& r, change_kind* k)
+var_equals_modulo_types(const var_decl& l, const var_decl& r, change_kind* k)
 {
   bool result = true;
-
-  // First test types of variables.  This should be fast because in
-  // the general case, most types should be canonicalized.
-  if (*l.get_naked_type() != *r.get_naked_type())
-    {
-      result = false;
-      if (k)
-	{
-	  if (!types_have_similar_structure(l.get_naked_type(),
-					    r.get_naked_type()))
-	    *k |= (LOCAL_TYPE_CHANGE_KIND);
-	  else
-	    *k |= SUBTYPE_CHANGE_KIND;
-	}
-      else
-	ABG_RETURN_FALSE;
-    }
 
   // If there are underlying elf symbols for these variables,
   // compare them.  And then compare the other parts.
@@ -19160,6 +19145,52 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       else
 	ABG_RETURN_FALSE;
     }
+
+  ABG_RETURN(result);
+}
+
+/// Compares two instances of @ref var_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const var_decl& l, const var_decl& r, change_kind* k)
+{
+  bool result = true;
+
+  // First test types of variables.  This should be fast because in
+  // the general case, most types should be canonicalized.
+  if (*l.get_naked_type() != *r.get_naked_type())
+    {
+      result = false;
+      if (k)
+	{
+	  if (!types_have_similar_structure(l.get_naked_type(),
+					    r.get_naked_type()))
+	    *k |= (LOCAL_TYPE_CHANGE_KIND);
+	  else
+	    *k |= SUBTYPE_CHANGE_KIND;
+	}
+      else
+	ABG_RETURN_FALSE;
+    }
+
+  result &= var_equals_modulo_types(l, r, k);
 
   ABG_RETURN(result);
 }

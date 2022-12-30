@@ -1070,6 +1070,49 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
   return reported;
 }
 
+/// Report the differences between two generic variables.
+///
+/// @param decl1 the first version of the variable.
+///
+/// @param decl2 the second version of the variable.
+///
+/// @param ctxt the context of the diff.
+///
+/// @param out the output stream to emit the change report to.
+///
+/// @param indent the indentation prefix to emit.
+///
+/// @return true if any text has been emitted to the output stream.
+bool
+maybe_report_diff_for_variable(const decl_base_sptr&	decl1,
+			       const decl_base_sptr&	decl2,
+			       const diff_context_sptr& ctxt,
+			       ostream&		out,
+			       const string&		indent)
+{
+  bool reported = false;
+
+  var_decl_sptr var1 = is_var_decl(decl1);
+  var_decl_sptr var2 = is_var_decl(decl2);
+
+  if (!var1 || !var2)
+    return reported;
+
+  if (filtering::is_var_1_dim_unknown_size_array_change(var1, var2))
+    {
+      uint64_t var_size_in_bits = var1->get_symbol()->get_size() * 8;
+
+      out << indent;
+      show_offset_or_size("size of variable symbol (",
+			  var_size_in_bits, *ctxt, out);
+      out << ") hasn't changed\n"
+	  << indent << "but it does have a harmless type change\n";
+      reported = true;
+    }
+
+  return reported;
+}
+
 /// Report the difference between two ELF symbols, if there is any.
 ///
 /// @param symbol1 the first symbol to consider.

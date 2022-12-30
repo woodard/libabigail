@@ -822,6 +822,20 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR29387-report.txt",
    "output/test-diff-filter/test-PR29387-report.txt",
   },
+  {
+    "data/test-diff-filter/test-PR29811-0-v0.o",
+    "data/test-diff-filter/test-PR29811-0-v1.o",
+    "--no-default-suppression",
+    "data/test-diff-filter/test-PR29811-0-report-0.txt",
+    "output/test-diff-filter/test-PR29811-0-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/test-PR29811-0-v0.o",
+    "data/test-diff-filter/test-PR29811-0-v1.o",
+    "--harmless --no-default-suppression",
+    "data/test-diff-filter/test-PR29811-0-report-1.txt",
+    "output/test-diff-filter/test-PR29811-0-report-1.txt",
+  },
 #ifdef WITH_CTF
   {
    "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-DWARF.o",

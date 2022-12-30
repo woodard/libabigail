@@ -633,6 +633,85 @@ has_data_member_replaced_by_anon_dm(const diff* diff)
   return !c->data_members_replaced_by_adms().empty();
 }
 
+/// Test if we are looking at two variables which types are both one
+/// dimension array, with one of them being of unknow size and the two
+/// variables having the same symbol size.
+///
+/// This can happen in the case of these two declarations, for instance:
+///
+///     unsigned int array[];
+///
+/// and:
+///
+///     unsigned int array[] ={0};
+///
+/// In both cases, the size of the ELF symbol of the variable 'array'
+/// is 32 bits, but, at least in the first case
+bool
+is_var_1_dim_unknown_size_array_change(const var_decl_sptr& var1,
+				       const var_decl_sptr& var2)
+{
+  type_base_sptr /*first type*/ft =
+    peel_qualified_or_typedef_type(var1->get_type());
+  type_base_sptr /*second type*/st =
+    peel_qualified_or_typedef_type(var2->get_type());
+
+  array_type_def_sptr /*first array type*/fat = is_array_type(ft);
+  array_type_def_sptr /*second array type*/sat = is_array_type(st);
+
+  // The types of the variables must be arrays.
+  if (!fat || !sat)
+    return false;
+
+  // The arrays must have one dimension and at least one of them must
+  // be of unknown size.
+  if (fat->get_subranges().size() != 1
+      || sat->get_subranges().size() != 1
+      || (!fat->is_infinite() && !sat->is_infinite()))
+    return false;
+
+  // The variables must be equal modulo their type.
+  if (!var_equals_modulo_types(*var1, *var2, nullptr))
+    return false;
+
+  // The symbols of the variables must be defined and of the same
+  // non-zero size.
+  if (!var1->get_symbol()
+      || !var2->get_symbol()
+      || var1->get_symbol()->get_size() != var2->get_symbol()->get_size())
+    return false;
+
+  return true;
+}
+
+/// Test if we are looking at a diff that carries a change of
+/// variables which types are both one dimension array, with one of
+/// them being of unknow size and the two variables having the same
+/// symbol size.
+///
+/// This can happen in the case of these two declarations, for instance:
+///
+///     unsigned int array[];
+///
+/// and:
+///
+///     unsigned int array[] ={0};
+///
+/// In both cases, the size of the ELF symbol of the variable 'array'
+/// is 32 bits, but, at least in the first case
+bool
+is_var_1_dim_unknown_size_array_change(const diff* diff)
+{
+  const var_diff* d = is_var_diff(diff);
+
+  if (!d)
+    return false;
+
+  var_decl_sptr f = d->first_var(), s = d->second_var();
+
+  return is_var_1_dim_unknown_size_array_change(f, s);
+}
+
 /// Test if a class_diff node has static members added or removed.
 ///
 /// @param diff the diff node to consider.
@@ -1652,30 +1731,9 @@ has_void_ptr_to_ptr_change(const diff* dif)
 ///
 /// @return true iff @p dif contains the benign array type size change.
 static bool
-has_benign_infinite_array_change(const diff* dif)
+has_benign_array_of_unknown_size_change(const diff* dif)
 {
-  if (const var_diff* var_dif = is_var_diff(dif))
-    {
-      if (!var_dif->first_var()->get_symbol()
-	  || var_dif->second_var()->get_symbol())
-	return false;
-
-      if (var_dif->first_var()->get_symbol()->get_size()
-	  != var_dif->second_var()->get_symbol()->get_size())
-	return false;
-
-      const diff *d = var_dif->type_diff().get();
-      if (!d)
-	return false;
-      d = peel_qualified_diff(d);
-      if (const array_diff *a = is_array_diff(d))
-	{
-	  array_type_def_sptr f = a->first_array(), s = a->second_array();
-	  if (f->is_infinite() != s->is_infinite())
-	    return true;
-	}
-    }
-  return false;
+  return is_var_1_dim_unknown_size_array_change(dif);
 }
 
 /// Test if a union diff node does have changes that don't impact its
@@ -1769,7 +1827,7 @@ categorize_harmless_diff_node(diff *d, bool pre)
       if (has_void_ptr_to_ptr_change(d))
 	category |= VOID_PTR_TO_PTR_CHANGE_CATEGORY;
 
-      if (has_benign_infinite_array_change(d))
+      if (has_benign_array_of_unknown_size_change(d))
 	category |= BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY;
 
       if (category)
