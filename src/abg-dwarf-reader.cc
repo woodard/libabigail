@@ -10933,8 +10933,14 @@ compare_dies(const reader& rdr,
       {
 	uint64_t l_lower_bound = 0, r_lower_bound = 0,
 	  l_upper_bound = 0, r_upper_bound = 0;
-	die_unsigned_constant_attribute(l, DW_AT_lower_bound, l_lower_bound);
-	die_unsigned_constant_attribute(r, DW_AT_lower_bound, r_lower_bound);
+	bool l_lower_bound_set = false, r_lower_bound_set = false,
+	  l_upper_bound_set = false, r_upper_bound_set = false;
+
+	l_lower_bound_set =
+	  die_unsigned_constant_attribute(l, DW_AT_lower_bound, l_lower_bound);
+	r_lower_bound_set =
+	  die_unsigned_constant_attribute(r, DW_AT_lower_bound, r_lower_bound);
+
 	if (!die_unsigned_constant_attribute(l, DW_AT_upper_bound,
 					     l_upper_bound))
 	  {
@@ -10942,10 +10948,14 @@ compare_dies(const reader& rdr,
 	    if (die_unsigned_constant_attribute(l, DW_AT_count, l_count))
 	      {
 		l_upper_bound = l_lower_bound + l_count;
+		l_upper_bound_set = true;
 		if (l_upper_bound)
 		  --l_upper_bound;
 	      }
 	  }
+	else
+	  l_upper_bound_set = true;
+
 	if (!die_unsigned_constant_attribute(r, DW_AT_upper_bound,
 					     r_upper_bound))
 	  {
@@ -10953,12 +10963,17 @@ compare_dies(const reader& rdr,
 	    if (die_unsigned_constant_attribute(l, DW_AT_count, r_count))
 	      {
 		r_upper_bound = r_lower_bound + r_count;
+		r_upper_bound_set = true;
 		if (r_upper_bound)
 		  --r_upper_bound;
 	      }
 	  }
+	else
+	  r_upper_bound_set = true;
 
-	if ((l_lower_bound != r_lower_bound)
+	if ((l_lower_bound_set != r_lower_bound_set)
+	    || (l_upper_bound_set != r_upper_bound_set)
+	    || (l_lower_bound != r_lower_bound)
 	    || (l_upper_bound != r_upper_bound))
 	  SET_RESULT_TO_FALSE(result, l, r);
       }
