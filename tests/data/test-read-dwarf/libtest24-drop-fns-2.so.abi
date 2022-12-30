@@ -177,8 +177,8 @@
     <typedef-decl name='wint_t' type-id='type-id-16' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='357' column='1' id='type-id-33'/>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-16'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-28'/>
-    <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='infinite' id='type-id-34'>
-      <subrange length='infinite' id='type-id-35'/>
+    <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='unknown' id='type-id-34'>
+      <subrange length='unknown' id='type-id-35'/>
     </array-type-def>
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-36'/>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-37'/>

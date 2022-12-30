@@ -10,8 +10,8 @@
     <array-type-def dimensions='1' type-id='a84c031d' size-in-bits='8' id='89feb1ec'>
       <subrange length='1' type-id='4c87fef4' id='52f813b4'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='a84c031d' size-in-bits='infinite' id='e84913bd'>
-      <subrange length='infinite' type-id='4c87fef4' id='031f2035'/>
+    <array-type-def dimensions='1' type-id='a84c031d' size-in-bits='unknown' id='e84913bd'>
+      <subrange length='unknown' type-id='4c87fef4' id='031f2035'/>
     </array-type-def>
     <type-decl name='double' size-in-bits='64' id='a0eb0f08'/>
     <array-type-def dimensions='2' type-id='a0eb0f08' size-in-bits='960' id='9ba86d8c'>

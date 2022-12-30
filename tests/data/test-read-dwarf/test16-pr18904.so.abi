@@ -2174,8 +2174,8 @@
     <array-type-def dimensions='1' type-id='type-id-160' size-in-bits='1152' id='type-id-163'>
       <subrange length='9' type-id='type-id-52' id='type-id-164'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='infinite' id='type-id-166'>
-      <subrange length='infinite' type-id='type-id-52' id='type-id-167'/>
+    <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='unknown' id='type-id-166'>
+      <subrange length='unknown' type-id='type-id-52' id='type-id-167'/>
     </array-type-def>
     <class-decl name='AutoData' size-in-bits='192' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='208' column='1' id='type-id-168'>
       <data-member access='private' layout-offset-in-bits='0'>

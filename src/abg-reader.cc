@@ -4128,7 +4128,7 @@ build_subrange_type(reader&	rdr,
   bool is_infinite = false;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "length"))
     {
-      if (string(CHAR_STR(s)) == "infinite")
+      if (string(CHAR_STR(s)) == "infinite" || string(CHAR_STR(s)) == "unknown")
 	is_infinite = true;
       else
 	length = strtoull(CHAR_STR(s), NULL, 0);
@@ -4259,7 +4259,8 @@ build_array_type_def(reader&	rdr,
       size_in_bits = strtoull(CHAR_STR(s), &endptr, 0);
       if (*endptr != '\0')
 	{
-	  if (!strcmp(CHAR_STR(s), "infinite"))
+	  if (!strcmp(CHAR_STR(s), "infinite")
+	      ||!strcmp(CHAR_STR(s), "unknown"))
 	    size_in_bits = (size_t) -1;
 	  else
 	    return nil;

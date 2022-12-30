@@ -236,14 +236,14 @@
     <array-type-def dimensions='1' type-id='type-id-73' size-in-bits='16384' id='type-id-74'>
       <subrange length='64' type-id='type-id-1' id='type-id-75'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-76' size-in-bits='infinite' id='type-id-77'>
-      <subrange length='infinite' type-id='type-id-1' id='type-id-78'/>
+    <array-type-def dimensions='1' type-id='type-id-76' size-in-bits='unknown' id='type-id-77'>
+      <subrange length='unknown' type-id='type-id-1' id='type-id-78'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-79' size-in-bits='384' id='type-id-80'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-81' size-in-bits='infinite' id='type-id-82'>
-      <subrange length='infinite' type-id='type-id-1' id='type-id-78'/>
+    <array-type-def dimensions='1' type-id='type-id-81' size-in-bits='unknown' id='type-id-82'>
+      <subrange length='unknown' type-id='type-id-1' id='type-id-78'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-83' id='type-id-84'>
       <subrange length='3' type-id='type-id-1' id='type-id-6'/>
@@ -9171,8 +9171,8 @@
     <array-type-def dimensions='1' type-id='type-id-126' size-in-bits='256' id='type-id-791'>
       <subrange length='4' type-id='type-id-1' id='type-id-19'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-126' size-in-bits='infinite' id='type-id-618'>
-      <subrange length='infinite' type-id='type-id-1' id='type-id-78'/>
+    <array-type-def dimensions='1' type-id='type-id-126' size-in-bits='unknown' id='type-id-618'>
+      <subrange length='unknown' type-id='type-id-1' id='type-id-78'/>
     </array-type-def>
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-648'/>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-186'/>

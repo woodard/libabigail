@@ -763,12 +763,12 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 	      // arrays ...
 	      out << indent << "array type size changed from ";
 	      if (first_array->is_infinite())
-		out << "infinity";
+		out << "\'unknown\'";
 	      else
 		emit_num_value(first_array->get_size_in_bits(), *ctxt, out);
 	      out << " to ";
 	      if (second_array->is_infinite())
-		out << "infinity";
+		out << "\'unknown\'";
 	      else
 		emit_num_value(second_array->get_size_in_bits(), *ctxt, out);
 	      out << "\n";
@@ -797,14 +797,14 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 			  << " changed length from ";
 
 		      if ((*i)->is_infinite())
-			out << "infinity";
+			out << "\'unknown\'";
 		      else
 			out << (*i)->get_length();
 
 		      out << " to ";
 
 		      if ((*j)->is_infinite())
-			out << "infinity";
+			out << "\'unknown\'";
 		      else
 			out << (*j)->get_length();
 		      out << "\n";

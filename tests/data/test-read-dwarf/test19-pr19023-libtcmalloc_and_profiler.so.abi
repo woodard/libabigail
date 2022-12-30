@@ -2377,8 +2377,8 @@
     <array-type-def dimensions='1' type-id='type-id-174' size-in-bits='512' id='type-id-175'>
       <subrange length='8' type-id='type-id-19' id='type-id-176'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='infinite' id='type-id-177'>
-      <subrange length='infinite' id='type-id-178'/>
+    <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='unknown' id='type-id-177'>
+      <subrange length='unknown' id='type-id-178'/>
     </array-type-def>
     <class-decl name='AddressMap&lt;HeapProfileTable::AllocValue&gt;' size-in-bits='320' visibility='default' filepath='src/addressmap-inl.h' line='104' column='1' id='type-id-179'>
       <member-type access='private'>

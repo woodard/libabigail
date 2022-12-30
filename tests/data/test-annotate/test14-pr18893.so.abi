@@ -6793,9 +6793,9 @@
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
     </array-type-def>
     <!-- REAL[][24][24] -->
-    <array-type-def dimensions='3' type-id='type-id-1' size-in-bits='infinite' id='type-id-134'>
+    <array-type-def dimensions='3' type-id='type-id-1' size-in-bits='unknown' id='type-id-134'>
       <!-- <anonymous range>[] -->
-      <subrange length='infinite' id='type-id-135'/>
+      <subrange length='unknown' id='type-id-135'/>
       <!-- <anonymous range>[24] -->
       <subrange length='24' type-id='type-id-3' id='type-id-136'/>
       <!-- <anonymous range>[24] -->

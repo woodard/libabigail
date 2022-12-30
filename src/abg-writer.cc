@@ -1470,7 +1470,7 @@ static void
 write_array_size_and_alignment(const shared_ptr<array_type_def> decl, ostream& o)
 {
   if (decl->is_infinite())
-    o << " size-in-bits='" << "infinite" << "'";
+    o << " size-in-bits='" << "unknown" << "'";
   else {
     size_t size_in_bits = decl->get_size_in_bits();
     if (size_in_bits)
@@ -2857,7 +2857,7 @@ write_array_subrange_type(const array_type_def::subrange_sptr&	decl,
 
   o << " length='";
   if (decl->is_infinite())
-    o << "infinite";
+    o << "unknown";
   else
     o << decl->get_length();
 

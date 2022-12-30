@@ -1010,8 +1010,8 @@
     <array-type-def dimensions='1' type-id='type-id-80' size-in-bits='39936' id='type-id-98'>
       <subrange length='624' type-id='type-id-3' id='type-id-99'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-80' size-in-bits='infinite' id='type-id-100'>
-      <subrange length='infinite' id='type-id-101'/>
+    <array-type-def dimensions='1' type-id='type-id-80' size-in-bits='unknown' id='type-id-100'>
+      <subrange length='unknown' id='type-id-101'/>
     </array-type-def>
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-102'/>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-42'/>

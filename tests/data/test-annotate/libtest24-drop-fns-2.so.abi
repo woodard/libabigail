@@ -255,9 +255,9 @@
     <!-- unsigned long int -->
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-28'/>
     <!-- unsigned long int[] -->
-    <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='infinite' id='type-id-34'>
+    <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='unknown' id='type-id-34'>
       <!-- <anonymous range>[] -->
-      <subrange length='infinite' id='type-id-35'/>
+      <subrange length='unknown' id='type-id-35'/>
     </array-type-def>
     <!-- unsigned long long int -->
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-36'/>

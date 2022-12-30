@@ -1806,11 +1806,11 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/operations.cpp' comp-dir-path='/home/andrew/Documents/10gen/dev/src/mongodb' language='LANG_C_plus_plus'>
-    <array-type-def dimensions='1' type-id='type-id-122' size-in-bits='infinite' id='type-id-123'>
-      <subrange length='infinite' type-id='type-id-4' id='type-id-124'/>
+    <array-type-def dimensions='1' type-id='type-id-122' size-in-bits='unknown' id='type-id-123'>
+      <subrange length='unknown' type-id='type-id-4' id='type-id-124'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-125' size-in-bits='infinite' id='type-id-126'>
-      <subrange length='infinite' type-id='type-id-4' id='type-id-124'/>
+    <array-type-def dimensions='1' type-id='type-id-125' size-in-bits='unknown' id='type-id-126'>
+      <subrange length='unknown' type-id='type-id-4' id='type-id-124'/>
     </array-type-def>
     <typedef-decl name='_Atomic_word' type-id='type-id-8' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/x86_64-linux-gnu/c++/4.9/bits/atomic_word.h' line='32' column='1' id='type-id-127'/>
     <typedef-decl name='_G_fpos64_t' type-id='type-id-13' filepath='/usr/include/_G_config.h' line='30' column='1' id='type-id-128'/>

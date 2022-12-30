@@ -4341,8 +4341,8 @@
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='128' id='type-id-133'>
       <subrange length='4' type-id='type-id-3' id='type-id-62'/>
     </array-type-def>
-    <array-type-def dimensions='3' type-id='type-id-1' size-in-bits='infinite' id='type-id-134'>
-      <subrange length='infinite' id='type-id-135'/>
+    <array-type-def dimensions='3' type-id='type-id-1' size-in-bits='unknown' id='type-id-134'>
+      <subrange length='unknown' id='type-id-135'/>
       <subrange length='24' type-id='type-id-3' id='type-id-136'/>
       <subrange length='24' type-id='type-id-3' id='type-id-136'/>
     </array-type-def>
