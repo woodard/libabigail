@@ -32581,11 +32581,11 @@
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::PageHeapAllocator<tcmalloc::Span> tcmalloc::Static::span_allocator_ -->
-          <var-decl name='span_allocator_' type-id='type-id-1507' mangled-name='_ZN8tcmalloc6Static15span_allocator_E' visibility='default' filepath='src/static_vars.h' line='99' column='1' elf-symbol-id='_ZN8tcmalloc6Static15span_allocator_E'/>
+          <var-decl name='span_allocator_' type-id='type-id-1281' mangled-name='_ZN8tcmalloc6Static15span_allocator_E' visibility='default' filepath='src/static_vars.h' line='99' column='1' elf-symbol-id='_ZN8tcmalloc6Static15span_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::PageHeapAllocator<tcmalloc::StackTrace> tcmalloc::Static::stacktrace_allocator_ -->
-          <var-decl name='stacktrace_allocator_' type-id='type-id-1510' mangled-name='_ZN8tcmalloc6Static21stacktrace_allocator_E' visibility='default' filepath='src/static_vars.h' line='100' column='1' elf-symbol-id='_ZN8tcmalloc6Static21stacktrace_allocator_E'/>
+          <var-decl name='stacktrace_allocator_' type-id='type-id-1147' mangled-name='_ZN8tcmalloc6Static21stacktrace_allocator_E' visibility='default' filepath='src/static_vars.h' line='100' column='1' elf-symbol-id='_ZN8tcmalloc6Static21stacktrace_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::Span tcmalloc::Static::sampled_objects_ -->
@@ -32593,7 +32593,7 @@
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::PageHeapAllocator<tcmalloc::StackTraceTable::Bucket> tcmalloc::Static::bucket_allocator_ -->
-          <var-decl name='bucket_allocator_' type-id='type-id-1554' mangled-name='_ZN8tcmalloc6Static17bucket_allocator_E' visibility='default' filepath='src/static_vars.h' line='102' column='1' elf-symbol-id='_ZN8tcmalloc6Static17bucket_allocator_E'/>
+          <var-decl name='bucket_allocator_' type-id='type-id-1305' mangled-name='_ZN8tcmalloc6Static17bucket_allocator_E' visibility='default' filepath='src/static_vars.h' line='102' column='1' elf-symbol-id='_ZN8tcmalloc6Static17bucket_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <!-- static tcmalloc::StackTrace* tcmalloc::Static::growth_stacks_ -->

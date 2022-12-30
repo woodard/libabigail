@@ -822,6 +822,15 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR29387-report.txt",
    "output/test-diff-filter/test-PR29387-report.txt",
   },
+#ifdef WITH_CTF
+  {
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-DWARF.o",
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-CTF.o",
+   "--ctf --no-default-suppression",
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-report.txt",
+   "output/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-report.txt",
+  },
+#endif
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

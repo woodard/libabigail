@@ -20374,16 +20374,16 @@
           <var-decl name='central_cache_' type-id='type-id-1431' mangled-name='_ZN8tcmalloc6Static14central_cache_E' visibility='default' filepath='src/static_vars.h' line='98' column='1' elf-symbol-id='_ZN8tcmalloc6Static14central_cache_E'/>
         </data-member>
         <data-member access='private' static='yes'>
-          <var-decl name='span_allocator_' type-id='type-id-1507' mangled-name='_ZN8tcmalloc6Static15span_allocator_E' visibility='default' filepath='src/static_vars.h' line='99' column='1' elf-symbol-id='_ZN8tcmalloc6Static15span_allocator_E'/>
+          <var-decl name='span_allocator_' type-id='type-id-1281' mangled-name='_ZN8tcmalloc6Static15span_allocator_E' visibility='default' filepath='src/static_vars.h' line='99' column='1' elf-symbol-id='_ZN8tcmalloc6Static15span_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
-          <var-decl name='stacktrace_allocator_' type-id='type-id-1510' mangled-name='_ZN8tcmalloc6Static21stacktrace_allocator_E' visibility='default' filepath='src/static_vars.h' line='100' column='1' elf-symbol-id='_ZN8tcmalloc6Static21stacktrace_allocator_E'/>
+          <var-decl name='stacktrace_allocator_' type-id='type-id-1147' mangled-name='_ZN8tcmalloc6Static21stacktrace_allocator_E' visibility='default' filepath='src/static_vars.h' line='100' column='1' elf-symbol-id='_ZN8tcmalloc6Static21stacktrace_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <var-decl name='sampled_objects_' type-id='type-id-144' mangled-name='_ZN8tcmalloc6Static16sampled_objects_E' visibility='default' filepath='src/static_vars.h' line='101' column='1' elf-symbol-id='_ZN8tcmalloc6Static16sampled_objects_E'/>
         </data-member>
         <data-member access='private' static='yes'>
-          <var-decl name='bucket_allocator_' type-id='type-id-1554' mangled-name='_ZN8tcmalloc6Static17bucket_allocator_E' visibility='default' filepath='src/static_vars.h' line='102' column='1' elf-symbol-id='_ZN8tcmalloc6Static17bucket_allocator_E'/>
+          <var-decl name='bucket_allocator_' type-id='type-id-1305' mangled-name='_ZN8tcmalloc6Static17bucket_allocator_E' visibility='default' filepath='src/static_vars.h' line='102' column='1' elf-symbol-id='_ZN8tcmalloc6Static17bucket_allocator_E'/>
         </data-member>
         <data-member access='private' static='yes'>
           <var-decl name='growth_stacks_' type-id='type-id-1560' mangled-name='_ZN8tcmalloc6Static14growth_stacks_E' visibility='default' filepath='src/static_vars.h' line='108' column='1' elf-symbol-id='_ZN8tcmalloc6Static14growth_stacks_E'/>

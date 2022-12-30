@@ -1131,6 +1131,10 @@ test-diff-filter/test-PR29387-v0.c	 \
 test-diff-filter/test-PR29387-v1.o	 \
 test-diff-filter/test-PR29387-v0.o	 \
 test-diff-filter/test-PR29387-report.txt \
+test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-CTF.o \
+test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-DWARF.o \
+test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-report.txt \
+test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf.c \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

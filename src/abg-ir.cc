@@ -18900,6 +18900,16 @@ struct var_decl::priv
       naked_type_(t.get()),
       binding_(b)
   {}
+
+  /// Setter of the type of the variable.
+  ///
+  /// @param t the new variable type.
+  void
+  set_type(type_base_sptr t)
+  {
+    type_ = t;
+    naked_type_ = t.get();
+  }
 }; // end struct var_decl::priv
 
 /// Constructor of the @ref var_decl type.
@@ -18935,6 +18945,13 @@ var_decl::var_decl(const string&	name,
 const type_base_sptr
 var_decl::get_type() const
 {return priv_->type_.lock();}
+
+/// Setter of the type of the variable.
+///
+/// @param the new type of the variable.
+void
+var_decl::set_type(type_base_sptr& t)
+{priv_->set_type(t);}
 
 /// Getter of the type of the variable.
 ///

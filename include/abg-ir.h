@@ -2910,6 +2910,9 @@ public:
   const type_base_sptr
   get_type() const;
 
+  void
+  set_type(type_base_sptr&);
+
   const type_base*
   get_naked_type() const;
 

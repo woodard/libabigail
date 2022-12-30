@@ -14447,7 +14447,7 @@ build_var_decl(reader&	rdr,
       ABG_ASSERT(type);
     }
 
-  if (!type)
+  if (!type && !result)
     return result;
 
   string name, linkage_name;
@@ -14460,9 +14460,12 @@ build_var_decl(reader&	rdr,
     {
       // We were called to append properties that might have been
       // missing from the first version of the variable.  And usually
-      // that missing property is the mangled name.
+      // that missing property is the mangled name or the type.
       if (!linkage_name.empty())
 	result->set_linkage_name(linkage_name);
+
+      if (type)
+	result->set_type(type);
     }
 
   // Check if a variable symbol with this name is exported by the elf
