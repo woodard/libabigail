@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
-// Copyright (C) 2020-2022 Google, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
+// Copyright (C) 2020-2023 Google, Inc.
 //
 // Author: Matthias Maennich
 
