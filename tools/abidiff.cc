@@ -434,6 +434,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.exported_interfaces_only = true;
       else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
 	opts.exported_interfaces_only = false;
+      else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
+	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -1235,7 +1237,8 @@ main(int argc, char* argv[])
 	      create_best_elf_based_reader(opts.file1,
 					   opts.prepared_di_root_paths1,
 					   env, requested_fe_kind,
-					   opts.show_all_types);
+					   opts.show_all_types,
+					   opts.linux_kernel_mode);
             ABG_ASSERT(rdr);
 	    set_generic_options(*rdr, opts);
 	    set_suppressions(*rdr, opts);
@@ -1307,7 +1310,8 @@ main(int argc, char* argv[])
 	      create_best_elf_based_reader(opts.file2,
 					   opts.prepared_di_root_paths2,
 					   env, requested_fe_kind,
-					   opts.show_all_types);
+					   opts.show_all_types,
+					   opts.linux_kernel_mode);
             ABG_ASSERT(rdr);
 
 	    set_generic_options(*rdr, opts);
