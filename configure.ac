@@ -199,7 +199,7 @@ AC_ARG_ENABLE(ctf,
 	      AS_HELP_STRING([--enable-ctf=yes|no],
 			     [disable support of ctf files)]),
 	      ENABLE_CTF=$enableval,
-	      ENABLE_CTF=no)
+	      ENABLE_CTF=auto)
 
 dnl *************************************************
 dnl check for dependencies
@@ -317,17 +317,24 @@ AC_SUBST([ELF_LIBS])
 dnl check for libctf presence if CTF code has been enabled by command line
 dnl argument, and then define CTF flag (to build CTF file code) if libctf is
 dnl found on the system
-CTF_LIBS=
-if test x$ENABLE_CTF = xyes; then
+if test x$ENABLE_CTF != xno; then
+  CTF_HEADER=no
+  AC_CHECK_HEADER([ctf.h],
+		  [CTF_HEADER=yes],
+		  [AC_MSG_NOTICE([could not find ctf.h, going to disable CTF support])])
   LIBCTF=
-  AC_CHECK_LIB(ctf, ctf_open, [LIBCTF=yes], [LIBCTF=no])
+  if test x$CTF_HEADER = xyes; then
+       AC_CHECK_LIB(ctf, ctf_open, [LIBCTF=yes], [LIBCTF=no])
+  fi
+
   if test x$LIBCTF = xyes; then
-    AC_MSG_NOTICE([activating CTF code])
+    AC_MSG_NOTICE([CTF support enabled])
     AC_DEFINE([WITH_CTF], 1,
 	     [Defined if user enables and system has the libctf library])
     CTF_LIBS=-lctf
+    ENABLE_CTF=yes
   else
-    AC_MSG_NOTICE([CTF enabled but no libctf found])
+    AC_MSG_NOTICE([no libctf found, CTF support was disabled])
     ENABLE_CTF=no
   fi
 fi
