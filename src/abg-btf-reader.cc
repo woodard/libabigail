@@ -19,6 +19,7 @@
 #include <unordered_map>
 
 #include "abg-elf-helpers.h"
+#include "abg-ir-priv.h"
 
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -180,12 +181,15 @@ class reader : public elf_based_reader
   {types_to_canonicalize_.push_back(t);}
 
   /// Canonicalize all the types scheduled for canonicalization using
-  /// schedule_type_for_canonocalization().
+  /// abigail::ir::canonicalize_types() which performs some sanity
+  /// checking around type canonicalization if necessary.
   void
   canonicalize_types()
   {
-    for (auto t : types_to_canonicalize_)
-      canonicalize(t);
+    ir::canonicalize_types(types_to_canonicalize_.begin(),
+			   types_to_canonicalize_.end(),
+			   [](const vector<type_base_sptr>::const_iterator& i)
+			   {return *i;});
   }
 
   uint64_t
