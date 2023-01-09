@@ -334,13 +334,30 @@ if test x$ENABLE_CTF != xno; then
   fi
 
   if test x$LIBCTF = xyes; then
+    dnl Test if struct btf_enum64 is present.
+    AC_CHECK_TYPE([struct ctf_dict_t],
+    		  [HAVE_CTF_DICT_T=yes],
+		  [HAVE_CTF_DICT_T=no],
+		  [#include <ctf-api.h>])
+
+    if test x$HAVE_CTF_DICT_T = xyes; then
+      AC_DEFINE([HAVE_CTF_DICT_T], 1, [struct ctf_dict_t is present])
+    fi
+  fi
+
+  if test x$HAVE_CTF_DICT_T = xno; then
+     AC_MSG_NOTICE([Some needed data structures are missing from ctf-api.h. Disabling CTF support.])
+     LIBCTF=no
+  fi
+
+  if test x$LIBCTF = xyes; then
     AC_MSG_NOTICE([CTF support enabled])
     AC_DEFINE([WITH_CTF], 1,
 	     [Defined if user enables and system has the libctf library])
     CTF_LIBS=-lctf
     ENABLE_CTF=yes
   else
-    AC_MSG_NOTICE([no libctf found, CTF support was disabled])
+    AC_MSG_NOTICE([no suitable libctf found, CTF support was disabled])
     ENABLE_CTF=no
   fi
 fi
