@@ -8279,7 +8279,7 @@ op_is_control_flow(Dwarf_Op* expr,
 
     case DW_OP_bra:
       val1 = ctxt.pop();
-      if (val1 != 0)
+      if (val1.const_value() != 0)
 	index += val1.const_value() - 1;
       break;
 
