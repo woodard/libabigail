@@ -334,11 +334,12 @@ if test x$ENABLE_CTF != xno; then
   fi
 
   if test x$LIBCTF = xyes; then
-    dnl Test if struct btf_enum64 is present.
-    AC_CHECK_TYPE([struct ctf_dict_t],
-    		  [HAVE_CTF_DICT_T=yes],
-		  [HAVE_CTF_DICT_T=no],
-		  [#include <ctf-api.h>])
+    dnl Test if struct struct ctf_dict_t is present.
+    AC_LANG(C++)
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#include <ctf-api.h>
+					ctf_dict_t* c;]])],
+		      [HAVE_CTF_DICT_T=yes],
+		      [HAVE_CTF_DICT_T=no])
 
     if test x$HAVE_CTF_DICT_T = xyes; then
       AC_DEFINE([HAVE_CTF_DICT_T], 1, [struct ctf_dict_t is present])
