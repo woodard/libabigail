@@ -1440,6 +1440,7 @@ public:
 	char c = 0;
 	read_next_char(c);
 	ABG_ASSERT(c == ',');
+	skip_white_spaces();
       }
 
     if (!content.empty())
