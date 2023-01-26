@@ -2056,6 +2056,86 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/PR28073/PR28073-output-2.txt",
     "output/test-diff-suppr/PR28073/PR28073-output-2.txt"
   },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-2.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-3.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-4.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-5.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-6.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.4.txt"
+  },
+    {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-7.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.4.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };

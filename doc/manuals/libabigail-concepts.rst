@@ -423,6 +423,54 @@ The potential properties of this sections are listed below:
  defined in header files whose path match the regular expression
  provided a value of the property.
 
+ .. _suppr_has_data_member_label:
+
+* ``has_data_member``
+
+  Usage:
+
+    ``has_data_member`` ``=`` <``list-of-data-member-names``>
+
+Suppresses change reports involving a type which contains data members
+whose names are provided in the list value of this property.
+
+A usage examples of this property would be: ::
+
+  has_data_member = {private_data_member0, private_data_member1}
+
+
+The property above would match any type which contains at least two
+data members whose names are ``private_data_member0`` and
+``private_data_member1``.
+
+Another usage examples of this property would be: ::
+
+  has_data_member = another_private_data_member
+
+The property above would match any type which contains
+a data member which name is ``another_private_data_member0``.
+
+ .. _suppr_has_data_member_regexp_label:
+
+* ``has_data_member_regexp``
+
+  Usage:
+
+    ``has_data_member_regexp`` ``=`` <``a-regular-expression``>
+
+Suppresses change reports involving a type which contains data members
+whose names match the regular expression provided as the value of this
+property.
+
+A usage examples of this property would be: ::
+
+  has_data_member_regexp = ^private_data_member
+
+The property above would match any type which contains data members
+whose names match the regular expression ``^private_data_member``.  In
+other words, it would match any type which contains data members whose
+names start with the string "private_data_member".
+
  .. _suppr_has_data_member_inserted_at_label:
 
 * ``has_data_member_inserted_at``

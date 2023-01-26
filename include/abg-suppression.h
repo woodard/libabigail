@@ -243,6 +243,18 @@ public:
   void
   set_reach_kind(reach_kind k);
 
+  const string_set_type&
+  get_potential_data_member_names() const;
+
+  void
+  set_potential_data_member_names(const string_set_type&) const;
+
+  const string&
+  get_potential_data_member_names_regex_str() const;
+
+  void
+  set_potential_data_member_names_regex_str(const string&) const;
+
   void
   set_data_member_insertion_ranges(const insertion_ranges& r);
 

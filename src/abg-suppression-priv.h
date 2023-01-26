@@ -570,6 +570,15 @@ class type_suppression::priv
   type_suppression::type_kind		type_kind_;
   bool					consider_reach_kind_;
   type_suppression::reach_kind		reach_kind_;
+  // The data members a class needs to have to match this suppression
+  // specification.  These might be selected by a regular expression.
+  string_set_type			potential_data_members_;
+  // The regular expression string that selects the potential data
+  // members of the class.
+  string				potential_data_members_regex_str_;
+  // The compiled regular expression that selects the potential data
+  // members of the class.
+  mutable regex::regex_t_sptr		potential_data_members_regex_;
   type_suppression::insertion_ranges	insertion_ranges_;
   unordered_set<string>			source_locations_to_keep_;
   string				source_location_to_keep_regex_str_;
@@ -676,6 +685,34 @@ public:
   void
   set_source_location_to_keep_regex(regex::regex_t_sptr r)
   {source_location_to_keep_regex_ = r;}
+
+  /// Getter for the "potential_data_member_names_regex" object.
+  ///
+  /// This regex object matches the names of the data members that are
+  /// needed for this suppression specification to select the type.
+  ///
+  /// @return the "potential_data_member_names_regex" object.
+  const regex::regex_t_sptr
+  get_potential_data_member_names_regex() const
+  {
+    if (!potential_data_members_regex_
+	&& !potential_data_members_regex_str_.empty())
+      {
+	potential_data_members_regex_ =
+	  regex::compile(potential_data_members_regex_str_);
+      }
+    return potential_data_members_regex_;
+  }
+
+  /// Setter for the "potential_data_member_names_regex" object.
+  ///
+  /// This regex object matches the names of the data members that are
+  /// needed for this suppression specification to select the type.
+  ///
+  /// @param r the new "potential_data_member_names_regex" object.
+  void
+  set_potential_data_member_names_regex(regex::regex_t_sptr &r)
+  {potential_data_members_regex_ = r;}
 
   friend class type_suppression;
 }; // class type_suppression::priv

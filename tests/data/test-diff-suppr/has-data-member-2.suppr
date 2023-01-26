@@ -1,0 +1,3 @@
+[suppress_type]
+  type_kind = struct
+  has_data_member = {private_data_member0}

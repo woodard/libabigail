@@ -1740,6 +1740,19 @@ test-diff-suppr/PR28073/PR28073.before.o \
 test-diff-suppr/PR28073/PR28073.before.o.abi \
 test-diff-suppr/PR28073/PR28073.c \
 test-diff-suppr/PR28073/bitfield.suppr \
+test-diff-suppr/has-data-member-1.suppr \
+test-diff-suppr/has-data-member-2.suppr \
+test-diff-suppr/has-data-member-3.suppr \
+test-diff-suppr/has-data-member-4.suppr \
+test-diff-suppr/has-data-member-5.suppr \
+test-diff-suppr/has-data-member-6.suppr \
+test-diff-suppr/has-data-member-7.suppr \
+test-diff-suppr/test-has-data-member-output-1.txt \
+test-diff-suppr/test-has-data-member-output-2.txt \
+test-diff-suppr/test-has-data-member-v0.cc \
+test-diff-suppr/test-has-data-member-v0.o \
+test-diff-suppr/test-has-data-member-v1.cc \
+test-diff-suppr/test-has-data-member-v1.o \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

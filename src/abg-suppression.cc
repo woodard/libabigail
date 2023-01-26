@@ -569,6 +569,38 @@ void
 type_suppression::set_reach_kind(reach_kind k)
 {priv_->reach_kind_ = k;}
 
+/// Getter of the "potential_data_member_names" property.
+///
+/// @return the set of potential data member names of this
+/// suppression.
+const unordered_set<string>&
+type_suppression::get_potential_data_member_names() const
+{return priv_->potential_data_members_;}
+
+/// Setter of the "potential_data_member_names" property.
+///
+/// @param s the new set of potential data member names of this
+/// suppression.
+void
+type_suppression::set_potential_data_member_names
+(const string_set_type& s) const
+{priv_->potential_data_members_ = s;}
+
+/// Getter of the "potential_data_member_names_regex" string.
+///
+/// @return the "potential_data_member_names_regex" string.
+const string&
+type_suppression::get_potential_data_member_names_regex_str() const
+{return priv_->potential_data_members_regex_str_;}
+
+/// Setter of the "potential_data_member_names_regex" string.
+///
+/// @param d the new "potential_data_member_names_regex" string.
+void
+type_suppression::set_potential_data_member_names_regex_str
+(const string& d) const
+{priv_->potential_data_members_regex_str_ = d;}
+
 /// Setter for the vector of data member insertion ranges that
 /// specifies where a data member is inserted as far as this
 /// suppression specification is concerned.
@@ -778,6 +810,43 @@ type_suppression::suppresses_diff(const diff* diff) const
   // Now let's consider class diffs in the context of a suppr spec
   // that contains properties like "has_data_member_inserted_*".
 
+  const class_or_union_diff* cou_diff = is_class_or_union_diff(d);
+  if (cou_diff)
+    {
+      class_or_union_sptr f = cou_diff->first_class_or_union();
+      // We are looking at the a class or union diff ...
+      if (!get_potential_data_member_names().empty())
+	{
+	  // ... and the suppr spec has a:
+	  //
+	  //    "has_data_member = {foo, bar}" property
+	  //
+	  for (string var_name : get_potential_data_member_names())
+	    if (!f->find_data_member(var_name))
+	      return false;
+	}
+
+      if (!get_potential_data_member_names_regex_str().empty())
+	{
+	  if (const regex_t_sptr& data_member_name_regex =
+	      priv_->get_potential_data_member_names_regex())
+	    {
+	      bool data_member_matched = false;
+	      for (var_decl_sptr dm : f->get_data_members())
+		{
+		  if (regex::match(data_member_name_regex, dm->get_name()))
+		    {
+		      data_member_matched = true;
+		      break;
+		    }
+		}
+	      if (!data_member_matched)
+		return false;
+	    }
+	}
+    }
+
+  // Evaluate has_data_member_inserted_*" clauses.
   const class_diff* klass_diff = dynamic_cast<const class_diff*>(d);
   if (klass_diff)
     {
@@ -1720,6 +1789,56 @@ read_type_suppression(const ini::config::section& section)
 	read_suppression_reach_kind(reach_kind_prop->get_value()->as_string());
     }
 
+  // Support has_data_member = {}
+  string_set_type potential_data_member_names;
+  if (ini::property_sptr propertee = section.find_property("has_data_member"))
+    {
+      // This is either has_data_member = {foo, blah} or
+      // has_data_member = foo.
+      ini::tuple_property_value_sptr tv;
+      ini::string_property_value_sptr sv;
+      if (ini::tuple_property_sptr prop = is_tuple_property(propertee))
+	// Value is of the form {foo,blah}
+	tv = prop->get_value();
+      else if (ini::simple_property_sptr prop = is_simple_property(propertee))
+	// Value is of the form foo.
+	sv = prop->get_value();
+
+      // Ensure that the property value has the form {"foo", "blah", ...};
+      // Meaning it's a tuple of one element which is a list or a string.
+      if (tv
+	  && tv->get_value_items().size() == 1
+	  && (is_list_property_value(tv->get_value_items().front())
+	      || is_string_property_value(tv->get_value_items().front())))
+	{
+	  ini::list_property_value_sptr val =
+	    is_list_property_value(tv->get_value_items().front());
+	  if (!val)
+	    {
+	      // We have just one potential data member name,as a
+	      // string_property_value.
+	      string name =
+		is_string_property_value(tv->get_value_items().front())
+		->as_string();
+	      potential_data_member_names.insert(name);
+	    }
+	  else
+	    for (const string& name : val->get_content())
+	      potential_data_member_names.insert(name);
+	}
+      else if (sv)
+	{
+	  string name = sv->as_string();
+	  potential_data_member_names.insert(name);
+	}
+    }
+
+  // Support has_data_member_regexp = str
+  string potential_data_member_names_regexp_str;
+  if (ini::simple_property_sptr prop =
+      is_simple_property(section.find_property("has_data_member_regexp")))
+      potential_data_member_names_regexp_str = prop->get_value()->as_string();
+
   // Support has_data_member_inserted_at
   vector<type_suppression::insertion_range_sptr> insert_ranges;
   bool consider_data_member_insertion = false;
@@ -1918,6 +2037,13 @@ read_type_suppression(const ini::config::section& section)
       result->set_consider_reach_kind(true);
       result->set_reach_kind(reach_kind);
     }
+
+  if (!potential_data_member_names.empty())
+    result->set_potential_data_member_names(potential_data_member_names);
+
+  if (!potential_data_member_names_regexp_str.empty())
+    result->set_potential_data_member_names_regex_str
+      (potential_data_member_names_regexp_str);
 
   if (consider_data_member_insertion)
     result->set_data_member_insertion_ranges(insert_ranges);

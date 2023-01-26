@@ -17,6 +17,7 @@
 #include <string>
 #include <typeinfo>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility> // for std::rel_ops, at least.
 #include <vector>
 #include "abg-interned-str.h"
@@ -54,6 +55,9 @@ using std::weak_ptr;
 using std::unordered_map;
 using std::string;
 using std::vector;
+using std::unordered_set;
+
+typedef unordered_set<string> string_set_type;
 
 // Pull in relational operators.
 using namespace std::rel_ops;
