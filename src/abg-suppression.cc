@@ -569,6 +569,20 @@ void
 type_suppression::set_reach_kind(reach_kind k)
 {priv_->reach_kind_ = k;}
 
+/// Getter of the "has_size_change" property.
+///
+/// @return the value of the "has_size_change" property.
+bool
+type_suppression::get_has_size_change() const
+{return priv_->has_size_change_;}
+
+/// Setter of the "has_size_change" property.
+///
+/// @param flag the new value of the "has_size_change" property.
+void
+type_suppression::set_has_size_change(bool flag)
+{priv_->has_size_change_ = flag;}
+
 /// Getter of the "potential_data_member_names" property.
 ///
 /// @return the set of potential data member names of this
@@ -855,12 +869,14 @@ type_suppression::suppresses_diff(const diff* diff) const
 	{
 	  // ... and the suppr spec contains a
 	  // "has_data_member_inserted_*" clause ...
-	  if (klass_diff->deleted_data_members().empty()
-	      && (klass_diff->first_class_decl()->get_size_in_bits()
-		  <= klass_diff->second_class_decl()->get_size_in_bits()))
+	  if ((klass_diff->first_class_decl()->get_size_in_bits()
+	       == klass_diff->second_class_decl()->get_size_in_bits())
+	      || get_has_size_change())
 	    {
 	      // That "has_data_member_inserted_*" clause doesn't hold
-	      // if the class has deleted data members or shrunk.
+	      // if the class changed size, unless the user specified
+	      // that suppression applies to types that have size
+	      // change.
 
 	      const class_decl_sptr& first_type_decl =
 		klass_diff->first_class_decl();
@@ -868,6 +884,23 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      // All inserted data members must be in an allowed
 	      // insertion range.
 	      for (const auto& m : klass_diff->inserted_data_members())
+		{
+		  decl_base_sptr member = m.second;
+		  bool matched = false;
+
+		  for (const auto& range : get_data_member_insertion_ranges())
+		    if (is_data_member_offset_in_range(is_var_decl(member),
+						       range,
+						       first_type_decl.get()))
+		      matched = true;
+
+		  if (!matched)
+		    return false;
+		}
+
+	      // Similarly, all deleted data members must be in an
+	      // allowed insertion range.
+	      for (const auto& m : klass_diff->deleted_data_members())
 		{
 		  decl_base_sptr member = m.second;
 		  bool matched = false;
@@ -1649,6 +1682,13 @@ read_type_suppression(const ini::config::section& section)
     ? drop_artifact->get_value()->as_string()
     : "";
 
+  ini::simple_property_sptr has_size_change =
+    is_simple_property(section.find_property("has_size_change"));
+
+  string has_size_change_str = has_size_change
+    ? has_size_change->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr label =
     is_simple_property(section.find_property("label"));
   string label_str = label ? label->get_value()->as_string() : "";
@@ -2029,6 +2069,9 @@ read_type_suppression(const ini::config::section& section)
 	   || !srcloc_not_regexp_str.empty()
 	   || !srcloc_not_in.empty())))
     result->set_drops_artifact_from_ir(true);
+
+  if (has_size_change_str == "yes" || has_size_change_str == "true")
+    result->set_has_size_change(true);
 
   if (result->get_type_kind() == type_suppression::ENUM_TYPE_KIND
       && !changed_enumerator_names.empty())

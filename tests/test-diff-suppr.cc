@@ -514,7 +514,17 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-0.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1_0.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-0_0.txt"
+  },
+    {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-0.1_0.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -531,10 +541,30 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
     "",
     "",
+    "data/test-diff-suppr/test11-add-data-member-1.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-2.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
     "output/test-diff-suppr/test11-add-data-member-report-1_2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-2.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_2.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -551,10 +581,30 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
     "",
     "",
+    "data/test-diff-suppr/test11-add-data-member-3.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_3.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-4.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
     "output/test-diff-suppr/test11-add-data-member-report-1_4.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-4.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_4.txt"
   },
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
@@ -575,6 +625,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test12-add-data-member-report-1.txt",
     "output/test-diff-suppr/test12-add-data-member-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest12-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest12-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test12-add-data-member-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test12-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test12-add-data-member-report-1.1.txt"
   },
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
@@ -605,6 +665,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt",
     "output/test-diff-suppr/test13-suppr-through-pointer-report-1.txt"
+  },
+    {
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test13-suppr-through-pointer-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test13-suppr-through-pointer-report-1.1.txt",
+    "output/test-diff-suppr/test13-suppr-through-pointer-report-1.1.txt"
   },
   {
     "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
@@ -1705,6 +1775,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --leaf-changes-only --impacted-interfaces",
     "data/test-diff-suppr/test35-leaf-report-0.txt",
     "output/test-diff-suppr/test35-leaf-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest35-leaf-v0.so",
+    "data/test-diff-suppr/libtest35-leaf-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test35-leaf.1.suppr",
+    "--no-default-suppression --leaf-changes-only --impacted-interfaces",
+    "data/test-diff-suppr/test35-leaf-report-0.1.txt",
+    "output/test-diff-suppr/test35-leaf-report-0.1.txt"
   },
   {
     "data/test-diff-suppr/libtest36-leaf-v0.so",

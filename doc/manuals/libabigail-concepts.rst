@@ -481,9 +481,11 @@ names start with the string "private_data_member".
 
  Suppresses change reports involving a type which has at least one
  data member inserted at an offset specified by the property value
- ``offset-in-bit``.  Please note that if a type has a change in which
- at least one of its data members is removed or its size is reduced,
- the type will *NOT* be suppressed by the evaluation of this property.
+ ``offset-in-bit``.  Please note that if the size of the type changed,
+ then the type change will *NOT* be suppressed by the evaluation of
+ this property, unless the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  The value ``offset-in-bit`` is either:
 
@@ -525,9 +527,16 @@ names start with the string "private_data_member".
  the values ``range-begin`` and ``range-end`` can be of the same form
  as the :ref:`has_data_member_inserted_at
  <suppr_has_data_member_inserted_at_label>` property above.  Please
- also note that if a type has a change in which at least one of its
- data members is removed or its size is reduced, the type will *NOT* be
- suppressed by the evaluation of this property.
+ also note that if the size of the type changed, then the type change
+ will *NOT* be suppressed by the evaluation of this property, unless
+ the :ref:`has_size_change<suppr_has_size_change_property_label>`
+ property is present and set to ``yes``.  Note that data member
+ deletions happening in the range between ``range-begin`` and
+ ``range-end`` won't prevent the type change from being suppressed by
+ the evaluation of this property if the size of the type doesn't
+ change or if the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  Usage examples of this properties are: ::
 
@@ -564,9 +573,15 @@ names start with the string "private_data_member".
  the ranges are of the same kind as for the
  :ref:`has_data_member_inserted_at
  <suppr_has_data_member_inserted_at_label>` property above.  Please
- note that if a type has a change in which at least one of its data
- members is removed or its size is reduced, the type will *NOT* be
- suppressed by the evaluation of this property.
+ also note that if the size of the type changed, then the type will
+ *NOT* be suppressed by the evaluation of this property, unless the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.  Note that data member deletions
+ happening in the defined ranges won't prevent the type change from
+ being suppressed by the evaluation of this property if the size of
+ the type doesn't change or if the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  Another usage example of this property is thus: ::
 
@@ -575,6 +590,23 @@ names start with the string "private_data_member".
 	  {offset_after(member0), offset_of(member1)},
 	  {72, end}
      }
+
+
+ .. _suppr_has_size_change_property_label:
+* ``has_size_change``
+
+ Usage:
+
+   ``has_size_change`` ``=`` yes | no
+
+
+This property is to be used in conjunction with the properties
+:ref:`has_data_member_inserted_between<suppr_has_data_member_inserted_between_label>`
+and
+:ref:`has_data_members_inserted_between<suppr_has_data_members_inserted_between_label>`.
+Those properties will not match a type change if the size of the type
+changes, unless the ``has_size_changes`` property is set to ``yes``.
+
 
  .. _suppr_accessed_through_property_label:
 

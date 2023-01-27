@@ -243,6 +243,12 @@ public:
   void
   set_reach_kind(reach_kind k);
 
+  bool
+  get_has_size_change() const;
+
+  void
+  set_has_size_change(bool flag);
+
   const string_set_type&
   get_potential_data_member_names() const;
 

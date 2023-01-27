@@ -570,6 +570,7 @@ class type_suppression::priv
   type_suppression::type_kind		type_kind_;
   bool					consider_reach_kind_;
   type_suppression::reach_kind		reach_kind_;
+  bool					has_size_change_;
   // The data members a class needs to have to match this suppression
   // specification.  These might be selected by a regular expression.
   string_set_type			potential_data_members_;
@@ -599,7 +600,8 @@ public:
       consider_type_kind_(consider_type_kind),
       type_kind_(type_kind),
       consider_reach_kind_(consider_reach_kind),
-      reach_kind_(reach_kind)
+      reach_kind_(reach_kind),
+      has_size_change_(false)
   {}
 
   /// Get the regular expression object associated to the 'type_name_regex'
