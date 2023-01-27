@@ -656,6 +656,12 @@ const var_decl_sptr
 get_next_data_member(const class_or_union_sptr&, const var_decl_sptr&);
 
 var_decl_sptr
+get_last_data_member(const class_or_union&);
+
+var_decl_sptr
+get_last_data_member(const class_or_union*);
+
+var_decl_sptr
 get_last_data_member(const class_or_union_sptr&);
 
 bool
@@ -739,6 +745,11 @@ get_data_member_offset(const decl_base_sptr);
 
 uint64_t
 get_absolute_data_member_offset(const var_decl&);
+
+bool
+get_next_data_member_offset(const class_or_union*,
+			    const var_decl_sptr&,
+			    uint64_t&);
 
 bool
 get_next_data_member_offset(const class_or_union_sptr&,

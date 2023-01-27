@@ -865,65 +865,19 @@ type_suppression::suppresses_diff(const diff* diff) const
 	      const class_decl_sptr& first_type_decl =
 		klass_diff->first_class_decl();
 
-	      for (string_decl_base_sptr_map::const_iterator m =
-		     klass_diff->inserted_data_members().begin();
-		   m != klass_diff->inserted_data_members().end();
-		   ++m)
+	      // All inserted data members must be in an allowed
+	      // insertion range.
+	      for (const auto& m : klass_diff->inserted_data_members())
 		{
-		  decl_base_sptr member = m->second;
-		  size_t dm_offset = get_data_member_offset(member);
+		  decl_base_sptr member = m.second;
 		  bool matched = false;
 
-		  for (insertion_ranges::const_iterator i =
-			 get_data_member_insertion_ranges().begin();
-		       i != get_data_member_insertion_ranges().end();
-		       ++i)
-		    {
-		      type_suppression::insertion_range_sptr range = *i;
-		      uint64_t range_begin_val = 0, range_end_val = 0;
-		      if (!type_suppression::insertion_range::eval_boundary
-			  (range->begin(), first_type_decl, range_begin_val))
-			break;
-		      if (!type_suppression::insertion_range::eval_boundary
-			  (range->end(), first_type_decl, range_end_val))
-			break;
-
-		      uint64_t range_begin = range_begin_val;
-		      uint64_t range_end = range_end_val;
-
-		      if (insertion_range::boundary_value_is_end(range_begin)
-			  && insertion_range::boundary_value_is_end(range_end))
-			{
-			  // This idiom represents the predicate
-			  // "has_data_member_inserted_at = end"
-			  if (dm_offset >
-			      get_data_member_offset(get_last_data_member
-						     (first_type_decl)))
-			    {
-			      // So the data member was added after
-			      // last data member of the klass.  That
-			      // matches the suppr spec
-			      // "has_data_member_inserted_at = end".
-			      matched = true;
-			      continue;
-			    }
-			}
-
-			if (range_begin > range_end)
-			  // Wrong suppr spec.  Ignore it.
-			  continue;
-
-		      if (dm_offset < range_begin || dm_offset > range_end)
-			// The offset of the added data member doesn't
-			// match the insertion range specified.  So
-			// the diff object won't be suppressed.
-			continue;
-
-		      // If we reached this point, then all the
-		      // insertion range constraints have been
-		      // satisfied.  So
+		  for (const auto& range : get_data_member_insertion_ranges())
+		    if (is_data_member_offset_in_range(is_var_decl(member),
+						       range,
+						       first_type_decl.get()))
 		      matched = true;
-		    }
+
 		  if (!matched)
 		    return false;
 		}
@@ -1404,9 +1358,9 @@ type_suppression::insertion_range::create_fn_call_expr_boundary(const string& s)
 /// @return true iff the evaluation was successful and @p value
 /// contains the resulting value.
 bool
-type_suppression::insertion_range::eval_boundary(boundary_sptr	 boundary,
-						 class_decl_sptr context,
-						 uint64_t&	 value)
+type_suppression::insertion_range::eval_boundary(const boundary_sptr	boundary,
+						 const class_or_union*	context,
+						 uint64_t&		value)
 {
   if (integer_boundary_sptr b = is_integer_boundary(boundary))
     {
@@ -4960,6 +4914,58 @@ is_type_suppressed(const fe_iface&	fe,
 
   type_is_private = false;
   return false;
+}
+
+/// Test if a data memer offset is in a given insertion range.
+///
+/// @param dm the data member to consider.
+///
+/// @param range the insertion range to consider.
+///
+/// @param the class (or union) type to consider as the context in
+/// which to evaluate the insertion range denoted by @p range.
+///
+/// @return true iff the offset of the data member @p dm is in the
+/// insertion range @p range in the context of the type denoted by @p
+/// context.
+bool
+is_data_member_offset_in_range(const var_decl_sptr& dm,
+			       const type_suppression::insertion_range_sptr& range,
+			       const class_or_union* context)
+{
+  ABG_ASSERT(dm && range && context);
+
+  uint64_t range_begin = 0, range_end = 0;
+  if (!type_suppression::insertion_range::eval_boundary (range->begin(),
+							 context,
+							 range_begin))
+    return false;
+
+  if (!type_suppression::insertion_range::eval_boundary (range->end(),
+							 context,
+							 range_end))
+    return false;
+
+  if (range_begin > range_end)
+    // wrong range, ignore it.
+    return false;
+
+  uint64_t dm_offset = get_data_member_offset(dm);
+  if (type_suppression::insertion_range::boundary_value_is_end(range_begin)
+      && type_suppression::insertion_range::boundary_value_is_end(range_end))
+    {
+      // This idiom represents the predicate
+      // "has_data_member_inserted_at = end"
+      if (dm_offset > get_data_member_offset(get_last_data_member(context)))
+	return true;
+      return false;
+    }
+
+  if (dm_offset < range_begin || dm_offset > range_end)
+    // The offset of the data member is outside the range.
+    return false;
+
+  return true;
 }
 
 }// end namespace suppr

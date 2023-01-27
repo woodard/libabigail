@@ -5752,7 +5752,7 @@ get_first_non_anonymous_data_member(const var_decl_sptr anon_dm)
 /// @return the data member that is located right after @p
 /// data_member.
 const var_decl_sptr
-get_next_data_member(const class_or_union_sptr &klass,
+get_next_data_member(const class_or_union *klass,
 		     const var_decl_sptr &data_member)
 {
   if (!klass ||!data_member)
@@ -5773,12 +5773,40 @@ get_next_data_member(const class_or_union_sptr &klass,
   return var_decl_sptr();
 }
 
+/// In the context of a given class or union, this function returns
+/// the data member that is located after a given data member.
+///
+/// @param klass the class or union to consider.
+///
+/// @param the data member to consider.
+///
+/// @return the data member that is located right after @p
+/// data_member.
+const var_decl_sptr
+get_next_data_member(const class_or_union_sptr& klass,
+		     const var_decl_sptr &data_member)
+{return get_next_data_member(klass.get(), data_member);}
+
+/// Get the last data member of a class type.
+///
+/// @param klass the class type to consider.
+var_decl_sptr
+get_last_data_member(const class_or_union& klass)
+{return klass.get_non_static_data_members().back();}
+
+/// Get the last data member of a class type.
+///
+/// @param klass the class type to consider.
+var_decl_sptr
+get_last_data_member(const class_or_union* klass)
+{return get_last_data_member(*klass);}
+
 /// Get the last data member of a class type.
 ///
 /// @param klass the class type to consider.
 var_decl_sptr
 get_last_data_member(const class_or_union_sptr &klass)
-{return klass->get_non_static_data_members().back();}
+{return get_last_data_member(klass.get());}
 
 /// Test if a decl is an anonymous data member.
 ///
@@ -6062,7 +6090,7 @@ get_data_member_offset(const decl_base_sptr d)
 /// @return true iff the data member coming right after @p dm was
 /// found.
 bool
-get_next_data_member_offset(const class_or_union_sptr& klass,
+get_next_data_member_offset(const class_or_union* klass,
 			    const var_decl_sptr& dm,
 			    uint64_t& offset)
 {
@@ -6072,6 +6100,29 @@ get_next_data_member_offset(const class_or_union_sptr& klass,
   offset = get_data_member_offset(next_dm);
   return true;
 }
+
+/// Get the offset of the non-static data member that comes after a
+/// given one.
+///
+/// If there is no data member after after the one given to this
+/// function (maybe because the given one is the last data member of
+/// the class type) then the function return false.
+///
+/// @param klass the class to consider.
+///
+/// @param dm the data member before the one we want to retrieve.
+///
+/// @param offset out parameter.  This parameter is set by the
+/// function to the offset of the data member that comes right after
+/// the data member @p dm, iff the function returns true.
+///
+/// @return true iff the data member coming right after @p dm was
+/// found.
+bool
+get_next_data_member_offset(const class_or_union_sptr& klass,
+			    const var_decl_sptr& dm,
+			    uint64_t& offset)
+{return get_next_data_member_offset(klass.get(), dm, offset);}
 
 /// Get the absolute offset of a data member.
 ///

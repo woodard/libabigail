@@ -346,9 +346,9 @@ public:
   create_fn_call_expr_boundary(const string&);
 
   static bool
-  eval_boundary(boundary_sptr	boundary,
-		class_decl_sptr context,
-		uint64_t&	value);
+  eval_boundary(const boundary_sptr	boundary,
+		const class_or_union*	context,
+		uint64_t&		value);
 
   static bool
   boundary_value_is_end(uint64_t value);
@@ -899,6 +899,12 @@ is_type_suppressed(const fe_iface&	fe,
 		   const location&	type_location,
 		   bool&		type_is_private,
 		   bool			require_drop_property = false);
+
+bool
+is_data_member_offset_in_range(const var_decl_sptr&,
+			       const type_suppression::insertion_range_sptr&,
+			       const class_or_union*);
+
 } // end namespace suppr
 
 
