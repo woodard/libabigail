@@ -28,6 +28,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-interned-str.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
+#include "abg-regex.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -26607,6 +26608,50 @@ build_internal_underlying_enum_type_name(const string &base_name,
   o << "-underlying-type-" << size;
 
   return o.str();
+}
+
+/// Find the first data member of a class or union which name matches
+/// a regular expression.
+///
+/// @param t the class or union to consider.
+///
+/// @param r the regular expression to consider.
+///
+/// @return the data member matched by @p r or nil if none was found.
+var_decl_sptr
+find_first_data_member_matching_regexp(const class_or_union& t,
+				       const regex::regex_t_sptr& r)
+{
+  for (auto data_member : t.get_data_members())
+    {
+      if (regex::match(r, data_member->get_name()))
+	return data_member;
+    }
+
+  return var_decl_sptr();
+}
+
+/// Find the last data member of a class or union which name matches
+/// a regular expression.
+///
+/// @param t the class or union to consider.
+///
+/// @param r the regular expression to consider.
+///
+/// @return the data member matched by @p r or nil if none was found.
+var_decl_sptr
+find_last_data_member_matching_regexp(const class_or_union& t,
+				      const regex::regex_t_sptr& regex)
+{
+  auto d = t.get_data_members().rbegin();
+  auto e = t.get_data_members().rend();
+  for (; d != e; ++d)
+    {
+      if (regex::match(regex, (*d)->get_name()))
+	return *d;
+    }
+
+  return var_decl_sptr();
 }
 
 bool

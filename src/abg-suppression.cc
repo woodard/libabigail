@@ -24,6 +24,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-suppression.h"
 #include "abg-tools-utils.h"
 #include "abg-fe-iface.h"
+#include "abg-comparison.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -35,6 +36,9 @@ namespace abigail
 
 namespace suppr
 {
+
+// Inject the abigail::comparison namespace in here.
+using namespace comparison;
 
 using std::dynamic_pointer_cast;
 using regex::regex_t_sptr;
@@ -1404,32 +1408,56 @@ type_suppression::insertion_range::eval_boundary(const boundary_sptr	boundary,
     {
       ini::function_call_expr_sptr fn_call = b->as_function_call_expr();
       if ((fn_call->get_name() == "offset_of"
-	   || fn_call->get_name() == "offset_after")
+	   || fn_call->get_name() == "offset_after"
+	   || fn_call->get_name() == "offset_of_first_data_member_regexp"
+	   || fn_call->get_name() == "offset_of_last_data_member_regexp")
 	  && fn_call->get_arguments().size() == 1)
 	{
-	  string member_name = fn_call->get_arguments()[0];
-	  for (class_decl::data_members::const_iterator it =
-		 context->get_data_members().begin();
-	       it != context->get_data_members().end();
-	       ++it)
+	  if (fn_call->get_name() == "offset_of"
+	      || fn_call->get_name() == "offset_after")
 	    {
-	      if (!get_data_member_is_laid_out(**it))
-		continue;
-	      if ((*it)->get_name() == member_name)
+	      string member_name = fn_call->get_arguments()[0];
+	      for (class_decl::data_members::const_iterator it =
+		     context->get_data_members().begin();
+		   it != context->get_data_members().end();
+		   ++it)
 		{
-		  if (fn_call->get_name() == "offset_of")
-		    value = get_data_member_offset(*it);
-		  else if (fn_call->get_name() == "offset_after")
+		  if (!get_data_member_is_laid_out(**it))
+		    continue;
+		  if ((*it)->get_name() == member_name)
 		    {
-		      if (!get_next_data_member_offset(context, *it, value))
+		      if (fn_call->get_name() == "offset_of")
+			value = get_data_member_offset(*it);
+		      else if (fn_call->get_name() == "offset_after")
 			{
-			  value = get_data_member_offset(*it) +
-			    (*it)->get_type()->get_size_in_bits();
+			  if (!get_next_data_member_offset(context, *it, value))
+			    {
+			      value = get_data_member_offset(*it) +
+				(*it)->get_type()->get_size_in_bits();
+			    }
 			}
+		      else
+			// We should not reach this point.
+			abort();
+		      return true;
 		    }
-		  else
-		    // We should not reach this point.
-		    abort();
+		}
+	    }
+	  else if (fn_call->get_name() == "offset_of_first_data_member_regexp"
+		   || fn_call->get_name() == "offset_of_last_data_member_regexp")
+	    {
+	      string name_regexp = fn_call->get_arguments()[0];
+	      auto r = regex::compile(name_regexp);
+	      var_decl_sptr dm;
+
+	      if (fn_call->get_name() == "offset_of_first_data_member_regexp")
+		dm = find_first_data_member_matching_regexp(*context, r);
+	      else if (fn_call->get_name() == "offset_of_last_data_member_regexp")
+		dm = find_last_data_member_matching_regexp(*context, r);
+
+	      if (dm)
+		{
+		  value = get_data_member_offset(dm);
 		  return true;
 		}
 	    }

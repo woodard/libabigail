@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <elfutils/libdwfl.h>
+#include <sstream>
 #include "abg-elf-helpers.h"
 #include "abg-tools-utils.h"
 

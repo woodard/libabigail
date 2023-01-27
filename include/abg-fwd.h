@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <cstddef>
 #include <cstdlib>
+#include <regex.h>
 #include <list>
 #include <memory>
 #include <ostream>
@@ -61,6 +62,31 @@ typedef unordered_set<string> string_set_type;
 
 // Pull in relational operators.
 using namespace std::rel_ops;
+
+namespace comparison
+{
+class diff_context;
+
+/// Convenience typedef for a shared pointer of @ref diff_context.
+typedef shared_ptr<diff_context> diff_context_sptr;
+
+/// Convenience typedef for a weak pointer of @ref diff_context.
+typedef weak_ptr<diff_context> diff_context_wptr;
+
+class diff;
+
+/// Convenience typedef for a shared_ptr for the @ref diff class
+typedef shared_ptr<diff> diff_sptr;
+
+/// Convenience typedef for a weak_ptr for the @ref diff class
+typedef weak_ptr<diff> diff_wptr;
+}
+
+namespace regex
+{
+/// A convenience typedef for a shared pointer of regex_t.
+typedef std::shared_ptr<regex_t> regex_t_sptr;
+}// end namespace regex
 
 namespace ir
 {
@@ -1472,6 +1498,13 @@ build_internal_underlying_enum_type_name(const string &base_name,
 					 bool is_anonymous,
 					 uint64_t size);
 
+var_decl_sptr
+find_first_data_member_matching_regexp(const class_or_union& t,
+				       const regex::regex_t_sptr& r);
+
+var_decl_sptr
+find_last_data_member_matching_regexp(const class_or_union& t,
+				      const regex::regex_t_sptr& regex);
 } // end namespace ir
 
 using namespace abigail::ir;

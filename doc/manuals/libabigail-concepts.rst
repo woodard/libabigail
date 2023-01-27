@@ -493,24 +493,48 @@ names start with the string "private_data_member".
 	   offset of the insertion point of the data member, starting
 	   from the beginning of the relevant structure or class.
 
-	 - the keyword ``end`` which is a named constant which value
-	   equals the offset of the end of the of the structure or
-	   class.
+.. _suppr_data_member_offset_selector_expressions_label:
 
-	 - the function call expression
-	   ``offset_of(data-member-name)`` where `data-member-name` is
-	   the name of a given data member of the relevant structure
-	   or class.  The value of this function call expression is an
-	   integer that represents the offset of the data member
-	   denoted by ``data-member-name``.
+	 - data member offset selector expressions, such as:
 
-	 - the function call expression
-	   ``offset_after(data-member-name)`` where `data-member-name`
-	   is the name of a given data member of the relevant
-	   structure or class.  The value of this function call
-	   expression is an integer that represents the offset of the
-	   point that comes right after the region occupied by the
-	   data member denoted by ``data-member-name``.
+	     - the keyword ``end`` which is a named constant which value
+	       equals the offset of the end of the of the structure or
+	       class.
+
+	     - the function call expression
+	       ``offset_of(data-member-name)`` where `data-member-name` is
+	       the name of a given data member of the relevant structure
+	       or class.  The value of this function call expression is an
+	       integer that represents the offset of the data member
+	       denoted by ``data-member-name``.
+
+	     - the function call expression
+	       ``offset_after(data-member-name)`` where `data-member-name`
+	       is the name of a given data member of the relevant
+	       structure or class.  The value of this function call
+	       expression is an integer that represents the offset of the
+	       point that comes right after the region occupied by the
+	       data member denoted by ``data-member-name``.
+
+	     - the function call expression
+	       ``offset_of_first_data_member_regexp(data-member-name-regexp)``
+	       where `data-member-name-regexp` is a regular expression
+	       matching a data member.  The value of this function
+	       call expression is an integer that represents the
+	       offset of the first data member which name matches the
+	       regular expression argument.  If no data member of a
+	       given class type matches the regular expression, then
+	       the class type won't match the current directive.
+
+	     - the function call expression
+	       ``offset_of_last_data_member_regexp(data-member-name-regexp)``
+	       where `data-member-name-regexp` is a regular expression
+	       matching a data member.  The value of this function
+	       call expression is an integer that represents the
+	       offset of the last data member which name matches the
+	       regular expression argument.  If no data member of a
+	       given class type matches the regular expression, then
+	       the class type won't match the current directive.
 
   .. _suppr_has_data_member_inserted_between_label:
 

@@ -14,6 +14,7 @@
 #include "config.h"
 
 #include <fcntl.h> /* For open(3) */
+#include <sstream>
 #include <iostream>
 #include <memory>
 #include <map>

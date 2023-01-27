@@ -1,0 +1,7 @@
+[suppress_type]
+  type_kind = struct
+  has_data_member_inserted_between =
+    {
+      offset_of_first_data_member_regexp(^__special_padding_space),
+      offset_of_last_data_member_regexp(^__special_padding_space)
+    }

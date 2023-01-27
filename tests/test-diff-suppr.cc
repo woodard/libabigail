@@ -2206,7 +2206,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test-has-data-member-output-2.txt",
     "output/test-diff-suppr/test-has-data-member-output-2.4.txt"
   },
-    {
+  {
     "data/test-diff-suppr/test-has-data-member-v0.o",
     "data/test-diff-suppr/test-has-data-member-v1.o",
     "",
@@ -2215,6 +2215,46 @@ InOutSpec in_out_specs[] =
     "--drop-private-types --no-default-suppression",
     "data/test-diff-suppr/test-has-data-member-output-1.txt",
     "output/test-diff-suppr/test-has-data-member-output-1.4.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-1.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v2.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-2.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v3.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-3.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v4.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-4.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-4.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}

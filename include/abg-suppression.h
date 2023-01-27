@@ -11,7 +11,7 @@
 #include <unordered_set>
 
 #include "abg-ini.h"
-#include "abg-comparison.h"
+#include "abg-ir.h"
 
 namespace abigail
 {
@@ -29,9 +29,12 @@ class fe_iface;
 /// that are defined in this namespace.
 namespace suppr
 {
-
-using namespace abigail::comparison;
 using std::unordered_set;
+using std::string;
+using std::shared_ptr;
+using std::vector;
+using comparison::diff;
+using comparison::diff_context_sptr;
 
 /// Base type of the suppression specifications types.
 ///
