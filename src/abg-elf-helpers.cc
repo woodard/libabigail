@@ -920,10 +920,11 @@ bool
 get_crc_for_symbol(Elf* elf_handle, GElf_Sym* crc_symbol, uint32_t& crc_value)
 {
   size_t crc_section_index = crc_symbol->st_shndx;
-  uint64_t crc_symbol_value = crc_symbol->st_value;
+  GElf_Addr crc_symbol_address =
+      maybe_adjust_et_rel_sym_addr_to_abs_addr(elf_handle, crc_symbol);
   if (crc_section_index == SHN_ABS)
     {
-      crc_value = crc_symbol_value;
+      crc_value = crc_symbol_address;
       return true;
     }
 
@@ -940,10 +941,10 @@ get_crc_for_symbol(Elf* elf_handle, GElf_Sym* crc_symbol, uint32_t& crc_value)
   if (kcrctab_data == NULL)
     return false;
 
-  if (crc_symbol_value < sheader->sh_addr)
+  if (crc_symbol_address < sheader->sh_addr)
     return false;
 
-  size_t offset = crc_symbol_value - sheader->sh_addr;
+  size_t offset = crc_symbol_address - sheader->sh_addr;
   if (offset + sizeof(uint32_t) > kcrctab_data->d_size
       || offset + sizeof(uint32_t) > sheader->sh_size)
     return false;
