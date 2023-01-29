@@ -274,6 +274,67 @@ suppression_base::has_soname_related_property() const
 	    && get_soname_not_regex_str().empty()));
 }
 
+/// Constructor of the @ref negated_suppression_base.
+negated_suppression_base::negated_suppression_base()
+{
+}
+
+/// Destructor of the @ref negated_suppression_base.
+negated_suppression_base::~negated_suppression_base()
+{
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true iff @p s is an instance of @ref
+/// negated_suppression_base.
+bool
+is_negated_suppression(const suppression_base& s)
+{
+  bool result = true;
+  try
+    {
+      dynamic_cast<const negated_suppression_base&>(s);
+    }
+  catch (...)
+    {
+      result = false;
+    }
+  return result;
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true a pointer to the @ref negated_suppression_base which
+/// @p s, or nil if it's not a negated suppression.
+/// negated_suppression_base.
+const negated_suppression_base*
+is_negated_suppression(const suppression_base* s)
+{
+  const negated_suppression_base* result = nullptr;
+  result = dynamic_cast<const negated_suppression_base*>(s);
+  return result;
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true a pointer to the @ref negated_suppression_base which
+/// @p s, or nil if it's not a negated suppression.
+/// negated_suppression_base.
+negated_suppression_sptr
+is_negated_suppression(const suppression_sptr& s)
+{
+  negated_suppression_sptr result;
+  result = dynamic_pointer_cast<negated_suppression_base>(s);
+  return result;
+}
+
 /// Check if the SONAMEs of the two binaries being compared match the
 /// content of the properties "soname_regexp" and "soname_not_regexp"
 /// of the current suppression specification.
@@ -1619,6 +1680,52 @@ is_type_suppression(suppression_sptr suppr)
 
 // </type_suppression stuff>
 
+// <negated_type_suppression stuff>
+
+/// Constructor for @ref negated_type_suppression.
+///
+/// @param label the label of the suppression.  This is just a free
+/// form comment explaining what the suppression is about.
+///
+/// @param type_name_regexp the regular expression describing the
+/// types about which diff reports should be suppressed.  If it's an
+/// empty string, the parameter is ignored.
+///
+/// @param type_name the name of the type about which diff reports
+/// should be suppressed.  If it's an empty string, the parameter is
+/// ignored.
+///
+/// Note that parameter @p type_name_regexp and @p type_name_regexp
+/// should not necessarily be populated.  It usually is either one or
+/// the other that the user wants.
+negated_type_suppression::negated_type_suppression(const string& label,
+						   const string& type_name_regexp,
+						   const string& type_name)
+  : type_suppression(label, type_name_regexp, type_name),
+    negated_suppression_base()
+{
+}
+
+/// Evaluate this suppression specification on a given diff node and
+/// say if the diff node should be suppressed or not.
+///
+/// @param diff the diff node to evaluate this suppression
+/// specification against.
+///
+/// @return true if @p diff should be suppressed.
+bool
+negated_type_suppression::suppresses_diff(const diff* diff) const
+{
+  return !type_suppression::suppresses_diff(diff);
+}
+
+/// Destructor of the @ref negated_type_suppression type.
+negated_type_suppression::~negated_type_suppression()
+{
+}
+
+// </negated_type_suppression stuff>
+
 /// Parse the value of the "type_kind" property in the "suppress_type"
 /// section.
 ///
@@ -1681,7 +1788,8 @@ read_type_suppression(const ini::config::section& section)
 {
   type_suppression_sptr result;
 
-  if (section.get_name() != "suppress_type")
+  if (section.get_name() != "suppress_type"
+      && section.get_name() != "allow_type")
     return result;
 
   static const char *const sufficient_props[] = {
@@ -2046,7 +2154,11 @@ read_type_suppression(const ini::config::section& section)
 	changed_enumerator_names.push_back(p->get_value()->as_string());
     }
 
-  result.reset(new type_suppression(label_str, name_regex_str, name_str));
+  if (section.get_name() == "suppress_type")
+    result.reset(new type_suppression(label_str, name_regex_str, name_str));
+  else if (section.get_name() == "allow_type")
+    result.reset(new negated_type_suppression(label_str, name_regex_str,
+					      name_str));
 
   if (consider_type_kind)
     {

@@ -272,7 +272,8 @@ default_reporter::report(const typedef_diff& d,
 
   typedef_decl_sptr f = d.first_typedef_decl(), s = d.second_typedef_decl();
 
-  report_non_type_typedef_changes(d, out, indent);
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    report_non_type_typedef_changes(d, out, indent);
 
   diff_sptr dif = d.underlying_type_diff();
   if (dif && dif->has_changes())
@@ -364,11 +365,12 @@ default_reporter::report(const qualified_type_diff& d, ostream& out,
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(d.first_qualified_type(),
 						   d.second_qualified_type());
 
-  if (report_local_qualified_type_changes(d, out, indent))
-    // The local change was emitted and it's a name change.  If the
-    // type name changed, the it means the type changed altogether.
-    // It makes a little sense to detail the changes in extenso here.
-    return;
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    if (report_local_qualified_type_changes(d, out, indent))
+      // The local change was emitted and it's a name change.  If the
+      // type name changed, the it means the type changed altogether.
+      // It makes a little sense to detail the changes in extenso here.
+      return;
 
   diff_sptr dif = d.leaf_underlying_type_diff();
   ABG_ASSERT(dif);
@@ -474,8 +476,9 @@ default_reporter::report(const reference_diff& d, ostream& out,
   enum change_kind k = ir::NO_CHANGE_KIND;
   equals(*d.first_reference(), *d.second_reference(), &k);
 
-  if ((k & ALL_LOCAL_CHANGES_MASK) && !(k & SUBTYPE_CHANGE_KIND))
-    report_local_reference_type_changes(d, out, indent);
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    if ((k & ALL_LOCAL_CHANGES_MASK) && !(k & SUBTYPE_CHANGE_KIND))
+      report_local_reference_type_changes(d, out, indent);
 
   if (k & SUBTYPE_CHANGE_KIND)
     if (diff_sptr dif = d.underlying_type_diff())
@@ -503,6 +506,9 @@ void
 default_reporter::report(const fn_parm_diff& d, ostream& out,
 			 const string& indent) const
 {
+  if (!d.to_be_reported())
+    return;
+
   function_decl::parameter_sptr f = d.first_parameter(),
     s = d.second_parameter();
 
@@ -514,26 +520,23 @@ default_reporter::report(const fn_parm_diff& d, ostream& out,
     type_has_sub_type_changes(d.first_parameter()->get_type(),
 			      d.second_parameter()->get_type());
 
-  if (d.to_be_reported())
-    {
-      diff_sptr type_diff = d.type_diff();
-      ABG_ASSERT(type_diff->has_changes());
+  diff_sptr type_diff = d.type_diff();
+  ABG_ASSERT(type_diff->has_changes());
 
-      out << indent;
-      if (f->get_is_artificial())
-	out << "implicit ";
-      out << "parameter " << f->get_index();
-      report_loc_info(f, *d.context(), out);
-      out << " of type '"
-	  << f->get_type_pretty_representation();
+  out << indent;
+  if (f->get_is_artificial())
+    out << "implicit ";
+  out << "parameter " << f->get_index();
+  report_loc_info(f, *d.context(), out);
+  out << " of type '"
+      << f->get_type_pretty_representation();
 
-      if (has_sub_type_change)
-	out << "' has sub-type changes:\n";
-      else
-	out << "' changed:\n";
+  if (has_sub_type_change)
+    out << "' has sub-type changes:\n";
+  else
+    out << "' changed:\n";
 
-      type_diff->report(out, indent + "  ");
-    }
+  type_diff->report(out, indent + "  ");
 }
 
 /// For a @ref function_type_diff node, report the local changes
@@ -645,8 +648,8 @@ default_reporter::report(const function_type_diff& d, ostream& out,
 	dif->report(out, indent);
     }
 
-  report_local_function_type_changes(d, out, indent);
-
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    report_local_function_type_changes(d, out, indent);
 }
 
 /// Report a @ref array_diff in a serialized form.
@@ -678,10 +681,11 @@ default_reporter::report(const array_diff& d, ostream& out,
       dif->report(out, indent + "  ");
     }
 
-  report_name_size_and_alignment_changes(d.first_array(),
-					 d.second_array(),
-					 d.context(),
-					 out, indent);
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    report_name_size_and_alignment_changes(d.first_array(),
+					   d.second_array(),
+					   d.context(),
+					   out, indent);
 }
 
 /// Generates a report for an intance of @ref base_diff.
@@ -702,30 +706,32 @@ default_reporter::report(const base_diff& d, ostream& out,
   string repr = f->get_base_class()->get_pretty_representation();
   bool emitted = false;
 
-  if (f->get_is_static() != s->get_is_static())
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
     {
-      if (f->get_is_static())
-	out << indent << "is no more static";
-      else
-	out << indent << "now becomes static";
-      emitted = true;
+      if (f->get_is_static() != s->get_is_static())
+	{
+	  if (f->get_is_static())
+	    out << indent << "is no more static";
+	  else
+	    out << indent << "now becomes static";
+	  emitted = true;
+	}
+
+      if ((d.context()->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
+	  && (f->get_access_specifier() != s->get_access_specifier()))
+	{
+	  if (emitted)
+	    out << ", ";
+
+	  out << "has access changed from '"
+	      << f->get_access_specifier()
+	      << "' to '"
+	      << s->get_access_specifier()
+	      << "'";
+
+	  emitted = true;
+	}
     }
-
-  if ((d.context()->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
-      && (f->get_access_specifier() != s->get_access_specifier()))
-    {
-      if (emitted)
-	out << ", ";
-
-      out << "has access changed from '"
-	  << f->get_access_specifier()
-	  << "' to '"
-	  << s->get_access_specifier()
-	  << "'";
-
-      emitted = true;
-    }
-
   if (class_diff_sptr dif = d.get_underlying_class_diff())
     {
       if (dif->to_be_reported())
@@ -1493,135 +1499,138 @@ default_reporter::report(const function_decl_diff& d, ostream& out,
     linkage_names2 =
       s2->get_aliases_id_string(sc->get_fun_symbol_map());
 
-  /// If the set of linkage names of the function have changed, report
-  /// it.
-  if (linkage_names1 != linkage_names2)
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
     {
-      if (linkage_names1.empty())
+      /// If the set of linkage names of the function have changed, report
+      /// it.
+      if (linkage_names1 != linkage_names2)
 	{
-	  out << indent << ff->get_pretty_representation()
-	      << " didn't have any linkage name, and it now has: '"
-	      << linkage_names2 << "'\n";
-	}
-      else if (linkage_names2.empty())
-	{
-	  out << indent << ff->get_pretty_representation()
-	      << " did have linkage names '" << linkage_names1
-	      << "'\n"
-	      << indent << "but it doesn't have any linkage name anymore\n";
-	}
-      else
-	out << indent << "linkage names of "
-	    << ff->get_pretty_representation()
-	    << "\n" << indent << "changed from '"
-	    << linkage_names1 << "' to '" << linkage_names2 << "'\n";
-    }
-
-  if (qn1 != qn2
-      && d.type_diff()
-      && d.type_diff()->to_be_reported())
-    {
-      // So the function has sub-type changes that are to be
-      // reported.  Let's see if the function name changed too; if it
-      // did, then we'd report that change right before reporting the
-      // sub-type changes.
-      string frep1 = d.first_function_decl()->get_pretty_representation(),
-	frep2 = d.second_function_decl()->get_pretty_representation();
-      out << indent << "'" << frep1 << " {" << linkage_names1<< "}"
-	  << "' now becomes '"
-	  << frep2 << " {" << linkage_names2 << "}" << "'\n";
-    }
-
-  maybe_report_diff_for_symbol(ff->get_symbol(),
-			       sf->get_symbol(),
-			       d.context(), out, indent);
-
-  // Now report about inline-ness changes
-  if (ff->is_declared_inline() != sf->is_declared_inline())
-    {
-      out << indent;
-      if (ff->is_declared_inline())
-	out << sf->get_pretty_representation()
-	    << " is not declared inline anymore\n";
-      else
-	out << sf->get_pretty_representation()
-	    << " is now declared inline\n";
-    }
-
-  // Report about vtable offset changes.
-  if (is_member_function(ff) && is_member_function(sf))
-    {
-      bool ff_is_virtual = get_member_function_is_virtual(ff),
-	sf_is_virtual = get_member_function_is_virtual(sf);
-      if (ff_is_virtual != sf_is_virtual)
-	{
-	  out << indent;
-	  if (ff_is_virtual)
-	    out << ff->get_pretty_representation()
-		<< " is no more declared virtual\n";
-	  else
-	    out << ff->get_pretty_representation()
-		<< " is now declared virtual\n";
-	}
-
-      size_t ff_vtable_offset = get_member_function_vtable_offset(ff),
-	sf_vtable_offset = get_member_function_vtable_offset(sf);
-      if (ff_is_virtual && sf_is_virtual
-	  && (ff_vtable_offset != sf_vtable_offset))
-	{
-	  out << indent
-	      << "the vtable offset of "  << ff->get_pretty_representation()
-	      << " changed from " << ff_vtable_offset
-	      << " to " << sf_vtable_offset << "\n";
-	}
-
-      // the parent types (classe or union) of the two member
-      // functions.
-      class_or_union_sptr f =
-	is_class_or_union_type(is_method_type(ff->get_type())->get_class_type());
-      class_or_union_sptr s =
-	is_class_or_union_type(is_method_type(sf->get_type())->get_class_type());
-
-      class_decl_sptr fc = is_class_type(f);
-      class_decl_sptr sc = is_class_type(s);
-
-      // Detect if the virtual member function changes above
-      // introduced a vtable change or not.
-      bool vtable_added = false, vtable_removed = false;
-      if (!f->get_is_declaration_only() && !s->get_is_declaration_only())
-	{
-	  if (fc && sc)
+	  if (linkage_names1.empty())
 	    {
-	      vtable_added = !fc->has_vtable() && sc->has_vtable();
-	      vtable_removed = fc->has_vtable() && !sc->has_vtable();
+	      out << indent << ff->get_pretty_representation()
+		  << " didn't have any linkage name, and it now has: '"
+		  << linkage_names2 << "'\n";
 	    }
+	  else if (linkage_names2.empty())
+	    {
+	      out << indent << ff->get_pretty_representation()
+		  << " did have linkage names '" << linkage_names1
+		  << "'\n"
+		  << indent << "but it doesn't have any linkage name anymore\n";
+	    }
+	  else
+	    out << indent << "linkage names of "
+		<< ff->get_pretty_representation()
+		<< "\n" << indent << "changed from '"
+		<< linkage_names1 << "' to '" << linkage_names2 << "'\n";
 	}
-      bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
-			     || (ff_vtable_offset != sf_vtable_offset));
-      bool incompatible_change = (ff_vtable_offset != sf_vtable_offset);
 
-      if (vtable_added)
-	out << indent
-	    << "  note that a vtable was added to "
-	    << fc->get_pretty_representation()
-	    << "\n";
-      else if (vtable_removed)
-	out << indent
-	    << "  note that the vtable was removed from "
-	    << fc->get_pretty_representation()
-	    << "\n";
-      else if (vtable_changed)
+      if (qn1 != qn2
+	  && d.type_diff()
+	  && d.type_diff()->to_be_reported())
+	{
+	  // So the function has sub-type changes that are to be
+	  // reported.  Let's see if the function name changed too; if it
+	  // did, then we'd report that change right before reporting the
+	  // sub-type changes.
+	  string frep1 = d.first_function_decl()->get_pretty_representation(),
+	    frep2 = d.second_function_decl()->get_pretty_representation();
+	  out << indent << "'" << frep1 << " {" << linkage_names1<< "}"
+	      << "' now becomes '"
+	      << frep2 << " {" << linkage_names2 << "}" << "'\n";
+	}
+
+      maybe_report_diff_for_symbol(ff->get_symbol(),
+				   sf->get_symbol(),
+				   d.context(), out, indent);
+
+      // Now report about inline-ness changes
+      if (ff->is_declared_inline() != sf->is_declared_inline())
 	{
 	  out << indent;
-	  if (incompatible_change)
-	    out << "  note that this is an ABI incompatible "
-	      "change to the vtable of ";
+	  if (ff->is_declared_inline())
+	    out << sf->get_pretty_representation()
+		<< " is not declared inline anymore\n";
 	  else
-	    out << "  note that this induces a change to the vtable of ";
-	  out << fc->get_pretty_representation()
-	      << "\n";
+	    out << sf->get_pretty_representation()
+		<< " is now declared inline\n";
 	}
 
+      // Report about vtable offset changes.
+      if (is_member_function(ff) && is_member_function(sf))
+	{
+	  bool ff_is_virtual = get_member_function_is_virtual(ff),
+	    sf_is_virtual = get_member_function_is_virtual(sf);
+	  if (ff_is_virtual != sf_is_virtual)
+	    {
+	      out << indent;
+	      if (ff_is_virtual)
+		out << ff->get_pretty_representation()
+		    << " is no more declared virtual\n";
+	      else
+		out << ff->get_pretty_representation()
+		    << " is now declared virtual\n";
+	    }
+
+	  size_t ff_vtable_offset = get_member_function_vtable_offset(ff),
+	    sf_vtable_offset = get_member_function_vtable_offset(sf);
+	  if (ff_is_virtual && sf_is_virtual
+	      && (ff_vtable_offset != sf_vtable_offset))
+	    {
+	      out << indent
+		  << "the vtable offset of "  << ff->get_pretty_representation()
+		  << " changed from " << ff_vtable_offset
+		  << " to " << sf_vtable_offset << "\n";
+	    }
+
+	  // the parent types (classe or union) of the two member
+	  // functions.
+	  class_or_union_sptr f =
+	    is_class_or_union_type(is_method_type(ff->get_type())->get_class_type());
+	  class_or_union_sptr s =
+	    is_class_or_union_type(is_method_type(sf->get_type())->get_class_type());
+
+	  class_decl_sptr fc = is_class_type(f);
+	  class_decl_sptr sc = is_class_type(s);
+
+	  // Detect if the virtual member function changes above
+	  // introduced a vtable change or not.
+	  bool vtable_added = false, vtable_removed = false;
+	  if (!f->get_is_declaration_only() && !s->get_is_declaration_only())
+	    {
+	      if (fc && sc)
+		{
+		  vtable_added = !fc->has_vtable() && sc->has_vtable();
+		  vtable_removed = fc->has_vtable() && !sc->has_vtable();
+		}
+	    }
+	  bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
+				 || (ff_vtable_offset != sf_vtable_offset));
+	  bool incompatible_change = (ff_vtable_offset != sf_vtable_offset);
+
+	  if (vtable_added)
+	    out << indent
+		<< "  note that a vtable was added to "
+		<< fc->get_pretty_representation()
+		<< "\n";
+	  else if (vtable_removed)
+	    out << indent
+		<< "  note that the vtable was removed from "
+		<< fc->get_pretty_representation()
+		<< "\n";
+	  else if (vtable_changed)
+	    {
+	      out << indent;
+	      if (incompatible_change)
+		out << "  note that this is an ABI incompatible "
+		  "change to the vtable of ";
+	      else
+		out << "  note that this induces a change to the vtable of ";
+	      out << fc->get_pretty_representation()
+		  << "\n";
+	    }
+
+	}
     }
 
   // Report about function type differences.
@@ -1648,17 +1657,20 @@ default_reporter::report(const var_diff& d, ostream& out,
   decl_base_sptr first = d.first_var(), second = d.second_var();
   string n = first->get_pretty_representation();
 
-  report_name_size_and_alignment_changes(first, second,
-					 d.context(),
-					 out, indent);
+  if (!d.is_filtered_out_without_looking_at_allowed_changes())
+    {
+      report_name_size_and_alignment_changes(first, second,
+					     d.context(),
+					     out, indent);
 
-  maybe_report_diff_for_symbol(d.first_var()->get_symbol(),
-			       d.second_var()->get_symbol(),
-			       d.context(), out, indent);
+      maybe_report_diff_for_symbol(d.first_var()->get_symbol(),
+				   d.second_var()->get_symbol(),
+				   d.context(), out, indent);
 
-  maybe_report_diff_for_member(first, second, d.context(), out, indent);
+      maybe_report_diff_for_member(first, second, d.context(), out, indent);
 
-  maybe_report_diff_for_variable(first, second, d.context(), out, indent);
+      maybe_report_diff_for_variable(first, second, d.context(), out, indent);
+    }
 
   if (diff_sptr dif = d.type_diff())
     {

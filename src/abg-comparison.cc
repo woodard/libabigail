@@ -1399,9 +1399,71 @@ diff_context::maybe_apply_filters(corpus_diff_sptr diff)
 /// reports should be dropped on the floor.
 ///
 /// @return the set of suppressions.
-suppressions_type&
+const suppressions_type&
 diff_context::suppressions() const
 {return priv_->suppressions_;}
+
+/// Getter for the vector of suppressions that specify which diff node
+/// reports should be dropped on the floor.
+///
+/// @return the set of suppressions.
+suppr::suppressions_type&
+diff_context::suppressions()
+{
+  // Invalidate negated and direct suppressions caches that are built
+  // from priv_->suppressions_;
+  priv_->negated_suppressions_.clear();
+  priv_->direct_suppressions_.clear();
+  return priv_->suppressions_;
+}
+
+/// Getter of the negated suppression specifications that are
+/// comprised in the general vector of suppression specifications
+/// returned by diff_context::suppressions().
+///
+/// Note that the first invocation of this function scans the vector
+/// returned by diff_context::suppressions() and caches the negated
+/// suppressions from there.
+///
+/// Subsequent invocations of this function just return the cached
+/// negated suppressions.
+///
+/// @return the negated suppression specifications stored in this diff
+/// context.
+const suppr::suppressions_type&
+diff_context::negated_suppressions() const
+{
+  if (priv_->negated_suppressions_.empty())
+    for (auto s : suppressions())
+      if (is_negated_suppression(s))
+	priv_->negated_suppressions_.push_back(s);
+
+  return priv_->negated_suppressions_;
+}
+
+/// Getter of the direct suppression specification (those that are
+/// not negated) comprised in the general vector of suppression
+/// specifications returned by diff_context::suppression().
+///
+/// Note that the first invocation of this function scans the vector
+/// returned by diff_context::suppressions() and caches the direct
+/// suppressions from there.
+///
+/// Subsequent invocations of this function just return the cached
+/// direct suppressions.
+///
+/// @return the direct suppression specifications.
+const suppr::suppressions_type&
+diff_context::direct_suppressions() const
+{
+   if (priv_->direct_suppressions_.empty())
+    {
+      for (auto s : suppressions())
+	if (!is_negated_suppression(s))
+	  priv_->direct_suppressions_.push_back(s);
+    }
+   return priv_->direct_suppressions_;
+}
 
 /// Add a new suppression specification that specifies which diff node
 /// reports should be dropped on the floor.
@@ -1410,7 +1472,13 @@ diff_context::suppressions() const
 /// existing set of suppressions specifications of the diff context.
 void
 diff_context::add_suppression(const suppression_sptr suppr)
-{priv_->suppressions_.push_back(suppr);}
+{
+  priv_->suppressions_.push_back(suppr);
+  // Invalidate negated and direct suppressions caches that are built
+  // from priv_->suppressions_;
+  priv_->negated_suppressions_.clear();
+  priv_->direct_suppressions_.clear();
+}
 
 /// Add new suppression specifications that specify which diff node
 /// reports should be dropped on the floor.
@@ -2313,6 +2381,16 @@ diff::set_local_category(diff_category c)
 /// Test if this diff tree node is to be filtered out for reporting
 /// purposes.
 ///
+/// There is a difference between a diff node being filtered out and
+/// being suppressed.  Being suppressed means that there is a
+/// suppression specification that suppresses the diff node
+/// specifically.  Being filtered out mean the node is either
+/// suppressed, or it's filtered out because the suppression of a set
+/// of (children) nodes caused this node to be filtered out as well.
+/// For instance, if a function diff has all its children diff nodes
+/// suppressed and if the function diff node carries no local change,
+/// then the function diff node itself is going to be filtered out.
+///
 /// The function tests if the categories of the diff tree node are
 /// "forbidden" by the context or not.
 ///
@@ -2321,13 +2399,16 @@ bool
 diff::is_filtered_out() const
 {
   if (diff * canonical = get_canonical_diff())
-    if (canonical->get_category() & SUPPRESSED_CATEGORY
-	|| canonical->get_category() & PRIVATE_TYPE_CATEGORY)
+    if ((canonical->get_category() & SUPPRESSED_CATEGORY
+	 || canonical->get_category() & PRIVATE_TYPE_CATEGORY)
+	&& !canonical->is_allowed_by_specific_negated_suppression()
+	&& !canonical->has_descendant_allowed_by_specific_negated_suppression()
+	&& !canonical->has_parent_allowed_by_specific_negated_suppression())
       // The canonical type was suppressed either by a user-provided
       // suppression specification or by a "private-type" suppression
-      // specification..  This means all the class of equivalence of
-      // that canonical type was suppressed.  So this node should be
-      // suppressed too.
+      // specification..  This means all the classes of equivalence of
+      // that canonical type were suppressed.  So this node should be
+      // filtered out.
       return true;
   return priv_->is_filtered_out(get_category());
 }
@@ -2344,6 +2425,27 @@ diff::is_filtered_out() const
 bool
 diff::is_filtered_out_wrt_non_inherited_categories() const
 {return priv_->is_filtered_out(get_local_category());}
+
+/// Test if this diff tree node is to be filtered out for reporting
+/// purposes, but without considering the categories that can /force/
+/// the node to be unfiltered.
+///
+/// The function tests if the categories of the diff tree node are
+/// "forbidden" by the context or not.
+///
+/// @return true iff the current diff node should should NOT be
+/// reported, with respect to the categories that might filter it out
+/// only.
+bool
+diff::is_filtered_out_without_looking_at_allowed_changes() const
+{
+  diff_category c = get_category();
+  c &= ~(HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY
+	 | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY
+	 | HAS_ALLOWED_CHANGE_CATEGORY);
+
+    return priv_->is_filtered_out(c);
+}
 
 /// Test if the current diff node has been suppressed by a
 /// user-provided suppression specification.
@@ -2364,6 +2466,13 @@ diff::is_suppressed() const
 /// Note that private type suppressions are auto-generated from the
 /// path to where public headers are, as given by the user.
 ///
+/// Here is the current algorithm:
+///
+///         First, suppress this diff node if it's not matched by any
+///         negated suppression specifications.  If it's not
+///         suppressed, then suppress it if it's matched by direct
+///         suppression specifications.
+///
 /// @param is_private_type out parameter if the current diff node was
 /// suppressed because it's a private type then this parameter is set
 /// to true.
@@ -2373,19 +2482,32 @@ diff::is_suppressed() const
 bool
 diff::is_suppressed(bool &is_private_type) const
 {
-  const suppressions_type& suppressions = context()->suppressions();
-  for (suppressions_type::const_iterator i = suppressions.begin();
-       i != suppressions.end();
-       ++i)
-    {
-      if ((*i)->suppresses_diff(this))
-	{
-	  if (is_private_type_suppr_spec(*i))
-	    is_private_type = true;
-	  return true;
-	}
-    }
-  return false;
+  // If there is at least one negated suppression, then suppress the
+  // current diff node by default ...
+  bool do_suppress = !context()->negated_suppressions().empty();
+
+  // ... unless there is at least one negated suppression that
+  // specifically asks to keep this diff node around (un-suppressed).
+  for (auto n : context()->negated_suppressions())
+    if (!n->suppresses_diff(this))
+      {
+	do_suppress = false;
+	break;
+      }
+
+  // Then walk the set of non-negated, AKA direct, suppressions.  If at
+  // least one suppression suppresses the current diff node then the
+  // diff node must be suppressed.
+  for (auto d : context()->direct_suppressions())
+    if (d->suppresses_diff(this))
+      {
+	do_suppress = true;
+	if (is_private_type_suppr_spec(d))
+	  is_private_type = true;
+	break;
+      }
+
+  return do_suppress;
 }
 
 /// Test if this diff tree node should be reported.
@@ -2410,6 +2532,51 @@ diff::has_local_changes_to_be_reported() const
       && !is_filtered_out_wrt_non_inherited_categories())
     return true;
   return false;
+}
+
+/// Test if this diff node is allowed (prevented from being
+/// suppressed) by at least one negated suppression specification.
+///
+/// @return true if this diff node is meant to be allowed by at least
+/// one negated suppression specification.
+bool
+diff::is_allowed_by_specific_negated_suppression() const
+{
+  const suppressions_type& suppressions = context()->suppressions();
+  for (suppressions_type::const_iterator i = suppressions.begin();
+       i != suppressions.end();
+       ++i)
+    {
+      if (is_negated_suppression(*i)
+	  && !(*i)->suppresses_diff(this))
+	return true;
+    }
+  return false;
+}
+
+/// Test if the current diff node has a descendant node which is
+/// specifically allowed by a negated suppression specification.
+///
+/// @return true iff the current diff node has a descendant node
+/// which is specifically allowed by a negated suppression
+/// specification.
+bool
+diff::has_descendant_allowed_by_specific_negated_suppression() const
+{
+  bool result = (get_category() & HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY);
+  return result;
+}
+
+/// Test if the current diff node has a parent node which is
+/// specifically allowed by a negated suppression specification.
+///
+/// @return true iff the current diff node has a parent node which is
+/// specifically allowed by a negated suppression specification.
+bool
+diff::has_parent_allowed_by_specific_negated_suppression() const
+{
+  bool result = (get_category() & HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY);
+  return result;
 }
 
 /// Get a pretty representation of the current @ref diff node.
@@ -3072,6 +3239,30 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & HAS_ALLOWED_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HAS_ALLOWED_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+    if (c & HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -11385,7 +11576,10 @@ struct category_propagation_visitor : public diff_node_visitor
 	// are propagated in a specific pass elsewhere.
 	c &= ~(REDUNDANT_CATEGORY
 	       | SUPPRESSED_CATEGORY
-	       | PRIVATE_TYPE_CATEGORY);
+	       | PRIVATE_TYPE_CATEGORY
+	       | HAS_ALLOWED_CHANGE_CATEGORY
+	       | HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY
+	       | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY);
 	// Also, if a (class) type has got a harmful name change, do not
 	// propagate harmless name changes coming from its sub-types
 	// (i.e, data members) to the class itself.
@@ -11481,6 +11675,40 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	if (canonical_diff != d)
 	  canonical_diff->add_to_category(c);
       }
+    else if (d->is_allowed_by_specific_negated_suppression())
+      {
+	// This diff node is specifically allowed by a
+	// negated_suppression, then mark it as being in the
+	// HAS_ALLOWED_CHANGE_CATEGORY.
+	diff_category c = HAS_ALLOWED_CHANGE_CATEGORY;
+	d->add_to_local_category(c);
+	diff *canonical_diff = d->get_canonical_diff();
+	canonical_diff->add_to_category(c);
+
+	// Note that some complementary code later down below does
+	// categorize the descendants and parents nodes of this node
+	// as HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY and
+	// HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY, repectively.
+      }
+
+    // If a parent node has been allowed by a negated suppression
+    // specification, then categorize the current node as
+    // HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY.
+    if (d->parent_node())
+      {
+	diff_category c = d->parent_node()->get_local_category();
+	if (c & (HAS_ALLOWED_CHANGE_CATEGORY
+		 | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY))
+	  d->add_to_category(HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY);
+	else
+	  {
+	    c = d->parent_node()->get_category();
+	    if (c & (HAS_ALLOWED_CHANGE_CATEGORY
+		     | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY))
+	      d->add_to_category(HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY);
+	  }
+      }
+
   }
 
   /// After visiting the children nodes of a given diff node,
@@ -11505,6 +11733,7 @@ struct suppression_categorization_visitor : public diff_node_visitor
     bool has_suppressed_child = false;
     bool has_non_private_child = false;
     bool has_private_child = false;
+    bool has_descendant_with_allowed_change = false;
 
     if (// A node to which we can propagate the "SUPPRESSED_CATEGORY"
 	// (or the PRIVATE_TYPE_CATEGORY for the same matter)
@@ -11669,6 +11898,24 @@ struct suppression_categorization_visitor : public diff_node_visitor
 		      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
 		  }
 	  }
+      }
+
+    // If any descendant node was selected by a negated suppression
+    // specification then categorize the current one as
+    // HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY.
+    for (auto child_node : d->children_nodes())
+      {
+	diff *canonical_diff = child_node->get_canonical_diff();
+	diff_category c = canonical_diff->get_category();
+	if (c & (HAS_ALLOWED_CHANGE_CATEGORY
+		 | HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY))
+	  has_descendant_with_allowed_change = true;
+      }
+    if (has_descendant_with_allowed_change)
+      {
+	diff_category c = HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY;
+	d->add_to_category(c);
+	d->get_canonical_diff()->add_to_category(c);
       }
   }
 }; //end struct suppression_categorization_visitor

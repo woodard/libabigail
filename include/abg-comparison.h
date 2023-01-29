@@ -17,6 +17,7 @@
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
 #include "abg-reporter.h"
+#include "abg-suppression.h"
 
 namespace abigail
 {
@@ -45,14 +46,6 @@ using std::pair;
 using diff_utils::insertion;
 using diff_utils::deletion;
 using diff_utils::edit_script;
-
-class diff;
-
-/// Convenience typedef for a shared_ptr for the @ref diff class
-typedef shared_ptr<diff> diff_sptr;
-
-/// Convenience typedef for a weak_ptr for the @ref diff class
-typedef weak_ptr<diff> diff_wptr;
 
 /// Hasher for @ref diff_sptr.
 struct diff_sptr_hasher
@@ -261,14 +254,6 @@ typedef unordered_map<string, elf_symbol_sptr> string_elf_symbol_map;
 /// value is a @ref var_diff_sptr.
 typedef unordered_map<string, var_diff_sptr> string_var_diff_ptr_map;
 
-class diff_context;
-
-/// Convenience typedef for a shared pointer of @ref diff_context.
-typedef shared_ptr<diff_context> diff_context_sptr;
-
-/// Convenience typedef for a weak pointer of @ref diff_context.
-typedef weak_ptr<diff_context> diff_context_wptr;
-
 class diff_node_visitor;
 
 class diff_traversable_base;
@@ -438,6 +423,25 @@ enum diff_category
   /// variable didn't change.
   BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY = 1 << 21,
 
+  /// A diff node in this category carries a change that must be
+  /// reported, even if the diff node is also in the
+  /// SUPPRESSED_CATEGORY or PRIVATE_TYPE_CATEGORY categories.
+  /// Typically, this node matches a suppression specification like
+  /// the [allow_type] directive.
+  HAS_ALLOWED_CHANGE_CATEGORY = 1 << 22,
+
+  /// A diff node in this category has a descendant node that is in
+  /// the HAS_ALLOWED_CHANGE_CATEGORY category.  Nodes in this
+  /// category must be reported, even if they are also in the
+  /// SUPPRESSED_CATEGORY or PRIVATE_TYPE_CATEGORY categories.
+  HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY = 1 << 23,
+
+  /// A diff node in this category has a parent node that is in the
+  /// HAS_ALLOWED_CHANGE_CATEGORY category.  Nodes in this category
+  /// must be reported, even if they are also in the
+  /// SUPPRESSED_CATEGORY or PRIVATE_TYPE_CATEGORY categories.
+  HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY = 1 << 24,
+
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
   ///
@@ -466,6 +470,9 @@ enum diff_category
   | VAR_TYPE_CV_CHANGE_CATEGORY
   | VOID_PTR_TO_PTR_CHANGE_CATEGORY
   | BENIGN_INFINITE_ARRAY_CHANGE_CATEGORY
+  | HAS_ALLOWED_CHANGE_CATEGORY
+  | HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY
+  | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY
 }; // enum diff_category
 
 diff_category
@@ -730,8 +737,17 @@ public:
   void
   maybe_apply_filters(corpus_diff_sptr diff);
 
-  suppr::suppressions_type&
+  const suppr::suppressions_type&
   suppressions() const;
+
+  suppr::suppressions_type&
+  suppressions();
+
+  const suppr::suppressions_type&
+  negated_suppressions() const;
+
+  const suppr::suppressions_type&
+  direct_suppressions() const;
 
   void
   add_suppression(const suppr::suppression_sptr suppr);
@@ -1038,6 +1054,9 @@ public:
   is_filtered_out_wrt_non_inherited_categories() const;
 
   bool
+  is_filtered_out_without_looking_at_allowed_changes() const;
+
+  bool
   is_suppressed() const;
 
   bool
@@ -1048,6 +1067,15 @@ public:
 
   bool
   has_local_changes_to_be_reported() const;
+
+  bool
+  is_allowed_by_specific_negated_suppression() const;
+
+  bool
+  has_descendant_allowed_by_specific_negated_suppression() const;
+
+  bool
+  has_parent_allowed_by_specific_negated_suppression() const;
 
   virtual const string&
   get_pretty_representation() const;

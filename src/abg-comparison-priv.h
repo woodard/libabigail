@@ -174,7 +174,17 @@ struct diff_context::priv
   unordered_diff_sptr_set		live_diffs_;
   vector<diff_sptr>			canonical_diffs;
   vector<filtering::filter_base_sptr>	filters_;
+  // All the suppressions specifications are stored in this data
+  // member.
   suppressions_type			suppressions_;
+  // The negated suppressions specifications that are in
+  // suppressions_ are stored here.  Each time suppressions_ is
+  // modified, this data member should be cleared.
+  suppressions_type			negated_suppressions_;
+  // The non-negated suppressions specifications that are in
+  // suppressions_ are stored here.  Each time suppressions_ is
+  // modified, this data member should be cleared.
+  suppressions_type			direct_suppressions_;
   pointer_map				visited_diff_nodes_;
   corpus_diff_sptr			corpus_diff_;
   ostream*				default_output_stream_;
@@ -302,6 +312,13 @@ public:
       return false;
 
     if (ctxt->get_allowed_category() == EVERYTHING_CATEGORY)
+      return false;
+
+    // If this node is on the path of a node that *must* be reported,
+    // then do not filter it.
+    if (category & (HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY
+		    | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY
+		    | HAS_ALLOWED_CHANGE_CATEGORY))
       return false;
 
   /// We don't want to display nodes suppressed by a user-provided

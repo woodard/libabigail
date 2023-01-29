@@ -36,11 +36,17 @@ using std::vector;
 using comparison::diff;
 using comparison::diff_context_sptr;
 
-/// Base type of the suppression specifications types.
+/// Base type of a direct suppression specifications types.
 ///
 /// This abstracts a suppression specification.  It's a way to specify
 /// how to drop reports about a particular diff node on the floor, if
 /// it matches the supppression specification.
+///
+/// Note that a direct suppression specification suppresses (for
+/// reporting purposes) the diff node that it matches.  A negated
+/// suppression specification, however, suppresses a diff node that it
+/// DOES NOT match.  A Negated suppression specification is abstracted
+/// by the class @ref negated_suppression_base.
 class suppression_base
 {
 public:
@@ -142,6 +148,36 @@ typedef shared_ptr<type_suppression> type_suppression_sptr;
 
 /// Convenience typedef for vector of @ref type_suppression_sptr.
 typedef vector<type_suppression_sptr> type_suppressions_type;
+
+/// The base class of suppression specifications that are defined by
+/// the negation of matching clauses.
+///
+/// A direct suppression specification suppresses (for reporting
+/// purposes) the diff node that it matches.  A negated suppression
+/// specification suppresses a diff node that it DOES NOT match.
+class negated_suppression_base
+{
+public:
+  negated_suppression_base();
+
+  virtual ~negated_suppression_base();
+}; // end class negated_suppression_base.
+
+/// A convenience typedef for a shared pointer to @ref
+/// negated_suppression_base.
+typedef shared_ptr<negated_suppression_base> negated_suppression_sptr;
+
+/// Convenience typedef for a vector of @ref negated_suppression_sptr
+typedef vector<negated_suppression_sptr> negated_suppressions_type;
+
+bool
+is_negated_suppression(const suppression_base&);
+
+const negated_suppression_base*
+is_negated_suppression(const suppression_base*);
+
+negated_suppression_sptr
+is_negated_suppression(const suppression_sptr&);
 
 /// Abstraction of a type suppression specification.
 ///
@@ -415,6 +451,37 @@ public:
   operator ini::function_call_expr_sptr () const;
   ~fn_call_expr_boundary();
 }; //end class type_suppression::insertion_range::fn_call_expr_boundary
+
+/// Abstraction of a negated type suppression specification.
+///
+/// A negated type suppression suppresses a type if the negation of
+/// the equivalent propositions for a @ref type_suppression are valid.
+class negated_type_suppression : virtual public type_suppression,
+				 virtual public negated_suppression_base
+{
+
+public:
+
+  negated_type_suppression(const string& label,
+			   const string& type_name_regexp,
+			   const string& type_name);
+
+  virtual bool
+  suppresses_diff(const diff* diff) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type,
+		  const diff_context_sptr& ctxt) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type,
+		  const scope_decl* type_scope) const;
+
+  virtual ~negated_type_suppression();
+};// end class negated_type_suppression
 
 class function_suppression;
 
