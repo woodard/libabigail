@@ -379,7 +379,7 @@ public:
   begin() const;
 
  boundary_sptr
-  end() const;
+ end() const;
 
   static insertion_range::integer_boundary_sptr
   create_integer_boundary(int value);

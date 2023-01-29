@@ -581,7 +581,7 @@ class type_suppression::priv
   // members of the class.
   mutable regex::regex_t_sptr		potential_data_members_regex_;
   type_suppression::insertion_ranges	insertion_ranges_;
-  unordered_set<string>			source_locations_to_keep_;
+  unordered_set<string>		source_locations_to_keep_;
   string				source_location_to_keep_regex_str_;
   mutable regex::regex_t_sptr		source_location_to_keep_regex_;
   mutable vector<string>		changed_enumerator_names_;

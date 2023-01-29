@@ -1873,7 +1873,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 		     // was playing tricks with symbol names and
 		     // versions).
 		  (is_c_language(get_translation_unit(fn)->get_language())
-		      && fn->get_name() != fn->get_symbol()->get_name()))
+		   && fn->get_name() != fn->get_symbol()->get_name()))
 		{
 		  // As the name of the symbol of the function doesn't
 		  // seem to be obvious here, make sure to tell the
@@ -1949,7 +1949,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	  emitted = true;
 	}
       if (emitted)
-	  out << "\n";
+	out << "\n";
     }
 
   if (ctxt->show_added_vars())

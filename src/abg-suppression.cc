@@ -2007,9 +2007,9 @@ read_type_suppression(const ini::config::section& section)
       // and not (for instance):
       //  has_data_member_inserted_between = {{0 , end}, {1, foo}}
       //
-      //  This means that the tuple_property_value contains just one
-      //  value, which is a list_property that itself contains 2
-      //  values.
+      // This means that the tuple_property_value contains just one
+      // value, which is a list_property that itself contains 2
+      // values.
       type_suppression::insertion_range::boundary_sptr begin, end;
       ini::tuple_property_value_sptr v = prop->get_value();
       if (v
