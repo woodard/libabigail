@@ -2121,9 +2121,6 @@ public:
     corpus()->set_soname(dt_soname());
     corpus()->set_needed(dt_needed());
     corpus()->set_architecture_name(elf_architecture());
-    if (corpus_group_sptr group = corpus_group())
-      group->add_corpus(corpus());
-
     // Set symbols information to the corpus.
     corpus()->set_symtab(symtab());
 

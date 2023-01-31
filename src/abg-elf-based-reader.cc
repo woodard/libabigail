@@ -92,10 +92,8 @@ ir::corpus_sptr
 elf_based_reader::read_and_add_corpus_to_group(ir::corpus_group& group,
 					       fe_iface::status& status)
 {
+  group.add_corpus(corpus());
   ir::corpus_sptr corp = read_corpus(status);
-
-  if (status & fe_iface::STATUS_OK)
-    group.add_corpus(corp);
   return corp;
 }
 

@@ -230,7 +230,8 @@ class write_context
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
   string_elf_symbol_sptr_map_type	m_var_symbol_map;
-  unordered_set<interned_string, hash_interned_string> m_emitted_decls_set;
+  unordered_set<interned_string, hash_interned_string>	m_emitted_decls_set;
+  unordered_set<string>				m_emitted_corpora_set;
 
   write_context();
 
@@ -816,6 +817,42 @@ public:
     string repr = get_pretty_representation(decl, true);
     interned_string irepr = decl->get_environment().intern(repr);
     m_emitted_decls_set.insert(irepr);
+  }
+
+  /// Test if a corpus has already been emitted.
+  ///
+  /// A corpus is emitted if it's been recorded as having been emitted
+  /// by the function record_corpus_as_emitted().
+  ///
+  /// @param corp the corpus to consider.
+  ///
+  /// @return true iff the corpus @p corp has been emitted.
+  bool
+  corpus_is_emitted(const corpus_sptr& corp)
+  {
+    if (!corp)
+      return false;
+
+    if (m_emitted_corpora_set.find(corp->get_path())
+	== m_emitted_corpora_set.end())
+      return false;
+
+    return true;
+  }
+
+  /// Record the corpus has having been emitted.
+  ///
+  /// @param corp the corpus to consider.
+  void
+  record_corpus_as_emitted(const corpus_sptr& corp)
+  {
+    if (!corp)
+      return;
+
+    const string& path = corp->get_path();
+    ABG_ASSERT(!path.empty());
+
+    m_emitted_corpora_set.insert(path);
   }
 
   /// Get the set of types that have been emitted.
@@ -4588,6 +4625,7 @@ write_corpus(write_context&	ctxt,
   out << "</abi-corpus>\n";
 
   ctxt.clear_referenced_types();
+  ctxt.record_corpus_as_emitted(corpus);
 
   return true;
 }
@@ -4639,7 +4677,10 @@ std::ostream& out = ctxt.get_ostream();
 	 group->get_corpora().begin();
        c != group->get_corpora().end();
        ++c)
-    write_corpus(ctxt, *c, get_indent_to_level(ctxt, indent, 1), true);
+    {
+      ABG_ASSERT(!ctxt.corpus_is_emitted(*c));
+      write_corpus(ctxt, *c, get_indent_to_level(ctxt, indent, 1), true);
+    }
 
   do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus-group>\n";
