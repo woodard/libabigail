@@ -4815,47 +4815,6 @@ public:
   var_decls_to_re_add_to_tree()
   {return var_decls_to_add_;}
 
-  /// The section containing the symbol table from the current ELF
-  /// file.
-  ///
-  /// Note that after it's first invocation, this function caches the
-  /// symbol table that it found.  Subsequent invocations just return
-  /// the cached symbol table section.
-  ///
-  /// @return the symbol table section if found
-  Elf_Scn*
-  find_symbol_table_section() const
-  {return find_symbol_table_section();}
-
-  /// Lookup an elf symbol, referred to by its index, from the .symtab
-  /// section.
-  ///
-  /// The resulting symbol returned is an instance of a GElf_Sym, from
-  /// the libelf library.
-  ///
-  /// @param symbol_index the index of the symbol to look up.
-  ///
-  /// @param elf_sym out parameter.  This is set to the resulting ELF
-  /// symbol iff the function returns TRUE, meaning the symbol was
-  /// found.
-  ///
-  /// @return TRUE iff the symbol was found.
-  bool
-  lookup_native_elf_symbol_from_index(size_t symbol_index, GElf_Sym &elf_sym)
-  {
-    Elf_Scn* symtab_section = find_symbol_table_section();
-    if (!symtab_section)
-      return false;
-
-    Elf_Data* symtab = elf_getdata(symtab_section, 0);
-    ABG_ASSERT(symtab);
-
-    if (!gelf_getsym(symtab, symbol_index, &elf_sym))
-      return false;
-
-    return true;
-  }
-
   /// Test if a DIE represents a decl (function or variable) that has
   /// a symbol that is exported, whatever that means.  This is
   /// supposed to work for Linux Kernel binaries as well.
