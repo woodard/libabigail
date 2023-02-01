@@ -72,7 +72,7 @@ protected:
 
   fe_iface(const std::string& corpus_path, environment& e);
 
-  ~fe_iface();
+  virtual ~fe_iface();
 
   void
   reset(const std::string& corpus_path, environment& e);
