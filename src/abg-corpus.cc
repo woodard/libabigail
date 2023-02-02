@@ -313,9 +313,15 @@ corpus::priv::get_sorted_fun_symbols() const
 {
   if (!sorted_fun_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_functions();
-      sorted_fun_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_functions();
+	  sorted_fun_symbols = elf_symbols(symtab_->begin(filter),
+					   symtab_->end());
+	}
+      else
+	sorted_fun_symbols = elf_symbols();
     }
   return *sorted_fun_symbols;
 }
@@ -349,13 +355,18 @@ corpus::priv::get_sorted_undefined_fun_symbols() const
 {
   if (!sorted_undefined_fun_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_functions();
-      filter.set_undefined_symbols();
-      filter.set_public_symbols(false);
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_functions();
+	  filter.set_undefined_symbols();
+	  filter.set_public_symbols(false);
 
-      sorted_undefined_fun_symbols =
-	elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_undefined_fun_symbols =
+	    elf_symbols(symtab_->begin(filter), symtab_->end());
+	}
+      else
+	sorted_undefined_fun_symbols = elf_symbols();
     }
   return *sorted_undefined_fun_symbols;
 }
@@ -446,10 +457,16 @@ corpus::priv::get_sorted_var_symbols() const
 {
   if (!sorted_var_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_variables();
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_variables();
 
-      sorted_var_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_var_symbols = elf_symbols(symtab_->begin(filter),
+					   symtab_->end());
+	}
+      else
+	sorted_var_symbols = elf_symbols();
     }
   return *sorted_var_symbols;
 }
@@ -483,13 +500,18 @@ corpus::priv::get_sorted_undefined_var_symbols() const
 {
   if (!sorted_undefined_var_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_variables();
-      filter.set_undefined_symbols();
-      filter.set_public_symbols(false);
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_variables();
+	  filter.set_undefined_symbols();
+	  filter.set_public_symbols(false);
 
-      sorted_undefined_var_symbols =
-	  elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_undefined_var_symbols =
+	    elf_symbols(symtab_->begin(filter), symtab_->end());
+	}
+      else
+	sorted_undefined_var_symbols = elf_symbols();
     }
   return *sorted_undefined_var_symbols;
 }
