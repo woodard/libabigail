@@ -8740,9 +8740,8 @@ get_name_of_qualified_type(const type_base_sptr& underlying_type,
 
   if (!quals_repr.empty())
     {
-      if (is_pointer_type(underlying_type)
-	  || is_reference_type(underlying_type)
-	  || is_array_type(underlying_type))
+      if (is_pointer_type(peel_qualified_type(underlying_type))
+	  || is_reference_type(peel_qualified_type(underlying_type)))
 	{
 	  name += " ";
 	  name += quals_repr;

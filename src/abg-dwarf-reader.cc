@@ -425,6 +425,9 @@ static bool
 die_is_reference_type(const Dwarf_Die* die);
 
 static bool
+die_is_pointer_array_or_reference_type(const Dwarf_Die* die);
+
+static bool
 die_is_pointer_or_reference_type(const Dwarf_Die* die);
 
 static bool
@@ -569,6 +572,9 @@ die_function_signature(const reader& rdr,
 
 static bool
 die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die);
+
+static bool
+die_peel_qualified(Dwarf_Die *die, Dwarf_Die& peeled_die);
 
 static bool
 die_function_type_is_method_type(const reader& rdr,
@@ -6868,7 +6874,7 @@ die_is_pointer_type(const Dwarf_Die* die)
 static bool
 pointer_or_qual_die_of_anonymous_class_type(const Dwarf_Die* die)
 {
-  if (!die_is_pointer_or_reference_type(die)
+  if (!die_is_pointer_array_or_reference_type(die)
       && !die_is_qualified_type(die))
     return false;
 
@@ -6926,10 +6932,19 @@ die_is_array_type(const Dwarf_Die* die)
 ///
 /// @return true iff @p die represents a pointer or reference type.
 static bool
-die_is_pointer_or_reference_type(const Dwarf_Die* die)
+die_is_pointer_array_or_reference_type(const Dwarf_Die* die)
 {return (die_is_pointer_type(die)
 	 || die_is_reference_type(die)
 	 || die_is_array_type(die));}
+
+/// Test if a DIE represents a pointer or a reference type.
+///
+/// @param die the die to consider.
+///
+/// @return true iff @p die represents a pointer or reference type.
+static bool
+die_is_pointer_or_reference_type(const Dwarf_Die* die)
+{return (die_is_pointer_type(die) || die_is_reference_type(die));}
 
 /// Test if a DIE represents a pointer, a reference or a typedef type.
 ///
@@ -6939,7 +6954,7 @@ die_is_pointer_or_reference_type(const Dwarf_Die* die)
 /// typedef type.
 static bool
 die_is_pointer_reference_or_typedef_type(const Dwarf_Die* die)
-{return (die_is_pointer_or_reference_type(die)
+{return (die_is_pointer_array_or_reference_type(die)
 	 || dwarf_tag(const_cast<Dwarf_Die*>(die)) == DW_TAG_typedef);}
 
 /// Test if a DIE represents a class type.
@@ -7179,6 +7194,38 @@ die_peel_qual_ptr(Dwarf_Die *die, Dwarf_Die& peeled_die)
     }
 
   return true;
+}
+
+/// Return the leaf object under a qualified type DIE.
+///
+/// @param die the DIE of the type to consider.
+///
+/// @param peeled_die out parameter.  Set to the DIE of the leaf
+/// object iff the function actually peeled anything.
+///
+/// @return true upon successful completion.
+static bool
+die_peel_qualified(Dwarf_Die *die, Dwarf_Die& peeled_die)
+{
+  if (!die)
+    return false;
+
+  memcpy(&peeled_die, die, sizeof(peeled_die));
+
+  int tag = dwarf_tag(&peeled_die);
+
+  bool result = false;
+  while (tag == DW_TAG_const_type
+	 || tag == DW_TAG_volatile_type
+	 || tag == DW_TAG_restrict_type)
+    {
+      if (!die_die_attribute(&peeled_die, DW_AT_type, peeled_die))
+	break;
+      tag = dwarf_tag(&peeled_die);
+      result = true;
+    }
+
+  return result;
 }
 
 /// Return the leaf object under a typedef type DIE.
@@ -9052,9 +9099,15 @@ die_qualified_type_name(const reader& rdr,
 	  repr.clear();
 	else
 	  {
-	    if (has_underlying_type_die
-		&& die_is_pointer_or_reference_type(&underlying_type_die))
-	      repr = underlying_type_repr + " " + repr;
+	    if (has_underlying_type_die)
+	      {
+		Dwarf_Die peeled;
+		die_peel_qualified(&underlying_type_die, peeled);
+		if (die_is_pointer_or_reference_type(&peeled))
+		  repr = underlying_type_repr + " " + repr;
+		else
+		  repr += " " + underlying_type_repr;
+	      }
 	    else
 	      repr += " " + underlying_type_repr;
 	  }

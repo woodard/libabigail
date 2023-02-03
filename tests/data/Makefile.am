@@ -248,6 +248,16 @@ test-abidiff-exit/btf/test0-v0.c	\
 test-abidiff-exit/btf/test0-v0.o	\
 test-abidiff-exit/btf/test0-v1.c	\
 test-abidiff-exit/btf/test0-v1.o	\
+test-abidiff-exit/PR30048-test-report-0.txt \
+test-abidiff-exit/PR30048-test-v0.c \
+test-abidiff-exit/PR30048-test-v1.c \
+test-abidiff-exit/PR30048-test-v0.o \
+test-abidiff-exit/PR30048-test-v1.o \
+test-abidiff-exit/PR30048-test-2-report-1.txt \
+test-abidiff-exit/PR30048-test-2-v0.cc \
+test-abidiff-exit/PR30048-test-2-v0.o \
+test-abidiff-exit/PR30048-test-2-v1.cc \
+test-abidiff-exit/PR30048-test-2-v1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
