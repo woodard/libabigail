@@ -25,7 +25,7 @@ dnl    then increment LIBABIGAIL_SO_AGE.
 dnl 
 dnl 4. If any interfaces have been removed or changed since the last
 dnl     public release, then set LIBABIGAIL_SO_AGE to 0.
-m4_define([libabigail_so_current],  [1])
+m4_define([libabigail_so_current],  [2])
 m4_define([libabigail_so_revision], [0])
 m4_define([libabigail_so_age],      [0])
 
