@@ -3,7 +3,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 function with some indirect sub-type change:
 
-  [C] 'function void foo(ns2::C&)' at test-rhbz2114909-v1.cc:33:1 has some indirect sub-type changes:
+  [C] 'function void foo(ns2::C&)' at test-rhbz2114909-v0.cc:32:1 has some indirect sub-type changes:
     parameter 1 of type 'ns2::C&' has sub-type changes:
       in referenced type 'class ns2::C' at test-rhbz2114909-v1.cc:22:1:
         type size changed from 160 to 96 (in bits)

@@ -1844,7 +1844,7 @@ default_reporter::report(const corpus_diff& d, ostream& out,
 	      function_decl_sptr fn = (*i)->first_function_decl();
 	      out << indent << "  [C] '"
 		  << fn->get_pretty_representation() << "'";
-	      report_loc_info((*i)->second_function_decl(), *ctxt, out);
+	      report_loc_info((*i)->first_function_decl(), *ctxt, out);
 	      out << " has some indirect sub-type changes:\n";
 	      if (// The symbol of the function has aliases and the
 		  // function is not a cdtor (yeah because c++ cdtors

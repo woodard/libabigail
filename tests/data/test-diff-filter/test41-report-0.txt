@@ -112,7 +112,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           1 base class insertion:
             class std::tr1::__shared_ptr<abigail::ir::corpus, __gnu_cxx::_Lock_policy::_S_atomic> at shared_ptr.h:539:1
 
-  [C] 'method void std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_initialize_map(std::size_t)' at stl_deque.h:625:1 has some indirect sub-type changes:
+  [C] 'method void std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_initialize_map(std::size_t)' at stl_deque.h:679:1 has some indirect sub-type changes:
     'method void std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_initialize_map(std::size_t) {_ZNSt11_Deque_baseINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_initialize_mapEm}' now becomes 'method void std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_M_initialize_map(std::size_t) {_ZNSt11_Deque_baseINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_initialize_mapEm}'
     implicit parameter 0 of type 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*' changed:
       in pointed to type 'class std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >' at stl_deque.h:458:1:
@@ -155,7 +155,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
               name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Deque_impl::_M_finish' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_Deque_impl::_M_finish' at stl_deque.h:553:1
           and name of 'std::_Deque_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_impl' changed to 'std::_Deque_base<std::__cxx11::basic_string<char>, std::allocator<std::__cxx11::basic_string<char> > >::_M_impl' at stl_deque.h:631:1
 
-  [C] 'method void std::_Deque_base<unsigned int, std::allocator<unsigned int> >::_M_initialize_map(std::size_t)' at stl_deque.h:625:1 has some indirect sub-type changes:
+  [C] 'method void std::_Deque_base<unsigned int, std::allocator<unsigned int> >::_M_initialize_map(std::size_t)' at stl_deque.h:679:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'std::_Deque_base<unsigned int, std::allocator<unsigned int> >*' has sub-type changes:
       in pointed to type 'class std::_Deque_base<unsigned int, std::allocator<unsigned int> >' at stl_deque.h:458:1:
         type size hasn't changed

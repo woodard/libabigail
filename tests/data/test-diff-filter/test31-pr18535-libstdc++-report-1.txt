@@ -41,7 +41,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
           '__cxxabiv1::__cxa_exception* nextPropagatingException' offset changed from 160 to 192 (in bits) (by +32 bits)
           'int propagationCount' offset changed from 192 to 224 (in bits) (by +32 bits)
 
-  [C] 'method virtual std::__future_base::_Async_state_common::~_Async_state_common(int)' at compatibility-thread-c++0x.cc:117:1 has some indirect sub-type changes:
+  [C] 'method virtual std::__future_base::_Async_state_common::~_Async_state_common(int)' at compatibility-thread-c++0x.cc:89:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'std::__future_base::_Async_state_common*' has sub-type changes:
       in pointed to type 'class std::__future_base::_Async_state_common' at compatibility-thread-c++0x.cc:106:1:
         type size hasn't changed
@@ -68,7 +68,7 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
                       and name of 'std::unique_ptr<std::__future_base::_Result<void>, std::__future_base::_Result_base::_Deleter>::_M_t' changed to 'std::unique_ptr<std::__future_base::_Result_base, std::__future_base::_Result_base::_Deleter>::_M_t' at unique_ptr.h:147:1
         no member function changes (4 filtered);
 
-  [C] 'function void std::__throw_regex_error(std::regex_constants::error_type)' at functexcept.cc:139:1 has some indirect sub-type changes:
+  [C] 'function void std::__throw_regex_error(std::regex_constants::error_type)' at functexcept.cc:116:1 has some indirect sub-type changes:
     parameter 1 of type 'enum std::regex_constants::error_type' has sub-type changes:
       type size hasn't changed
       1 enumerator deletion:
