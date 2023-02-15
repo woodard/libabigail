@@ -41,7 +41,7 @@ void
 apply_filter(filter_base& filter, corpus_diff_sptr d)
 {
   bool s = d->context()->visiting_a_node_twice_is_forbidden();
-  d->context()->forbid_visiting_a_node_twice(false);
+  d->context()->forbid_visiting_a_node_twice(true);
   d->traverse(filter);
   d->context()->forbid_visiting_a_node_twice(s);
 }
