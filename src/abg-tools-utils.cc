@@ -2151,7 +2151,8 @@ gen_suppr_spec_from_kernel_abi_whitelists
 	   ++section_iter)
 	{
 	  std::string section_name = (*section_iter)->get_name();
-	  if (!string_ends_with(section_name, "whitelist"))
+	  if (!string_ends_with(section_name, "whitelist")
+	      && !string_ends_with(section_name, "stablelist"))
 	    continue;
 	  for (ini::config::properties_type::const_iterator
 		   prop_iter = (*section_iter)->get_properties().begin(),
