@@ -633,6 +633,20 @@ const environment&
 corpus::get_environment() const
 {return priv_->env;}
 
+/// Test if logging was requested.
+///
+/// @return true iff logging was requested.
+bool
+corpus::do_log() const
+{return priv_->do_log;}
+
+/// Request logging, or not.
+///
+/// @param f true iff logging is requested.
+void
+corpus::do_log(bool f)
+{priv_->do_log = f;}
+
 /// Add a translation unit to the current ABI Corpus.
 ///
 /// Note that two translation units with the same path (as returned by

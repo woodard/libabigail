@@ -165,6 +165,13 @@ public:
   {
   }
 
+  /// Test if logging was requested.
+  ///
+  /// @return true iff logging was requested.
+  bool
+  do_log() const
+  {return options().do_log;}
+
   /// Getter for the flag that tells us if we are tracking types that
   /// are not reachable from global functions and variables.
   ///
@@ -1233,7 +1240,22 @@ public:
       }
 
 
+    tools_utils::timer t;
+    if (do_log())
+      {
+	std::cerr << "perform late type canonicalization ...\n";
+	t.start();
+      }
+
     perform_late_type_canonicalizing();
+
+    if (do_log())
+      {
+	t.stop();
+	std::cerr << "late type canonicalization DONE@"
+		  << corpus()->get_path()
+		  << ":" << t << "\n";
+      }
 
     get_environment().canonicalization_is_done(true);
 

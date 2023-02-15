@@ -830,6 +830,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     }
 
   ctxt->dump_diff_tree(opts.dump_diff_tree);
+
+  ctxt->do_log(opts.do_log);
 }
 
 /// Set a bunch of tunable buttons on the ELF-based reader from the
@@ -934,7 +936,9 @@ set_native_xml_reader_options(abigail::fe_iface& rdr,
 			      const options& opts)
 {
   abixml::consider_types_not_reachable_from_public_interfaces(rdr,
-									      opts.show_all_types);
+							      opts.show_all_types);
+  rdr.options().do_log = opts.do_log;
+
 }
 
 /// Set the regex patterns describing the functions to drop from the
@@ -1409,9 +1413,38 @@ main(int argc, char* argv[])
 
       if (t1)
 	{
+	  tools_utils::timer t;
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Compute diff ...\n";
+	    }
+
 	  translation_unit_diff_sptr diff = compute_diff(t1, t2, ctxt);
+
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "diff computed!:" << t << "\n";
+	    }
+
 	  if (diff->has_changes())
-	    diff->report(cout);
+	    {
+	      tools_utils::timer t;
+	      if (opts.do_log)
+		{
+		  t.start();
+		  std::cerr << "Computing the report ...\n";
+		}
+
+	      diff->report(cout);
+
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "Report computed!:" << t << "\n";
+		}
+	    }
 	}
       else if (c1)
 	{
@@ -1436,16 +1469,81 @@ main(int argc, char* argv[])
 	  set_corpus_keep_drop_regex_patterns(opts, c1);
 	  set_corpus_keep_drop_regex_patterns(opts, c2);
 
+	  tools_utils::timer t;
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Compute diff ...\n";
+	    }
+
 	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
 
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "diff computed!:" << t << "\n";
+	    }
+
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing net changes ...\n";
+	    }
+
 	  if (diff->has_net_changes())
-	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	    {
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "net changes computed!: "<< t << "\n";
+		}
+	      status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	    }
+
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing incompatible changes ...\n";
+	    }
 
 	  if (diff->has_incompatible_changes())
-	    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	    {
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "incompatible changes computed!: "<< t << "\n";
+		}
+	      status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	    }
+
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing changes ...\n";
+	    }
 
 	  if (diff->has_changes())
-	    diff->report(cout);
+	    {
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "changes computed!: "<< t << "\n";
+		}
+
+	      if (opts.do_log)
+		{
+		  t.start();
+		  std::cerr << "Computing report ...\n";
+		}
+
+	      diff->report(cout);
+
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "Report computed!:" << t << "\n";
+		}
+	    }
 	}
       else if (g1)
 	{
@@ -1468,16 +1566,87 @@ main(int argc, char* argv[])
 	    }
 
 	  adjust_diff_context_for_kmidiff(*ctxt);
+	  tools_utils::timer t;
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Compute diff ...\n";
+	    }
+
 	  corpus_diff_sptr diff = compute_diff(g1, g2, ctxt);
+
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      diff->do_log(true);
+	      std::cerr << "diff computed!:" << t << "\n";
+	    }
+
+	  if (opts.do_log)
+	    {
+	      std::cerr << "Computing net changes ...\n";
+	      t.start();
+	    }
 
 	  if (diff->has_net_changes())
 	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "net changes computed!: "<< t << "\n";
+	    }
+
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing incompatible changes ...\n";
+	    }
 
 	  if (diff->has_incompatible_changes())
 	    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "incompatible changes computed!: "<< t << "\n";
+	    }
+
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing changes ...\n";
+	    }
+
 	  if (diff->has_changes())
-	    diff->report(cout);
+	    {
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "changes computed!: "<< t << "\n";
+		}
+
+	      if (opts.do_log)
+		{
+		  t.start();
+		  std::cerr << "Computing report ...\n";
+		}
+
+	      diff->report(cout);
+
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "Report computed!:" << t << "\n";
+		}
+	    }
+	  else
+	    {
+	      if (opts.do_log)
+		{
+		  t.stop();
+		  std::cerr << "changes computed!: "<< t << "\n";
+		}
+	    }
 
 	}
       else

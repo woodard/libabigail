@@ -17,6 +17,7 @@
 
 #include "abg-comparison-priv.h"
 #include "abg-reporter-priv.h"
+#include "abg-tools-utils.h"
 
 namespace abigail
 {
@@ -916,6 +917,20 @@ diff_context::diff_context()
 
 diff_context::~diff_context() = default;
 
+/// Test if logging was requested.
+///
+/// @return true iff logging was requested.
+bool
+diff_context::do_log() const
+{return priv_->do_log_;}
+
+/// Set logging as requested.
+///
+/// @param f the flag
+void
+diff_context::do_log(bool f)
+{priv_->do_log_ = f;}
+
 /// Set the corpus diff relevant to this context.
 ///
 /// @param d the corpus_diff we are interested in.
@@ -1365,8 +1380,33 @@ diff_context::maybe_apply_filters(diff_sptr diff)
        i != diff_filters().end();
        ++i)
     {
+      tools_utils::timer t;
+      if (do_log())
+	{
+	  std::cerr << "applying a filter to diff '"
+		    << diff->get_pretty_representation()
+		    << "'...\n";
+	  t.start();
+	}
+
       filtering::apply_filter(*i, diff);
+
+      if (do_log())
+	{
+	  t.stop();
+	  std::cerr << "filter applied!:" << t << "\n";
+
+	  std::cerr << "propagating categories for the same diff node ... \n";
+	  t.start();
+	}
+
       propagate_categories(diff);
+
+      if (do_log())
+	{
+	  t.stop();
+	  std::cerr << "category propagated!: " << t << "\n";
+	}
     }
 
  }
@@ -1925,6 +1965,20 @@ diff::diff(type_or_decl_base_sptr	first_subject,
 		   /*reported_once=*/false,
 		   /*currently_reporting=*/false))
 {}
+
+/// Test if logging was requested
+///
+/// @return true iff logging was requested.
+bool
+diff::do_log() const
+{return context()->do_log();}
+
+/// Request logging (or not)
+///
+/// @param f true iff logging is to be requested.
+void
+diff::do_log(bool f)
+{context()->do_log(f);}
 
 /// Flag a given diff node as being traversed.
 ///
@@ -9934,6 +9988,15 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
   diff_context_sptr ctxt = get_context();
 
+  tools_utils::timer t;
+  if (get_context()->do_log())
+    {
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "applying filters to "
+		<< changed_fns_.size()
+		<< " changed fns ...\n";
+      t.start();
+    }
   // Walk the changed function diff nodes to apply the categorization
   // filters.
   diff_sptr diff;
@@ -9946,6 +10009,19 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       ctxt->maybe_apply_filters(diff);
     }
 
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "filters to changed fn applied!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "applying filters to "
+		<< sorted_changed_vars_.size()
+		<< " changed vars ...\n";
+      t.start();
+    }
+
   // Walk the changed variable diff nodes to apply the categorization
   // filters.
   for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
@@ -9954,6 +10030,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
     {
       diff_sptr diff = *i;
       ctxt->maybe_apply_filters(diff);
+    }
+
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "filters to changed vars applied!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "applying filters to unreachable types ...\n";
+      t.start();
     }
 
   // walk the changed unreachable types to apply categorization
@@ -9967,7 +10054,29 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       ctxt->maybe_apply_filters(diff);
     }
 
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "filters to unreachable types applied!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "categorizing redundant changed sub nodes ...\n";
+      t.start();
+    }
+
   categorize_redundant_changed_sub_nodes();
+
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "redundant changed sub nodes categorized!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "count changed fns ...\n";
+      t.start();
+    }
 
   // Walk the changed function diff nodes to count the number of
   // filtered-out functions and the number of functions with virtual
@@ -9998,6 +10107,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 	  (stat.num_leaf_func_changes() + 1);
     }
 
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "changed fn counted!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "count changed vars ...\n";
+      t.start();
+    }
+
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
   for (var_diff_sptrs_type ::const_iterator i = sorted_changed_vars_.begin();
@@ -10018,6 +10138,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 	  (stat.num_leaf_var_changes() + 1);
     }
 
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "changed vars counted!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "count leaf changed types ...\n";
+      t.start();
+    }
+
   stat.num_func_syms_added(added_unrefed_fn_syms_.size());
   stat.num_added_func_syms_filtered_out(suppressed_added_unrefed_fn_syms_.size());
   stat.num_func_syms_removed(deleted_unrefed_fn_syms_.size());
@@ -10036,6 +10167,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
     stat.num_leaf_type_changes_filtered_out(num_type_filtered);
   }
 
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "changed leaf types counted!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "count leaf changed artefacts ...\n";
+      t.start();
+    }
+
   // Walk the general leaf artefacts diff nodes to count them
   {
     size_t num_changes = 0, num_filtered = 0;
@@ -10044,6 +10186,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
     stat.num_leaf_changes(num_changes);
     stat.num_leaf_changes_filtered_out(num_filtered);
   }
+
+  if (get_context()->do_log())
+    {
+      t.stop();
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "changed leaf artefacts counted!:" << t << "\n";
+
+      std::cerr << "in apply_filters_and_compute_diff_stats:"
+		<< "count unreachable types ...\n";
+      t.start();
+    }
 
   // Walk the unreachable types to count them
   {
@@ -10060,6 +10213,13 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 			    num_added_unreachable_types_filtered,
 			    num_deleted_unreachable_types_filtered,
 			    num_changed_unreachable_types_filtered);
+
+    if (get_context()->do_log())
+      {
+	t.stop();
+	std::cerr << "in apply_filters_and_compute_diff_stats:"
+		  << "unreachable types counted!:" << t << "\n";
+      }
 
     stat.num_added_unreachable_types(num_added_unreachable_types);
     stat.num_removed_unreachable_types(num_deleted_unreachable_types);
@@ -10495,6 +10655,20 @@ corpus_diff::finish_diff_type()
   priv_->finished_ = true;
 }
 
+/// Test if logging was requested.
+///
+/// @return true iff logging was requested.
+bool
+corpus_diff::do_log() const
+{return context()->do_log();}
+
+/// Request logging, or not.
+///
+/// @param f true iff logging is requested.
+void
+corpus_diff::do_log(bool f)
+{context()->do_log(f);}
+
 /// @return the first corpus of the diff.
 corpus_sptr
 corpus_diff::first_corpus() const
@@ -10895,10 +11069,47 @@ corpus_diff::apply_filters_and_suppressions_before_reporting()
   if (priv_->diff_stats_)
     return *priv_->diff_stats_;
 
+  tools_utils::timer t;
+  if (do_log())
+    {
+      std::cerr << "Applying suppressions ...\n";
+      t.start();
+    }
+
   apply_suppressions(this);
+
+  if (do_log())
+    {
+      t.stop();
+      std::cerr << "suppressions applied!:" << t << "\n";
+    }
+
   priv_->diff_stats_.reset(new diff_stats(context()));
+
+  if (do_log())
+    {
+      std::cerr << "Marking leaf nodes ...\n";
+      t.start();
+    }
+
   mark_leaf_diff_nodes();
+
+  if (do_log())
+    {
+      t.stop();
+      std::cerr << "leaf nodes marked!:" << t << "\n";
+      std::cerr << "Applying filters and computing diff stats ...\n";
+      t.start();
+    }
+
   priv_->apply_filters_and_compute_diff_stats(*priv_->diff_stats_);
+
+  if (do_log())
+    {
+      t.stop();
+      std::cerr << "Filters applied and diff stats computed!: " << t << "\n";
+    }
+
   return *priv_->diff_stats_;
 }
 

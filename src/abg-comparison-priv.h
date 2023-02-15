@@ -212,6 +212,7 @@ struct diff_context::priv
   bool					show_unreachable_types_;
   bool					show_impacted_interfaces_;
   bool					dump_diff_tree_;
+  bool					do_log_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
@@ -240,7 +241,8 @@ struct diff_context::priv
       show_added_syms_unreferenced_by_di_(true),
       show_unreachable_types_(false),
       show_impacted_interfaces_(true),
-      dump_diff_tree_()
+      dump_diff_tree_(),
+      do_log_()
    {}
 };// end struct diff_context::priv
 

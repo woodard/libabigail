@@ -701,6 +701,7 @@ struct corpus::priv
   type_maps					type_per_loc_map_;
   mutable vector<type_base_wptr>		types_not_reachable_from_pub_ifaces_;
   unordered_set<interned_string, hash_interned_string> *pub_type_pretty_reprs_;
+  bool 						do_log;
 
 private:
   priv();
@@ -723,7 +724,8 @@ public:
       group(),
       origin_(ARTIFICIAL_ORIGIN),
       path(p),
-      pub_type_pretty_reprs_()
+      pub_type_pretty_reprs_(),
+      do_log()
   {}
 
   type_maps&

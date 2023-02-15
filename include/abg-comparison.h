@@ -649,6 +649,12 @@ public:
 
   ~diff_context();
 
+  bool
+  do_log() const;
+
+  void
+  do_log(bool);
+
   void
   set_corpus_diff(const corpus_diff_sptr&);
 
@@ -965,6 +971,12 @@ protected:
   diff(type_or_decl_base_sptr	first_subject,
        type_or_decl_base_sptr	second_subject,
        diff_context_sptr	ctxt);
+
+  bool
+  do_log() const;
+
+  void
+  do_log(bool);
 
   void
   begin_traversing();
@@ -2336,6 +2348,12 @@ public:
 
   /// A convenience typedef for a shared pointer to @ref diff_stats
   typedef shared_ptr<diff_stats> diff_stats_sptr;
+
+  bool
+  do_log() const;
+
+  void
+  do_log(bool);
 
   corpus_sptr
   first_corpus() const;

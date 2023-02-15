@@ -69,6 +69,12 @@ public:
   const environment&
   get_environment() const;
 
+  bool
+  do_log() const;
+
+  void
+  do_log(bool);
+
   void
   add(const translation_unit_sptr&);
 
