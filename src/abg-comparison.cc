@@ -11230,7 +11230,8 @@ corpus_diff::mark_leaf_diff_nodes()
   context()->forget_visited_diffs();
   bool s = context()->visiting_a_node_twice_is_forbidden();
   context()->forbid_visiting_a_node_twice(true);
-  context()->forbid_visiting_a_node_twice_per_interface(true);
+  if (context()->show_impacted_interfaces())
+    context()->forbid_visiting_a_node_twice_per_interface(true);
   traverse(v);
   context()->forbid_visiting_a_node_twice(s);
   context()->forbid_visiting_a_node_twice_per_interface(false);
