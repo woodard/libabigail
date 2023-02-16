@@ -178,6 +178,17 @@ Options
     the :ref:`default suppression specification files
     <abidiff_default_supprs_label>` are loaded .
 
+  * ``--no-change-categorization | -x``
+
+    This option disables the categorization of changes into harmless
+    and harmful changes.  Note that this categorization is a
+    pre-requisite for the filtering of changes so this option disables
+    that filtering.  The goal of this option is to speed-up the
+    execution of the program for cases where the graph of changes is
+    huge and where the user is just interested in looking at, for
+    instance, leaf node changes without caring about their possible
+    impact on interfaces.
+
   * ``--ctf``
 
     Extract ABI information from `CTF`_ debug information, if present,

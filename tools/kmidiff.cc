@@ -56,6 +56,7 @@ struct options
   bool			display_version;
   bool			verbose;
   bool			missing_operand;
+  bool			perform_change_categorization;
   bool			leaf_changes_only;
   bool			show_hexadecimal_values;
   bool			show_offsets_sizes_in_bits;
@@ -84,6 +85,7 @@ struct options
       display_version(),
       verbose(),
       missing_operand(),
+      perform_change_categorization(true),
       leaf_changes_only(true),
       show_hexadecimal_values(true),
       show_offsets_sizes_in_bits(false),
@@ -128,6 +130,8 @@ display_usage(const string& prog_name, ostream& out)
 #ifdef WITH_BTF
     << " --btf use BTF instead of DWARF in ELF files\n"
 #endif
+    << " --no-change-categorization | -x don't perform categorization "
+    "of changes, for speed purposes\n"
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
 	 "interfaces\n"
@@ -274,6 +278,9 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--btf"))
 	opts.use_btf = true;
 #endif
+      else if (!strcmp(argv[i], "--no-change-categorization")
+	       || !strcmp(argv[i], "-x"))
+	opts.perform_change_categorization = false;
       else if (!strcmp(argv[i], "--impacted-interfaces")
 	       || !strcmp(argv[i], "-i"))
 	opts.show_impacted_interfaces = true;
@@ -344,6 +351,7 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
   ctxt->show_linkage_names(false);
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
+  ctxt->perform_change_categorization(opts.perform_change_categorization);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
   ctxt->show_hex_values(opts.show_hexadecimal_values);

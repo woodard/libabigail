@@ -601,6 +601,18 @@ Options
 
     This option disables those optimizations.
 
+  * ``--no-change-categorization | -x``
+
+    This option disables the categorization of changes into harmless
+    and harmful changes.  Note that this categorization is a
+    pre-requisite for the filtering of changes so this option disables
+    that filtering.  The goal of this option is to speed-up the
+    execution of the program for cases where the graph of changes is
+    huge and where the user is just interested in looking at, for
+    instance, leaf node changes without caring about their possible
+    impact on interfaces.  In that case, this option would be used
+    along with the ``--leaf-changes-only`` one.
+
   * ``--ctf``
 
     When comparing binaries, extract ABI information from `CTF`_ debug

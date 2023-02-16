@@ -114,6 +114,7 @@ struct options
   bool			show_impacted_interfaces;
   bool			assume_odr_for_cplusplus;
   bool			leverage_dwarf_factorization;
+  bool			perform_change_categorization;
   bool			dump_diff_tree;
   bool			show_stats;
   bool			do_log;
@@ -170,6 +171,7 @@ struct options
       show_impacted_interfaces(),
       assume_odr_for_cplusplus(true),
       leverage_dwarf_factorization(true),
+      perform_change_categorization(true),
       dump_diff_tree(),
       show_stats(),
       do_log()
@@ -276,6 +278,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --impacted-interfaces  display interfaces impacted by leaf changes\n"
     << " --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
     "speed-up the analysis of the binary\n"
+    << " --no-change-categorization | -x don't perform categorization "
+    "of changes, for speed purposes\n"
     << " --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
     "analysis of the binary\n"
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
@@ -641,6 +645,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_impacted_interfaces = true;
       else if (!strcmp(argv[i], "--no-leverage-dwarf-factorization"))
 	opts.leverage_dwarf_factorization = false;
+      else if (!strcmp(argv[i], "--no-change-categorization")
+	       || !strcmp(argv[i], "-x"))
+	opts.perform_change_categorization = false;
       else if (!strcmp(argv[i], "--no-assume-odr-for-cplusplus"))
 	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--dump-diff-tree"))
@@ -752,6 +759,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->perform_change_categorization(opts.perform_change_categorization);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_hex_values(opts.show_hexadecimal_values);
   ctxt->show_offsets_sizes_in_bits(opts.show_offsets_sizes_in_bits);

@@ -189,6 +189,7 @@ struct diff_context::priv
   corpus_diff_sptr			corpus_diff_;
   ostream*				default_output_stream_;
   ostream*				error_output_stream_;
+  bool					perform_change_categorization_;
   bool					leaf_changes_only_;
   bool					forbid_visiting_a_node_twice_;
   bool					reset_visited_diffs_for_each_interface_;
@@ -219,6 +220,7 @@ struct diff_context::priv
       reporter_(),
       default_output_stream_(),
       error_output_stream_(),
+      perform_change_categorization_(true),
       leaf_changes_only_(),
       forbid_visiting_a_node_twice_(true),
       reset_visited_diffs_for_each_interface_(),

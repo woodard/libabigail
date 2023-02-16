@@ -761,6 +761,12 @@ public:
   void
   add_suppressions(const suppr::suppressions_type& supprs);
 
+  bool
+  perform_change_categorization() const;
+
+  void
+  perform_change_categorization(bool);
+
   void
   show_leaf_changes_only(bool f);
 

@@ -1532,6 +1532,21 @@ diff_context::add_suppressions(const suppressions_type& supprs)
 			      supprs.begin(), supprs.end());
 }
 
+/// Test if it's requested to perform diff node categorization.
+///
+/// @return true iff it's requested to perform diff node
+/// categorization.
+bool
+diff_context::perform_change_categorization() const
+{return priv_->perform_change_categorization_;}
+
+/// Request change categorization or not.
+///
+/// @param f true iff change categorization is requested.
+void
+diff_context::perform_change_categorization(bool f)
+{priv_->perform_change_categorization_ = f;}
+
 /// Set the flag that indicates if the diff using this context should
 /// show only leaf changes or not.
 ///
@@ -9989,93 +10004,96 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   diff_context_sptr ctxt = get_context();
 
   tools_utils::timer t;
-  if (get_context()->do_log())
+  if (ctxt->perform_change_categorization())
     {
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "applying filters to "
-		<< changed_fns_.size()
-		<< " changed fns ...\n";
-      t.start();
-    }
-  // Walk the changed function diff nodes to apply the categorization
-  // filters.
-  diff_sptr diff;
-  for (function_decl_diff_sptrs_type::const_iterator i =
-	 changed_fns_.begin();
-       i != changed_fns_.end();
-       ++i)
-    {
-      diff_sptr diff = *i;
-      ctxt->maybe_apply_filters(diff);
-    }
+      if (get_context()->do_log())
+	{
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "applying filters to "
+		    << changed_fns_.size()
+		    << " changed fns ...\n";
+	  t.start();
+	}
+      // Walk the changed function diff nodes to apply the categorization
+      // filters.
+      diff_sptr diff;
+      for (function_decl_diff_sptrs_type::const_iterator i =
+	     changed_fns_.begin();
+	   i != changed_fns_.end();
+	   ++i)
+	{
+	  diff_sptr diff = *i;
+	  ctxt->maybe_apply_filters(diff);
+	}
 
-  if (get_context()->do_log())
-    {
-      t.stop();
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "filters to changed fn applied!:" << t << "\n";
+      if (get_context()->do_log())
+	{
+	  t.stop();
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "filters to changed fn applied!:" << t << "\n";
 
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "applying filters to "
-		<< sorted_changed_vars_.size()
-		<< " changed vars ...\n";
-      t.start();
-    }
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "applying filters to "
+		    << sorted_changed_vars_.size()
+		    << " changed vars ...\n";
+	  t.start();
+	}
 
-  // Walk the changed variable diff nodes to apply the categorization
-  // filters.
-  for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
-       i != sorted_changed_vars_.end();
-       ++i)
-    {
-      diff_sptr diff = *i;
-      ctxt->maybe_apply_filters(diff);
-    }
+      // Walk the changed variable diff nodes to apply the categorization
+      // filters.
+      for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
+	   i != sorted_changed_vars_.end();
+	   ++i)
+	{
+	  diff_sptr diff = *i;
+	  ctxt->maybe_apply_filters(diff);
+	}
 
-  if (get_context()->do_log())
-    {
-      t.stop();
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "filters to changed vars applied!:" << t << "\n";
+      if (get_context()->do_log())
+	{
+	  t.stop();
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "filters to changed vars applied!:" << t << "\n";
 
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "applying filters to unreachable types ...\n";
-      t.start();
-    }
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "applying filters to unreachable types ...\n";
+	  t.start();
+	}
 
-  // walk the changed unreachable types to apply categorization
-  // filters
-  for (diff_sptrs_type::const_iterator i =
-	  changed_unreachable_types_sorted().begin();
-	i != changed_unreachable_types_sorted().end();
-       ++i)
-    {
-      diff_sptr diff = *i;
-      ctxt->maybe_apply_filters(diff);
-    }
+      // walk the changed unreachable types to apply categorization
+      // filters
+      for (diff_sptrs_type::const_iterator i =
+	     changed_unreachable_types_sorted().begin();
+	   i != changed_unreachable_types_sorted().end();
+	   ++i)
+	{
+	  diff_sptr diff = *i;
+	  ctxt->maybe_apply_filters(diff);
+	}
 
-  if (get_context()->do_log())
-    {
-      t.stop();
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "filters to unreachable types applied!:" << t << "\n";
+      if (get_context()->do_log())
+	{
+	  t.stop();
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "filters to unreachable types applied!:" << t << "\n";
 
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "categorizing redundant changed sub nodes ...\n";
-      t.start();
-    }
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "categorizing redundant changed sub nodes ...\n";
+	  t.start();
+	}
 
-  categorize_redundant_changed_sub_nodes();
+      categorize_redundant_changed_sub_nodes();
 
-  if (get_context()->do_log())
-    {
-      t.stop();
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "redundant changed sub nodes categorized!:" << t << "\n";
+      if (get_context()->do_log())
+	{
+	  t.stop();
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "redundant changed sub nodes categorized!:" << t << "\n";
 
-      std::cerr << "in apply_filters_and_compute_diff_stats:"
-		<< "count changed fns ...\n";
-      t.start();
+	  std::cerr << "in apply_filters_and_compute_diff_stats:"
+		    << "count changed fns ...\n";
+	  t.start();
+	}
     }
 
   // Walk the changed function diff nodes to count the number of
