@@ -731,7 +731,7 @@ process_ctf_typedef(reader *rdr,
 
   const char *typedef_name = ctf_type_name_raw(ctf_dictionary, ctf_type);
   if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
-    if (result = lookup_typedef_type(typedef_name, *corp))
+    if ((result = lookup_typedef_type(typedef_name, *corp)))
       return result;
 
   type_base_sptr utype = rdr->build_type(ctf_dictionary, ctf_utype);
@@ -816,7 +816,7 @@ process_ctf_base_type(reader *rdr,
           integral_type int_type;
           if (parse_integral_type(type_name, int_type))
             normalized_type_name = int_type.to_string();
-          if (result = lookup_basic_type(normalized_type_name, *corp))
+          if ((result = lookup_basic_type(normalized_type_name, *corp)))
             return result;
         }
 
@@ -1038,7 +1038,7 @@ process_ctf_forward_type(reader *rdr,
     {
       if (!type_is_anonymous)
         if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
-          if (result = lookup_class_type(type_name, *corp))
+          if ((result = lookup_class_type(type_name, *corp)))
             return is_type(result);
 
       class_decl_sptr
@@ -1083,7 +1083,7 @@ process_ctf_struct_type(reader *rdr,
 
   if (!struct_type_is_anonymous)
     if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
-      if (result = lookup_class_type(struct_type_name, *corp))
+      if ((result = lookup_class_type(struct_type_name, *corp)))
         return result;
 
   /* The libabigail IR encodes C struct types in `class' IR nodes.  */
@@ -1136,7 +1136,7 @@ process_ctf_union_type(reader *rdr,
 
   if (!union_type_is_anonymous)
     if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
-      if (result = lookup_union_type(union_type_name, *corp))
+      if ((result = lookup_union_type(union_type_name, *corp)))
         return result;
 
   /* Create the corresponding libabigail union IR node.  */
@@ -1477,7 +1477,7 @@ process_ctf_enum_type(reader *rdr,
 
   if (!enum_name.empty())
     if (corpus_sptr corp = rdr->should_reuse_type_from_corpus_group())
-      if (result = lookup_enum_type(enum_name, *corp))
+      if ((result = lookup_enum_type(enum_name, *corp)))
         return result;
 
   /* Build a signed integral type for the type of the enumerators, aka
