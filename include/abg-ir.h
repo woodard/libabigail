@@ -2094,7 +2094,14 @@ public:
   virtual bool
   operator==(const type_decl&) const;
 
-  bool operator!=(const type_decl&)const;
+  virtual bool
+  operator!=(const type_base&)const;
+
+  virtual bool
+  operator!=(const decl_base&)const;
+
+  virtual bool
+  operator!=(const type_decl&)const;
 
   virtual void
   get_qualified_name(interned_string& qualified_name,
@@ -2553,6 +2560,12 @@ public:
 
     bool
     operator==(const subrange_type& o) const;
+
+    bool
+    operator!=(const decl_base& o) const;
+
+    bool
+    operator!=(const type_base& o) const;
 
     bool
     operator!=(const subrange_type& o) const;
@@ -3439,6 +3452,9 @@ public:
   get_template_parameters() const;
 
   virtual bool
+  operator==(const decl_base& o) const;
+
+  virtual bool
   operator==(const template_decl& o) const;
 
   virtual ~template_decl();
@@ -3513,6 +3529,12 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const type_decl&) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   virtual bool
   operator==(const template_parameter&) const;
@@ -3591,6 +3613,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   virtual bool
   operator==(const template_parameter&) const;
@@ -4213,6 +4238,9 @@ public:
   operator==(const type_base&) const;
 
   virtual bool
+  operator==(const class_or_union&) const;
+
+  virtual bool
   operator==(const class_decl&) const;
 
   virtual bool
@@ -4382,6 +4410,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const class_or_union&) const;
 
   virtual bool
   operator==(const union_decl&) const;
@@ -4641,6 +4672,9 @@ public:
 
   virtual bool
   operator==(const member_base& o) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   virtual bool
   operator==(const member_class_template&) const;

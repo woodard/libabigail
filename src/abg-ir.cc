@@ -15295,6 +15295,28 @@ type_decl::operator==(const type_decl& o) const
   return *this == other;
 }
 
+/// Return true if both types equals.
+///
+/// Note that this does not check the scopes of any of the types.
+///
+/// @param o the other type_decl to check against.
+///
+/// @return true iff the current isntance equals @p o
+bool
+type_decl::operator!=(const type_base&o)const
+{return !operator==(o);}
+
+/// Return true if both types equals.
+///
+/// Note that this does not check the scopes of any of the types.
+///
+/// @param o the other type_decl to check against.
+///
+/// @return true iff the current isntance equals @p o
+bool
+type_decl::operator!=(const decl_base&o)const
+{return !operator==(o);}
+
 /// Inequality operator.
 ///
 /// @param o the other type to compare against.
@@ -17375,6 +17397,26 @@ array_type_def::subrange_type::operator==(const subrange_type& o) const
   const type_base &t = o;
   return operator==(t);
 }
+
+/// Equality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o equals the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator!=(const decl_base& o) const
+{return !operator==(o);}
+
+/// Equality operator.
+///
+/// @param o the other subrange to test against.
+///
+/// @return true iff @p o equals the current instance of
+/// array_type_def::subrange_type.
+bool
+array_type_def::subrange_type::operator!=(const type_base& o) const
+{return !operator==(o);}
 
 /// Inequality operator.
 ///
@@ -23887,6 +23929,20 @@ class_decl::operator==(const type_base& other) const
   return *this == *o;
 }
 
+/// Equality operator for class_decl.
+///
+/// Re-uses the equality operator that takes a decl_base.
+///
+/// @param other the other class_decl to compare against.
+///
+/// @return true iff the current instance equals the other one.
+bool
+class_decl::operator==(const class_or_union& other) const
+{
+  const decl_base& o = other;
+  return *this == o;
+}
+
 /// Comparison operator for @ref class_decl.
 ///
 /// @param other the instance of @ref class_decl to compare against.
@@ -24238,6 +24294,19 @@ member_class_template::operator==(const member_base& other) const
     }
   catch(...)
     {return false;}
+}
+
+/// Equality operator of the the @ref member_class_template class.
+///
+/// @param other the other @ref member_class_template to compare against.
+///
+/// @return true iff the current instance equals @p other.
+bool
+member_class_template::operator==(const decl_base& other) const
+{
+  if (!decl_base::operator==(other))
+    return false;
+  return as_class_tdecl()->class_tdecl::operator==(other);
 }
 
 /// Comparison operator for the @ref member_class_template
@@ -24680,6 +24749,20 @@ union_decl::operator==(const type_base& other) const
   return *this == *o;
 }
 
+/// Equality operator for union_decl.
+///
+/// Re-uses the equality operator that takes a decl_base.
+///
+/// @param other the other union_decl to compare against.
+///
+/// @return true iff the current instance equals the other one.
+bool
+union_decl::operator==(const class_or_union&other) const
+{
+  const decl_base *o = dynamic_cast<const decl_base*>(&other);
+  return *this == *o;
+}
+
 /// Comparison operator for @ref union_decl.
 ///
 /// @param other the instance of @ref union_decl to compare against.
@@ -24943,6 +25026,20 @@ template_decl::~template_decl()
 ///
 /// @return true iff @p equals the current instance.
 bool
+template_decl::operator==(const decl_base& o) const
+{
+  const template_decl* other = dynamic_cast<const template_decl*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
+}
+
+/// Equality operator.
+///
+/// @param o the other instance to compare against.
+///
+/// @return true iff @p equals the current instance.
+bool
 template_decl::operator==(const template_decl& o) const
 {
   try
@@ -25092,6 +25189,11 @@ type_tparameter::type_tparameter(unsigned		index,
   runtime_type_instance(this);
 }
 
+/// Equality operator.
+///
+/// @param other the other template type parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
 bool
 type_tparameter::operator==(const type_base& other) const
 {
@@ -25107,6 +25209,51 @@ type_tparameter::operator==(const type_base& other) const
     {return false;}
 }
 
+/// Equality operator.
+///
+/// @param other the other template type parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
+bool
+type_tparameter::operator==(const type_decl& other) const
+{
+  if (!type_decl::operator==(other))
+    return false;
+
+  try
+    {
+      const type_tparameter& o = dynamic_cast<const type_tparameter&>(other);
+      return template_parameter::operator==(o);
+    }
+  catch (...)
+    {return false;}
+}
+
+/// Equality operator.
+///
+/// @param other the other template type parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
+bool
+type_tparameter::operator==(const decl_base& other) const
+{
+  if (!decl_base::operator==(other))
+    return false;
+
+  try
+    {
+      const type_tparameter& o = dynamic_cast<const type_tparameter&>(other);
+      return template_parameter::operator==(o);
+    }
+  catch (...)
+    {return false;}
+}
+
+/// Equality operator.
+///
+/// @param other the other template type parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
 bool
 type_tparameter::operator==(const template_parameter& other) const
 {
@@ -25119,6 +25266,11 @@ type_tparameter::operator==(const template_parameter& other) const
     {return false;}
 }
 
+/// Equality operator.
+///
+/// @param other the other template type parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
 bool
 type_tparameter::operator==(const type_tparameter& other) const
 {return *this == static_cast<const type_base&>(other);}
@@ -25253,8 +25405,32 @@ template_tparameter::template_tparameter(unsigned		index,
   runtime_type_instance(this);
 }
 
+/// Equality operator.
+///
+/// @param other the other template parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
 bool
 template_tparameter::operator==(const type_base& other) const
+{
+  try
+    {
+      const template_tparameter& o =
+	dynamic_cast<const template_tparameter&>(other);
+      return (type_tparameter::operator==(o)
+	      && template_decl::operator==(o));
+    }
+  catch(...)
+    {return false;}
+}
+
+/// Equality operator.
+///
+/// @param other the other template parameter to compare against.
+///
+/// @return true iff @p other equals the current instance.
+bool
+template_tparameter::operator==(const decl_base& other) const
 {
   try
     {
