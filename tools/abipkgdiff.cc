@@ -2022,8 +2022,8 @@ maybe_handle_kabi_whitelist_pkg(const package& pkg, options &opts)
   if (pkg.type() != abigail::tools_utils::FILE_TYPE_RPM)
     return false;
 
-  string pkg_name = pkg.base_name();
-  bool is_linux_kernel_package = file_is_kernel_package(pkg_name, pkg.type());
+  bool is_linux_kernel_package = file_is_kernel_package(pkg.path(),
+							pkg.type());
 
   if (!is_linux_kernel_package)
     return false;
@@ -2036,7 +2036,7 @@ maybe_handle_kabi_whitelist_pkg(const package& pkg, options &opts)
     return false;
 
   string rpm_arch;
-  if (!get_rpm_arch(pkg_name, rpm_arch))
+  if (!get_rpm_arch(pkg.base_name(), rpm_arch))
     return false;
 
   string kabi_wl_path = kabi_wl_pkg->extracted_dir_path();
@@ -2412,8 +2412,7 @@ create_maps_of_package_content(package& package, options& opts)
   // if package is linux kernel package and its associated debug
   // info package looks like a kernel debuginfo package, then try to
   // go find the vmlinux file in that debug info file.
-  string pkg_name = package.base_name();
-  bool is_linux_kernel_package = file_is_kernel_package(pkg_name,
+  bool is_linux_kernel_package = file_is_kernel_package(package.path(),
 							package.type());
   if (is_linux_kernel_package)
     {
@@ -3219,7 +3218,7 @@ compare_prepared_package(package& first_package, package& second_package,
 {
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
-  if (abigail::tools_utils::file_is_kernel_package(first_package.base_name(),
+  if (abigail::tools_utils::file_is_kernel_package(first_package.path(),
 						   first_package.type()))
     {
       opts.show_symbols_not_referenced_by_debug_info = false;
@@ -3737,14 +3736,14 @@ main(int argc, char* argv[])
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
 
-      if (file_is_kernel_package(first_package->base_name(),
+      if (file_is_kernel_package(first_package->path(),
 				 abigail::tools_utils::FILE_TYPE_RPM)
-	  || file_is_kernel_package(second_package->base_name(),
+	  || file_is_kernel_package(second_package->path(),
 				    abigail::tools_utils::FILE_TYPE_RPM))
 	{
-	  if (file_is_kernel_package(first_package->base_name(),
+	  if (file_is_kernel_package(first_package->path(),
 				     abigail::tools_utils::FILE_TYPE_RPM)
-	      != file_is_kernel_package(second_package->base_name(),
+	      != file_is_kernel_package(second_package->path(),
 					abigail::tools_utils::FILE_TYPE_RPM))
 	    {
 	      emit_prefix("abipkgdiff", cerr)

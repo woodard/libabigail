@@ -336,12 +336,8 @@ public:
     // for vmlinux.ctfa should be provided with --debug-info-dir
     // option.
     for (const auto& path : debug_info_root_paths())
-      {
-	ctfa_dirname = *path;
-	ctfa_file = ctfa_dirname + "/vmlinux.ctfa";
-	if (file_exists(ctfa_file))
-	  return true;
-      }
+      if (tools_utils::find_file_under_dir(*path, "vmlinux.ctfa", ctfa_file))
+        return true;
 
     return false;
   }
@@ -428,10 +424,10 @@ public:
 	&& corpus_group())
       {
 	tools_utils::base_name(corpus_path(), dict_name);
-
-	if (dict_name != "vmlinux")
-	  // remove .ko suffix
-	  dict_name.erase(dict_name.length() - 3, 3);
+	// remove .* suffix
+	std::size_t pos = dict_name.find(".");
+	if (pos != string::npos)
+	  dict_name.erase(pos);
 
 	std::replace(dict_name.begin(), dict_name.end(), '-', '_');
       }

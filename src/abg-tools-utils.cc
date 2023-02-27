@@ -501,7 +501,7 @@ file_has_ctf_debug_info(const string& elf_file_path,
 
   // vmlinux.ctfa could be provided with --debug-info-dir
   for (const auto& path : debug_info_root_paths)
-    if (dir_contains_ctf_archive(*path, vmlinux))
+    if (find_file_under_dir(*path, "vmlinux.ctfa", vmlinux))
       return true;
 
   return false;
@@ -1764,32 +1764,62 @@ get_rpm_arch(const string& str, string& arch)
 
 /// Tests if a given file name designates a kernel package.
 ///
-/// @param file_name the file name to consider.
+/// @param file_path the path to the file to consider.
 ///
 /// @param file_type the type of the file @p file_name.
 ///
 /// @return true iff @p file_name of kind @p file_type designates a
 /// kernel package.
 bool
-file_is_kernel_package(const string& file_name, file_type file_type)
+file_is_kernel_package(const string& file_path, file_type file_type)
 {
   bool result = false;
-  string package_name;
 
   if (file_type == FILE_TYPE_RPM)
     {
-      if (!get_rpm_name(file_name, package_name))
-	return false;
-      result = (package_name == "kernel");
+      if (rpm_contains_file(file_path, "vmlinuz"))
+	result = true;
     }
   else if (file_type == FILE_TYPE_DEB)
     {
-      if (!get_deb_name(file_name, package_name))
-	return false;
-      result = (string_begins_with(package_name, "linux-image"));
+      string file_name;
+      base_name(file_path, file_name);
+      string package_name;
+      if (get_deb_name(file_name, package_name))
+	result = (string_begins_with(package_name, "linux-image"));
     }
 
   return result;
+}
+
+/// Test if an RPM package contains a given file.
+///
+/// @param rpm_path the path to the RPM package.
+///
+/// @param file_name the file name to test the presence for in the
+/// rpm.
+///
+/// @return true iff the file named @file_name is present in the RPM.
+bool
+rpm_contains_file(const string& rpm_path, const string& file_name)
+{
+    vector<string> query_output;
+  // We don't check the return value of this command because on some
+  // system, the command can issue errors but still emit a valid
+  // output.  We'll rather rely on the fact that the command emits a
+  // valid output or not.
+  execute_command_and_get_output("rpm -qlp "
+				 + rpm_path + " 2> /dev/null",
+				 query_output);
+
+  for (auto& line : query_output)
+    {
+      line = trim_white_space(line);
+      if (string_ends_with(line, file_name))
+	return true;
+    }
+
+  return false;
 }
 
 /// Tests if a given file name designates a kernel debuginfo package.
@@ -2811,6 +2841,16 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       char *di_root_ptr = di_root.get();
       vector<char**> di_roots;
       di_roots.push_back(&di_root_ptr);
+
+#ifdef WITH_CTF
+      shared_ptr<char> di_root_ctf;
+      if (requested_fe_kind & corpus::CTF_ORIGIN)
+        {
+          di_root_ctf = make_path_absolute(root.c_str());
+          char *di_root_ctf_ptr = di_root_ctf.get();
+          di_roots.push_back(&di_root_ctf_ptr);
+        }
+#endif
 
       abigail::elf_based_reader_sptr reader =
         create_best_elf_based_reader(vmlinux,

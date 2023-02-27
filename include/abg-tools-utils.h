@@ -301,6 +301,10 @@ file_is_kernel_package(const string& file_path,
 		       file_type file_type);
 
 bool
+rpm_contains_file(const string& rpm_path,
+		  const string& file_name);
+
+bool
 file_is_kernel_debuginfo_package(const string& file_path,
 				 file_type file_type);
 
