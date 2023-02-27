@@ -726,12 +726,16 @@ public:
     if (system(cmd.c_str()))
       {
 	if (opts.verbose)
-	  emit_prefix("abipkgdiff", cerr) << " FAILED\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Erasing temporary extraction directory"
+	    << " FAILED\n";
       }
     else
       {
 	if (opts.verbose)
-	  emit_prefix("abipkgdiff", cerr) << " DONE\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Erasing temporary extraction directory"
+	    << " DONE\n";
       }
   }
 
@@ -947,7 +951,7 @@ extract_rpm(const string& package_path,
       << package_path
       << " to "
       << extracted_package_dir_path
-      << " ...";
+      << " ...\n";
 
   string cmd = "test -d " + extracted_package_dir_path
     + " || mkdir -p " + extracted_package_dir_path + " ; cd " +
@@ -957,12 +961,22 @@ extract_rpm(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Extracting package "
+	  << package_path
+	  << " to "
+	  << extracted_package_dir_path
+	  << " FAILED\n";
       return false;
     }
 
   if (opts.verbose)
-    emit_prefix("abipkgdiff", cerr) << " DONE\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting package "
+      << package_path
+      << " to "
+      << extracted_package_dir_path
+      << " DONE\n";
 
   return true;
 }
@@ -1000,13 +1014,22 @@ extract_deb(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Extracting package "
+	  << package_path
+	  << " to "
+	  << extracted_package_dir_path
+	  << " FAILED\n";
       return false;
     }
 
   if (opts.verbose)
-    emit_prefix("abipkgdiff", cerr) << " DONE\n";
-
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting package "
+      << package_path
+      << " to "
+      << extracted_package_dir_path
+      << " DONE\n";
   return true;
 }
 
@@ -1053,12 +1076,22 @@ extract_tar(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Extracting tar archive "
+	  << package_path
+	  << " to "
+	  << extracted_package_dir_path
+	  << " FAILED\n";
       return false;
     }
 
   if (opts.verbose)
-    emit_prefix("abipkgdiff", cerr) << " DONE\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting tar archive "
+      << package_path
+      << " to "
+      << extracted_package_dir_path
+      << " DONE\n";
 
   return true;
 }
@@ -1097,12 +1130,18 @@ erase_created_temporary_directories_parent(const options &opts)
   if (system(cmd.c_str()))
     {
       if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << "FAILED\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Erasing temporary extraction parent directory "
+	  << package::extracted_packages_parent_dir()
+	  << "FAILED\n";
     }
   else
     {
       if (opts.verbose)
-	emit_prefix("abipkgdiff", cerr) << "DONE\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Erasing temporary extraction parent directory "
+	  << package::extracted_packages_parent_dir()
+	  << "DONE\n";
     }
 }
 
@@ -1783,7 +1822,10 @@ compare_to_self(const elf_file&		elf,
   diff = compute_diff(corp, reread_corp, ctxt);
   if (opts.verbose)
     emit_prefix("abipkgdfiff", cerr)
-      << "... Comparing the ABIs: DONE\n";
+      << "Comparing the ABIs: of \n"
+      << "   '" << corp->get_path() << "' against \n"
+      << "   '" << abi_file_path << "':"
+      << "DONE\n";
 
   abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
   if (diff->has_changes())
@@ -2381,7 +2423,7 @@ create_maps_of_package_content(package& package, options& opts)
       is_ok = true;
       if (opts.verbose)
 	emit_prefix("abipkgdiff", cerr)
-	  << " Analysis of " << package.path() << " DONE\n";
+	  << " Analysis of linux package " << package.path() << " DONE\n";
       return is_ok;
     }
 
