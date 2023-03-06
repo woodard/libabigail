@@ -2573,19 +2573,29 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
   string debug_info_root;
   if (dir_exists(dist_root + "/lib/modules"))
     {
-      dist_root + "/lib/modules";
+      kernel_modules_root = dist_root + "/lib/modules";
       debug_info_root = debug_info_root_path.empty()
-	? dist_root
+	? dist_root + "/usr/lib/debug"
 	: debug_info_root_path;
-      debug_info_root += "/usr/lib/debug";
     }
 
   if (dir_is_empty(debug_info_root))
     debug_info_root.clear();
 
   bool found = false;
-  string from = dist_root;
-  if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
+  // If vmlinux_path is empty, we want to look for it under
+  // debug_info_root, because this is where Enterprise Linux packages
+  // put it.  Modules however are to be looked for under
+  // kernel_modules_root.
+  if (// So, Let's look for modules under kernel_modules_root ...
+      find_vmlinux_and_module_paths(kernel_modules_root,
+				    vmlinux_path,
+				    module_paths)
+      // ... and if vmlinux_path is empty, look for vmlinux under the
+      // debug info root.
+      || find_vmlinux_and_module_paths(debug_info_root,
+				       vmlinux_path,
+				       module_paths))
     found = true;
 
   std::sort(module_paths.begin(), module_paths.end());

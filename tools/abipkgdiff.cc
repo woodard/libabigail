@@ -3106,8 +3106,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 
   string vmlinux_path1, vmlinux_path2;
 
-  if (!vmlinux_path1.empty()
-      && !get_vmlinux_path_from_kernel_dist(debug_dir1, vmlinux_path1))
+  if (!get_vmlinux_path_from_kernel_dist(debug_dir1, vmlinux_path1))
     {
       emit_prefix("abipkgdiff", cerr)
 	<< "Could not find vmlinux in debuginfo package '"
@@ -3116,8 +3115,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  if (!vmlinux_path2.empty()
-      && !get_vmlinux_path_from_kernel_dist(debug_dir2, vmlinux_path2))
+  if (!get_vmlinux_path_from_kernel_dist(debug_dir2, vmlinux_path2))
     {
       emit_prefix("abipkgdiff", cerr)
 	<< "Could not find vmlinux in debuginfo package '"
