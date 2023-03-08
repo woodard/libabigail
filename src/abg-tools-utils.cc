@@ -2833,7 +2833,10 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 
   if (verbose)
     std::cerr << "Analysing kernel dist root '"
-	      << root << "' ... " << std::flush;
+	      << root
+	      << "' with vmlinux path: '"
+	      << vmlinux_path
+	      << "' ... " << std::flush;
 
   timer t;
 
