@@ -1104,6 +1104,18 @@ return_comparison_result(T& l, T& r, bool value,
       l.get_environment().priv_->cache_type_comparison_result(l, r, res); \
       return res;							\
     } while (false)
+
+/// Cache the result of a comparison between too artifacts (l & r) and
+/// return immediately.
+///
+/// @param value the value to cache.
+#define CACHE_COMPARISON_RESULT_AND_RETURN(value)			\
+  do									\
+    {									\
+      l.get_environment().priv_->cache_type_comparison_result(l, r, value); \
+      return value;							\
+    } while (false)
+
 /// Getter of all types types sorted by their pretty representation.
 ///
 /// @return a sorted vector of all types sorted by their pretty
@@ -24935,6 +24947,9 @@ union_decl::~union_decl()
 bool
 equals(const union_decl& l, const union_decl& r, change_kind* k)
 {
+
+  RETURN_TRUE_IF_COMPARISON_CYCLE_DETECTED(l, r);
+
   {
     // First of all, let's see if these two types haven't already been
     // compared.  If so, and if the result of the comparison has been
@@ -24945,15 +24960,11 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
       return result;
   }
 
-#define RETURN(value) CACHE_AND_RETURN_COMPARISON_RESULT(value)
-
   bool result = equals(static_cast<const class_or_union&>(l),
 		       static_cast<const class_or_union&>(r),
 		       k);
 
-  mark_types_as_being_compared(l, r);
-
-  RETURN(result);
+  CACHE_COMPARISON_RESULT_AND_RETURN(result);
 }
 
 /// Copy a method of a @ref union_decl into a new @ref
