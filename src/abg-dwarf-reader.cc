@@ -5702,12 +5702,23 @@ struct offset_pairs_stack_type
 	  }
 	// Update the cached result.  We know the comparison result
 	// must now be different.
-	auto comp_result_it = rdr_.die_comparison_results_.find(p);
+	auto comp_result_it = rdr_.die_comparison_results_.find(dependant_type);
 	if (comp_result_it != rdr_.die_comparison_results_.end())
-	  {
-	    ABG_ASSERT(comp_result_it->second == COMPARISON_RESULT_UNKNOWN);
-	    comp_result_it->second= COMPARISON_RESULT_DIFFERENT;
-	  }
+	  comp_result_it->second= COMPARISON_RESULT_DIFFERENT;
+      }
+
+    // Update the cached result of the root type to cancel too.
+    auto comp_result_it = rdr_.die_comparison_results_.find(p);
+    if (comp_result_it != rdr_.die_comparison_results_.end())
+      {
+	// At this point, the result of p is either
+	// COMPARISON_RESULT_UNKNOWN (if we cache comparison
+	// results of that kind) or COMPARISON_RESULT_DIFFERENT.
+	// Make sure it's the cached result is now
+	// COMPARISON_RESULT_DIFFERENT.
+	if (comp_result_it->second == COMPARISON_RESULT_UNKNOWN)
+	  comp_result_it->second= COMPARISON_RESULT_DIFFERENT;
+	ABG_ASSERT(comp_result_it->second == COMPARISON_RESULT_DIFFERENT);
       }
 
     if (rdr_.propagated_types_.find(p) != rdr_.propagated_types_.end())
