@@ -1976,7 +1976,7 @@ public:
     options().load_all_types = load_all_types;
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
     debug_die_canonicalization_is_on_ =
-      environment->debug_die_canonicalization_is_on();
+      env().debug_die_canonicalization_is_on();
     use_canonical_die_comparison_ = true;
 #endif
     compare_count_ = 0;

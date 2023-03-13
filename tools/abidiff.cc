@@ -175,6 +175,10 @@ struct options
       dump_diff_tree(),
       show_stats(),
       do_log()
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+    ,
+      do_debug_type_canonicalization()
+#endif
 #ifdef WITH_CTF
     ,
       use_ctf()
@@ -186,10 +190,6 @@ struct options
 #ifdef WITH_DEBUG_SELF_COMPARISON
     ,
       do_debug_self_comparison()
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-    ,
-      do_debug_type_canonicalization()
 #endif
   {}
 
