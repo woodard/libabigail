@@ -218,7 +218,7 @@ public:
   virtual const functions&
   get_functions() const;
 
-  const vector<function_decl*>*
+  const std::unordered_set<function_decl*>*
   lookup_functions(const string& id) const;
 
   void
@@ -302,13 +302,13 @@ operator&=(corpus::origin &l, corpus::origin r);
 /// parameters needed.
 class corpus::exported_decls_builder
 {
-  class priv;
-  std::unique_ptr<priv> priv_;
-
   // Forbid default construction.
   exported_decls_builder();
 
 public:
+  class priv;
+  std::unique_ptr<priv> priv_;
+
   friend class corpus;
 
   exported_decls_builder(functions& fns,
@@ -327,6 +327,9 @@ public:
   functions&
   exported_functions();
 
+  std::unordered_set<function_decl*>*
+  fn_id_maps_to_several_fns(function_decl*);
+
   const variables&
   exported_variables() const;
 
@@ -334,7 +337,7 @@ public:
   exported_variables();
 
   void
-  maybe_add_fn_to_exported_fns(const function_decl*);
+  maybe_add_fn_to_exported_fns(function_decl*);
 
   void
   maybe_add_var_to_exported_vars(const var_decl*);

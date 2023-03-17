@@ -310,7 +310,7 @@ fe_iface::maybe_add_fn_to_exported_decls(const function_decl* fn)
   if (fn)
     if (corpus::exported_decls_builder* b =
 	corpus()->get_exported_decls_builder().get())
-      b->maybe_add_fn_to_exported_fns(fn);
+      b->maybe_add_fn_to_exported_fns(const_cast<function_decl*>(fn));
 }
 
 /// Try and add the representation of the ABI of a variable to the set

@@ -1005,6 +1005,9 @@ interned_string
 get_function_type_name(const function_type&, bool internal = false);
 
 interned_string
+get_function_id_or_pretty_representation(function_decl *fn);
+
+interned_string
 get_method_type_name(const method_type_sptr&, bool internal = false);
 
 interned_string

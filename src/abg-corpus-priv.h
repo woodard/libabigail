@@ -40,6 +40,12 @@ typedef vector<regex_t_sptr> regex_t_sptrs_type;
 /// Convenience typedef for a hash map which key is a string and which
 /// data is a vector of abigail::ir::function_decl*
 typedef unordered_map<string, vector<function_decl*> > str_fn_ptrs_map_type;
+
+/// Convenience typedef for a hash map which key is a string and which
+/// data is a set of abigail::ir::function_decl*
+typedef unordered_map<string, std::unordered_set<function_decl*> >
+str_fn_ptr_set_map_type;
+
 /// Convenience typedef for a hash map which key is a string and
 /// which data is an abigail::ir::var_decl*.
 typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
@@ -63,7 +69,7 @@ class corpus::exported_decls_builder::priv
   // template parameters of the second instantiation are just typedefs
   // of the first instantiation, for instance.  So there can be cases
   // where one ID appertains to more than one function.
-  str_fn_ptrs_map_type	id_fns_map_;
+  str_fn_ptr_set_map_type	id_fns_map_;
   str_var_ptr_map_type	id_var_map_;
   strings_type&	fns_suppress_regexps_;
   regex_t_sptrs_type	compiled_fns_suppress_regexp_;
@@ -197,7 +203,7 @@ public:
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  const str_fn_ptrs_map_type&
+  const str_fn_ptr_set_map_type&
   id_fns_map() const
   {return id_fns_map_;}
 
@@ -210,7 +216,7 @@ public:
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  str_fn_ptrs_map_type&
+  str_fn_ptr_set_map_type&
   id_fns_map()
   {return id_fns_map_;}
 
@@ -267,11 +273,11 @@ public:
   ///
   /// @return the pointer to the vector of functions with ID @p fn_id,
   /// or nil if no function with that ID exists.
-  vector<function_decl*>*
+  std::unordered_set<function_decl*>*
   fn_id_is_in_id_fns_map(const string& fn_id)
   {
-    str_fn_ptrs_map_type& m = id_fns_map();
-    str_fn_ptrs_map_type::iterator i = m.find(fn_id);
+    str_fn_ptr_set_map_type& m = id_fns_map();
+    str_fn_ptr_set_map_type::iterator i = m.find(fn_id);
     if (i == m.end())
       return 0;
     return &i->second;
@@ -286,34 +292,74 @@ public:
   /// @p fn, that are present in the id-functions map, or nil if no
   /// function with the same ID as @p fn is present in the
   /// id-functions map.
-  vector<function_decl*>*
+  std::unordered_set<function_decl*>*
   fn_id_is_in_id_fns_map(const function_decl* fn)
   {
     string fn_id = fn->get_id();
     return fn_id_is_in_id_fns_map(fn_id);
   }
 
-  /// Test if a given function is present in a vector of functions.
+  /// Test if a given function is present in a set of functions.
   ///
   /// The function compares the ID and the qualified name of
   /// functions.
   ///
   /// @param fn the function to consider.
   ///
-  /// @parm fns the vector of functions to consider.
+  /// @parm fns the set of functions to consider.
   static bool
-  fn_is_in_fns(const function_decl* fn, const vector<function_decl*>& fns)
+  fn_is_in_fns(function_decl* fn,
+	       const std::unordered_set<function_decl*>& fns)
   {
     if (fns.empty())
       return false;
 
+    if (fns.find(fn) != fns.end())
+      return true;
+
     const string fn_id = fn->get_id();
-    for (vector<function_decl*>::const_iterator i = fns.begin();
-	 i != fns.end();
-	 ++i)
-      if ((*i)->get_id() == fn_id
-	  && (*i)->get_qualified_name() == fn->get_qualified_name())
+    for (const auto f : fns)
+      if (f->get_id() == fn_id
+	  && f->get_qualified_name() == fn->get_qualified_name())
 	return true;
+
+    return false;
+  }
+
+  /// Test if a given function is present in a set of functions,
+  /// by looking at the pretty representation of the function, in
+  /// addition to looking at its ID.
+  ///
+  /// This is useful because sometimes a given ELF symbol (alias)
+  /// might be for several different functions.  In that case, using
+  /// the function pretty representation might be a way to
+  /// differentiate the functions having the same ELF symbol alias.
+  ///
+  /// The function compares the ID and the qualified name of
+  /// functions.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @parm fns the set of functions to consider.
+  ///
+  /// @return true if @p fn is present in @p fns.
+  static bool
+  fn_is_in_fns_by_repr(function_decl* fn,
+		       const std::unordered_set<function_decl*>& fns,
+		       string& pretty_representation)
+  {
+    if (!fn_is_in_fns(fn, fns))
+      return false;
+
+    const string repr = fn->get_pretty_representation();
+    const string fn_id = fn->get_id();
+    for (const auto f : fns)
+      if (f->get_id() == fn_id
+	  && f->get_pretty_representation() == repr)
+	{
+	  pretty_representation = repr;
+	  return true;
+	}
 
     return false;
   }
@@ -324,9 +370,9 @@ public:
   ///
   ///  @return true iff the function is in the id-functions map.
   bool
-  fn_is_in_id_fns_map(const function_decl* fn)
+  fn_is_in_id_fns_map(function_decl* fn)
   {
-    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn);
+    std::unordered_set<function_decl*>* fns = fn_id_is_in_id_fns_map(fn);
     if (fns && fn_is_in_fns(fn, *fns))
       return true;
     return false;
@@ -344,10 +390,10 @@ public:
 
     // First associate the function id to the function.
     string fn_id = fn->get_id();
-    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn_id);
+    std::unordered_set<function_decl*>* fns = fn_id_is_in_id_fns_map(fn_id);
     if (!fns)
-      fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
-    fns->push_back(fn);
+      fns = &(id_fns_map()[fn_id] = std::unordered_set<function_decl*>());
+    fns->insert(fn);
 
     // Now associate all aliases of the underlying symbol to the
     // function too.
@@ -361,8 +407,8 @@ public:
 	  goto loop;
 	fns = fn_id_is_in_id_fns_map(fn_id);
 	if (!fns)
-	  fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
-	fns->push_back(fn);
+	  fns = &(id_fns_map()[fn_id] = std::unordered_set<function_decl*>());
+	fns->insert(fn);
       loop:
 	sym = sym->get_next_alias();
       }
@@ -403,12 +449,12 @@ public:
   ///
   /// @param fn the function to add to the set of exported functions.
   void
-  add_fn_to_exported(const function_decl* fn)
+  add_fn_to_exported(function_decl* fn)
   {
     if (!fn_is_in_id_fns_map(fn))
       {
-	fns_.push_back(const_cast<function_decl*>(fn));
-	add_fn_to_id_fns_map(const_cast<function_decl*>(fn));
+	fns_.push_back(fn);
+	add_fn_to_id_fns_map(fn);
       }
   }
 

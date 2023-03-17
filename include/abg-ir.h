@@ -1094,6 +1094,9 @@ public:
   elf_symbol_sptr
   get_alias_which_equals(const elf_symbol& other) const;
 
+  elf_symbol_sptr
+  get_alias_with_default_symbol_version() const;
+
   string
   get_aliases_id_string(const string_elf_symbols_map_type& symtab,
 			bool include_symbol_itself = true) const;

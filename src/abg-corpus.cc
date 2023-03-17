@@ -109,6 +109,28 @@ corpus::functions&
 corpus::exported_decls_builder::exported_functions()
 {return priv_->fns_;}
 
+/// Test if a given function ID maps to several functions in the same corpus.
+///
+/// The magic of ELF symbol aliases makes it possible for an ELF
+/// symbol alias to designate several different functions.  This
+/// function tests if the ELF symbol of a given function has a aliases
+/// that designates another function or not.
+///
+/// @param fn the function to consider.
+///
+/// @return the set of functions designated by the ELF symbol of @p
+/// fn, or nullptr if the function ID maps to just @p fn.
+std::unordered_set<function_decl*>*
+corpus::exported_decls_builder::fn_id_maps_to_several_fns(function_decl* fn)
+{
+  std::unordered_set<function_decl*> *fns_for_id =
+    priv_->fn_id_is_in_id_fns_map(fn);
+  if (fns_for_id && fns_for_id->size() > 1)
+    return fns_for_id;
+
+  return nullptr;
+}
+
 /// Getter for the reference to the vector of exported variables.
 /// This vector is shared with with the @ref corpus.  It's where the
 /// set of exported variable is ultimately stored.
@@ -133,7 +155,7 @@ corpus::exported_decls_builder::exported_variables()
 ///
 /// @param fn the function to add the set of exported functions.
 void
-corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(const function_decl* fn)
+corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
 {
   if (!fn->get_is_in_public_symbol_table())
     return;
@@ -1314,12 +1336,11 @@ corpus::get_functions() const
 ///
 /// @return the vector functions which ID is @p id, or nil if no
 /// function with that ID was found.
-const vector<function_decl*>*
+const std::unordered_set<function_decl*>*
 corpus::lookup_functions(const string& id) const
 {
   exported_decls_builder_sptr b = get_exported_decls_builder();
-  str_fn_ptrs_map_type::const_iterator i =
-    b->priv_->id_fns_map_.find(id);
+  auto i = b->priv_->id_fns_map_.find(id);
   if (i == b->priv_->id_fns_map_.end())
     return 0;
   return &i->second;

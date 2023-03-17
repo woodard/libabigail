@@ -9036,7 +9036,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	ABG_ASSERT(i < first_->get_functions().size());
 
 	function_decl* deleted_fn = first_->get_functions()[i];
-	string n = deleted_fn->get_id();
+	string n = get_function_id_or_pretty_representation(deleted_fn);
 	ABG_ASSERT(!n.empty());
 	// The below is commented out because there can be several
 	// functions with the same ID in the corpus.  So several
@@ -9056,7 +9056,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  {
 	    unsigned i = *iit;
 	    function_decl* added_fn = second_->get_functions()[i];
-	    string n = added_fn->get_id();
+	    string n = get_function_id_or_pretty_representation(added_fn);
 	    ABG_ASSERT(!n.empty());
 	    // The below is commented out because there can be several
 	    // functions with the same ID in the corpus.  So several

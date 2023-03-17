@@ -4460,19 +4460,14 @@ public:
 
     string id = fn->get_id_string();
 
-    const vector<function_decl*> *fns = corp->lookup_functions(id);
+    const std::unordered_set<function_decl*> *fns = corp->lookup_functions(id);
     if (!fns)
       return false;
 
-    for (vector<function_decl*>::const_iterator i = fns->begin();
-	 i != fns->end();
-	 ++i)
-      {
-	function_decl* f = *i;
-	ABG_ASSERT(f);
-	if (f->get_symbol())
-	  return true;
-      }
+    for (auto f : *fns)
+      if (f->get_symbol())
+	return true;
+
     return false;
   }
 

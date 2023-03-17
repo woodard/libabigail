@@ -8900,6 +8900,30 @@ get_function_type_name(const function_type& fn_type,
   return env.intern(o.str());
 }
 
+/// Get the ID of a function, or, if the ID can designate several
+/// different functions, get its pretty representation.
+///
+/// @param fn the function to consider
+///
+/// @return the function ID of pretty representation of @p fn.
+interned_string
+get_function_id_or_pretty_representation(function_decl *fn)
+{
+  ABG_ASSERT(fn);
+
+  interned_string result = fn->get_environment().intern(fn->get_id());
+
+  if (corpus *c = fn->get_corpus())
+    {
+      corpus::exported_decls_builder_sptr b =
+	c->get_exported_decls_builder();
+      if (b->fn_id_maps_to_several_fns(fn))
+	result = fn->get_environment().intern(fn->get_pretty_representation());
+    }
+
+  return result;
+}
+
 /// Get the name of a given method type and return a copy of it.
 ///
 /// @param fn_type the function type to consider.
