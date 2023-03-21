@@ -1716,6 +1716,19 @@ compare_to_self(const elf_file&		elf,
 
 	return abigail::tools_utils::ABIDIFF_ERROR;
       }
+    else if (c_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      {
+	if (opts.verbose)
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Could not read find alternate DWARF debug info for '"
+	    << elf.path
+	    << "'.  You might have forgotten to provide a debug info package\n";
+
+	if (detailed_error_status)
+	  *detailed_error_status = c_status;
+
+	return abigail::tools_utils::ABIDIFF_ERROR;
+      }
 
     if (opts.verbose)
       emit_prefix("abipkgdiff", cerr)
