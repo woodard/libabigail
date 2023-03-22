@@ -550,6 +550,15 @@ static InOutSpec in_out_specs[] =
     "output/test-read-dwarf/PR29443-missing-xx.o.abi",
     NULL,
   },
+  {
+    "data/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0.abi",
+    "output/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0.abi",
+    NULL,
+  },
   // DWARF fallback feature.
   {
     "data/test-read-dwarf/test-fallback.o",

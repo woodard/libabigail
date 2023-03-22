@@ -666,6 +666,8 @@ test-read-dwarf/PR29443-missing-xx.o.abi \
 test-read-dwarf/test-fallback.abi	\
 test-read-dwarf/test-fallback.c		\
 test-read-dwarf/test-fallback.o		\
+test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0 \
+test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0.abi \
 \
 test-read-ctf/test0		\
 test-read-ctf/test0.abi		\

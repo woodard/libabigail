@@ -958,10 +958,13 @@ reader::read_corpus(status& status)
   corpus()->set_architecture_name(elf_architecture());
 
   // See if we could find symbol tables.
-  if (!symtab() || !symtab()->has_symbols())
+  if (!symtab())
     {
       status |= STATUS_NO_SYMBOLS_FOUND;
-      // We found no ELF symbol, so we can't handle the binary.
+      // We found no ELF symbol, so we can't handle the binary.  Note
+      // that we could have found a symbol table with no defined &
+      // exported ELF symbols in it.  That case is handled as an empty
+      // corpus, which is different from this case.
       return corpus_sptr();
     }
 

@@ -2130,8 +2130,10 @@ public:
     // Set symbols information to the corpus.
     corpus()->set_symtab(symtab());
 
-    // Get out now if no debug info is found.
-    if (!dwarf_debug_info())
+    // Get out now if no debug info is found or if the symbol table is
+    // empty.
+    if (!dwarf_debug_info()
+	|| !corpus()->get_symtab()->has_symbols())
       return corpus();
 
     uint8_t address_size = 0;
