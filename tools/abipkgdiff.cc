@@ -1709,7 +1709,7 @@ compare_to_self(const elf_file&		elf,
 	  emit_prefix("abipkgdiff", cerr)
 	    << "Could not read file '"
 	    << elf.path
-	    << "' propertly\n";
+	    << "' properly\n";
 
 	if (detailed_error_status)
 	  *detailed_error_status = c_status;
