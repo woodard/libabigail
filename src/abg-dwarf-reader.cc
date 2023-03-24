@@ -13075,6 +13075,7 @@ add_or_update_class_type(reader&	 rdr,
 	      /// "_vptr[^0-9a-zA-Z_]", which is what Clang and GCC
 	      /// use as a name for the hidden vtable pointer.
 	      if (n.substr(0, 5) == "_vptr"
+		  && n.size() > 5
 		  && !std::isalnum(n.at(5))
 		  && n.at(5) != '_')
 		continue;
