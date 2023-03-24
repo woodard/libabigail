@@ -5951,6 +5951,20 @@ anonymous_data_member_to_class_or_union(const var_decl* d)
   return 0;
 }
 
+/// Get the @ref class_or_union type of a given anonymous data member.
+///
+/// @param d the anonymous data member to consider.
+///
+/// @return the @ref class_or_union type of the anonymous data member
+/// @p d.
+class_or_union_sptr
+anonymous_data_member_to_class_or_union(const var_decl& d)
+{
+  if (is_anonymous_data_member(d))
+    return is_class_or_union_type(d.get_type());
+  return class_or_union_sptr();
+}
+
 /// Test if a data member has annonymous type or not.
 ///
 /// @param d the data member to consider.
@@ -6004,6 +6018,48 @@ anonymous_data_member_to_class_or_union(const var_decl_sptr &d)
   if (var_decl_sptr v = is_anonymous_data_member(d))
     return is_class_or_union_type(v->get_type());
   return class_or_union_sptr();
+}
+
+/// Test if a given anonymous data member exists in a class or union.
+///
+/// @param anon_dm the anonymous data member to consider.
+///
+/// @param clazz the class to consider.
+///
+/// @return true iff @p anon_dm exists in the @clazz.
+bool
+anonymous_data_member_exists_in_class(const var_decl& anon_dm,
+				      const class_or_union& clazz)
+{
+  if (!anon_dm.get_is_anonymous()
+      || !is_class_or_union_type(anon_dm.get_type()))
+    return false;
+
+  class_or_union_sptr cl = is_class_or_union_type(anon_dm.get_type());
+  ABG_ASSERT(cl);
+
+  // Look for the presence of each data member of anon_dm in clazz.
+  //
+  // If one data member of anon_dm is not present in clazz, then the
+  // data member anon_dm is considered to not exist in clazz.
+  for (auto anon_dm_m : cl->get_non_static_data_members())
+    {
+      // If the data member anon_dm_m is not an anonymous data member,
+      // it's easy to look for it.
+      if (!is_anonymous_data_member(anon_dm_m))
+	{
+	  if (!clazz.find_data_member(anon_dm_m->get_name()))
+	    return false;
+	}
+      // If anon_dm_m is itself an anonymous data member then recurse
+      else
+	{
+	  if (!anonymous_data_member_exists_in_class(*anon_dm_m, clazz))
+	    return false;
+	}
+    }
+
+  return true;
 }
 
 /// Test if the scope of a given decl is anonymous or anonymous with a

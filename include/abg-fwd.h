@@ -727,6 +727,13 @@ anonymous_data_member_to_class_or_union(const var_decl*);
 class_or_union_sptr
 anonymous_data_member_to_class_or_union(const var_decl_sptr&);
 
+class_or_union_sptr
+anonymous_data_member_to_class_or_union(const var_decl&);
+
+bool
+anonymous_data_member_exists_in_class(const var_decl& anon_dm,
+				      const class_or_union& clazz);
+
 bool
 scope_anonymous_or_typedef_named(const decl_base&);
 

@@ -13138,7 +13138,8 @@ add_or_update_class_type(reader&	 rdr,
 	      die_access_specifier(&child, access);
 
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
-	      if (n.empty() && result->find_data_member(dm))
+	      if (n.empty()
+		  && anonymous_data_member_exists_in_class(*dm, *result))
 		// dm is an anonymous data member that was already
 		// present in the current class so let's not add it.
 		continue;

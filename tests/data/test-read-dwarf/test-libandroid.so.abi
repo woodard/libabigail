@@ -11061,9 +11061,6 @@
               <data-member access='public' layout-offset-in-bits='16'>
                 <var-decl name='__data_' type-id='72631341' visibility='default' filepath='external/libcxx/include/string' line='761' column='1'/>
               </data-member>
-              <data-member access='public' layout-offset-in-bits='0'>
-                <var-decl name='' type-id='ac5ab59f' visibility='default' filepath='external/libcxx/include/string' line='756' column='1'/>
-              </data-member>
             </class-decl>
           </member-type>
           <member-type access='private'>
