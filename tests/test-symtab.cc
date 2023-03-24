@@ -66,10 +66,9 @@ TEST_CASE("Symtab::Empty", "[symtab, basic]")
 {
   const std::string	     binary = "basic/empty.so";
   corpus_sptr		     corpus_ptr;
-  const fe_iface::status status = read_corpus(binary, corpus_ptr);
-  REQUIRE(!corpus_ptr);
-
-  REQUIRE((status & fe_iface::STATUS_NO_SYMBOLS_FOUND));
+  read_corpus(binary, corpus_ptr);
+  REQUIRE(corpus_ptr->get_fun_symbol_map().empty());
+  REQUIRE(corpus_ptr->get_var_symbol_map().empty());
 }
 
 TEST_CASE("Symtab::NoDebugInfo", "[symtab, basic]")
@@ -241,10 +240,9 @@ TEST_CASE("Symtab::SymtabWithWhitelist", "[symtab, whitelist]")
 	+ "basic/one_function_one_variable_irrelevant.whitelist");
 
       corpus_sptr		 corpus_ptr;
-      const fe_iface::status status =
-	read_corpus(binary, corpus_ptr, whitelists);
-      REQUIRE(!corpus_ptr);
-      REQUIRE((status & fe_iface::STATUS_NO_SYMBOLS_FOUND));
+      read_corpus(binary, corpus_ptr, whitelists);
+      REQUIRE(corpus_ptr->get_fun_symbol_map().empty());
+      REQUIRE(corpus_ptr->get_var_symbol_map().empty());
     }
 
     GIVEN("we read the binary with only the function whitelisted")
