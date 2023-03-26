@@ -2460,6 +2460,12 @@ create_maps_of_package_content(package& package, options& opts)
        ++file)
     {
       elf_file_sptr e (new elf_file(*file));
+      string resolved_e_path;
+      // The path 'e->path' might contain symlinks.  Let's resolve
+      // them so we can see if 'e->path' has already been seen before,
+      // for instance.
+      real_path(e->path, resolved_e_path);
+
       if (opts.compare_dso_only)
 	{
 	  if (e->type != abigail::elf::ELF_TYPE_DSO)
@@ -2514,7 +2520,13 @@ create_maps_of_package_content(package& package, options& opts)
 	  // base name.  So let's consider the full path of the binary
 	  // inside the extracted directory.
 	  string key = e->name;
-	  package.convert_path_to_unique_suffix(e->path, key);
+	  package.convert_path_to_unique_suffix(resolved_e_path, key);
+	  if (package.path_elf_file_sptr_map().find(key)
+	      != package.path_elf_file_sptr_map().end())
+	    // 'key' has already been seen before.  So we won't map it
+	    // twice.
+	    continue;
+
 	  package.path_elf_file_sptr_map()[key] = e;
 	  if (opts.verbose)
 	    emit_prefix("abipkgdiff", cerr)
@@ -2544,11 +2556,18 @@ create_maps_of_package_content(package& package, options& opts)
 		}
 	    }
 
-	  if (package.convert_path_to_unique_suffix(e->path, key))
+	  if (package.convert_path_to_unique_suffix(resolved_e_path, key))
 	    {
 	      dir_name(key, key);
 	      key += string("/@soname:") + e->soname;
 	    }
+
+	  if (package.path_elf_file_sptr_map().find(key)
+	      != package.path_elf_file_sptr_map().end())
+	    // 'key' has already been seen before.  So we won't do itl
+	    // twice.
+	    continue;
+
 	  package.path_elf_file_sptr_map()[key] = e;
 	  if (opts.verbose)
 	    emit_prefix("abipkgdiff", cerr)
