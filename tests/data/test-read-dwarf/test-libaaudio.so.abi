@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='libaaudio.so'>
+<abi-corpus version='2.2' soname='libaaudio.so'>
   <elf-needed>
     <dependency name='libaaudio_internal.so'/>
     <dependency name='libaudioclient.so'/>

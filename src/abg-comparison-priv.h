@@ -414,6 +414,17 @@ struct pointer_diff::priv
   {}
 };//end struct pointer_diff::priv
 
+/// The internal type for the impl idiom implementation of @ref
+/// subrange_diff.
+struct subrange_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+
+  priv(diff_sptr u)
+    : underlying_type_diff_(u)
+  {}
+}; // end struct subrange_diff::priv
+
 struct array_diff::priv
 {
   /// The diff between the two array element types.

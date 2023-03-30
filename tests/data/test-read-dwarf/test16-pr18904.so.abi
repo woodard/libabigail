@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='liboffloadmic_host.so.5'>
+<abi-corpus version='2.2' soname='liboffloadmic_host.so.5'>
   <elf-needed>
     <dependency name='libdl.so.2'/>
     <dependency name='libstdc++.so.6'/>

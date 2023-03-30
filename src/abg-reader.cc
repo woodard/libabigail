@@ -1377,7 +1377,7 @@ static shared_ptr<function_type>
 build_function_type(reader&, const xmlNodePtr, bool);
 
 static array_type_def::subrange_sptr
-build_subrange_type(reader&, const xmlNodePtr);
+build_subrange_type(reader&, const xmlNodePtr, bool);
 
 static array_type_def_sptr
 build_array_type_def(reader&, const xmlNodePtr, bool);
@@ -4109,8 +4109,9 @@ build_function_type(reader&	rdr,
 /// @return a pointer to a newly built array_type_def::subrange_type
 /// upon successful completion, a null pointer otherwise.
 static array_type_def::subrange_sptr
-build_subrange_type(reader&	rdr,
-		    const xmlNodePtr	node)
+build_subrange_type(reader&		rdr,
+		    const xmlNodePtr	node,
+		    bool		add_to_current_scope)
 {
   array_type_def::subrange_sptr nil;
 
@@ -4208,6 +4209,9 @@ build_subrange_type(reader&	rdr,
 				       underlying_type, loc));
   maybe_set_artificial_location(rdr, node, p);
   p->is_infinite(is_infinite);
+
+  if (rdr.push_and_key_type_decl(p, id, add_to_current_scope))
+    rdr.map_xml_node_to_decl(node, p);
 
   return p;
 }
@@ -4307,7 +4311,7 @@ build_array_type_def(reader&	rdr,
     if (xmlStrEqual(n->name, BAD_CAST("subrange")))
       {
 	if (array_type_def::subrange_sptr s =
-	    build_subrange_type(rdr, n))
+	    build_subrange_type(rdr, n, /*add_to_current_scope=*/true))
 	  {
 	    MAYBE_MAP_TYPE_WITH_TYPE_ID(s, n);
 	    if (add_to_current_scope)
@@ -5818,6 +5822,7 @@ build_type(reader&	rdr,
    || (t = build_reference_type_def(rdr, node , add_to_current_scope))
    || (t = build_function_type(rdr, node, add_to_current_scope))
    || (t = build_array_type_def(rdr, node, add_to_current_scope))
+   || (t = build_subrange_type(rdr, node, add_to_current_scope))
    || (t = build_enum_type_decl_if_not_suppressed(rdr, node,
 						  add_to_current_scope))
    || (t = build_typedef_decl(rdr, node, add_to_current_scope))

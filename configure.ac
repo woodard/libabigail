@@ -65,8 +65,16 @@ AM_SILENT_RULES([yes])
 VERSION_MAJOR=version_major
 VERSION_MINOR=version_minor
 VERSION_REVISION=0
+dnl The major version number of the abixml version should be changed
+dnl only if a new version of libabigail cannot read an old version of
+dnl abixml.  This should be very rare and should be avoided as much as
+dnl possible.
 ABIXML_VERSION_MAJOR=2
-ABIXML_VERSION_MINOR=1
+dnl The minor version number of the abixml version should be changed
+dnl each time and old version of libabigail can't handle a new version
+dnl of abixml.  Note however that when the major version number is
+dnl changed, the minor version number should be set to zero.
+ABIXML_VERSION_MINOR=2
 LIBABIGAIL_SO_CURRENT=libabigail_so_current
 LIBABIGAIL_SO_REVISION=libabigail_so_revision
 LIBABIGAIL_SO_AGE=libabigail_so_age

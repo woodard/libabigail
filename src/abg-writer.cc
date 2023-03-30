@@ -921,6 +921,9 @@ static bool write_reference_type_def(const reference_type_def_sptr&,
 				     write_context&, unsigned);
 static bool write_array_type_def(const array_type_def_sptr&,
 			         write_context&, unsigned);
+static bool write_array_subrange_type(const array_type_def::subrange_sptr&,
+				      write_context&,
+				      unsigned);
 static bool write_enum_type_decl(const enum_type_decl_sptr&,
 				 write_context&, unsigned);
 static bool write_typedef_decl(const typedef_decl_sptr&,
@@ -1969,6 +1972,9 @@ write_decl(const decl_base_sptr& decl, write_context& ctxt, unsigned indent)
 				  <reference_type_def>(decl), ctxt, indent)
       || write_array_type_def(dynamic_pointer_cast
 			      <array_type_def>(decl), ctxt, indent)
+      || write_array_subrange_type(dynamic_pointer_cast
+				   <array_type_def::subrange_type>(decl),
+				   ctxt, indent)
       || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
 			      ctxt, indent)
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),

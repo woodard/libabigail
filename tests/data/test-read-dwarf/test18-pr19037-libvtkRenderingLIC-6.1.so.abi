@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='libvtkRenderingLIC-6.1.so.1'>
+<abi-corpus version='2.2' soname='libvtkRenderingLIC-6.1.so.1'>
   <elf-needed>
     <dependency name='libvtkIOLegacy-6.1.so.1'/>
     <dependency name='libvtkIOXML-6.1.so.1'/>

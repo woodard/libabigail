@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test-linux-module.ko'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test-linux-module.ko'>
   <elf-function-symbols>
     <elf-symbol name='testexport' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x533ba8e8'/>
     <elf-symbol name='testexport2' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes' crc='0x65900b2f'/>

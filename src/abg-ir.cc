@@ -8641,7 +8641,9 @@ get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 static bool
 has_generic_anonymous_internal_type_name(const decl_base *d)
 {
-  return is_class_or_union_type(d) || is_enum_type(d);
+  return (is_class_or_union_type(d)
+	  || is_enum_type(d)
+	  || is_subrange_type(d));
 }
 
 /// Return the generic internal name of an anonymous type.
@@ -8671,6 +8673,9 @@ get_generic_anonymous_internal_type_name(const decl_base *d)
   else if (is_enum_type(d))
     result =
       env.intern(tools_utils::get_anonymous_enum_internal_name_prefix());
+  else if (is_subrange_type(d))
+    result =
+      env.intern(tools_utils::get_anonymous_subrange_internal_name_prefix());
   else
     ABG_ASSERT_NOT_REACHED;
 

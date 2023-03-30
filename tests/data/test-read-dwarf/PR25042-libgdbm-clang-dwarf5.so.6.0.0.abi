@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='libgdbm.so.6'>
+<abi-corpus version='2.2' soname='libgdbm.so.6'>
   <elf-needed>
     <dependency name='libc.so.6'/>
     <dependency name='ld-linux-x86-64.so.2'/>

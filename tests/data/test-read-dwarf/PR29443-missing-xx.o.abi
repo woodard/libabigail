@@ -1,4 +1,4 @@
-<abi-corpus version='2.1'>
+<abi-corpus version='2.2'>
   <elf-variable-symbols>
     <elf-symbol name='a' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='xx' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>

@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test-list-struct.o'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test-list-struct.o'>
   <elf-variable-symbols>
     <elf-symbol name='n1' size='16' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='n2' size='16' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>

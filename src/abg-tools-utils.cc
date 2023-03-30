@@ -559,9 +559,10 @@ is_dir(const string& path)
   return false;
 }
 
-static const char* ANONYMOUS_STRUCT_INTERNAL_NAME = "__anonymous_struct__";
-static const char* ANONYMOUS_UNION_INTERNAL_NAME =  "__anonymous_union__";
-static const char* ANONYMOUS_ENUM_INTERNAL_NAME =   "__anonymous_enum__";
+static const char* ANONYMOUS_STRUCT_INTERNAL_NAME =   "__anonymous_struct__";
+static const char* ANONYMOUS_UNION_INTERNAL_NAME =    "__anonymous_union__";
+static const char* ANONYMOUS_ENUM_INTERNAL_NAME =     "__anonymous_enum__";
+static const char* ANONYMOUS_SUBRANGE_INTERNAL_NAME = "__anonymous_range__";
 
 static int ANONYMOUS_STRUCT_INTERNAL_NAME_LEN =
   strlen(ANONYMOUS_STRUCT_INTERNAL_NAME);
@@ -586,12 +587,22 @@ const char*
 get_anonymous_union_internal_name_prefix()
 {return ANONYMOUS_UNION_INTERNAL_NAME;}
 
+static int ANONYMOUS_SUBRANGE_INTERNAL_NAME_LEN =
+  strlen(ANONYMOUS_SUBRANGE_INTERNAL_NAME);
+
 /// Getter of the prefix for the name of anonymous enums.
 ///
 /// @reaturn the prefix for the name of anonymous enums.
 const char*
 get_anonymous_enum_internal_name_prefix()
 {return ANONYMOUS_ENUM_INTERNAL_NAME;}
+
+/// Getter of the prefix for the name of anonymous range.
+///
+/// @reaturn the prefix for the name of anonymous range.
+const char*
+get_anonymous_subrange_internal_name_prefix()
+{return ANONYMOUS_SUBRANGE_INTERNAL_NAME;}
 
 /// Compare two fully qualified decl names by taking into account that
 /// they might have compontents that are anonymous types/namespace names.

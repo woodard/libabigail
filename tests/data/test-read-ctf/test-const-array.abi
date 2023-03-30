@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test-const-array.o'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test-const-array.o'>
   <elf-variable-symbols>
     <elf-symbol name='a' size='32' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>

@@ -1,4 +1,4 @@
-<abi-corpus version='2.1'>
+<abi-corpus version='2.2'>
   <elf-needed>
     <dependency name='build/debug/mongo/bson/mutable/libmutable_bson.so'/>
     <dependency name='build/debug/mongo/bson/util/libbson_extract.so'/>

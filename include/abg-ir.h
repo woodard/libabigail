@@ -2653,6 +2653,11 @@ array_type_def::subrange_sptr
 is_subrange_type(const type_or_decl_base_sptr &type);
 
 bool
+equals(const array_type_def::subrange_type&,
+       const array_type_def::subrange_type&,
+       change_kind*);
+
+bool
 equals(const enum_type_decl&, const enum_type_decl&, change_kind*);
 
 /// Abstracts a declaration for an enum type.

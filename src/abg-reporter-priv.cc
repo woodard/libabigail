@@ -712,6 +712,77 @@ represent(const var_diff_sptr	&diff,
     out << "\n";
 }
 
+/// Represent the changes carried by an instance of @ref subrange_diff
+/// that represent a difference between two ranges.
+///
+/// @param diff diff the diff node to represent.
+///
+/// @param ctxt the diff context to use.
+///
+/// @param local_only if true, only display local changes.
+///
+/// @param out the output stream to send the representation to.
+///
+/// @param indent the indentation string to use for the change report.
+void
+represent(const subrange_diff&		d,
+	  const diff_context_sptr	ctxt,
+	  ostream&			out,
+	  const string&		indent,
+	  bool				local_only)
+{
+  array_type_def::subrange_sptr o = d.first_subrange();
+  array_type_def::subrange_sptr n = d.second_subrange();
+  string oor = o->get_pretty_representation();
+  string nr = n->get_pretty_representation();
+  string on = o->get_name();
+  string nn = n->get_name();
+  int64_t olb = o->get_lower_bound();
+  int64_t nlb = n->get_lower_bound();
+  int64_t oub = o->get_upper_bound();
+  int64_t nub = n->get_upper_bound();
+
+    if (on != nn)
+    {
+      out << indent << "name of range changed from '"
+	  << on << "' to '" << nn << "'\n";
+    }
+
+  if (olb != nlb)
+    {
+      out << indent << "lower bound of range '"
+	  << on
+	  << "' change from '";
+      emit_num_value(olb, *ctxt, out);
+      out << "' to '";
+      emit_num_value(nlb, *ctxt, out);
+      out << "'\n";
+    }
+
+  if (oub != nub)
+    {
+      out << indent << "upper bound of range '"
+	  << on
+	  << "' change from '";
+      emit_num_value(oub, *ctxt, out);
+      out << "' to '";
+      emit_num_value(nub, *ctxt, out);
+      out << "'\n";
+    }
+
+  if (!local_only)
+    {
+      diff_sptr dif = d.underlying_type_diff();
+      if (dif && dif->to_be_reported())
+	{
+	  // report range underlying type changes
+	  out << indent << "underlying type of range '"
+	      << oor << "' changed:\n";
+	  dif->report(out, indent + "  ");
+	}
+    }
+}
+
 /// Report the size and alignment changes of a type.
 ///
 /// @param first the first type to consider.

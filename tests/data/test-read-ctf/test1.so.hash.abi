@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test1.so'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test1.so'>
   <elf-needed>
     <dependency name='libc.so.6'/>
   </elf-needed>

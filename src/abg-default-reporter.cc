@@ -652,6 +652,28 @@ default_reporter::report(const function_type_diff& d, ostream& out,
     report_local_function_type_changes(d, out, indent);
 }
 
+/// Report about the change carried by a @ref subrange_diff diff node
+/// in a serialized form.
+///
+/// @param d the diff node to consider.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the indentation string to use in the report.
+void
+default_reporter::report(const subrange_diff& d, std::ostream& out,
+			 const std::string& indent) const
+{
+  if (!diff_to_be_reported(&d))
+    return;
+
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(d.first_subrange(),
+						    d.second_subrange(),
+						    "range type");
+
+  represent(d, d.context(), out,indent, /*local_only=*/false);
+}
+
 /// Report a @ref array_diff in a serialized form.
 ///
 /// @param d the @ref array_diff to consider.

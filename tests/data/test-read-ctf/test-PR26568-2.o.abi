@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-common/test-PR26568-2.o'>
+<abi-corpus version='2.2' path='data/test-read-common/test-PR26568-2.o'>
   <elf-function-symbols>
     <elf-symbol name='fun' type='func-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-function-symbols>

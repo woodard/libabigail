@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='libdbus-1.so.3'>
+<abi-corpus version='2.2' soname='libdbus-1.so.3'>
   <elf-needed>
     <dependency name='librt.so.1'/>
     <dependency name='libpthread.so.0'/>

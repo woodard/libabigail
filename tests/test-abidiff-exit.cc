@@ -680,6 +680,28 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-v0--v5-report-2.txt",
     "output/test-abidiff-exit/test-allow-type-region-v0--v5-report-2.txt"
   },
+  {
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.o",
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-1.txt",
+    "output/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-1.txt"
+  },
+  {
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.o",
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt",
+    "output/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt"
+  },
 #ifdef WITH_BTF
   {
     "data/test-abidiff-exit/btf/test0-v0.o",

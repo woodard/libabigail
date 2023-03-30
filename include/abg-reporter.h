@@ -32,6 +32,7 @@ class qualified_type_diff;
 class distinct_diff;
 class pointer_diff;
 class reference_diff;
+class subrange_diff;
 class array_diff;
 class base_diff;
 class class_or_union_diff;
@@ -90,6 +91,10 @@ public:
 
   virtual void
   report(const array_diff& d, std::ostream& out,
+	 const std::string& indent = "") const = 0;
+
+  virtual void
+  report(const subrange_diff& d, std::ostream& out,
 	 const std::string& indent = "") const = 0;
 
   virtual void
@@ -173,6 +178,11 @@ public:
 				      std::ostream& out,
 				      const std::string& indent) const;
 
+  void
+  report_underlying_changes_of_qualified_type (const qualified_type_diff& d,
+					       ostream& out,
+					       const string& indent) const;
+
   virtual void
   report(const qualified_type_diff& d, std::ostream& out,
 	 const std::string& indent = "") const;
@@ -201,6 +211,10 @@ public:
 
   virtual void
   report(const function_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
+
+  virtual void
+  report(const subrange_diff& d, std::ostream& out,
 	 const std::string& indent = "") const;
 
   virtual void
@@ -283,6 +297,10 @@ public:
 
   virtual void
   report(const function_type_diff& d, std::ostream& out,
+	 const std::string& indent = "") const;
+
+  virtual void
+  report(const subrange_diff& d, std::ostream& out,
 	 const std::string& indent = "") const;
 
   virtual void

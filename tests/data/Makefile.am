@@ -298,6 +298,14 @@ test-abidiff-exit/test-allow-type-region-v5.c \
 test-abidiff-exit/test-allow-type-region-v5.o \
 test-abidiff-exit/test-allow-type-suppr2.txt \
 test-abidiff-exit/test-allow-type-suppr1.txt \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-1.txt \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.adb \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.ads \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.o \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.adb \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.ads \
+test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

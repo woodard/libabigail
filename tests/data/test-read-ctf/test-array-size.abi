@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test-array-size.o'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test-array-size.o'>
   <elf-variable-symbols>
     <elf-symbol name='bar' size='1' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='baz' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>

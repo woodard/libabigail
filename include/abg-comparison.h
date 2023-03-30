@@ -549,6 +549,12 @@ public:
   get_typedef_diff_map();
 
   const string_diff_ptr_map&
+  get_subrange_diff_map() const;
+
+  string_diff_ptr_map&
+  get_subrange_diff_map();
+
+  const string_diff_ptr_map&
   get_array_diff_map() const;
 
   string_diff_ptr_map&
@@ -1408,6 +1414,61 @@ reference_diff_sptr
 compute_diff(reference_type_def_sptr first,
 	     reference_type_def_sptr second,
 	     diff_context_sptr ctxt);
+
+
+class subrange_diff;
+
+/// A convenience typedef for a shared pointer to subrange_diff type.
+typedef shared_ptr<subrange_diff> subrange_diff_sptr;
+
+/// The abstraction of the diff between two subrange types.
+class subrange_diff : public type_diff_base
+{
+  struct priv;
+  std::unique_ptr<priv> priv_;
+
+protected:
+  subrange_diff(const array_type_def::subrange_sptr&	first,
+		const array_type_def::subrange_sptr&	second,
+		const diff_sptr&			underlying_type_diff,
+		const diff_context_sptr		ctxt = diff_context_sptr());
+
+public:
+  const array_type_def::subrange_sptr
+  first_subrange() const;
+
+  const array_type_def::subrange_sptr
+  second_subrange() const;
+
+  const diff_sptr
+  underlying_type_diff() const;
+
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual bool
+  has_changes() const;
+
+  virtual enum change_kind
+  has_local_changes() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  virtual void
+  chain_into_hierarchy();
+
+  friend subrange_diff_sptr
+  compute_diff(array_type_def::subrange_sptr first,
+	       array_type_def::subrange_sptr second,
+	       diff_context_sptr ctxt);
+}; // end subrange_diff
+
+subrange_diff_sptr
+compute_diff(array_type_def::subrange_sptr first,
+	     array_type_def::subrange_sptr second,
+	     diff_context_sptr ctxt);
+
 
 class array_diff;
 
@@ -2854,6 +2915,9 @@ is_class_or_union_diff(const diff* d);
 
 const class_or_union_diff*
 is_anonymous_class_or_union_diff(const diff* d);
+
+const subrange_diff*
+is_subrange_diff(const diff* diff);
 
 const array_diff*
 is_array_diff(const diff* diff);

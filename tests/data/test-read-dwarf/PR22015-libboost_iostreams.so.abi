@@ -1,4 +1,4 @@
-<abi-corpus version='2.1'>
+<abi-corpus version='2.2'>
   <elf-needed>
     <dependency name='build/cached/third_party/boost-1.60.0/libboost_system.so'/>
     <dependency name='libm.so.6'/>

@@ -694,6 +694,16 @@ const typedef_diff*
 is_typedef_diff(const diff *diff)
 {return dynamic_cast<const typedef_diff*>(diff);}
 
+/// Test if a diff node is a @ref subrange_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref subrange_diff iff @p diff is a
+/// @ref subrange_diff node.
+const subrange_diff*
+is_subrange_diff(const diff* diff)
+{return dynamic_cast<const subrange_diff*>(diff);}
+
 /// Test if a diff node is a @ref array_diff node.
 ///
 /// @param diff the diff node to consider.
@@ -3033,6 +3043,7 @@ compute_diff_for_types(const type_or_decl_base_sptr& first,
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
    ||(d = try_to_diff<pointer_type_def>(f, s, ctxt))
    ||(d = try_to_diff<reference_type_def>(f, s, ctxt))
+   ||(d = try_to_diff<array_type_def::subrange_type>(f, s, ctxt))
    ||(d = try_to_diff<array_type_def>(f, s, ctxt))
    ||(d = try_to_diff<qualified_type_def>(f, s, ctxt))
    ||(d = try_to_diff<typedef_decl>(f, s, ctxt))
@@ -3713,6 +3724,143 @@ compute_diff(pointer_type_def_sptr	first,
 }
 
 // </pointer_type_def>
+
+// <subrange_diff >
+
+/// Constructor of the @ref subrange_diff diff node type.
+///
+/// @param first the first subrange type to consider for the diff.
+///
+/// @param second the second subrange type to consider for the diff.
+///
+/// @param underlying_type_diff the underlying type diff between @p
+/// first and @p second.
+///
+/// @param ctxt the diff context to use.
+subrange_diff::subrange_diff
+(const array_type_def::subrange_sptr&	first,
+ const array_type_def::subrange_sptr&	second,
+ const diff_sptr&			underlying_type_diff,
+ const diff_context_sptr		ctxt)
+  : type_diff_base(first, second, ctxt),
+    priv_(new priv(underlying_type_diff))
+{}
+
+
+/// Getter of the first subrange of the current instance @ref
+/// subrange_diff.
+///
+/// @return The first subrange of the current instance @ref subrange_diff.
+const array_type_def::subrange_sptr
+subrange_diff::first_subrange() const
+{return is_subrange_type(first_subject());}
+
+/// Getter of the second subrange of the current instance @ref
+/// subrange_diff.
+///
+/// @return The second subrange of the current instance @ref
+/// subrange_diff.
+const array_type_def::subrange_sptr
+subrange_diff::second_subrange() const
+{return is_subrange_type(second_subject());}
+
+/// Getter of the diff node of the underlying types of the current
+/// @ref subrange_diff diff node.
+///
+/// @return The diff node of the underlying types of the current @ref
+/// subrange_diff diff node.
+const diff_sptr
+subrange_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// Getter the pretty representation of the @ref subrange_diff diff
+/// node.
+///
+/// @return The pretty representation of the @ref subrange_diff diff node.
+const string&
+subrange_diff::get_pretty_representation() const
+{
+    if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "subrange_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ","
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+    return diff::priv_->pretty_representation_;
+}
+
+/// Test if the current @ref subrange_diff node carries any change.
+///
+/// @return true iff the current @ref subrange_diff node carries any
+/// change.
+bool
+subrange_diff::has_changes() const
+{return *first_subrange() != *second_subrange();}
+
+/// Test if the current @ref subrange_diff node carries any local
+/// change.
+///
+/// @return true iff the current @ref subrange_diff node carries any
+/// local change.
+enum change_kind
+subrange_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_subrange(), *second_subrange(), &k))
+    return k & ir::ALL_LOCAL_CHANGES_MASK;
+  return ir::NO_CHANGE_KIND;
+}
+
+/// Report about the changes carried by this node.
+///
+/// @param out the output stream to send the report to.
+///
+/// @param indent the indentation string to use.
+void
+subrange_diff::report(ostream& out, const string& indent) const
+{context()->get_reporter()->report(*this, out, indent);}
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref subrange_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+subrange_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff());}
+
+/// Compute the diff between two instances of @ref subrange_diff.
+///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
+/// @param first the first @ref subrange_diff to consider for the diff.
+///
+/// @param second the second @ref subrange_diff to consider for the diff.
+///
+/// @param ctxt the diff context to use.
+///
+/// @return the resulting diff between the two @ref subrange_diff.
+subrange_diff_sptr
+compute_diff(array_type_def::subrange_sptr first,
+	     array_type_def::subrange_sptr second,
+	     diff_context_sptr ctxt)
+{
+  diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
+				       second->get_underlying_type(),
+				       ctxt);
+
+  subrange_diff_sptr result(new subrange_diff(first, second, d, ctxt));
+  ctxt->initialize_canonical_diff(result);
+  return result;
+}
+
+//</subrange_diff >
+
 
 // <array_type_def>
 
@@ -7793,6 +7941,7 @@ struct diff_maps::priv
   string_diff_ptr_map class_diff_map_;
   string_diff_ptr_map union_diff_map_;
   string_diff_ptr_map typedef_diff_map_;
+  string_diff_ptr_map subrange_diff_map_;
   string_diff_ptr_map array_diff_map_;
   string_diff_ptr_map reference_diff_map_;
   string_diff_ptr_map function_type_diff_map_;
@@ -7879,6 +8028,20 @@ diff_maps::get_typedef_diff_map() const
 string_diff_ptr_map&
 diff_maps::get_typedef_diff_map()
 {return priv_->typedef_diff_map_;}
+
+/// Getter of the map that contains subrange type diffs.
+///
+/// @return the map that contains subrange type diffs.
+const string_diff_ptr_map&
+diff_maps::get_subrange_diff_map() const
+{return priv_->subrange_diff_map_;}
+
+/// Getter of the map that contains subrange type diffs.
+///
+/// @return the map that contains subrange type diffs.
+string_diff_ptr_map&
+diff_maps::get_subrange_diff_map()
+{return priv_->subrange_diff_map_;}
 
 /// Getter of the map that contains array type diffs.
 ///
@@ -8007,6 +8170,8 @@ diff_maps::insert_diff_node(const diff *dif,
     get_union_diff_map()[n] = const_cast<union_diff*>(d);
   else if (const typedef_diff *d = is_typedef_diff(dif))
     get_typedef_diff_map()[n] = const_cast<typedef_diff*>(d);
+  else if (const subrange_diff *d = is_subrange_diff(dif))
+    get_subrange_diff_map()[n] = const_cast<subrange_diff*>(d);
   else if (const array_diff *d = is_array_diff(dif))
       get_array_diff_map()[n] = const_cast<array_diff*>(d);
   else if (const reference_diff *d = is_reference_diff(dif))
@@ -9899,6 +10064,8 @@ corpus_diff::priv::count_leaf_type_changes(size_t &num_changes,
     num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_typedef_diff_map(),
     num_changes, num_filtered);
+  do_count_diff_map_changes(leaf_diffs_.get_subrange_diff_map(),
+			    num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_array_diff_map(),
     num_changes, num_filtered);
   do_count_diff_map_changes(leaf_diffs_.get_distinct_diff_map(),

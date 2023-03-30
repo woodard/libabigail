@@ -140,6 +140,9 @@ report_type_changes_from_diff_maps(const leaf_reporter& reporter,
   // typedefs
   report_diffs(reporter, maps.get_typedef_diff_map(), out, indent);
 
+  // subranges
+  report_diffs(reporter, maps.get_subrange_diff_map(), out, indent);
+
   // arrays
   report_diffs(reporter, maps.get_array_diff_map(), out, indent);
 
@@ -428,6 +431,30 @@ leaf_reporter::report(const scope_diff& d,
 
   if (emitted)
     out << "\n";
+}
+
+/// Report about the change carried by a @ref subrange_diff diff node
+/// in a serialized form.
+///
+/// @param d the diff node to consider.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the indentation string to use in the report.
+void
+leaf_reporter::report(const subrange_diff& d, std::ostream& out,
+		      const std::string& indent) const
+{
+  if (!diff_to_be_reported(&d))
+    return;
+
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(d.first_subrange(),
+						    d.second_subrange(),
+						    "range type");
+
+  represent(d, d.context(), out,indent, /*local_only=*/true);
+
+  maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 }
 
 /// Report the changes carried by a @ref array_diff node.

@@ -157,6 +157,13 @@ represent(const var_diff_sptr	&diff,
 	  bool			local_only = false);
 
 void
+represent(const subrange_diff&		diff,
+	  const diff_context_sptr	ctxt,
+	  ostream&			out,
+	  const string&		indent = "",
+	  bool				local_only = false);
+
+void
 report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 				  type_or_decl_base_sptr	second,
 				  diff_context_sptr		ctxt,

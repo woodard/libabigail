@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' soname='libandroid.so'>
+<abi-corpus version='2.2' soname='libandroid.so'>
   <elf-needed>
     <dependency name='liblog.so'/>
     <dependency name='libhidlbase.so'/>
