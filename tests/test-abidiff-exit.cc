@@ -702,6 +702,28 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt",
     "output/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt"
   },
+  {
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.o",
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-1.txt",
+    "output/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-1.txt"
+  },
+    {
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.o",
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.o",
+    "",
+    "",
+    "",
+    "--no-default-suppression --leaf-changes-only",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-2.txt",
+    "output/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-2.txt"
+  },
 #ifdef WITH_BTF
   {
     "data/test-abidiff-exit/btf/test0-v0.o",

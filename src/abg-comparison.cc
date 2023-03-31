@@ -12749,6 +12749,13 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		|| (is_var_diff(d)
 		    && (!(d->has_local_changes()
 			  & LOCAL_NON_TYPE_CHANGE_KIND)))
+		// A function parameter with non-type local changes
+		// should not see redundancy propagation either.  But
+		// a function parameter with local type changes can
+		// definitely be redundant.
+		|| (is_fn_parm_diff(d)
+		    && (!(d->has_local_changes()
+			  & LOCAL_NON_TYPE_CHANGE_KIND)))
 		))
 	  {
 	    bool has_non_redundant_child = false;

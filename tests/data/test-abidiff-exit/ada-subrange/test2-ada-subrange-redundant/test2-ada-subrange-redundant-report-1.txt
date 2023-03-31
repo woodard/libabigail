@@ -1,0 +1,17 @@
+Functions changes summary: 0 Removed, 2 Changed, 0 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+2 functions with some indirect sub-type change:
+
+  [C] 'function test__my_int[101] test__first_function(test__my_int[101]&)' at test.adb:6:1 has some indirect sub-type changes:
+    return type changed:
+      type name changed from 'test__my_int[101]' to 'test__my_int[201]'
+      array type size changed from 101000 to 201000
+      array type subrange 1 changed length from 101 to 201
+
+  [C] 'function test__my_index test__second_function(const test__my_index)' at test.adb:12:1 has some indirect sub-type changes:
+    return type changed:
+      upper bound of range 'test__my_index' change from '100' to '200'
+      underlying type of range '<range test__my_index>[101]' changed:
+        type size changed from 8 to 16 (in bits)
+

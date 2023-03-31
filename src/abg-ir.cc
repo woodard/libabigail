@@ -26579,11 +26579,16 @@ types_have_similar_structure(const type_base* first,
     {
       const array_type_def* ty2 = is_array_type(second);
       // TODO: Handle int[5][2] vs int[2][5] better.
-      if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
-	  || ty1->get_dimension_count() != ty2->get_dimension_count()
-	  || !types_have_similar_structure(ty1->get_element_type(),
-					   ty2->get_element_type(),
-					   /*indirect_type=*/true))
+      if (!indirect_type)
+	{
+	  if (ty1->get_size_in_bits() != ty2->get_size_in_bits()
+	      || ty1->get_dimension_count() != ty2->get_dimension_count())
+	    return false;
+	}
+
+      if (!types_have_similar_structure(ty1->get_element_type(),
+					ty2->get_element_type(),
+					/*indirect_type=*/true))
 	return false;
 
       return true;

@@ -210,6 +210,12 @@ leaf_reporter::report(const qualified_type_diff& d, ostream& out,
     return;
 
   report_local_qualified_type_changes(d, out, indent);
+
+  // Note that changes that are local to the underlying type of a
+  // qualified type are considered to be local to the qualified type
+  // itself.  So let's go ahead and report the local changes of the
+  // underlying type.
+  report_underlying_changes_of_qualified_type(d, out, indent);
 }
 
 /// Report the changes carried by a @ref pointer_diff node.

@@ -348,6 +348,38 @@ default_reporter::report_local_qualified_type_changes(const qualified_type_diff&
   return false;
 }
 
+/// For a @ref qualified_type_diff node, report the changes of its
+/// underlying type.
+///
+/// @param d the @ref qualified_type_diff node to consider.
+///
+/// @param out the output stream to emit the report to.
+///
+/// @param indent the white string to use for indentation.
+///
+/// @return true iff a local change has been emitted.  In this case,
+/// the local change is a name change.
+void
+default_reporter::report_underlying_changes_of_qualified_type
+(const qualified_type_diff& d, ostream& out, const string& indent) const
+{
+  if (!d.to_be_reported())
+    return;
+
+  diff_sptr dif = d.leaf_underlying_type_diff();
+  ABG_ASSERT(dif);
+  ABG_ASSERT(dif->to_be_reported());
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif,
+						    "unqualified "
+						    "underlying type");
+
+  string fltname = dif->first_subject()->get_pretty_representation();
+  out << indent << "in unqualified underlying type '" << fltname << "'";
+  report_loc_info(dif->second_subject(), *d.context(), out);
+  out << ":\n";
+  dif->report(out, indent + "  ");
+}
+
 /// Report a @ref qualified_type_diff in a serialized form.
 ///
 /// @param d the @ref qualified_type_diff node to consider.
@@ -372,18 +404,7 @@ default_reporter::report(const qualified_type_diff& d, ostream& out,
       // It makes a little sense to detail the changes in extenso here.
       return;
 
-  diff_sptr dif = d.leaf_underlying_type_diff();
-  ABG_ASSERT(dif);
-  ABG_ASSERT(dif->to_be_reported());
-  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(dif,
-						    "unqualified "
-						    "underlying type");
-
-  string fltname = dif->first_subject()->get_pretty_representation();
-  out << indent << "in unqualified underlying type '" << fltname << "'";
-  report_loc_info(dif->second_subject(), *d.context(), out);
-  out << ":\n";
-  dif->report(out, indent + "  ");
+  report_underlying_changes_of_qualified_type(d, out, indent);
 }
 
 /// Report the @ref pointer_diff in a serialized form.

@@ -306,6 +306,14 @@ test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.o \
 test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.adb \
 test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.ads \
 test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.o \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-1.txt \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-2.txt \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.adb \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.ads \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.o \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.adb \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.ads \
+test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.o \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

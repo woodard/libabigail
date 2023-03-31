@@ -16,6 +16,9 @@ Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
   [C] 'function const int foo2(S2&)' at test45-basic-type-change-v1.cc:32:1 has some sub-type changes:
     return type changed:
       'const int' changed to 'const char'
+      in unqualified underlying type 'int':
+        type name changed from 'int' to 'char'
+        type size changed from 32 to 8 (in bits)
 
   [C] 'function int foo3(S2&)' at test45-basic-type-change-v1.cc:36:1 has some sub-type changes:
     return type changed:
