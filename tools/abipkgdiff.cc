@@ -281,6 +281,9 @@ get_interesting_files_under_dir(const string	dir,
 				options&	opts,
 				vector<string>& interesting_files);
 
+static string
+get_pretty_printed_list_of_packages(const vector<string>& packages);
+
 /// Abstract ELF files from the packages which ABIs ought to be
 /// compared
 class elf_file
@@ -1302,6 +1305,68 @@ set_generic_options(abigail::elf_based_reader& rdr, const options& opts)
     opts.assume_odr_for_cplusplus;
 }
 
+/// Emit an error message on standard error about alternate debug info
+/// not being found.
+///
+/// @param reader the ELF based reader being used.
+///
+/// @param elf_file the ELF file being looked at.
+///
+/// @param opts the options passed to the tool.
+///
+/// @param is_old_package if this is true, then we are looking at the
+/// first (the old) package of the comparison.  Otherwise, we are
+/// looking at the second (the newest) package of the comparison.
+static void
+emit_alt_debug_info_not_found_error(abigail::elf_based_reader&	reader,
+				    const elf_file&		elf_file,
+				    const options&		opts,
+				    ostream&			out,
+				    bool			is_old_package)
+{
+  ABG_ASSERT(is_old_package
+	     ? !opts.debug_packages1.empty()
+	     : !opts.debug_packages2.empty());
+
+  string filename;
+  tools_utils::base_name(elf_file.path, filename);
+  emit_prefix("abipkgdiff", out)
+    << "While reading elf file '"
+    << filename
+    << "', could not find alternate debug info in provided "
+    "debug info package(s) "
+    << get_pretty_printed_list_of_packages(is_old_package
+					   ? opts.debug_packages1
+					   : opts.debug_packages2)
+    << "\n";
+
+  string alt_di_path;
+#ifdef WITH_CTF
+  if (opts.use_ctf)
+    ;
+  else
+#endif
+#ifdef WITH_BTF
+    if (opts.use_btf)
+      ;
+    else
+#endif
+      reader.refers_to_alt_debug_info(alt_di_path);
+  if (!alt_di_path.empty())
+    {
+      emit_prefix("abipkgdiff", out)
+	<<  "The alternate debug info file being looked for is: "
+	<< alt_di_path << "\n";
+    }
+  else
+    emit_prefix("abipkgdiff", out) << "\n";
+
+  emit_prefix("abipkgdiff", out)
+    << "You must provide the additional "
+    << "debug info package that contains that alternate "
+    << "debug info file, using an additional --d1/--d2 switch\n";
+}
+
 /// Compare the ABI two elf files, using their associated debug info.
 ///
 /// The result of the comparison is emitted to standard output.
@@ -1341,6 +1406,7 @@ compare(const elf_file&		elf1,
 	abigail::ir::environment&	env,
 	corpus_diff_sptr&		diff,
 	diff_context_sptr&		ctxt,
+	ostream&			out,
 	abigail::fe_iface::status*	detailed_error_status = 0)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
@@ -1437,6 +1503,15 @@ compare(const elf_file&		elf1,
 	bail_out = true;
       }
 
+    if (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      {
+	emit_alt_debug_info_not_found_error(*reader, elf1, opts, out,
+					    /*is_old_package=*/true);
+	if (detailed_error_status)
+	  *detailed_error_status = c1_status;
+	bail_out = true;
+      }
+
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
@@ -1451,36 +1526,6 @@ compare(const elf_file&		elf1,
 	      cerr << " under " << di_dir1 << "\n";
 	    else
 	       cerr << "\n";
-
-	    if (detailed_error_status)
-	      *detailed_error_status = c1_status;
-	    debug_info_error = true;
-	  }
-
-	if (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-	  {
-	    if (opts.verbose)
-	      emit_prefix("abipkgdiff", cerr)
-		<< "while reading file" << elf1.path << "\n";
-
-	    emit_prefix("abipkgdiff", cerr)
-	      << "Could not find alternate debug info file";
-	    string alt_di_path;
-#ifdef WITH_CTF
-            if (opts.use_ctf)
-              ;
-            else
-#endif
-#ifdef WITH_BTF
-	      if (opts.use_btf)
-		;
-	      else
-#endif
-	      reader->refers_to_alt_debug_info(alt_di_path);
-	    if (!alt_di_path.empty())
-	      cerr << ": " << alt_di_path << "\n";
-	    else
-	      cerr << "\n";
 
 	    if (detailed_error_status)
 	      *detailed_error_status = c1_status;
@@ -1547,6 +1592,15 @@ compare(const elf_file&		elf1,
 	bail_out = true;
       }
 
+    if (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+      {
+	emit_alt_debug_info_not_found_error(*reader, elf2, opts, out,
+					    /*is_old_package=*/false);
+	if (detailed_error_status)
+	  *detailed_error_status = c2_status;
+	bail_out = true;
+      }
+
     if (opts.fail_if_no_debug_info)
       {
 	bool debug_info_error = false;
@@ -1559,36 +1613,6 @@ compare(const elf_file&		elf1,
 	    emit_prefix("abipkgdiff", cerr) << "Could not find debug info file";
 	    if (di_dir2 && strcmp(di_dir2, ""))
 	      cerr << " under " << di_dir2 << "\n";
-	    else
-	      cerr << "\n";
-
-	    if (detailed_error_status)
-	      *detailed_error_status = c2_status;
-	    debug_info_error = true;
-	  }
-
-	if (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-	  {
-	    if (opts.verbose)
-	      emit_prefix("abipkgdiff", cerr)
-		<< "while reading file" << elf2.path << "\n";
-
-	    emit_prefix("abipkgdiff", cerr)
-	      << "Could not find alternate debug info file";
-	    string alt_di_path;
-#ifdef WITH_CTF
-            if (opts.use_ctf)
-              ;
-            else
-#endif
-#ifdef WITH_BTF
-            if (opts.use_btf)
-              ;
-            else
-#endif
-	      reader->refers_to_alt_debug_info(alt_di_path);
-	    if (!alt_di_path.empty())
-	      cerr << ": " << alt_di_path << "\n";
 	    else
 	      cerr << "\n";
 
@@ -1661,6 +1685,7 @@ compare_to_self(const elf_file&		elf,
 		abigail::ir::environment&	env,
 		corpus_diff_sptr&		diff,
 		diff_context_sptr&		ctxt,
+		ostream&			out,
 		abigail::fe_iface::status*	detailed_error_status = 0)
 {
   char *di_dir = (char*) debug_dir.c_str();
@@ -1718,15 +1743,10 @@ compare_to_self(const elf_file&		elf,
       }
     else if (c_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
       {
-	if (opts.verbose)
-	  emit_prefix("abipkgdiff", cerr)
-	    << "Could not read find alternate DWARF debug info for '"
-	    << elf.path
-	    << "'.  You might have forgotten to provide a debug info package\n";
-
+	emit_alt_debug_info_not_found_error(*reader, elf, opts, out,
+					    /*is_old_package=*/true);
 	if (detailed_error_status)
 	  *detailed_error_status = c_status;
-
 	return abigail::tools_utils::ABIDIFF_ERROR;
       }
 
@@ -2160,6 +2180,60 @@ public:
       status(abigail::tools_utils::ABIDIFF_OK)
   {}
 
+  void
+  maybe_emit_pretty_error_message_to_output(const corpus_diff_sptr& diff,
+					    abigail::fe_iface::status detailed_status)
+  {
+    // If there is an ABI change, tell the user about it.
+    if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	||( diff && diff->has_net_changes()))
+      {
+	diff->report(out, /*prefix=*/"  ");
+	string name = args->elf1.name;
+
+	pretty_output +=
+	  string("================ changes of '") + name + "'===============\n"
+	  + out.str()
+	  + "================ end of changes of '"
+	  + name + "'===============\n\n";
+      }
+    else
+      {
+	if (args->opts.show_identical_binaries)
+	  {
+	    out << "No ABI change detected\n";
+	    pretty_output += out.str();
+	  }
+      }
+
+    // If an error happened while comparing the two binaries, tell the
+    // user about it.
+    if (status & abigail::tools_utils::ABIDIFF_ERROR)
+      {
+	string diagnostic =
+	  abigail::status_to_diagnostic_string(detailed_status);
+	if (diagnostic.empty())
+	  diagnostic =
+	    "Unknown error.  Please run the tool again with --verbose\n";
+
+	string name = args->elf1.name;
+	std::stringstream o;
+	emit_prefix("abipkgdiff", o)
+	  << "==== Error happened during processing of '"
+	  << name
+	  << "' ====\n";
+	emit_prefix("abipkgdiff", o)
+	  << diagnostic
+	  << ":\n"
+	  << out.str();
+	emit_prefix("abipkgdiff", o)
+	  << "==== End of error for '"
+	  << name
+	  << "' ====\n\n";
+	pretty_output += o.str();
+      }
+  }
+
   /// The job performed by the task.
   ///
   /// This compares two ELF files, gets the resulting test report and
@@ -2180,44 +2254,9 @@ public:
 
     status |= compare(args->elf1, args->debug_dir1, args->private_types_suppr1,
 		      args->elf2, args->debug_dir2, args->private_types_suppr2,
-		      args->opts, env, diff, ctxt, &detailed_status);
+		      args->opts, env, diff, ctxt, out, &detailed_status);
 
-    // If there is an ABI change, tell the user about it.
-    if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-	||( diff && diff->has_net_changes()))
-      {
-	diff->report(out, /*prefix=*/"  ");
-	string name = args->elf1.name;
-
-	pretty_output +=
-	  string("================ changes of '") + name + "'===============\n"
-	  + out.str()
-	  + "================ end of changes of '"
-	  + name + "'===============\n\n";
-      }
-    else
-      {
-	if (args->opts.show_identical_binaries)
-	  out << "No ABI change detected\n";
-      }
-
-    // If an error happened while comparing the two binaries, tell the
-    // user about it.
-    if (status & abigail::tools_utils::ABIDIFF_ERROR)
-      {
-	string diagnostic =
-	  abigail::status_to_diagnostic_string(detailed_status);
-	if (diagnostic.empty())
-	  diagnostic =
-	    "Unknown error.  Please run the tool again with --verbose\n";
-
-	string name = args->elf1.name;
-	pretty_output +=
-	  "==== Error happened during processing of '" + name + "' ====\n";
-	pretty_output += diagnostic;
-	pretty_output +=
-	  "==== End of error for '" + name + "' ====\n";
-      }
+    maybe_emit_pretty_error_message_to_output(diff, detailed_status);
   }
 }; // end class compare_task
 
@@ -2252,44 +2291,14 @@ public:
       abigail::fe_iface::STATUS_UNKNOWN;
 
     status |= compare_to_self(args->elf1, args->debug_dir1,
-			      args->opts, env, diff, ctxt,
+			      args->opts, env, diff, ctxt, out,
 			      &detailed_status);
 
     string name = args->elf1.name;
     if (status == abigail::tools_utils::ABIDIFF_OK)
       pretty_output += "==== SELF CHECK SUCCEEDED for '"+ name + "' ====\n";
-    else if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-	     ||( diff && diff->has_net_changes()))
-      {
-	// There is an ABI change, tell the user about it.
-	diff->report(out, /*indent=*/"  ");
-
-	pretty_output +=
-	  string("======== comparing'") + name +
-	  "' to itself wrongly yielded result: ===========\n"
-	  + out.str()
-	  + "===SELF CHECK FAILED for '"+ name + "'\n";
-      }
-
-    // If an error happened while comparing the two binaries, tell the
-    // user about it.
-    if (status & abigail::tools_utils::ABIDIFF_ERROR)
-      {
-	string diagnostic =
-	  abigail::status_to_diagnostic_string(detailed_status);
-
-	if (diagnostic.empty())
-	  diagnostic =
-	    "Unknown error.  Please run the tool again with --verbose\n";
-
-	string name = args->elf1.name;
-	pretty_output +=
-	  "==== Error happened during self check of '" + name + "' ====\n";
-	pretty_output += diagnostic;
-	pretty_output +=
-	  "==== SELF CHECK FAILED for '" + name + "' ====\n";
-
-      }
+    else
+      maybe_emit_pretty_error_message_to_output(diff, detailed_status);
   }
 }; // end class self_compare
 
@@ -2394,6 +2403,31 @@ get_interesting_files_under_dir(const string dir,
   is_ok = true;
 
   return is_ok;
+}
+
+/// Return a string representing a list of packages that can be
+/// printed out to the user.
+///
+/// @param packages a vector of package names
+///
+/// @return a string representing the list of packages @p packages.
+static string
+get_pretty_printed_list_of_packages(const vector<string>& packages)
+{
+  if (packages.empty())
+    return string();
+
+  bool need_comma = false;
+  std::stringstream o;
+  for (auto p : packages)
+    {
+      if (need_comma)
+	o << ", ";
+      else
+	need_comma = true;
+      o << "'" << p << "'";
+    }
+  return o.str();
 }
 
 /// Create maps of the content of a given package.

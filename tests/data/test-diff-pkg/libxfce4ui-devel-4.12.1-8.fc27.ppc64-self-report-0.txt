@@ -1,4 +1,7 @@
-abipkgdiff: Could not find alternate debug info file: ../../../../.dwz/libxfce4ui-4.12.1-8.fc27.ppc64
-==== Error happened during processing of 'libxfce4uiglade.so' ====
-could not find alternate debug info
-==== End of error for 'libxfce4uiglade.so' ====
+abipkgdiff: ==== Error happened during processing of 'libxfce4uiglade.so' ====
+abipkgdiff: could not find alternate debug info:
+abipkgdiff: While reading elf file 'libxfce4uiglade.so', could not find alternate debug info in provided debug info package(s) '/home/dodji/git/libabigail/fixes/tests/data/test-diff-pkg/libxfce4ui-devel-debuginfo-4.12.1-8.fc27.ppc64.rpm'
+abipkgdiff: The alternate debug info file being looked for is: ../../../../.dwz/libxfce4ui-4.12.1-8.fc27.ppc64
+abipkgdiff: You must provide the additional debug info package that contains that alternate debug info file, using an additional --d1/--d2 switch
+abipkgdiff: ==== End of error for 'libxfce4uiglade.so' ====
+

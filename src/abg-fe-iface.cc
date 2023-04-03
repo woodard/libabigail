@@ -397,13 +397,13 @@ status_to_diagnostic_string(fe_iface::status s)
   std::string str;
 
   if (s & fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
-    str += "could not find debug info\n";
+    str += "could not find debug info";
 
   if (s & fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-    str += "could not find alternate debug info\n";
+    str += "could not find alternate debug info";
 
   if (s & fe_iface::STATUS_NO_SYMBOLS_FOUND)
-    str += "could not load ELF symbols\n";
+    str += "could not load ELF symbols";
 
   return str;
 }
