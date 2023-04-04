@@ -2641,7 +2641,7 @@ public:
   ///
   /// @param die the DIE to consider.
   ///
-  /// @param canonical_die output parameter.  Is set to the resuling
+  /// @param canonical_die output parameter.  Is set to the resulting
   /// canonical die, if this function returns true.
   ///
   /// @param where the offset of the logical DIE we are supposed to be
