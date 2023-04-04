@@ -2906,15 +2906,13 @@ write_array_subrange_type(const array_type_def::subrange_sptr&	decl,
 
   o << "'";
 
-  if (decl->get_lower_bound())
-    {
-      ABG_ASSERT(decl->is_infinite()
-		 || (decl->get_length() ==
-		     (uint64_t) (decl->get_upper_bound()
-				 - decl->get_lower_bound() + 1)));
-      o << " lower-bound='" << decl->get_lower_bound() << "' upper-bound='"
-	<< decl->get_upper_bound() << "'";
-    }
+  ABG_ASSERT(decl->is_infinite()
+	     || decl->get_length() == 0
+	     || (decl->get_length() ==
+		 (uint64_t) (decl->get_upper_bound()
+			     - decl->get_lower_bound() + 1)));
+  o << " lower-bound='" << decl->get_lower_bound() << "' upper-bound='"
+    << decl->get_upper_bound() << "'";
 
   type_base_sptr underlying_type = decl->get_underlying_type();
   if (underlying_type)

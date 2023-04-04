@@ -25,7 +25,7 @@
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-3'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <!-- double -->
     <type-decl name='double' size-in-bits='64' id='type-id-6'/>
@@ -257,7 +257,7 @@
     <!-- unsigned long int[] -->
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='unknown' id='type-id-34'>
       <!-- <anonymous range>[] -->
-      <subrange length='unknown' id='type-id-35'/>
+      <subrange length='unknown' lower-bound='0' upper-bound='0' id='type-id-35'/>
     </array-type-def>
     <!-- unsigned long long int -->
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-36'/>

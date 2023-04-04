@@ -874,17 +874,17 @@
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <!-- char[20] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='160' id='type-id-6'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-4' id='type-id-7'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-8'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <!-- class vtkImageDataLIC2D -->
     <class-decl name='vtkImageDataLIC2D' size-in-bits='1472' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.h' line='45' column='1' id='type-id-10'>
@@ -6824,7 +6824,7 @@
     <!-- int[4] -->
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='128' id='type-id-33'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <!-- long double -->
     <type-decl name='long double' size-in-bits='128' id='type-id-59'/>
@@ -12013,7 +12013,7 @@
     <!-- int[6] -->
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='192' id='type-id-231'>
       <!-- <anonymous range>[6] -->
-      <subrange length='6' type-id='type-id-4' id='type-id-257'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-4' id='type-id-257'/>
     </array-type-def>
     <!-- const std::ctype<char> -->
     <qualified-type-def type-id='type-id-258' const='yes' id='type-id-259'/>
@@ -13855,24 +13855,24 @@
     <!-- int[2] -->
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='64' id='type-id-286'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <!-- size_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-38' size-in-bits='256' id='type-id-295'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <!-- typedef long int ptrdiff_t -->
     <typedef-decl name='ptrdiff_t' type-id='type-id-60' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='149' column='1' id='type-id-296'/>
     <!-- unsigned int*[2] -->
     <array-type-def dimensions='1' type-id='type-id-41' size-in-bits='128' id='type-id-279'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <!-- unsigned int[2] -->
     <array-type-def dimensions='1' type-id='type-id-43' size-in-bits='64' id='type-id-278'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <!-- __gnu_cxx::new_allocator<char>* -->
     <pointer-type-def type-id='type-id-297' size-in-bits='64' id='type-id-298'/>
@@ -25260,7 +25260,7 @@
     <!-- double[3] -->
     <array-type-def dimensions='1' type-id='type-id-16' size-in-bits='192' id='type-id-602'>
       <!-- <anonymous range>[3] -->
-      <subrange length='3' type-id='type-id-4' id='type-id-669'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-669'/>
     </array-type-def>
     <!-- typedef float GLfloat -->
     <typedef-decl name='GLfloat' type-id='type-id-58' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-670'/>
@@ -25269,7 +25269,7 @@
     <!-- vtkSmartPointer<vtkOpenGLLightMonitor>[8] -->
     <array-type-def dimensions='1' type-id='type-id-641' size-in-bits='512' id='type-id-586'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-672'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-672'/>
     </array-type-def>
     <!-- GLfloat* -->
     <pointer-type-def type-id='type-id-670' size-in-bits='64' id='type-id-45'/>

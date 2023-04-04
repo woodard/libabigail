@@ -760,17 +760,17 @@
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <!-- char[20] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='160' id='type-id-6'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-4' id='type-id-7'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-8'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <!-- class vtkBoundingBox -->
     <class-decl name='vtkBoundingBox' size-in-bits='384' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/DataModel/vtkBoundingBox.h' line='30' column='1' id='type-id-10'>
@@ -3658,7 +3658,7 @@
     <!-- double[3] -->
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='192' id='type-id-11'>
       <!-- <anonymous range>[3] -->
-      <subrange length='3' type-id='type-id-4' id='type-id-127'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-127'/>
     </array-type-def>
     <!-- float -->
     <type-decl name='float' size-in-bits='32' id='type-id-100'/>
@@ -21569,7 +21569,7 @@
     <!-- size_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-78' size-in-bits='256' id='type-id-404'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <!-- __gnu_cxx::__normal_iterator<const unsigned char*, std::vector<unsigned char, std::allocator<unsigned char> > >& -->
     <reference-type-def kind='lvalue' type-id='type-id-365' size-in-bits='64' id='type-id-1066'/>
@@ -30208,7 +30208,7 @@
     <!-- int[20] -->
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='640' id='type-id-1410'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-4' id='type-id-7'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <!-- const vtkSubGroup -->
     <qualified-type-def type-id='type-id-1408' const='yes' id='type-id-1415'/>

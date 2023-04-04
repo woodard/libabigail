@@ -4,7 +4,7 @@
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
     <array-type-def dimensions='1' type-id='3ed987a4' size-in-bits='12800' id='e022be37'>
-      <subrange length='50' type-id='f0981eeb' id='3c1860ce'/>
+      <subrange length='50' lower-bound='0' upper-bound='49' type-id='f0981eeb' id='3c1860ce'/>
     </array-type-def>
     <type-decl name='long int' size-in-bits='64' id='95e97e5e'/>
     <class-decl name='A' size-in-bits='256' is-struct='yes' visibility='default' id='3ed987a4'>

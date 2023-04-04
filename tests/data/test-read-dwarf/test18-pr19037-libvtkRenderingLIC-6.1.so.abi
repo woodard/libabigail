@@ -454,13 +454,13 @@
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-3'>
-      <subrange length='1' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='160' id='type-id-6'>
-      <subrange length='20' type-id='type-id-4' id='type-id-7'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='32' id='type-id-8'>
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <class-decl name='vtkImageDataLIC2D' size-in-bits='1472' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.h' line='45' column='1' id='type-id-10'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
@@ -3937,7 +3937,7 @@
     <type-decl name='float' size-in-bits='32' id='type-id-58'/>
     <type-decl name='int' size-in-bits='32' id='type-id-13'/>
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='128' id='type-id-33'>
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <type-decl name='long double' size-in-bits='128' id='type-id-59'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-60'/>
@@ -7158,7 +7158,7 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='192' id='type-id-231'>
-      <subrange length='6' type-id='type-id-4' id='type-id-257'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-4' id='type-id-257'/>
     </array-type-def>
     <qualified-type-def type-id='type-id-258' const='yes' id='type-id-259'/>
     <reference-type-def kind='lvalue' type-id='type-id-259' size-in-bits='64' id='type-id-260'/>
@@ -8352,17 +8352,17 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='64' id='type-id-286'>
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-38' size-in-bits='256' id='type-id-295'>
-      <subrange length='4' type-id='type-id-4' id='type-id-9'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-9'/>
     </array-type-def>
     <typedef-decl name='ptrdiff_t' type-id='type-id-60' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='149' column='1' id='type-id-296'/>
     <array-type-def dimensions='1' type-id='type-id-41' size-in-bits='128' id='type-id-279'>
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-43' size-in-bits='64' id='type-id-278'>
-      <subrange length='2' type-id='type-id-4' id='type-id-294'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-294'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-297' size-in-bits='64' id='type-id-298'/>
     <pointer-type-def type-id='type-id-299' size-in-bits='64' id='type-id-300'/>
@@ -15566,12 +15566,12 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-16' size-in-bits='192' id='type-id-602'>
-      <subrange length='3' type-id='type-id-4' id='type-id-669'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-669'/>
     </array-type-def>
     <typedef-decl name='GLfloat' type-id='type-id-58' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/mesa@8.0.5-22dd4c4b/include/GL/gl.h' line='160' column='1' id='type-id-670'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-671'/>
     <array-type-def dimensions='1' type-id='type-id-641' size-in-bits='512' id='type-id-586'>
-      <subrange length='8' type-id='type-id-4' id='type-id-672'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-672'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-670' size-in-bits='64' id='type-id-45'/>
     <qualified-type-def type-id='type-id-16' const='yes' id='type-id-673'/>

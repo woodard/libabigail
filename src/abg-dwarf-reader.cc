@@ -14115,6 +14115,7 @@ build_subrange_type(reader&		rdr,
   array_type_def::subrange_type::bound_value upper_bound;
   uint64_t count = 0;
   bool is_infinite = false;
+  bool count_present = false;
 
   // The DWARF 4 specifications says, in [5.11 Subrange
   // Type Entries]:
@@ -14141,15 +14142,17 @@ build_subrange_type(reader&		rdr,
       //
       // So, as DW_AT_upper_bound is not present in this
       // case, let's see if there is a DW_AT_count.
-      die_unsigned_constant_attribute(die, DW_AT_count, count);
+      if (die_unsigned_constant_attribute(die, DW_AT_count, count))
+	{
+	  count_present = true;
+	  // We can deduce the upper_bound from the
+	  // lower_bound and the number of elements of the
+	  // array:
+	  int64_t u = lower_bound.get_signed_value() + count;
+	  upper_bound = u - 1;
+	}
 
-      // We can deduce the upper_bound from the
-      // lower_bound and the number of elements of the
-      // array:
-      if (int64_t u = lower_bound.get_signed_value() + count)
-	upper_bound = u - 1;
-
-      if (upper_bound.get_unsigned_value() == 0 && count == 0)
+      if (!count_present)
 	// No upper_bound nor count was present on the DIE, this means
 	// the array is considered to have an infinite (or rather not
 	// known) size.
@@ -14157,12 +14160,9 @@ build_subrange_type(reader&		rdr,
     }
 
   if (UINT64_MAX == upper_bound.get_unsigned_value())
-    {
-      // If the upper_bound size is the max of the integer value, then
-      // it most certainly means infinite size.
-      is_infinite = true;
-      upper_bound.set_unsigned(0);
-    }
+    // If the upper_bound size is the max of the integer value
+    // then it most certainly means unknown size.
+    is_infinite = true;
 
   result.reset
     (new array_type_def::subrange_type(rdr.env(),
@@ -14175,6 +14175,7 @@ build_subrange_type(reader&		rdr,
   if (underlying_type)
     result->set_underlying_type(underlying_type);
 
+  // Let's ensure the resulting subrange looks metabolically healhty.
   ABG_ASSERT(result->is_infinite()
 	     || (result->get_length() ==
 		 (uint64_t) (result->get_upper_bound()

@@ -24,7 +24,7 @@
     <type-decl name='float' size-in-bits='32' id='a6c45d85'/>
     <type-decl name='int' size-in-bits='32' id='95e97e5e'/>
     <array-type-def dimensions='1' type-id='95e97e5e' size-in-bits='320' id='b7bd1749'>
-      <subrange length='10' type-id='f0981eeb' id='487da03a'/>
+      <subrange length='10' lower-bound='0' upper-bound='9' type-id='f0981eeb' id='487da03a'/>
     </array-type-def>
     <type-decl name='long int' size-in-bits='64' id='95e97e5f'/>
     <type-decl name='short int' size-in-bits='16' id='95e97e60'/>

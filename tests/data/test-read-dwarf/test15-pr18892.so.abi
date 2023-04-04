@@ -1894,16 +1894,16 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
     <array-type-def dimensions='1' type-id='type-id-44' size-in-bits='8448' id='type-id-45'>
-      <subrange length='33' type-id='type-id-46' id='type-id-47'/>
+      <subrange length='33' lower-bound='0' upper-bound='32' type-id='type-id-46' id='type-id-47'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-48' size-in-bits='11904' id='type-id-49'>
-      <subrange length='62' type-id='type-id-46' id='type-id-50'/>
+      <subrange length='62' lower-bound='0' upper-bound='61' type-id='type-id-46' id='type-id-50'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-51' size-in-bits='8448' id='type-id-52'>
-      <subrange length='33' type-id='type-id-46' id='type-id-47'/>
+      <subrange length='33' lower-bound='0' upper-bound='32' type-id='type-id-46' id='type-id-47'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-53' size-in-bits='11904' id='type-id-54'>
-      <subrange length='62' type-id='type-id-46' id='type-id-50'/>
+      <subrange length='62' lower-bound='0' upper-bound='61' type-id='type-id-46' id='type-id-50'/>
     </array-type-def>
     <enum-decl name='d_builtin_type_print' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.h' line='51' column='1' id='type-id-55'>
       <underlying-type type-id='type-id-56'/>
@@ -2521,10 +2521,10 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-118' size-in-bits='768' id='type-id-119'>
-      <subrange length='6' type-id='type-id-46' id='type-id-120'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-46' id='type-id-120'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='32768' id='type-id-122'>
-      <subrange length='4096' type-id='type-id-46' id='type-id-123'/>
+      <subrange length='4096' lower-bound='0' upper-bound='4095' type-id='type-id-46' id='type-id-123'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-124' size-in-bits='64' id='type-id-125'/>
     <pointer-type-def type-id='type-id-126' size-in-bits='64' id='type-id-127'/>
@@ -3454,7 +3454,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='2048' id='type-id-199'>
-      <subrange length='256' type-id='type-id-46' id='type-id-200'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-46' id='type-id-200'/>
     </array-type-def>
     <class-decl name='Elf64_Dyn' size-in-bits='128' is-struct='yes' naming-typedef-id='type-id-201' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-202'>
       <member-type access='public'>
@@ -3884,7 +3884,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_linux_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='448' id='type-id-246'>
-      <subrange length='56' type-id='type-id-46' id='type-id-247'/>
+      <subrange length='56' lower-bound='0' upper-bound='55' type-id='type-id-46' id='type-id-247'/>
     </array-type-def>
     <enum-decl name='_Unwind_Reason_Code' naming-typedef-id='type-id-248' linkage-name='19_Unwind_Reason_Code' filepath='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/host-x86_64-unknown-linux-gnu/gcc/include/unwind.h' line='66' column='1' id='type-id-249'>
       <underlying-type type-id='type-id-56'/>
@@ -4620,7 +4620,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stackdepot.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='64' id='type-id-273'>
-      <subrange length='1' type-id='type-id-46' id='type-id-274'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-46' id='type-id-274'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-275' size-in-bits='64' id='type-id-276'/>
     <pointer-type-def type-id='type-id-277' size-in-bits='64' id='type-id-278'/>
@@ -5156,7 +5156,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_posix_libcdep.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='131072' id='type-id-320'>
-      <subrange length='16384' type-id='type-id-46' id='type-id-321'/>
+      <subrange length='16384' lower-bound='0' upper-bound='16383' type-id='type-id-46' id='type-id-321'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-322' size-in-bits='64' id='type-id-323'/>
     <pointer-type-def type-id='type-id-324' size-in-bits='64' id='type-id-325'/>
@@ -5688,7 +5688,7 @@
     <type-decl name='unsigned long int' size-in-bits='64' id='type-id-1'/>
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-116'/>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='1048576' id='type-id-337'>
-      <subrange length='16384' type-id='type-id-46' id='type-id-321'/>
+      <subrange length='16384' lower-bound='0' upper-bound='16383' type-id='type-id-46' id='type-id-321'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-338' size-in-bits='64' id='type-id-339'/>
     <pointer-type-def type-id='type-id-340' size-in-bits='64' id='type-id-341'/>
@@ -6193,19 +6193,19 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interceptors.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-362' size-in-bits='16384' id='type-id-363'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-365' size-in-bits='32768' id='type-id-366'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-367' size-in-bits='552960' id='type-id-368'>
-      <subrange length='64' type-id='type-id-46' id='type-id-369'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-46' id='type-id-369'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-113' size-in-bits='1024' id='type-id-370'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='112' id='type-id-371'>
-      <subrange length='14' type-id='type-id-46' id='type-id-372'/>
+      <subrange length='14' lower-bound='0' upper-bound='13' type-id='type-id-46' id='type-id-372'/>
     </array-type-def>
     <class-decl name='AtExitContext' size-in-bits='17536' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='281' column='1' id='type-id-373'>
       <member-type access='public'>
@@ -6304,7 +6304,7 @@
     <type-decl name='double' size-in-bits='64' id='type-id-381'/>
     <type-decl name='float' size-in-bits='32' id='type-id-382'/>
     <array-type-def dimensions='1' type-id='type-id-383' size-in-bits='64000' id='type-id-384'>
-      <subrange length='500' type-id='type-id-46' id='type-id-385'/>
+      <subrange length='500' lower-bound='0' upper-bound='499' type-id='type-id-46' id='type-id-385'/>
     </array-type-def>
     <type-decl name='long double' size-in-bits='128' id='type-id-386'/>
     <type-decl name='long long int' size-in-bits='64' id='type-id-180'/>
@@ -6800,25 +6800,25 @@
     <typedef-decl name='write_f' type-id='type-id-755' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='316' column='1' id='type-id-920'/>
     <typedef-decl name='writev_f' type-id='type-id-765' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc' line='363' column='1' id='type-id-921'/>
     <array-type-def dimensions='1' type-id='type-id-18' size-in-bits='48' id='type-id-922'>
-      <subrange length='6' type-id='type-id-46' id='type-id-120'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-46' id='type-id-120'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-18' size-in-bits='64' id='type-id-923'>
-      <subrange length='8' type-id='type-id-46' id='type-id-924'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-46' id='type-id-924'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='1024' id='type-id-925'>
-      <subrange length='16' type-id='type-id-46' id='type-id-926'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-46' id='type-id-926'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='256' id='type-id-927'>
-      <subrange length='4' type-id='type-id-46' id='type-id-928'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-46' id='type-id-928'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='7552' id='type-id-410'>
-      <subrange length='118' type-id='type-id-46' id='type-id-929'/>
+      <subrange length='118' lower-bound='0' upper-bound='117' type-id='type-id-46' id='type-id-929'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='1024' id='type-id-397'>
-      <subrange length='16' type-id='type-id-46' id='type-id-926'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-46' id='type-id-926'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-145' size-in-bits='8192' id='type-id-376'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-930'/>
     <pointer-type-def type-id='type-id-373' size-in-bits='64' id='type-id-377'/>
@@ -15671,7 +15671,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_ann.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='1024' id='type-id-1260'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-1261' size-in-bits='64' id='type-id-1262'/>
     <reference-type-def kind='lvalue' type-id='type-id-1263' size-in-bits='64' id='type-id-1264'/>
@@ -16087,36 +16087,36 @@
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <type-decl name='__int128' size-in-bits='128' id='type-id-1275'/>
     <array-type-def dimensions='1' type-id='type-id-1276' size-in-bits='27136' id='type-id-1277'>
-      <subrange length='53' type-id='type-id-46' id='type-id-1278'/>
+      <subrange length='53' lower-bound='0' upper-bound='52' type-id='type-id-46' id='type-id-1278'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-182' size-in-bits='440960' id='type-id-186'>
-      <subrange length='53' type-id='type-id-46' id='type-id-1278'/>
+      <subrange length='53' lower-bound='0' upper-bound='52' type-id='type-id-46' id='type-id-1278'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1279' size-in-bits='875136' id='type-id-1280'>
-      <subrange length='53' type-id='type-id-46' id='type-id-1278'/>
+      <subrange length='53' lower-bound='0' upper-bound='52' type-id='type-id-46' id='type-id-1278'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1281' size-in-bits='256' id='type-id-1282'>
-      <subrange length='4' type-id='type-id-46' id='type-id-928'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-46' id='type-id-928'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1235' size-in-bits='131072' id='type-id-1283'>
-      <subrange length='2048' type-id='type-id-46' id='type-id-1284'/>
+      <subrange length='2048' lower-bound='0' upper-bound='2047' type-id='type-id-46' id='type-id-1284'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1285' size-in-bits='256' id='type-id-1286'>
-      <subrange length='2' type-id='type-id-46' id='type-id-1287'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-46' id='type-id-1287'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1288' size-in-bits='3072' id='type-id-1289'>
-      <subrange length='16' type-id='type-id-46' id='type-id-926'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-46' id='type-id-926'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1290' size-in-bits='516608' id='type-id-1291'>
-      <subrange length='1009' type-id='type-id-46' id='type-id-1292'/>
+      <subrange length='1009' lower-bound='0' upper-bound='1008' type-id='type-id-46' id='type-id-1292'/>
     </array-type-def>
     <type-decl name='bool' size-in-bits='8' id='type-id-113'/>
     <type-decl name='char' size-in-bits='8' id='type-id-121'/>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='256' id='type-id-1293'>
-      <subrange length='32' type-id='type-id-46' id='type-id-1294'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-46' id='type-id-1294'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='384' id='type-id-1295'>
-      <subrange length='48' type-id='type-id-46' id='type-id-1296'/>
+      <subrange length='48' lower-bound='0' upper-bound='47' type-id='type-id-46' id='type-id-1296'/>
     </array-type-def>
     <class-decl name='ScopedAtomic' size-in-bits='64' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' line='53' column='1' id='type-id-1297'>
       <data-member access='private' layout-offset-in-bits='0'>
@@ -16170,28 +16170,28 @@
     <typedef-decl name='morder' type-id='type-id-1301' filepath='../../.././libsanitizer/tsan/tsan_interface_atomic.cc' line='40' column='1' id='type-id-1300'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-18'/>
     <array-type-def dimensions='1' type-id='type-id-173' size-in-bits='512' id='type-id-1313'>
-      <subrange length='16' type-id='type-id-46' id='type-id-926'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-46' id='type-id-926'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='640' id='type-id-1314'>
-      <subrange length='10' type-id='type-id-46' id='type-id-1315'/>
+      <subrange length='10' lower-bound='0' upper-bound='9' type-id='type-id-46' id='type-id-1315'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='704' id='type-id-1316'>
-      <subrange length='11' type-id='type-id-46' id='type-id-1317'/>
+      <subrange length='11' lower-bound='0' upper-bound='10' type-id='type-id-46' id='type-id-1317'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='1472' id='type-id-1318'>
-      <subrange length='23' type-id='type-id-46' id='type-id-1319'/>
+      <subrange length='23' lower-bound='0' upper-bound='22' type-id='type-id-46' id='type-id-1319'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='128' id='type-id-1320'>
-      <subrange length='2' type-id='type-id-46' id='type-id-1287'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-46' id='type-id-1287'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-116' size-in-bits='28032' id='type-id-1321'>
-      <subrange length='438' type-id='type-id-46' id='type-id-1322'/>
+      <subrange length='438' lower-bound='0' upper-bound='437' type-id='type-id-46' id='type-id-1322'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='8192' id='type-id-183'>
-      <subrange length='128' type-id='type-id-46' id='type-id-364'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-46' id='type-id-364'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='16384' id='type-id-1323'>
-      <subrange length='256' type-id='type-id-46' id='type-id-200'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-46' id='type-id-200'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-1297' size-in-bits='64' id='type-id-1298'/>
     <pointer-type-def type-id='type-id-1324' size-in-bits='64' id='type-id-190'/>
@@ -20986,7 +20986,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_md5.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-18' size-in-bits='512' id='type-id-1511'>
-      <subrange length='64' type-id='type-id-46' id='type-id-369'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-46' id='type-id-369'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-1512' size-in-bits='64' id='type-id-1513'/>
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-1514'/>
@@ -21029,16 +21029,16 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mman.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-1517' size-in-bits='16777216' id='type-id-1518'>
-      <subrange length='262144' type-id='type-id-46' id='type-id-1519'/>
+      <subrange length='262144' lower-bound='0' upper-bound='262143' type-id='type-id-46' id='type-id-1519'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1520' size-in-bits='16777216' id='type-id-1521'>
-      <subrange length='262144' type-id='type-id-46' id='type-id-1519'/>
+      <subrange length='262144' lower-bound='0' upper-bound='262143' type-id='type-id-46' id='type-id-1519'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='4096' id='type-id-1522'>
-      <subrange length='64' type-id='type-id-46' id='type-id-369'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-46' id='type-id-369'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='4096' id='type-id-1495'>
-      <subrange length='64' type-id='type-id-46' id='type-id-369'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-46' id='type-id-369'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-101' size-in-bits='64' id='type-id-1523'/>
     <pointer-type-def type-id='type-id-1524' size-in-bits='64' id='type-id-1525'/>
@@ -23263,7 +23263,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='3448832' id='type-id-1659'>
-      <subrange length='431104' type-id='type-id-46' id='type-id-1660'/>
+      <subrange length='431104' lower-bound='0' upper-bound='431103' type-id='type-id-46' id='type-id-1660'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-1661' size-in-bits='64' id='type-id-1662'/>
     <pointer-type-def type-id='type-id-1663' size-in-bits='64' id='type-id-1664'/>
@@ -24349,16 +24349,16 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_thread.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-1689' size-in-bits='5062656' id='type-id-1690'>
-      <subrange length='256' type-id='type-id-46' id='type-id-200'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-46' id='type-id-200'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-121' size-in-bits='512' id='type-id-1500'>
-      <subrange length='64' type-id='type-id-46' id='type-id-369'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-46' id='type-id-369'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='16384' id='type-id-143'>
-      <subrange length='256' type-id='type-id-46' id='type-id-200'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-46' id='type-id-200'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='4194304' id='type-id-1691'>
-      <subrange length='65536' type-id='type-id-46' id='type-id-1692'/>
+      <subrange length='65536' lower-bound='0' upper-bound='65535' type-id='type-id-46' id='type-id-1692'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-1693' size-in-bits='64' id='type-id-1694'/>
     <pointer-type-def type-id='type-id-1695' size-in-bits='64' id='type-id-1696'/>

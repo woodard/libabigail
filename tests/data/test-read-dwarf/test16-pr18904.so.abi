@@ -1789,13 +1789,13 @@
     <typedef-decl name='uint8_t' type-id='type-id-50' filepath='/usr/include/stdint.h' line='48' column='1' id='type-id-51'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-50'/>
     <array-type-def dimensions='1' type-id='type-id-49' size-in-bits='32768' id='type-id-18'>
-      <subrange length='1024' type-id='type-id-52' id='type-id-53'/>
+      <subrange length='1024' lower-bound='0' upper-bound='1023' type-id='type-id-52' id='type-id-53'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-54' size-in-bits='128' id='type-id-22'>
-      <subrange length='2' type-id='type-id-52' id='type-id-55'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-52' id='type-id-55'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-56' size-in-bits='8160' id='type-id-16'>
-      <subrange length='255' type-id='type-id-52' id='type-id-57'/>
+      <subrange length='255' lower-bound='0' upper-bound='254' type-id='type-id-52' id='type-id-57'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-24' size-in-bits='64' id='type-id-58'/>
     <pointer-type-def type-id='type-id-26' size-in-bits='64' id='type-id-59'/>
@@ -2163,19 +2163,19 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/compiler_if_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-155' size-in-bits='128' id='type-id-156'>
-      <subrange length='1' type-id='type-id-52' id='type-id-157'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-52' id='type-id-157'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-158' size-in-bits='320' id='type-id-159'>
-      <subrange length='1' type-id='type-id-52' id='type-id-157'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-52' id='type-id-157'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-160' size-in-bits='2560' id='type-id-161'>
-      <subrange length='20' type-id='type-id-52' id='type-id-162'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-52' id='type-id-162'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-160' size-in-bits='1152' id='type-id-163'>
-      <subrange length='9' type-id='type-id-52' id='type-id-164'/>
+      <subrange length='9' lower-bound='0' upper-bound='8' type-id='type-id-52' id='type-id-164'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='unknown' id='type-id-166'>
-      <subrange length='unknown' type-id='type-id-52' id='type-id-167'/>
+      <subrange length='unknown' lower-bound='0' upper-bound='-1' type-id='type-id-52' id='type-id-167'/>
     </array-type-def>
     <class-decl name='AutoData' size-in-bits='192' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.h' line='208' column='1' id='type-id-168'>
       <data-member access='private' layout-offset-in-bits='0'>
@@ -2430,13 +2430,13 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='448' id='type-id-188'>
-      <subrange length='7' type-id='type-id-52' id='type-id-189'/>
+      <subrange length='7' lower-bound='0' upper-bound='6' type-id='type-id-52' id='type-id-189'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-152' size-in-bits='2048' id='type-id-190'>
-      <subrange length='32' type-id='type-id-52' id='type-id-191'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-52' id='type-id-191'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-152' size-in-bits='448' id='type-id-192'>
-      <subrange length='7' type-id='type-id-52' id='type-id-189'/>
+      <subrange length='7' lower-bound='0' upper-bound='6' type-id='type-id-52' id='type-id-189'/>
     </array-type-def>
     <enum-decl name='TARGET_TYPE' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='61' column='1' id='type-id-193'>
       <underlying-type type-id='type-id-2'/>
@@ -4068,22 +4068,22 @@
       </data-member>
     </union-decl>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='832' id='type-id-286'>
-      <subrange length='104' type-id='type-id-52' id='type-id-287'/>
+      <subrange length='104' lower-bound='0' upper-bound='103' type-id='type-id-52' id='type-id-287'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='128' id='type-id-288'>
-      <subrange length='16' type-id='type-id-52' id='type-id-289'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-52' id='type-id-289'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='192' id='type-id-290'>
-      <subrange length='24' type-id='type-id-52' id='type-id-291'/>
+      <subrange length='24' lower-bound='0' upper-bound='23' type-id='type-id-52' id='type-id-291'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='320' id='type-id-292'>
-      <subrange length='40' type-id='type-id-52' id='type-id-293'/>
+      <subrange length='40' lower-bound='0' upper-bound='39' type-id='type-id-52' id='type-id-293'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='64' id='type-id-294'>
-      <subrange length='8' type-id='type-id-52' id='type-id-295'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-52' id='type-id-295'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-54' size-in-bits='1024' id='type-id-296'>
-      <subrange length='16' type-id='type-id-52' id='type-id-289'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-52' id='type-id-289'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-198' size-in-bits='64' id='type-id-201'/>
     <reference-type-def kind='lvalue' type-id='type-id-168' size-in-bits='64' id='type-id-297'/>
@@ -12712,7 +12712,7 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-34' size-in-bits='8192' id='type-id-1697'>
-      <subrange length='128' type-id='type-id-52' id='type-id-1698'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-52' id='type-id-1698'/>
     </array-type-def>
     <class-decl name='Thread' size-in-bits='8640' is-struct='yes' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_engine.cpp' line='612' column='1' id='type-id-1699'>
       <data-member access='private' layout-offset-in-bits='0'>
@@ -12836,7 +12836,7 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-54' size-in-bits='39936' id='type-id-1706'>
-      <subrange length='624' type-id='type-id-52' id='type-id-1707'/>
+      <subrange length='624' lower-bound='0' upper-bound='623' type-id='type-id-52' id='type-id-1707'/>
     </array-type-def>
     <reference-type-def kind='lvalue' type-id='type-id-1689' size-in-bits='64' id='type-id-1696'/>
     <pointer-type-def type-id='type-id-1689' size-in-bits='64' id='type-id-1693'/>
@@ -17254,7 +17254,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_host.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='4096' id='type-id-2426'>
-      <subrange length='512' type-id='type-id-52' id='type-id-2427'/>
+      <subrange length='512' lower-bound='0' upper-bound='511' type-id='type-id-52' id='type-id-2427'/>
     </array-type-def>
     <enum-decl name='OffloadHostPhase' filepath='../../../gcc/liboffloadmic/runtime/liboffload_error_codes.h' line='186' column='1' id='type-id-2428'>
       <underlying-type type-id='type-id-2'/>
@@ -19920,7 +19920,7 @@
     <typedef-decl name='omp_nest_lock_target_t' type-id='type-id-2849' filepath='../../../gcc/liboffloadmic/runtime/offload.h' line='307' column='1' id='type-id-2848'/>
     <typedef-decl name='omp_sched_t' type-id='type-id-2840' filepath='./../libgomp/omp.h' line='54' column='1' id='type-id-2850'/>
     <array-type-def dimensions='1' type-id='type-id-50' size-in-bits='32' id='type-id-2843'>
-      <subrange length='4' type-id='type-id-52' id='type-id-2851'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-52' id='type-id-2851'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-2844' size-in-bits='64' id='type-id-2852'/>
     <pointer-type-def type-id='type-id-2848' size-in-bits='64' id='type-id-2853'/>
@@ -20058,7 +20058,7 @@
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_table.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <type-decl name='bool' size-in-bits='8' id='type-id-149'/>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='320' id='type-id-2858'>
-      <subrange length='40' type-id='type-id-52' id='type-id-293'/>
+      <subrange length='40' lower-bound='0' upper-bound='39' type-id='type-id-52' id='type-id-293'/>
     </array-type-def>
     <class-decl name='FuncList' size-in-bits='448' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='106' column='1' id='type-id-2859'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-2860'/>
@@ -20973,16 +20973,16 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/offload_trace.cpp' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='128' id='type-id-2941'>
-      <subrange length='16' type-id='type-id-52' id='type-id-289'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-52' id='type-id-289'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='8' id='type-id-2942'>
-      <subrange length='1' type-id='type-id-52' id='type-id-157'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-52' id='type-id-157'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='160' id='type-id-2943'>
-      <subrange length='20' type-id='type-id-52' id='type-id-162'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-52' id='type-id-162'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-165' size-in-bits='32' id='type-id-2944'>
-      <subrange length='4' type-id='type-id-52' id='type-id-2851'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-52' id='type-id-2851'/>
     </array-type-def>
     <type-decl name='double' size-in-bits='64' id='type-id-1666'/>
     <type-decl name='float' size-in-bits='32' id='type-id-1668'/>
@@ -21979,7 +21979,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='../../../gcc/liboffloadmic/runtime/orsl-lite/lib/orsl-lite.c' comp-dir-path='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/liboffloadmic' language='LANG_C99'>
     <array-type-def dimensions='1' type-id='type-id-3109' size-in-bits='1024' id='type-id-3110'>
-      <subrange length='16' type-id='type-id-52' id='type-id-289'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-52' id='type-id-289'/>
     </array-type-def>
     <enum-decl name='ORSLBusySetType' filepath='../../../gcc/liboffloadmic/runtime/orsl-lite/include/orsl-lite.h' line='45' column='1' id='type-id-3111'>
       <underlying-type type-id='type-id-2'/>

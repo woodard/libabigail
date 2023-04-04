@@ -17396,8 +17396,12 @@ array_type_def::subrange_type::get_length() const
   if (is_infinite())
     return 0;
 
-  ABG_ASSERT(get_upper_bound() >= get_lower_bound());
-  return get_upper_bound() - get_lower_bound() + 1;
+  // A subrange can have an upper bound that is lower than its lower
+  // bound.  This is possible in Ada for instance.  In that case, the
+  // length of the subrange is considered to be zero.
+  if (get_upper_bound() >= get_lower_bound())
+    return get_upper_bound() - get_lower_bound() + 1;
+  return 0;
 }
 
 /// Test if the length of the subrange type is infinite.

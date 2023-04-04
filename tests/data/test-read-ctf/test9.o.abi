@@ -5,25 +5,25 @@
   <abi-instr address-size='64' language='LANG_C'>
     <type-decl name='char' size-in-bits='8' id='type-id-1'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='448' alignment-in-bits='64' id='type-id-3'>
-      <subrange length='7' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='7' lower-bound='0' upper-bound='6' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='8' id='type-id-6'>
-      <subrange length='1' type-id='type-id-4' id='type-id-7'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-7'/>
     </array-type-def>
     <type-decl name='double' size-in-bits='64' id='type-id-8'/>
     <array-type-def dimensions='2' type-id='type-id-8' size-in-bits='960' id='type-id-9'>
-      <subrange length='5' type-id='type-id-4' id='type-id-10'/>
-      <subrange length='3' type-id='type-id-4' id='type-id-11'/>
+      <subrange length='5' lower-bound='0' upper-bound='4' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-11'/>
     </array-type-def>
     <type-decl name='int' size-in-bits='32' id='type-id-12'/>
     <array-type-def dimensions='1' type-id='type-id-13' size-in-bits='256' alignment-in-bits='64' id='type-id-14'>
-      <subrange length='4' type-id='type-id-4' id='type-id-15'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-15'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-16' size-in-bits='640' alignment-in-bits='64' id='type-id-17'>
-      <subrange length='10' type-id='type-id-4' id='type-id-18'/>
+      <subrange length='10' lower-bound='0' upper-bound='9' type-id='type-id-4' id='type-id-18'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-12' size-in-bits='160' id='type-id-19'>
-      <subrange length='5' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='5' lower-bound='0' upper-bound='4' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <class-decl name='S' size-in-bits='2304' is-struct='yes' visibility='default' id='type-id-20'>
       <data-member access='public' layout-offset-in-bits='0'>

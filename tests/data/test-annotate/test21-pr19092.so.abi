@@ -935,27 +935,27 @@
     <!-- char[128] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='1024' id='type-id-7'>
       <!-- <anonymous range>[128] -->
-      <subrange length='128' type-id='type-id-8' id='type-id-9'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-8' id='type-id-9'/>
     </array-type-def>
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='8' id='type-id-10'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-8' id='type-id-11'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-8' id='type-id-11'/>
     </array-type-def>
     <!-- char[20] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='160' id='type-id-12'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-8' id='type-id-13'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-8' id='type-id-13'/>
     </array-type-def>
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='32' id='type-id-14'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-8' id='type-id-15'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-8' id='type-id-15'/>
     </array-type-def>
     <!-- const char*[60] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='3840' id='type-id-16'>
       <!-- <anonymous range>[60] -->
-      <subrange length='60' type-id='type-id-8' id='type-id-17'/>
+      <subrange length='60' lower-bound='0' upper-bound='59' type-id='type-id-8' id='type-id-17'/>
     </array-type-def>
     <!-- enum diagnostic_prefixing_rule_t -->
     <enum-decl name='diagnostic_prefixing_rule_t' naming-typedef-id='type-id-18' linkage-name='27diagnostic_prefixing_rule_t' filepath='../.././gcc/pretty-print.h' line='48' column='1' id='type-id-19'>
@@ -1003,14 +1003,14 @@
     <!-- int[12] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='384' id='type-id-26'>
       <!-- <anonymous range>[12] -->
-      <subrange length='12' type-id='type-id-8' id='type-id-27'/>
+      <subrange length='12' lower-bound='0' upper-bound='11' type-id='type-id-8' id='type-id-27'/>
     </array-type-def>
     <!-- long int -->
     <type-decl name='long int' size-in-bits='64' id='type-id-28'/>
     <!-- long int[3] -->
     <array-type-def dimensions='1' type-id='type-id-28' size-in-bits='192' id='type-id-29'>
       <!-- <anonymous range>[3] -->
-      <subrange length='3' type-id='type-id-8' id='type-id-30'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-8' id='type-id-30'/>
     </array-type-def>
     <!-- signed char -->
     <type-decl name='signed char' size-in-bits='8' id='type-id-31'/>
@@ -1700,7 +1700,7 @@
     <!-- typedef __va_list_tag __va_list_tag[1] -->
     <array-type-def dimensions='1' type-id='type-id-97' size-in-bits='192' id='type-id-102'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-8' id='type-id-11'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-8' id='type-id-11'/>
     </array-type-def>
     <!-- typedef diagnostic_classification_change_t diagnostic_classification_change_t -->
     <typedef-decl name='diagnostic_classification_change_t' type-id='type-id-45' filepath='../.././gcc/diagnostic.h' line='52' column='1' id='type-id-106'/>
@@ -4746,32 +4746,32 @@
     <!-- char[31] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='248' id='type-id-211'>
       <!-- <anonymous range>[31] -->
-      <subrange length='31' type-id='type-id-8' id='type-id-212'/>
+      <subrange length='31' lower-bound='0' upper-bound='30' type-id='type-id-8' id='type-id-212'/>
     </array-type-def>
     <!-- char[6] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='48' id='type-id-213'>
       <!-- <anonymous range>[6] -->
-      <subrange length='6' type-id='type-id-8' id='type-id-214'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-8' id='type-id-214'/>
     </array-type-def>
     <!-- char[7] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='56' id='type-id-215'>
       <!-- <anonymous range>[7] -->
-      <subrange length='7' type-id='type-id-8' id='type-id-216'/>
+      <subrange length='7' lower-bound='0' upper-bound='6' type-id='type-id-8' id='type-id-216'/>
     </array-type-def>
     <!-- const char[31] -->
     <array-type-def dimensions='1' type-id='type-id-120' size-in-bits='248' id='type-id-217'>
       <!-- <anonymous range>[31] -->
-      <subrange length='31' type-id='type-id-8' id='type-id-212'/>
+      <subrange length='31' lower-bound='0' upper-bound='30' type-id='type-id-8' id='type-id-212'/>
     </array-type-def>
     <!-- const char[6] -->
     <array-type-def dimensions='1' type-id='type-id-120' size-in-bits='48' id='type-id-218'>
       <!-- <anonymous range>[6] -->
-      <subrange length='6' type-id='type-id-8' id='type-id-214'/>
+      <subrange length='6' lower-bound='0' upper-bound='5' type-id='type-id-8' id='type-id-214'/>
     </array-type-def>
     <!-- const char[7] -->
     <array-type-def dimensions='1' type-id='type-id-120' size-in-bits='56' id='type-id-219'>
       <!-- <anonymous range>[7] -->
-      <subrange length='7' type-id='type-id-8' id='type-id-216'/>
+      <subrange length='7' lower-bound='0' upper-bound='6' type-id='type-id-8' id='type-id-216'/>
     </array-type-def>
     <!-- const char bug_report_url[31] -->
     <var-decl name='bug_report_url' type-id='type-id-217' mangled-name='bug_report_url' visibility='default' filepath='../.././gcc/version.c' line='29' column='1' elf-symbol-id='bug_report_url'/>
@@ -5769,7 +5769,7 @@
     <!-- char[256] -->
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='2048' id='type-id-265'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-8' id='type-id-266'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-8' id='type-id-266'/>
     </array-type-def>
     <!-- struct _cpp_file -->
     <class-decl name='_cpp_file' size-in-bits='1856' is-struct='yes' visibility='default' filepath='../.././libcpp/files.c' line='56' column='1' id='type-id-247'>
@@ -6381,12 +6381,12 @@
     <!-- const unsigned char[256] -->
     <array-type-def dimensions='1' type-id='type-id-286' size-in-bits='2048' id='type-id-287'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-8' id='type-id-266'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-8' id='type-id-266'/>
     </array-type-def>
     <!-- unsigned char[256] -->
     <array-type-def dimensions='1' type-id='type-id-69' size-in-bits='2048' id='type-id-288'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-8' id='type-id-266'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-8' id='type-id-266'/>
     </array-type-def>
     <!-- unsigned char _cpp_trigraph_map[256] -->
     <var-decl name='_cpp_trigraph_map' type-id='type-id-288' mangled-name='_cpp_trigraph_map' visibility='default' filepath='../.././libcpp/init.c' line='60' column='1' elf-symbol-id='_cpp_trigraph_map'/>
@@ -6788,7 +6788,7 @@
     <!-- cpp_token[1] -->
     <array-type-def dimensions='1' type-id='type-id-301' size-in-bits='192' id='type-id-302'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-8' id='type-id-11'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-8' id='type-id-11'/>
     </array-type-def>
     <!-- enum cpp_builtin_type -->
     <enum-decl name='cpp_builtin_type' filepath='../.././libcpp/include/cpplib.h' line='623' column='1' id='type-id-303'>
@@ -9520,22 +9520,22 @@
     <!-- const demangle_builtin_type_info[33] -->
     <array-type-def dimensions='1' type-id='type-id-431' size-in-bits='8448' id='type-id-432'>
       <!-- <anonymous range>[33] -->
-      <subrange length='33' type-id='type-id-8' id='type-id-433'/>
+      <subrange length='33' lower-bound='0' upper-bound='32' type-id='type-id-8' id='type-id-433'/>
     </array-type-def>
     <!-- const demangle_operator_info[58] -->
     <array-type-def dimensions='1' type-id='type-id-434' size-in-bits='11136' id='type-id-435'>
       <!-- <anonymous range>[58] -->
-      <subrange length='58' type-id='type-id-8' id='type-id-436'/>
+      <subrange length='58' lower-bound='0' upper-bound='57' type-id='type-id-8' id='type-id-436'/>
     </array-type-def>
     <!-- demangle_builtin_type_info[33] -->
     <array-type-def dimensions='1' type-id='type-id-437' size-in-bits='8448' id='type-id-438'>
       <!-- <anonymous range>[33] -->
-      <subrange length='33' type-id='type-id-8' id='type-id-433'/>
+      <subrange length='33' lower-bound='0' upper-bound='32' type-id='type-id-8' id='type-id-433'/>
     </array-type-def>
     <!-- demangle_operator_info[58] -->
     <array-type-def dimensions='1' type-id='type-id-439' size-in-bits='11136' id='type-id-440'>
       <!-- <anonymous range>[58] -->
-      <subrange length='58' type-id='type-id-8' id='type-id-436'/>
+      <subrange length='58' lower-bound='0' upper-bound='57' type-id='type-id-8' id='type-id-436'/>
     </array-type-def>
     <!-- enum d_builtin_type_print -->
     <enum-decl name='d_builtin_type_print' filepath='../.././libiberty/cp-demangle.h' line='51' column='1' id='type-id-441'>
@@ -10118,12 +10118,12 @@
     <!-- const demangler_engine[11] -->
     <array-type-def dimensions='1' type-id='type-id-471' size-in-bits='2112' id='type-id-472'>
       <!-- <anonymous range>[11] -->
-      <subrange length='11' type-id='type-id-8' id='type-id-473'/>
+      <subrange length='11' lower-bound='0' upper-bound='10' type-id='type-id-8' id='type-id-473'/>
     </array-type-def>
     <!-- demangler_engine[11] -->
     <array-type-def dimensions='1' type-id='type-id-474' size-in-bits='2112' id='type-id-475'>
       <!-- <anonymous range>[11] -->
-      <subrange length='11' type-id='type-id-8' id='type-id-473'/>
+      <subrange length='11' lower-bound='0' upper-bound='10' type-id='type-id-8' id='type-id-473'/>
     </array-type-def>
     <!-- enum demangling_styles -->
     <enum-decl name='demangling_styles' filepath='../.././libiberty/../include/demangle.h' line='78' column='1' id='type-id-476'>
@@ -10502,7 +10502,7 @@
     <!-- md5_uint32[2] -->
     <array-type-def dimensions='1' type-id='type-id-480' size-in-bits='64' id='type-id-481'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-8' id='type-id-482'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-8' id='type-id-482'/>
     </array-type-def>
     <!-- struct md5_ctx -->
     <class-decl name='md5_ctx' size-in-bits='1248' is-struct='yes' visibility='default' filepath='../.././libiberty/../include/md5.h' line='85' column='1' id='type-id-483'>
@@ -11180,12 +11180,12 @@
     <!-- const unsigned short int[256] -->
     <array-type-def dimensions='1' type-id='type-id-517' size-in-bits='4096' id='type-id-518'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-8' id='type-id-266'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-8' id='type-id-266'/>
     </array-type-def>
     <!-- unsigned short int[256] -->
     <array-type-def dimensions='1' type-id='type-id-36' size-in-bits='4096' id='type-id-519'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-8' id='type-id-266'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-8' id='type-id-266'/>
     </array-type-def>
     <!-- const unsigned short int -->
     <qualified-type-def type-id='type-id-36' const='yes' id='type-id-517'/>

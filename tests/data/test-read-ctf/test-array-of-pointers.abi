@@ -4,7 +4,7 @@
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='256' alignment-in-bits='64' id='type-id-2'>
-      <subrange length='4' type-id='type-id-3' id='type-id-4'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-3' id='type-id-4'/>
     </array-type-def>
     <class-decl name='cgroup' size-in-bits='256' is-struct='yes' visibility='default' id='type-id-5'>
       <data-member access='public' layout-offset-in-bits='0'>

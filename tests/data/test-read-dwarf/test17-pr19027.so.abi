@@ -269,7 +269,7 @@
     <type-decl name='bool' size-in-bits='8' id='type-id-1'/>
     <type-decl name='char' size-in-bits='8' id='type-id-2'/>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='320' id='type-id-3'>
-      <subrange length='40' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='40' lower-bound='0' upper-bound='39' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <enum-decl name='hb_memory_mode_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-blob.h' line='58' column='1' id='type-id-6'>
       <underlying-type type-id='type-id-7'/>
@@ -279,7 +279,7 @@
       <enumerator name='HB_MEMORY_MODE_READONLY_MAY_MAKE_WRITABLE' value='3'/>
     </enum-decl>
     <array-type-def dimensions='1' type-id='type-id-8' size-in-bits='384' id='type-id-9'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <type-decl name='int' size-in-bits='32' id='type-id-11'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-12'/>
@@ -707,7 +707,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-buffer-serialize.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='512' id='type-id-62'>
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <enum-decl name='hb_buffer_content_type_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-buffer.h' line='119' column='1' id='type-id-64'>
       <underlying-type type-id='type-id-7'/>
@@ -969,14 +969,14 @@
       <enumerator name='HB_UNICODE_GENERAL_CATEGORY_SPACE_SEPARATOR' value='29'/>
     </enum-decl>
     <array-type-def dimensions='2' type-id='type-id-72' size-in-bits='320' id='type-id-73'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
-      <subrange length='5' type-id='type-id-4' id='type-id-74'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='5' lower-bound='0' upper-bound='4' type-id='type-id-4' id='type-id-74'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-75' size-in-bits='32' id='type-id-76'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-77' size-in-bits='32' id='type-id-78'>
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <type-decl name='short int' size-in-bits='16' id='type-id-80'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-81'/>
@@ -1597,13 +1597,13 @@
     <typedef-decl name='uint32_t' type-id='type-id-18' filepath='/usr/include/stdint.h' line='52' column='1' id='type-id-100'/>
     <typedef-decl name='uint8_t' type-id='type-id-138' filepath='/usr/include/stdint.h' line='49' column='1' id='type-id-139'/>
     <array-type-def dimensions='1' type-id='type-id-137' size-in-bits='32' id='type-id-140'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='32' id='type-id-141'>
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='64' id='type-id-88'>
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <union-decl name='_hb_var_int_t' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='79' column='1' id='type-id-135'>
       <data-member access='public'>
@@ -1627,7 +1627,7 @@
     </union-decl>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-138'/>
     <array-type-def dimensions='1' type-id='type-id-18' size-in-bits='64' id='type-id-90'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-136'/>
     <pointer-type-def type-id='type-id-17' size-in-bits='64' id='type-id-142'/>
@@ -2338,10 +2338,10 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-common.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-178'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-49' size-in-bits='8' id='type-id-165'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <class-decl name='hb_language_impl_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.cc' line='167' column='1' id='type-id-146'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -2447,10 +2447,10 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-face.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-186' size-in-bits='32' id='type-id-187'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-188' size-in-bits='128' id='type-id-189'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <class-decl name='hb_auto_trace_t&lt;0, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-private.hh' line='749' column='1' id='type-id-190'>
       <member-function access='public'>
@@ -3100,7 +3100,7 @@
     <typedef-decl name='hb_shape_func_t' type-id='type-id-234' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-shaper-private.hh' line='36' column='1' id='type-id-235'/>
     <typedef-decl name='hb_shape_plan_t' type-id='type-id-215' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-shape-plan.h' line='39' column='1' id='type-id-236'/>
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='16' id='type-id-237'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-238' size-in-bits='64' id='type-id-239'/>
     <pointer-type-def type-id='type-id-240' size-in-bits='64' id='type-id-241'/>
@@ -6804,34 +6804,34 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-ot-font.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-670' size-in-bits='2048' id='type-id-671'>
-      <subrange length='256' type-id='type-id-4' id='type-id-672'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-4' id='type-id-672'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-673' size-in-bits='96' id='type-id-674'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-675' size-in-bits='64' id='type-id-676'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-256' size-in-bits='16' id='type-id-677'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-678' size-in-bits='32' id='type-id-679'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-574' size-in-bits='16' id='type-id-680'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-372' size-in-bits='16' id='type-id-681'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-682' size-in-bits='40' id='type-id-683'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-684' size-in-bits='32' id='type-id-685'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-686' size-in-bits='88' id='type-id-687'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <class-decl name='hb_ot_face_cmap_accelerator_t' size-in-bits='192' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-font.cc' line='95' column='1' id='type-id-688'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -6907,7 +6907,7 @@
       </member-function>
     </class-decl>
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='24' id='type-id-696'>
-      <subrange length='3' type-id='type-id-4' id='type-id-697'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-697'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-698' size-in-bits='64' id='type-id-699'/>
     <pointer-type-def type-id='type-id-700' size-in-bits='64' id='type-id-701'/>
@@ -8203,103 +8203,103 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-ot-layout.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-851' size-in-bits='32' id='type-id-852'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-853' size-in-bits='16' id='type-id-854'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-735' size-in-bits='24' id='type-id-855'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-856' size-in-bits='32' id='type-id-857'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-858' size-in-bits='32' id='type-id-859'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-860' size-in-bits='16' id='type-id-861'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-862' size-in-bits='16' id='type-id-863'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-864' size-in-bits='16' id='type-id-865'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-866' size-in-bits='16' id='type-id-867'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-868' size-in-bits='16' id='type-id-869'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-870' size-in-bits='16' id='type-id-871'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-872' size-in-bits='16' id='type-id-873'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-874' size-in-bits='16' id='type-id-875'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-876' size-in-bits='32' id='type-id-877'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-878' size-in-bits='16' id='type-id-879'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-880' size-in-bits='16' id='type-id-881'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-882' size-in-bits='16' id='type-id-883'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-884' size-in-bits='16' id='type-id-885'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-886' size-in-bits='16' id='type-id-887'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-888' size-in-bits='16' id='type-id-889'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-890' size-in-bits='16' id='type-id-891'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-892' size-in-bits='16' id='type-id-893'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-894' size-in-bits='16' id='type-id-895'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-896' size-in-bits='16' id='type-id-897'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-898' size-in-bits='16' id='type-id-899'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-900' size-in-bits='16' id='type-id-901'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-902' size-in-bits='16' id='type-id-903'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-904' size-in-bits='48' id='type-id-905'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-906' size-in-bits='48' id='type-id-907'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-908' size-in-bits='48' id='type-id-909'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-910' size-in-bits='48' id='type-id-911'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-912' size-in-bits='16' id='type-id-913'>
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='16' id='type-id-914'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <enum-decl name='hb_ot_layout_glyph_class_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout.h' line='54' column='1' id='type-id-915'>
       <underlying-type type-id='type-id-7'/>
@@ -8310,22 +8310,22 @@
       <enumerator name='HB_OT_LAYOUT_GLYPH_CLASS_COMPONENT' value='4'/>
     </enum-decl>
     <array-type-def dimensions='1' type-id='type-id-916' size-in-bits='2304' id='type-id-917'>
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-918' size-in-bits='2048' id='type-id-919'>
-      <subrange length='32' type-id='type-id-4' id='type-id-920'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-4' id='type-id-920'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-921' size-in-bits='512' id='type-id-922'>
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-923' size-in-bits='4352' id='type-id-924'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-925' size-in-bits='1280' id='type-id-926'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-184' size-in-bits='64' id='type-id-927'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <class-decl name='GPOSProxy' size-in-bits='128' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout.cc' line='818' column='1' id='type-id-928'>
       <member-type access='public'>
@@ -9080,7 +9080,7 @@
     <typedef-decl name='hb_set_digest_t' type-id='type-id-985' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='135' column='1' id='type-id-948'/>
     <typedef-decl name='hb_void_t' type-id='type-id-946' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-private.hh' line='259' column='1' id='type-id-995'/>
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='192' id='type-id-996'>
-      <subrange length='3' type-id='type-id-4' id='type-id-697'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-697'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-928' size-in-bits='64' id='type-id-934'/>
     <pointer-type-def type-id='type-id-935' size-in-bits='64' id='type-id-939'/>
@@ -19059,13 +19059,13 @@
       <enumerator name='F_MANUAL_ZWJ' value='4'/>
     </enum-decl>
     <array-type-def dimensions='1' type-id='type-id-1902' size-in-bits='7168' id='type-id-1903'>
-      <subrange length='32' type-id='type-id-4' id='type-id-920'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-4' id='type-id-920'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1904' size-in-bits='1024' id='type-id-1905'>
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <array-type-def dimensions='1' type-id='type-id-1906' size-in-bits='2304' id='type-id-1907'>
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <class-decl name='hb_ot_map_builder_t' size-in-bits='10240' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='181' column='1' id='type-id-1908'>
       <member-type access='private'>
@@ -19560,7 +19560,7 @@
       <enumerator name='REPH_POS_DONT_CARE' value='1'/>
     </enum-decl>
     <array-type-def dimensions='1' type-id='type-id-92' size-in-bits='672' id='type-id-1996'>
-      <subrange length='21' type-id='type-id-4' id='type-id-1997'/>
+      <subrange length='21' lower-bound='0' upper-bound='20' type-id='type-id-4' id='type-id-1997'/>
     </array-type-def>
     <class-decl name='indic_config_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='305' column='1' id='type-id-1998'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -19684,7 +19684,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-ot-shape.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-2016'>
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <enum-decl name='hb_ot_shape_normalization_mode_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='38' column='1' id='type-id-2017'>
       <underlying-type type-id='type-id-7'/>
@@ -19953,7 +19953,7 @@
   </abi-instr>
   <abi-instr address-size='64' path='hb-set.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src' language='LANG_C_plus_plus'>
     <array-type-def dimensions='1' type-id='type-id-2042' size-in-bits='65536' id='type-id-2043'>
-      <subrange length='2048' type-id='type-id-4' id='type-id-2044'/>
+      <subrange length='2048' lower-bound='0' upper-bound='2047' type-id='type-id-4' id='type-id-2044'/>
     </array-type-def>
     <class-decl name='hb_set_t' size-in-bits='66496' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='147' column='1' id='type-id-2045'>
       <member-type access='public'>

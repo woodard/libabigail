@@ -526,7 +526,7 @@
     <!-- char[40] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='320' id='type-id-3'>
       <!-- <anonymous range>[40] -->
-      <subrange length='40' type-id='type-id-4' id='type-id-5'/>
+      <subrange length='40' lower-bound='0' upper-bound='39' type-id='type-id-4' id='type-id-5'/>
     </array-type-def>
     <!-- enum hb_memory_mode_t -->
     <enum-decl name='hb_memory_mode_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-blob.h' line='58' column='1' id='type-id-6'>
@@ -539,7 +539,7 @@
     <!-- hb_user_data_array_t::hb_user_data_item_t[2] -->
     <array-type-def dimensions='1' type-id='type-id-8' size-in-bits='384' id='type-id-9'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- int -->
     <type-decl name='int' size-in-bits='32' id='type-id-11'/>
@@ -1211,7 +1211,7 @@
     <!-- const char*[8] -->
     <array-type-def dimensions='1' type-id='type-id-17' size-in-bits='512' id='type-id-62'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <!-- enum hb_buffer_content_type_t -->
     <enum-decl name='hb_buffer_content_type_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-buffer.h' line='119' column='1' id='type-id-64'>
@@ -1483,19 +1483,19 @@
     <!-- hb_codepoint_t[2][5] -->
     <array-type-def dimensions='2' type-id='type-id-72' size-in-bits='320' id='type-id-73'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
       <!-- <anonymous range>[5] -->
-      <subrange length='5' type-id='type-id-4' id='type-id-74'/>
+      <subrange length='5' lower-bound='0' upper-bound='4' type-id='type-id-4' id='type-id-74'/>
     </array-type-def>
     <!-- int16_t[2] -->
     <array-type-def dimensions='1' type-id='type-id-75' size-in-bits='32' id='type-id-76'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- int8_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-77' size-in-bits='32' id='type-id-78'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <!-- short int -->
     <type-decl name='short int' size-in-bits='16' id='type-id-80'/>
@@ -2430,17 +2430,17 @@
     <!-- uint16_t[2] -->
     <array-type-def dimensions='1' type-id='type-id-137' size-in-bits='32' id='type-id-140'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- uint8_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='32' id='type-id-141'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <!-- uint8_t[8] -->
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='64' id='type-id-88'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <!-- union _hb_var_int_t -->
     <union-decl name='_hb_var_int_t' size-in-bits='32' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.h' line='79' column='1' id='type-id-135'>
@@ -2474,7 +2474,7 @@
     <!-- unsigned int[2] -->
     <array-type-def dimensions='1' type-id='type-id-18' size-in-bits='64' id='type-id-90'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- unsigned short int -->
     <type-decl name='unsigned short int' size-in-bits='16' id='type-id-136'/>
@@ -3687,12 +3687,12 @@
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='8' id='type-id-178'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- const char[1] -->
     <array-type-def dimensions='1' type-id='type-id-49' size-in-bits='8' id='type-id-165'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- struct hb_language_impl_t -->
     <class-decl name='hb_language_impl_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-common.cc' line='167' column='1' id='type-id-146'>
@@ -3870,12 +3870,12 @@
     <!-- OT::OffsetTo<OT::OffsetTable, OT::IntType<unsigned int, 4u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-186' size-in-bits='32' id='type-id-187'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::TableRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-188' size-in-bits='128' id='type-id-189'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- struct hb_auto_trace_t<0, bool> -->
     <class-decl name='hb_auto_trace_t&lt;0, bool&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-private.hh' line='749' column='1' id='type-id-190'>
@@ -4865,7 +4865,7 @@
     <!-- uint8_t[2] -->
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='16' id='type-id-237'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- OT::ArrayOf<OT::OffsetTo<OT::OffsetTable, OT::IntType<unsigned int, 4u> >, OT::IntType<unsigned int, 4u> >* -->
     <pointer-type-def type-id='type-id-238' size-in-bits='64' id='type-id-239'/>
@@ -10659,52 +10659,52 @@
     <!-- OT::BYTE[256] -->
     <array-type-def dimensions='1' type-id='type-id-670' size-in-bits='2048' id='type-id-671'>
       <!-- <anonymous range>[256] -->
-      <subrange length='256' type-id='type-id-4' id='type-id-672'/>
+      <subrange length='256' lower-bound='0' upper-bound='255' type-id='type-id-4' id='type-id-672'/>
     </array-type-def>
     <!-- OT::CmapSubtableLongGroup[1] -->
     <array-type-def dimensions='1' type-id='type-id-673' size-in-bits='96' id='type-id-674'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::EncodingRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-675' size-in-bits='64' id='type-id-676'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::IntType<short unsigned int, 2u>[1] -->
     <array-type-def dimensions='1' type-id='type-id-256' size-in-bits='16' id='type-id-677'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::LongMetric[1] -->
     <array-type-def dimensions='1' type-id='type-id-678' size-in-bits='32' id='type-id-679'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::SHORT[1] -->
     <array-type-def dimensions='1' type-id='type-id-574' size-in-bits='16' id='type-id-680'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::USHORT[1] -->
     <array-type-def dimensions='1' type-id='type-id-372' size-in-bits='16' id='type-id-681'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::UVSMapping[1] -->
     <array-type-def dimensions='1' type-id='type-id-682' size-in-bits='40' id='type-id-683'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::UnicodeValueRange[1] -->
     <array-type-def dimensions='1' type-id='type-id-684' size-in-bits='32' id='type-id-685'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::VariationSelectorRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-686' size-in-bits='88' id='type-id-687'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- struct hb_ot_face_cmap_accelerator_t -->
     <class-decl name='hb_ot_face_cmap_accelerator_t' size-in-bits='192' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-font.cc' line='95' column='1' id='type-id-688'>
@@ -10819,7 +10819,7 @@
     <!-- uint8_t[3] -->
     <array-type-def dimensions='1' type-id='type-id-139' size-in-bits='24' id='type-id-696'>
       <!-- <anonymous range>[3] -->
-      <subrange length='3' type-id='type-id-4' id='type-id-697'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-697'/>
     </array-type-def>
     <!-- OT::ArrayOf<OT::CmapSubtableLongGroup, OT::IntType<unsigned int, 4u> >* -->
     <pointer-type-def type-id='type-id-698' size-in-bits='64' id='type-id-699'/>
@@ -12817,167 +12817,167 @@
     <!-- OT::EntryExitRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-851' size-in-bits='32' id='type-id-852'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Index[1] -->
     <array-type-def dimensions='1' type-id='type-id-853' size-in-bits='16' id='type-id-854'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::IntType<unsigned int, 3u>[1] -->
     <array-type-def dimensions='1' type-id='type-id-735' size-in-bits='24' id='type-id-855'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::LookupRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-856' size-in-bits='32' id='type-id-857'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::MarkRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-858' size-in-bits='32' id='type-id-859'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Offset<OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-860' size-in-bits='16' id='type-id-861'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Anchor, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-862' size-in-bits='16' id='type-id-863'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::AnchorMatrix, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-864' size-in-bits='16' id='type-id-865'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::ArrayOf<OT::IntType<short unsigned int, 2u>, OT::IntType<short unsigned int, 2u> >, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-866' size-in-bits='16' id='type-id-867'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::CaretValue, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-868' size-in-bits='16' id='type-id-869'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::ChainRule, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-870' size-in-bits='16' id='type-id-871'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::ChainRuleSet, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-872' size-in-bits='16' id='type-id-873'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Coverage, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-874' size-in-bits='16' id='type-id-875'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Coverage, OT::IntType<unsigned int, 4u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-876' size-in-bits='32' id='type-id-877'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::LigGlyph, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-878' size-in-bits='16' id='type-id-879'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Ligature, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-880' size-in-bits='16' id='type-id-881'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::LigatureSet, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-882' size-in-bits='16' id='type-id-883'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Lookup, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-884' size-in-bits='16' id='type-id-885'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::MarkGlyphSets, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-886' size-in-bits='16' id='type-id-887'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::PairSet, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-888' size-in-bits='16' id='type-id-889'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::PosLookup, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-890' size-in-bits='16' id='type-id-891'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::PosLookupSubTable, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-892' size-in-bits='16' id='type-id-893'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Rule, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-894' size-in-bits='16' id='type-id-895'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::RuleSet, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-896' size-in-bits='16' id='type-id-897'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::Sequence, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-898' size-in-bits='16' id='type-id-899'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::SubstLookup, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-900' size-in-bits='16' id='type-id-901'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::OffsetTo<OT::SubstLookupSubTable, OT::IntType<short unsigned int, 2u> >[1] -->
     <array-type-def dimensions='1' type-id='type-id-902' size-in-bits='16' id='type-id-903'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::RangeRecord[1] -->
     <array-type-def dimensions='1' type-id='type-id-904' size-in-bits='48' id='type-id-905'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Record<OT::Feature>[1] -->
     <array-type-def dimensions='1' type-id='type-id-906' size-in-bits='48' id='type-id-907'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Record<OT::LangSys>[1] -->
     <array-type-def dimensions='1' type-id='type-id-908' size-in-bits='48' id='type-id-909'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Record<OT::Script>[1] -->
     <array-type-def dimensions='1' type-id='type-id-910' size-in-bits='48' id='type-id-911'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- OT::Value[1] -->
     <array-type-def dimensions='1' type-id='type-id-912' size-in-bits='16' id='type-id-913'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-4' id='type-id-179'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-4' id='type-id-179'/>
     </array-type-def>
     <!-- bool[2] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='16' id='type-id-914'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- enum hb_ot_layout_glyph_class_t -->
     <enum-decl name='hb_ot_layout_glyph_class_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout.h' line='54' column='1' id='type-id-915'>
@@ -12991,32 +12991,32 @@
     <!-- hb_ot_map_t::feature_map_t[8] -->
     <array-type-def dimensions='1' type-id='type-id-916' size-in-bits='2304' id='type-id-917'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <!-- hb_ot_map_t::lookup_map_t[32] -->
     <array-type-def dimensions='1' type-id='type-id-918' size-in-bits='2048' id='type-id-919'>
       <!-- <anonymous range>[32] -->
-      <subrange length='32' type-id='type-id-4' id='type-id-920'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-4' id='type-id-920'/>
     </array-type-def>
     <!-- hb_ot_map_t::stage_map_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-921' size-in-bits='512' id='type-id-922'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-4' id='type-id-79'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-4' id='type-id-79'/>
     </array-type-def>
     <!-- hb_prealloced_array_t<hb_ot_map_t::lookup_map_t, 32u>[2] -->
     <array-type-def dimensions='1' type-id='type-id-923' size-in-bits='4352' id='type-id-924'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- hb_prealloced_array_t<hb_ot_map_t::stage_map_t, 4u>[2] -->
     <array-type-def dimensions='1' type-id='type-id-925' size-in-bits='1280' id='type-id-926'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- hb_tag_t[2] -->
     <array-type-def dimensions='1' type-id='type-id-184' size-in-bits='64' id='type-id-927'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- struct GPOSProxy -->
     <class-decl name='GPOSProxy' size-in-bits='128' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout.cc' line='818' column='1' id='type-id-928'>
@@ -14162,7 +14162,7 @@
     <!-- void*[3] -->
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='192' id='type-id-996'>
       <!-- <anonymous range>[3] -->
-      <subrange length='3' type-id='type-id-4' id='type-id-697'/>
+      <subrange length='3' lower-bound='0' upper-bound='2' type-id='type-id-4' id='type-id-697'/>
     </array-type-def>
     <!-- GPOSProxy* -->
     <pointer-type-def type-id='type-id-928' size-in-bits='64' id='type-id-934'/>
@@ -29821,17 +29821,17 @@
     <!-- hb_ot_map_builder_t::feature_info_t[32] -->
     <array-type-def dimensions='1' type-id='type-id-1902' size-in-bits='7168' id='type-id-1903'>
       <!-- <anonymous range>[32] -->
-      <subrange length='32' type-id='type-id-4' id='type-id-920'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-4' id='type-id-920'/>
     </array-type-def>
     <!-- hb_ot_map_builder_t::stage_info_t[8] -->
     <array-type-def dimensions='1' type-id='type-id-1904' size-in-bits='1024' id='type-id-1905'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <!-- hb_prealloced_array_t<hb_ot_map_builder_t::stage_info_t, 8u>[2] -->
     <array-type-def dimensions='1' type-id='type-id-1906' size-in-bits='2304' id='type-id-1907'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-4' id='type-id-10'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-4' id='type-id-10'/>
     </array-type-def>
     <!-- struct hb_ot_map_builder_t -->
     <class-decl name='hb_ot_map_builder_t' size-in-bits='10240' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-map-private.hh' line='181' column='1' id='type-id-1908'>
@@ -30607,7 +30607,7 @@
     <!-- hb_mask_t[21] -->
     <array-type-def dimensions='1' type-id='type-id-92' size-in-bits='672' id='type-id-1996'>
       <!-- <anonymous range>[21] -->
-      <subrange length='21' type-id='type-id-4' id='type-id-1997'/>
+      <subrange length='21' lower-bound='0' upper-bound='20' type-id='type-id-4' id='type-id-1997'/>
     </array-type-def>
     <!-- struct indic_config_t -->
     <class-decl name='indic_config_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='305' column='1' id='type-id-1998'>
@@ -30788,7 +30788,7 @@
     <!-- char[8] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='64' id='type-id-2016'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-4' id='type-id-63'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-4' id='type-id-63'/>
     </array-type-def>
     <!-- enum hb_ot_shape_normalization_mode_t -->
     <enum-decl name='hb_ot_shape_normalization_mode_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='38' column='1' id='type-id-2017'>
@@ -31200,7 +31200,7 @@
     <!-- hb_set_t::elt_t[2048] -->
     <array-type-def dimensions='1' type-id='type-id-2042' size-in-bits='65536' id='type-id-2043'>
       <!-- <anonymous range>[2048] -->
-      <subrange length='2048' type-id='type-id-4' id='type-id-2044'/>
+      <subrange length='2048' lower-bound='0' upper-bound='2047' type-id='type-id-4' id='type-id-2044'/>
     </array-type-def>
     <!-- struct hb_set_t -->
     <class-decl name='hb_set_t' size-in-bits='66496' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='147' column='1' id='type-id-2045'>

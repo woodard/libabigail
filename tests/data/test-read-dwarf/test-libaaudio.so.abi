@@ -285,7 +285,7 @@
     <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='9cac1fee'/>
     <type-decl name='unsigned char' size-in-bits='8' id='002ac4a6'/>
     <array-type-def dimensions='1' type-id='002ac4a6' size-in-bits='32' id='09001d3c'>
-      <subrange length='4' type-id='7ff19f0f' id='16fe7105'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='7ff19f0f' id='16fe7105'/>
     </array-type-def>
     <type-decl name='unsigned int' size-in-bits='32' id='f0981eeb'/>
     <type-decl name='unsigned long int' size-in-bits='64' id='f0981eec'/>

@@ -2317,7 +2317,7 @@
     <!-- unsigned char[16] -->
     <array-type-def dimensions='1' type-id='type-id-34' size-in-bits='128' id='type-id-26'>
       <!-- <anonymous range>[16] -->
-      <subrange length='16' type-id='type-id-19' id='type-id-43'/>
+      <subrange length='16' lower-bound='0' upper-bound='15' type-id='type-id-19' id='type-id-43'/>
     </array-type-def>
     <!-- base::ElfMemImage* -->
     <pointer-type-def type-id='type-id-44' size-in-bits='64' id='type-id-45'/>
@@ -2826,7 +2826,7 @@
     <!-- low_level_alloc_internal::AllocList*[30] -->
     <array-type-def dimensions='1' type-id='type-id-86' size-in-bits='1920' id='type-id-87'>
       <!-- <anonymous range>[30] -->
-      <subrange length='30' type-id='type-id-19' id='type-id-88'/>
+      <subrange length='30' lower-bound='0' upper-bound='29' type-id='type-id-19' id='type-id-88'/>
     </array-type-def>
     <!-- low_level_alloc_internal::AllocList* -->
     <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-86'/>
@@ -3103,12 +3103,12 @@
     <!-- char[10] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='80' id='type-id-109'>
       <!-- <anonymous range>[10] -->
-      <subrange length='10' type-id='type-id-19' id='type-id-110'/>
+      <subrange length='10' lower-bound='0' upper-bound='9' type-id='type-id-19' id='type-id-110'/>
     </array-type-def>
     <!-- char[5120] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='40960' id='type-id-111'>
       <!-- <anonymous range>[5120] -->
-      <subrange length='5120' type-id='type-id-19' id='type-id-112'/>
+      <subrange length='5120' lower-bound='0' upper-bound='5119' type-id='type-id-19' id='type-id-112'/>
     </array-type-def>
     <!-- class ProcMapsIterator -->
     <class-decl name='ProcMapsIterator' size-in-bits='640' visibility='default' filepath='./src/base/sysinfo.h' line='102' column='1' id='type-id-113'>
@@ -4157,12 +4157,12 @@
     <!-- AtomicWord[8] -->
     <array-type-def dimensions='1' type-id='type-id-174' size-in-bits='512' id='type-id-175'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-19' id='type-id-176'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-19' id='type-id-176'/>
     </array-type-def>
     <!-- char[] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='unknown' id='type-id-177'>
       <!-- <anonymous range>[] -->
-      <subrange length='unknown' id='type-id-178'/>
+      <subrange length='unknown' lower-bound='0' upper-bound='0' id='type-id-178'/>
     </array-type-def>
     <!-- class AddressMap<HeapProfileTable::AllocValue> -->
     <class-decl name='AddressMap&lt;HeapProfileTable::AllocValue&gt;' size-in-bits='320' visibility='default' filepath='src/addressmap-inl.h' line='104' column='1' id='type-id-179'>
@@ -7955,7 +7955,7 @@
     <!-- size_t[4] -->
     <array-type-def dimensions='1' type-id='type-id-7' size-in-bits='256' id='type-id-366'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-19' id='type-id-367'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-19' id='type-id-367'/>
     </array-type-def>
     <!-- struct AllocObject -->
     <class-decl name='AllocObject' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/heap-checker.cc' line='356' column='1' id='type-id-368'>
@@ -8062,7 +8062,7 @@
     <!-- void*[32] -->
     <array-type-def dimensions='1' type-id='type-id-74' size-in-bits='2048' id='type-id-292'>
       <!-- <anonymous range>[32] -->
-      <subrange length='32' type-id='type-id-19' id='type-id-388'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-19' id='type-id-388'/>
     </array-type-def>
     <!-- AddressMap<HeapProfileTable::AllocValue>* -->
     <pointer-type-def type-id='type-id-179' size-in-bits='64' id='type-id-192'/>
@@ -17583,7 +17583,7 @@
     <!-- char[200] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='1600' id='type-id-997'>
       <!-- <anonymous range>[200] -->
-      <subrange length='200' type-id='type-id-19' id='type-id-998'/>
+      <subrange length='200' lower-bound='0' upper-bound='199' type-id='type-id-19' id='type-id-998'/>
     </array-type-def>
     <!-- const tcmalloc::LogItem -->
     <qualified-type-def type-id='type-id-999' const='yes' id='type-id-1000'/>
@@ -19397,7 +19397,7 @@
     <!-- HeapProfileBucket[20] -->
     <array-type-def dimensions='1' type-id='type-id-249' size-in-bits='8960' id='type-id-307'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-19' id='type-id-1095'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-19' id='type-id-1095'/>
     </array-type-def>
     <!-- class STL_Allocator<MemoryRegionMap::Region, MemoryRegionMap::MyAllocator> -->
     <class-decl name='STL_Allocator&lt;MemoryRegionMap::Region, MemoryRegionMap::MyAllocator&gt;' size-in-bits='8' visibility='default' filepath='src/base/stl_allocator.h' line='60' column='1' id='type-id-1096'>
@@ -19531,9 +19531,9 @@
     <!-- void*[20][32] -->
     <array-type-def dimensions='2' type-id='type-id-74' size-in-bits='40960' id='type-id-308'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-19' id='type-id-1095'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-19' id='type-id-1095'/>
       <!-- <anonymous range>[32] -->
-      <subrange length='32' type-id='type-id-19' id='type-id-388'/>
+      <subrange length='32' lower-bound='0' upper-bound='31' type-id='type-id-19' id='type-id-388'/>
     </array-type-def>
     <!-- HeapProfileBucket** -->
     <pointer-type-def type-id='type-id-311' size-in-bits='64' id='type-id-306'/>
@@ -21511,17 +21511,17 @@
     <!-- ProfileData::Entry::Slot[64] -->
     <array-type-def dimensions='1' type-id='type-id-1224' size-in-bits='4096' id='type-id-1225'>
       <!-- <anonymous range>[64] -->
-      <subrange length='64' type-id='type-id-19' id='type-id-1226'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-19' id='type-id-1226'/>
     </array-type-def>
     <!-- ProfileData::Entry[4] -->
     <array-type-def dimensions='1' type-id='type-id-1227' size-in-bits='16896' id='type-id-1228'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-19' id='type-id-367'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-19' id='type-id-367'/>
     </array-type-def>
     <!-- char[1024] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='8192' id='type-id-1229'>
       <!-- <anonymous range>[1024] -->
-      <subrange length='1024' type-id='type-id-19' id='type-id-1230'/>
+      <subrange length='1024' lower-bound='0' upper-bound='1023' type-id='type-id-19' id='type-id-1230'/>
     </array-type-def>
     <!-- class CpuProfiler -->
     <class-decl name='CpuProfiler' size-in-bits='704' visibility='default' filepath='src/profiler.cc' line='89' column='1' id='type-id-1231'>
@@ -21965,7 +21965,7 @@
     <!-- int[28] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='896' id='type-id-1251'>
       <!-- <anonymous range>[28] -->
-      <subrange length='28' type-id='type-id-19' id='type-id-1252'/>
+      <subrange length='28' lower-bound='0' upper-bound='27' type-id='type-id-19' id='type-id-1252'/>
     </array-type-def>
     <!-- struct ProfilerOptions -->
     <class-decl name='ProfilerOptions' size-in-bits='128' is-struct='yes' visibility='default' filepath='./src/gperftools/profiler.h' line='89' column='1' id='type-id-1253'>
@@ -24304,12 +24304,12 @@
     <!-- SysAllocator*[2] -->
     <array-type-def dimensions='1' type-id='type-id-1013' size-in-bits='128' id='type-id-1358'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-19' id='type-id-1359'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-19' id='type-id-1359'/>
     </array-type-def>
     <!-- bool[2] -->
     <array-type-def dimensions='1' type-id='type-id-76' size-in-bits='16' id='type-id-1360'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-19' id='type-id-1359'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-19' id='type-id-1359'/>
     </array-type-def>
     <!-- class DefaultSysAllocator -->
     <class-decl name='DefaultSysAllocator' size-in-bits='384' visibility='default' filepath='src/system-alloc.cc' line='173' column='1' id='type-id-1361'>
@@ -24461,7 +24461,7 @@
     <!-- const char*[2] -->
     <array-type-def dimensions='1' type-id='type-id-2' size-in-bits='128' id='type-id-1362'>
       <!-- <anonymous range>[2] -->
-      <subrange length='2' type-id='type-id-19' id='type-id-1359'/>
+      <subrange length='2' lower-bound='0' upper-bound='1' type-id='type-id-19' id='type-id-1359'/>
     </array-type-def>
     <!-- DefaultSysAllocator* -->
     <pointer-type-def type-id='type-id-1361' size-in-bits='64' id='type-id-1363'/>
@@ -24617,7 +24617,7 @@
     <!-- AtomicWord[8] -->
     <array-type-def dimensions='1' type-id='type-id-1079' size-in-bits='512' id='type-id-1080'>
       <!-- <anonymous range>[8] -->
-      <subrange length='8' type-id='type-id-19' id='type-id-176'/>
+      <subrange length='8' lower-bound='0' upper-bound='7' type-id='type-id-19' id='type-id-176'/>
     </array-type-def>
     <!-- bool -->
     <type-decl name='bool' size-in-bits='8' id='type-id-76'/>
@@ -24626,22 +24626,22 @@
     <!-- char[1] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='8' id='type-id-152'>
       <!-- <anonymous range>[1] -->
-      <subrange length='1' type-id='type-id-19' id='type-id-1370'/>
+      <subrange length='1' lower-bound='0' upper-bound='0' type-id='type-id-19' id='type-id-1370'/>
     </array-type-def>
     <!-- char[20] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='160' id='type-id-155'>
       <!-- <anonymous range>[20] -->
-      <subrange length='20' type-id='type-id-19' id='type-id-1095'/>
+      <subrange length='20' lower-bound='0' upper-bound='19' type-id='type-id-19' id='type-id-1095'/>
     </array-type-def>
     <!-- char[48] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='384' id='type-id-303'>
       <!-- <anonymous range>[48] -->
-      <subrange length='48' type-id='type-id-19' id='type-id-1371'/>
+      <subrange length='48' lower-bound='0' upper-bound='47' type-id='type-id-19' id='type-id-1371'/>
     </array-type-def>
     <!-- char[4] -->
     <array-type-def dimensions='1' type-id='type-id-84' size-in-bits='32' id='type-id-1372'>
       <!-- <anonymous range>[4] -->
-      <subrange length='4' type-id='type-id-19' id='type-id-367'/>
+      <subrange length='4' lower-bound='0' upper-bound='3' type-id='type-id-19' id='type-id-367'/>
     </array-type-def>
     <!-- class MallocHook -->
     <class-decl name='MallocHook' size-in-bits='8' visibility='default' filepath='./src/gperftools/malloc_hook.h' line='98' column='1' id='type-id-1373'>
@@ -26643,7 +26643,7 @@
     <!-- double[1024] -->
     <array-type-def dimensions='1' type-id='type-id-15' size-in-bits='65536' id='type-id-1413'>
       <!-- <anonymous range>[1024] -->
-      <subrange length='1024' type-id='type-id-19' id='type-id-1230'/>
+      <subrange length='1024' lower-bound='0' upper-bound='1023' type-id='type-id-19' id='type-id-1230'/>
     </array-type-def>
     <!-- float -->
     <type-decl name='float' size-in-bits='32' id='type-id-16'/>
@@ -26652,12 +26652,12 @@
     <!-- int64[128] -->
     <array-type-def dimensions='1' type-id='type-id-103' size-in-bits='8192' id='type-id-1414'>
       <!-- <anonymous range>[128] -->
-      <subrange length='128' type-id='type-id-19' id='type-id-1415'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-19' id='type-id-1415'/>
     </array-type-def>
     <!-- int[88] -->
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='2816' id='type-id-1416'>
       <!-- <anonymous range>[88] -->
-      <subrange length='88' type-id='type-id-19' id='type-id-1417'/>
+      <subrange length='88' lower-bound='0' upper-bound='87' type-id='type-id-19' id='type-id-1417'/>
     </array-type-def>
     <!-- long double -->
     <type-decl name='long double' size-in-bits='128' id='type-id-17'/>
@@ -26670,7 +26670,7 @@
     <!-- size_t[88] -->
     <array-type-def dimensions='1' type-id='type-id-7' size-in-bits='5632' id='type-id-1418'>
       <!-- <anonymous range>[88] -->
-      <subrange length='88' type-id='type-id-19' id='type-id-1417'/>
+      <subrange length='88' lower-bound='0' upper-bound='87' type-id='type-id-19' id='type-id-1417'/>
     </array-type-def>
     <!-- struct TCMallocStats -->
     <class-decl name='TCMallocStats' size-in-bits='512' is-struct='yes' visibility='default' filepath='src/tcmalloc.cc' line='295' column='1' id='type-id-1419'>
@@ -27097,22 +27097,22 @@
     <!-- tcmalloc::CentralFreeList::TCEntry[64] -->
     <array-type-def dimensions='1' type-id='type-id-1428' size-in-bits='8192' id='type-id-1429'>
       <!-- <anonymous range>[64] -->
-      <subrange length='64' type-id='type-id-19' id='type-id-1226'/>
+      <subrange length='64' lower-bound='0' upper-bound='63' type-id='type-id-19' id='type-id-1226'/>
     </array-type-def>
     <!-- tcmalloc::CentralFreeListPadded[88] -->
     <array-type-def dimensions='1' type-id='type-id-1430' size-in-bits='856064' id='type-id-1431'>
       <!-- <anonymous range>[88] -->
-      <subrange length='88' type-id='type-id-19' id='type-id-1417'/>
+      <subrange length='88' lower-bound='0' upper-bound='87' type-id='type-id-19' id='type-id-1417'/>
     </array-type-def>
     <!-- tcmalloc::PageHeap::SpanList[128] -->
     <array-type-def dimensions='1' type-id='type-id-1432' size-in-bits='98304' id='type-id-1433'>
       <!-- <anonymous range>[128] -->
-      <subrange length='128' type-id='type-id-19' id='type-id-1415'/>
+      <subrange length='128' lower-bound='0' upper-bound='127' type-id='type-id-19' id='type-id-1415'/>
     </array-type-def>
     <!-- tcmalloc::ThreadCache::FreeList[88] -->
     <array-type-def dimensions='1' type-id='type-id-1434' size-in-bits='16896' id='type-id-1435'>
       <!-- <anonymous range>[88] -->
-      <subrange length='88' type-id='type-id-19' id='type-id-1417'/>
+      <subrange length='88' lower-bound='0' upper-bound='87' type-id='type-id-19' id='type-id-1417'/>
     </array-type-def>
     <!-- typedef int32_t Atomic32 -->
     <typedef-decl name='Atomic32' type-id='type-id-141' filepath='./src/base/atomicops-internals-x86.h' line='43' column='1' id='type-id-93'/>
@@ -27175,7 +27175,7 @@
     <!-- unsigned char[2169] -->
     <array-type-def dimensions='1' type-id='type-id-34' size-in-bits='17352' id='type-id-1442'>
       <!-- <anonymous range>[2169] -->
-      <subrange length='2169' type-id='type-id-19' id='type-id-1443'/>
+      <subrange length='2169' lower-bound='0' upper-bound='2168' type-id='type-id-19' id='type-id-1443'/>
     </array-type-def>
     <!-- unsigned int -->
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-157'/>
@@ -27184,7 +27184,7 @@
     <!-- unsigned long int[65536] -->
     <array-type-def dimensions='1' type-id='type-id-19' size-in-bits='4194304' id='type-id-1444'>
       <!-- <anonymous range>[65536] -->
-      <subrange length='65536' type-id='type-id-19' id='type-id-1445'/>
+      <subrange length='65536' lower-bound='0' upper-bound='65535' type-id='type-id-19' id='type-id-1445'/>
     </array-type-def>
     <!-- unsigned long long int -->
     <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-21'/>
@@ -27193,12 +27193,12 @@
     <!-- void*[31] -->
     <array-type-def dimensions='1' type-id='type-id-74' size-in-bits='1984' id='type-id-1446'>
       <!-- <anonymous range>[31] -->
-      <subrange length='31' type-id='type-id-19' id='type-id-1447'/>
+      <subrange length='31' lower-bound='0' upper-bound='30' type-id='type-id-19' id='type-id-1447'/>
     </array-type-def>
     <!-- volatile unsigned long int[65536] -->
     <array-type-def dimensions='1' type-id='type-id-1448' size-in-bits='4194304' id='type-id-1385'>
       <!-- <anonymous range>[65536] -->
-      <subrange length='65536' type-id='type-id-19' id='type-id-1445'/>
+      <subrange length='65536' lower-bound='0' upper-bound='65535' type-id='type-id-19' id='type-id-1445'/>
     </array-type-def>
     <!-- wchar_t -->
     <type-decl name='wchar_t' size-in-bits='32' id='type-id-9'/>
