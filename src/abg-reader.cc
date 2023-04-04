@@ -1490,7 +1490,8 @@ reader::get_scope_for_node(xmlNodePtr node,
       && (xmlStrEqual(parent->name, BAD_CAST("data-member"))
 	  || xmlStrEqual(parent->name, BAD_CAST("member-type"))
 	  || xmlStrEqual(parent->name, BAD_CAST("member-function"))
-	  || xmlStrEqual(parent->name, BAD_CAST("member-template"))))
+	  || xmlStrEqual(parent->name, BAD_CAST("member-template"))
+	  || xmlStrEqual(parent->name, BAD_CAST("array-type-def"))))
     {
       read_access(parent, access);
       parent = parent->parent;
