@@ -2421,11 +2421,13 @@ get_pretty_printed_list_of_packages(const vector<string>& packages)
   std::stringstream o;
   for (auto p : packages)
     {
+      string filename;
+      tools_utils::base_name(p, filename);
       if (need_comma)
 	o << ", ";
       else
 	need_comma = true;
-      o << "'" << p << "'";
+      o << "'" << filename << "'";
     }
   return o.str();
 }
