@@ -7952,6 +7952,10 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
       next_index = index + 1;
       break;
 
+    case DW_OP_GNU_variable_value:
+      next_index = index + 1;
+      break;
+
     default:
       return false;
     }
@@ -8119,13 +8123,16 @@ op_is_arith_logic(Dwarf_Op* expr,
 
   Dwarf_Op& op = expr[index];
   expr_result val1, val2;
+  bool result = false;
 
   switch (op.atom)
     {
     case DW_OP_abs:
+      ABG_ASSERT(ctxt.stack.size() > 0);
       val1 = ctxt.pop();
       val1 = val1.abs();
       ctxt.push(val1);
+      result = true;
       break;
 
     case DW_OP_and:
@@ -8136,87 +8143,114 @@ op_is_arith_logic(Dwarf_Op* expr,
       break;
 
     case DW_OP_div:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       if (!val1.is_const())
 	val1 = 1;
       ctxt.push(val2 / val1);
+      result = true;
       break;
 
     case DW_OP_minus:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 - val1);
+      result = true;
       break;
 
     case DW_OP_mod:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 % val1);
+      result = true;
       break;
 
     case DW_OP_mul:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 * val1);
+      result = true;
       break;
 
     case DW_OP_neg:
+      ABG_ASSERT(ctxt.stack.size() > 0);
       val1 = ctxt.pop();
       ctxt.push(-val1);
+      result = true;
       break;
 
     case DW_OP_not:
+      ABG_ASSERT(ctxt.stack.size() > 0);
       val1 = ctxt.pop();
       ctxt.push(~val1);
+      result = true;
       break;
 
     case DW_OP_or:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val1 | val2);
+      result = true;
       break;
 
     case DW_OP_plus:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 + val1);
+      result = true;
       break;
 
     case DW_OP_plus_uconst:
+      ABG_ASSERT(ctxt.stack.size() > 0);
       val1 = ctxt.pop();
       val1 += op.number;
       ctxt.push(val1);
+      result = true;
       break;
 
     case DW_OP_shl:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 << val1);
+      result = true;
       break;
 
     case DW_OP_shr:
     case DW_OP_shra:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 >> val1);
+      result = true;
       break;
 
     case DW_OP_xor:
+      ABG_ASSERT(ctxt.stack.size() > 1);
       val1 = ctxt.pop();
       val2 = ctxt.pop();
       ctxt.push(val2 ^ val1);
+      result = true;
       break;
 
     default:
-      return false;
+      break;
     }
 
-  if (ctxt.stack.front().is_const())
-    ctxt.accum = ctxt.stack.front();
+  if (result == true)
+    {
+      if (ctxt.stack.front().is_const())
+	ctxt.accum = ctxt.stack.front();
 
-  next_index = index + 1;
-  return true;
+      next_index = index + 1;
+    }
+  return result;;
 }
 
 /// If the current operation in the dwarf expression represents a push
