@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -29,9 +29,13 @@
 #ifdef WITH_CTF
 #include "abg-ctf-reader.h"
 #endif
+#ifdef WITH_BTF
+#include "abg-btf-reader.h"
+#endif
 #include "abg-writer.h"
 #include "abg-reader.h"
 #include "abg-comparison.h"
+#include "abg-suppression.h"
 
 using std::string;
 using std::cerr;
@@ -40,12 +44,14 @@ using std::ostream;
 using std::ofstream;
 using std::vector;
 using std::shared_ptr;
+using abg_compat::optional;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::timer;
+using abigail::tools_utils::create_best_elf_based_reader;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -65,8 +71,8 @@ using abigail::xml_writer::create_write_context;
 using abigail::xml_writer::type_id_style_kind;
 using abigail::xml_writer::write_context_sptr;
 using abigail::xml_writer::write_corpus;
-using abigail::xml_reader::read_corpus_from_native_xml_file;
-using abigail::xml_reader::create_native_xml_read_context;
+using abigail::abixml::read_corpus_from_abixml_file;
+
 using namespace abigail;
 
 struct options
@@ -99,7 +105,10 @@ struct options
   bool			show_stats;
   bool			noout;
 #ifdef WITH_CTF
-  bool				use_ctf;
+  bool			use_ctf;
+#endif
+#ifdef WITH_BTF
+  bool			use_btf;
 #endif
   bool			show_locs;
   bool			abidiff;
@@ -114,6 +123,9 @@ struct options
   bool			do_log;
   bool			drop_private_types;
   bool			drop_undefined_syms;
+  bool			assume_odr_for_cplusplus;
+  bool			leverage_dwarf_factorization;
+  optional<bool>	exported_interfaces_only;
   type_id_style_kind	type_id_style;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   string		type_id_file_path;
@@ -139,6 +151,9 @@ struct options
 #ifdef WITH_CTF
       use_ctf(false),
 #endif
+#ifdef WITH_BTF
+      use_btf(false),
+#endif
       show_locs(true),
       abidiff(),
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -152,6 +167,8 @@ struct options
       do_log(),
       drop_private_types(false),
       drop_undefined_syms(false),
+      assume_odr_for_cplusplus(true),
+      leverage_dwarf_factorization(true),
       type_id_style(SEQUENCE_TYPE_ID_STYLE)
   {}
 
@@ -187,6 +204,9 @@ display_usage(const string& prog_name, ostream& out)
     << "  --short-locs  only print filenames rather than paths\n"
     << "  --drop-private-types  drop private types from representation\n"
     << "  --drop-undefined-syms  drop undefined symbols from representation\n"
+    << "  --exported-interfaces-only  analyze exported interfaces only\n"
+    << "  --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << "  --no-comp-dir-path  do not show compilation path information\n"
     << "  --no-elf-needed  do not show the DT_NEEDED information\n"
     << "  --no-write-default-sizes  do not emit pointer size when it equals"
@@ -218,6 +238,13 @@ display_usage(const string& prog_name, ostream& out)
 #endif
 #ifdef WITH_CTF
     << "  --ctf use CTF instead of DWARF in ELF files\n"
+#endif
+    << "  --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+    "speed-up the analysis of the binary\n"
+    << "  --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
+    "analysis of the binary\n"
+#ifdef WITH_BTF
+    << "  --btf use BTF instead of DWARF in ELF files\n"
 #endif
     << "  --annotate  annotate the ABI artifacts emitted in the output\n"
     << "  --stats  show statistics about various internal stuff\n"
@@ -321,6 +348,10 @@ parse_command_line(int argc, char* argv[], options& opts)
         else if (!strcmp(argv[i], "--ctf"))
           opts.use_ctf = true;
 #endif
+#ifdef WITH_BTF
+        else if (!strcmp(argv[i], "--btf"))
+          opts.use_btf = true;
+#endif
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
       else if (!strcmp(argv[i], "--no-corpus-path"))
@@ -368,6 +399,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--drop-undefined-syms"))
 	opts.drop_undefined_syms = true;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
 	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
@@ -387,6 +422,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	       || !strcmp(argv[i], "debug-die-canonicalization"))
 	opts.debug_die_canonicalization = true;
 #endif
+      else if (!strcmp (argv[i], "--no-assume-odr-for-cplusplus"))
+	opts.assume_odr_for_cplusplus = false;
+      else if (!strcmp (argv[i], "--no-leverage-dwarf-factorization"))
+	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -480,7 +519,7 @@ maybe_check_header_files(const options& opts)
 /// @param opts the options where to get the suppression
 /// specifications from.
 static void
-set_suppressions(dwarf_reader::read_context& read_ctxt, options& opts)
+set_suppressions(abigail::elf_based_reader& rdr, options& opts)
 {
   suppressions_type supprs;
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
@@ -505,8 +544,26 @@ set_suppressions(dwarf_reader::read_context& read_ctxt, options& opts)
   opts.kabi_whitelist_supprs.insert(opts.kabi_whitelist_supprs.end(),
 				    wl_suppr.begin(), wl_suppr.end());
 
-  add_read_context_suppressions(read_ctxt, supprs);
-  add_read_context_suppressions(read_ctxt, opts.kabi_whitelist_supprs);
+  rdr.add_suppressions(supprs);
+  rdr.add_suppressions(opts.kabi_whitelist_supprs);
+}
+
+/// Set a bunch of tunable buttons on the ELF-based reader from the
+/// command-line options.
+///
+/// @param rdr the reader to tune.
+///
+/// @param opts the command line options.
+static void
+set_generic_options(abigail::elf_based_reader& rdr, options& opts)
+{
+  rdr.options().drop_undefined_syms = opts.drop_undefined_syms;
+  rdr.options().show_stats = opts.show_stats;
+  rdr.options().do_log = opts.do_log;
+  rdr.options().leverage_dwarf_factorization =
+    opts.leverage_dwarf_factorization;
+  rdr.options().assume_odr_for_cplusplus =
+    opts.assume_odr_for_cplusplus;
 }
 
 /// Load an ABI @ref corpus (the internal representation of the ABI of
@@ -522,7 +579,7 @@ set_suppressions(dwarf_reader::read_context& read_ctxt, options& opts)
 /// otherwise.
 static int
 load_corpus_and_write_abixml(char* argv[],
-			     environment_sptr& env,
+			     environment& env,
 			     options& opts)
 {
   int exit_code = 0;
@@ -530,103 +587,95 @@ load_corpus_and_write_abixml(char* argv[],
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (opts.debug_abidiff)
-    env->self_comparison_debug_is_on(true);
+    env.self_comparison_debug_is_on(true);
 #endif
 
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
   if (opts.debug_type_canonicalization)
-    env->debug_type_canonicalization_is_on(true);
+    env.debug_type_canonicalization_is_on(true);
   if (opts.debug_die_canonicalization)
-    env->debug_die_canonicalization_is_on(true);
+    env.debug_die_canonicalization_is_on(true);
 #endif
 
-  // First of all, read a libabigail IR corpus from the file specified
-  // in OPTS.
   corpus_sptr corp;
-  elf_reader::status s = elf_reader::STATUS_UNKNOWN;
+  fe_iface::status s = fe_iface::STATUS_UNKNOWN;
+  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
   if (opts.use_ctf)
-    {
-      abigail::ctf_reader::read_context_sptr ctxt
-        = abigail::ctf_reader::create_read_context(opts.in_file_path,
-                                                   opts.prepared_di_root_paths,
-                                                   env.get());
-      assert (ctxt);
-      t.start();
-      corp = abigail::ctf_reader::read_corpus (ctxt, s);
-      t.stop();
-      if (opts.do_log)
-        emit_prefix(argv[0], cerr)
-          << "read corpus from elf file in: " << t << "\n";
-    }
-  else
+    requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
+#ifdef WITH_BTF
+  if (opts.use_btf)
+    requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
+
+  // First of all, create a reader to read the ABI from the file
+  // specfied in opts ...
+  abigail::elf_based_reader_sptr reader =
+    create_best_elf_based_reader(opts.in_file_path,
+				 opts.prepared_di_root_paths,
+				 env, requested_fe_kind,
+				 opts.load_all_types,
+				 opts.linux_kernel_mode);
+  ABG_ASSERT(reader);
+
+  // ... then tune a bunch of "buttons" on the newly created reader
+  // ...
+  set_generic_options(*reader, opts);
+  set_suppressions(*reader, opts);
+
+  // If the user asked us to check if we found the "alternate debug
+  // info file" associated to the input binary, then proceed to do so
+  // ...
+  if (opts.check_alt_debug_info_path)
     {
-      dwarf_reader::read_context_sptr c
-        = abigail::dwarf_reader::create_read_context(opts.in_file_path,
-                                                     opts.prepared_di_root_paths,
-                                                     env.get(),
-                                                     opts.load_all_types,
-                                                     opts.linux_kernel_mode);
-      dwarf_reader::read_context& ctxt = *c;
-      set_drop_undefined_syms(ctxt, opts.drop_undefined_syms);
-      set_show_stats(ctxt, opts.show_stats);
-      set_suppressions(ctxt, opts);
-      abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
-
-      if (opts.check_alt_debug_info_path)
-        {
-          bool has_alt_di = false;
-          string alt_di_path;
-          abigail::elf_reader::status status =
-            abigail::dwarf_reader::has_alt_debug_info(ctxt,
-                                                      has_alt_di,
-                                                      alt_di_path);
-          if (status & abigail::elf_reader::STATUS_OK)
-            {
-              if (alt_di_path.empty())
-                ;
-              else
-                {
-                  cout << "found the alternate debug info file";
-                  if (opts.show_base_name_alt_debug_info_path)
-                    {
-                      tools_utils::base_name(alt_di_path, alt_di_path);
-                      cout << " '" << alt_di_path << "'";
-                    }
-                  cout << "\n";
-                }
-              return 0;
-            }
-          else
-            {
-              emit_prefix(argv[0], cerr)
-                << "could not find alternate debug info file\n";
-              return 1;
-            }
-        }
-
-      t.start();
-      corp = dwarf_reader::read_corpus_from_elf(ctxt, s);
-      t.stop();
-      if (opts.do_log)
-        emit_prefix(argv[0], cerr)
-          << "read corpus from elf file in: " << t << "\n";
-
-      t.start();
-      c.reset();
-      t.stop();
-
-      if (opts.do_log)
-        emit_prefix(argv[0], cerr)
-          << "reset read context in: " << t << "\n";
+      string alt_di_path = reader->alternate_dwarf_debug_info_path();
+      if (!alt_di_path.empty())
+	{
+	  cout << "found the alternate debug info file";
+	  if (opts.show_base_name_alt_debug_info_path)
+	    {
+	      tools_utils::base_name(alt_di_path, alt_di_path);
+	      cout << " '" << alt_di_path << "'";
+	    }
+	  cout << "\n";
+	  return 0;
+	}
+      else
+	{
+	  emit_prefix(argv[0], cerr)
+	    << "could not find alternate debug info file\n";
+	  return 1;
+	}
     }
+
+  // ... ff we are asked to only analyze exported interfaces (to stay
+  // concise), then take that into account ...
+  if (opts.exported_interfaces_only.has_value())
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+
+  // And now, really read/analyze the ABI of the input file.
+  t.start();
+  corp = reader->read_corpus(s);
+  t.stop();
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "read corpus from elf file in: " << t << "\n";
+
+  // Clear some resources to gain back some space.
+  t.start();
+  reader.reset();
+  t.stop();
+
+  if (opts.do_log)
+    emit_prefix(argv[0], cerr)
+      << "reset reader ELF in: " << t << "\n";
 
   // If we couldn't create a corpus, emit some (hopefully) useful
   // diagnostics and return and error.
   if (!corp)
     {
-      if (s == elf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
+      if (s == fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  if (opts.di_root_paths.empty())
 	    {
@@ -656,7 +705,7 @@ load_corpus_and_write_abixml(char* argv[],
 		}
 	    }
 	}
-      else if (s == elf_reader::STATUS_NO_SYMBOLS_FOUND)
+      else if (s == fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(argv[0], cerr)
 	  << "Could not read ELF symbol information from "
 	  << opts.in_file_path << "\n";
@@ -667,8 +716,7 @@ load_corpus_and_write_abixml(char* argv[],
   // Now create a write context and write out an ABI XML description
   // of the read corpus.
   t.start();
-  const write_context_sptr& write_ctxt
-    = create_write_context(corp->get_environment(), cout);
+  const write_context_sptr& write_ctxt = create_write_context(env, cout);
   set_common_options(*write_ctxt, opts);
   t.stop();
 
@@ -694,17 +742,16 @@ load_corpus_and_write_abixml(char* argv[],
           write_canonical_type_ids(*write_ctxt, opts.type_id_file_path);
         }
 #endif
-      xml_reader::read_context_sptr read_ctxt =
-        create_native_xml_read_context(tmp_file->get_path(), env.get());
+      fe_iface_sptr rdr = abixml::create_reader(tmp_file->get_path(), env);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
       if (opts.debug_abidiff
           && !opts.type_id_file_path.empty())
-        load_canonical_type_ids(*read_ctxt, opts.type_id_file_path);
+        load_canonical_type_ids(*rdr, opts.type_id_file_path);
 #endif
       t.start();
-      corpus_sptr corp2 =
-        read_corpus_from_input(*read_ctxt);
+      fe_iface::status sts;
+      corpus_sptr corp2 = rdr->read_corpus(sts);
       t.stop();
       if (opts.do_log)
         emit_prefix(argv[0], cerr)
@@ -798,7 +845,7 @@ load_corpus_and_write_abixml(char* argv[],
 /// otherwise.
 static int
 load_kernel_corpus_group_and_write_abixml(char* argv[],
-					  environment_sptr& env,
+					  environment& env,
 					  options& opts)
 {
   if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
@@ -813,13 +860,16 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   timer t, global_timer;
   suppressions_type supprs;
 
+  if (opts.exported_interfaces_only.has_value())
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+
   if (opts.do_log)
     emit_prefix(argv[0], cerr)
       << "going to build ABI representation of the Linux Kernel ...\n";
 
   global_timer.start();
   t.start();
-corpus::origin origin =
+  corpus::origin requested_fe_kind =
 #ifdef WITH_CTF
     opts.use_ctf ? corpus::CTF_ORIGIN :
 #endif
@@ -830,7 +880,8 @@ corpus::origin origin =
 					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
-					      supprs, opts.do_log, env, origin);
+					      supprs, opts.do_log, env,
+					      requested_fe_kind);
   t.stop();
 
   if (opts.do_log)
@@ -846,7 +897,7 @@ corpus::origin origin =
   if (!opts.noout)
     {
       const xml_writer::write_context_sptr& ctxt
-	  = xml_writer::create_write_context(group->get_environment(), cout);
+	  = xml_writer::create_write_context(env, cout);
       set_common_options(*ctxt, opts);
 
       if (!opts.out_file_path.empty())
@@ -968,7 +1019,7 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  environment_sptr env(new environment);
+  environment env;
   int exit_code = 0;
 
   if (tools_utils::is_regular_file(opts.in_file_path))

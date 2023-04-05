@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -514,7 +514,17 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test11-add-data-member-0.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
-    "output/test-diff-suppr/test11-add-data-member-report-1_0.txt"
+    "output/test-diff-suppr/test11-add-data-member-report-0_0.txt"
+  },
+    {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-0.1_0.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -531,10 +541,30 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
     "",
     "",
+    "data/test-diff-suppr/test11-add-data-member-1.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-2.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
     "output/test-diff-suppr/test11-add-data-member-report-1_2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-2.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_2.txt"
   },
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
@@ -551,10 +581,30 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
     "",
     "",
+    "data/test-diff-suppr/test11-add-data-member-3.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_3.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-4.suppr",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
     "output/test-diff-suppr/test11-add-data-member-report-1_4.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest11-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test11-add-data-member-4.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test11-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test11-add-data-member-report-1.1_4.txt"
   },
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
@@ -575,6 +625,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test12-add-data-member-report-1.txt",
     "output/test-diff-suppr/test12-add-data-member-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest12-add-data-member-v0.so",
+    "data/test-diff-suppr/libtest12-add-data-member-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test12-add-data-member-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test12-add-data-member-report-1.1.txt",
+    "output/test-diff-suppr/test12-add-data-member-report-1.1.txt"
   },
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
@@ -605,6 +665,16 @@ InOutSpec in_out_specs[] =
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt",
     "output/test-diff-suppr/test13-suppr-through-pointer-report-1.txt"
+  },
+    {
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test13-suppr-through-pointer-0.1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test13-suppr-through-pointer-report-1.1.txt",
+    "output/test-diff-suppr/test13-suppr-through-pointer-report-1.1.txt"
   },
   {
     "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
@@ -1707,6 +1777,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test35-leaf-report-0.txt"
   },
   {
+    "data/test-diff-suppr/libtest35-leaf-v0.so",
+    "data/test-diff-suppr/libtest35-leaf-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test35-leaf.1.suppr",
+    "--no-default-suppression --leaf-changes-only --impacted-interfaces",
+    "data/test-diff-suppr/test35-leaf-report-0.1.txt",
+    "output/test-diff-suppr/test35-leaf-report-0.1.txt"
+  },
+  {
     "data/test-diff-suppr/libtest36-leaf-v0.so",
     "data/test-diff-suppr/libtest36-leaf-v1.so",
     "",
@@ -2055,6 +2135,126 @@ InOutSpec in_out_specs[] =
     "--drop-private-types --no-default-suppression",
     "data/test-diff-suppr/PR28073/PR28073-output-2.txt",
     "output/test-diff-suppr/PR28073/PR28073-output-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-2.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-3.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-4.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-5.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-6.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-2.txt",
+    "output/test-diff-suppr/test-has-data-member-output-2.4.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-v0.o",
+    "data/test-diff-suppr/test-has-data-member-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/has-data-member-7.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-output-1.txt",
+    "output/test-diff-suppr/test-has-data-member-output-1.4.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v1.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-1.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v2.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-2.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v3.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-3.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v0.o",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-v4.o",
+    "",
+    "",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1.suppr",
+    "--drop-private-types --no-default-suppression",
+    "data/test-diff-suppr/test-has-data-member-inserted-between-1-report-4.txt",
+    "output/test-diff-suppr/test-has-data-member-inserted-between-1-report-4.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}

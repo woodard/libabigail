@@ -1,17 +1,16 @@
-<abi-corpus version='2.1' path='data/test-read-ctf/test-enum-many.o'>
+<abi-corpus version='2.2' path='data/test-read-ctf/test-enum-many.o'>
   <elf-variable-symbols>
     <elf-symbol name='bar' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
     <elf-symbol name='foo' size='4' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr address-size='64' language='LANG_C'>
-    <type-decl name='' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='811c9dc5'/>
     <enum-decl name='e' linkage-name='e' id='a6c2eddf'>
-      <underlying-type type-id='811c9dc5'/>
+      <underlying-type type-id='9cac1fee'/>
       <enumerator name='ENUMSAMPLE_1' value='0'/>
       <enumerator name='ENUMSAMPLE_2' value='1'/>
     </enum-decl>
     <enum-decl name='ie' linkage-name='ie' id='1ee696ca'>
-      <underlying-type type-id='811c9dc5'/>
+      <underlying-type type-id='9cac1fee'/>
       <enumerator name='IE_0' value='-10'/>
       <enumerator name='IE_1' value='-9'/>
       <enumerator name='IE_2' value='-8'/>
@@ -61,6 +60,7 @@
       <enumerator name='IE_2E' value='36'/>
       <enumerator name='IE_2F' value='37'/>
     </enum-decl>
+    <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='9cac1fee'/>
     <var-decl name='foo' type-id='a6c2eddf' mangled-name='foo' visibility='default' elf-symbol-id='foo'/>
     <var-decl name='bar' type-id='1ee696ca' mangled-name='bar' visibility='default' elf-symbol-id='bar'/>
   </abi-instr>

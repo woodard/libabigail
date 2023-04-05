@@ -1,3 +1,4 @@
 [suppress_type]
 	name = S
 	has_data_member_inserted_at = offset_after(m0)
+	has_size_change = true

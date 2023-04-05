@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Sinny Kumari
 
@@ -346,7 +346,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm",
-    "--no-default-suppression",
+    "--no-default-suppression --no-assume-odr-for-cplusplus",
     "",
     "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
@@ -855,7 +855,7 @@ static InOutSpec in_out_specs[] =
   { // Just like the previous tests, but loc info is emitted.
     "data/test-diff-pkg-ctf/dirpkg-3-dir1",
     "data/test-diff-pkg-ctf/dirpkg-3-dir2",
-    "--no-default-suppression --no-abignore",
+    "--ctf --no-default-suppression --no-abignore",
     "data/test-diff-pkg-ctf/dirpkg-3.suppr",
     "",
     "",

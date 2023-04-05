@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2016-2022 Red Hat, Inc.
+// Copyright (C) 2016-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -11,10 +11,12 @@
 #include <unordered_set>
 
 #include "abg-ini.h"
-#include "abg-comparison.h"
+#include "abg-ir.h"
 
 namespace abigail
 {
+
+class fe_iface;
 
 /// @brief an engine to suppress the parts of the result of comparing
 /// two sets of ABI artifacts.
@@ -27,15 +29,24 @@ namespace abigail
 /// that are defined in this namespace.
 namespace suppr
 {
-
-using namespace abigail::comparison;
 using std::unordered_set;
+using std::string;
+using std::shared_ptr;
+using std::vector;
+using comparison::diff;
+using comparison::diff_context_sptr;
 
-/// Base type of the suppression specifications types.
+/// Base type of a direct suppression specifications types.
 ///
 /// This abstracts a suppression specification.  It's a way to specify
 /// how to drop reports about a particular diff node on the floor, if
 /// it matches the supppression specification.
+///
+/// Note that a direct suppression specification suppresses (for
+/// reporting purposes) the diff node that it matches.  A negated
+/// suppression specification, however, suppresses a diff node that it
+/// DOES NOT match.  A Negated suppression specification is abstracted
+/// by the class @ref negated_suppression_base.
 class suppression_base
 {
 public:
@@ -116,6 +127,12 @@ public:
 					 const suppression_base& suppr);
 }; // end class suppression_base
 
+/// Convenience typedef for a shared pointer to a @ref suppression.
+typedef shared_ptr<suppression_base> suppression_sptr;
+
+/// Convenience typedef for a vector of @ref suppression_sptr
+typedef vector<suppression_sptr> suppressions_type;
+
 void
 read_suppressions(std::istream& input,
 		  suppressions_type& suppressions);
@@ -131,6 +148,36 @@ typedef shared_ptr<type_suppression> type_suppression_sptr;
 
 /// Convenience typedef for vector of @ref type_suppression_sptr.
 typedef vector<type_suppression_sptr> type_suppressions_type;
+
+/// The base class of suppression specifications that are defined by
+/// the negation of matching clauses.
+///
+/// A direct suppression specification suppresses (for reporting
+/// purposes) the diff node that it matches.  A negated suppression
+/// specification suppresses a diff node that it DOES NOT match.
+class negated_suppression_base
+{
+public:
+  negated_suppression_base();
+
+  virtual ~negated_suppression_base();
+}; // end class negated_suppression_base.
+
+/// A convenience typedef for a shared pointer to @ref
+/// negated_suppression_base.
+typedef shared_ptr<negated_suppression_base> negated_suppression_sptr;
+
+/// Convenience typedef for a vector of @ref negated_suppression_sptr
+typedef vector<negated_suppression_sptr> negated_suppressions_type;
+
+bool
+is_negated_suppression(const suppression_base&);
+
+const negated_suppression_base*
+is_negated_suppression(const suppression_base*);
+
+negated_suppression_sptr
+is_negated_suppression(const suppression_sptr&);
 
 /// Abstraction of a type suppression specification.
 ///
@@ -235,6 +282,24 @@ public:
   void
   set_reach_kind(reach_kind k);
 
+  bool
+  get_has_size_change() const;
+
+  void
+  set_has_size_change(bool flag);
+
+  const string_set_type&
+  get_potential_data_member_names() const;
+
+  void
+  set_potential_data_member_names(const string_set_type&) const;
+
+  const string&
+  get_potential_data_member_names_regex_str() const;
+
+  void
+  set_potential_data_member_names_regex_str(const string&) const;
+
   void
   set_data_member_insertion_ranges(const insertion_ranges& r);
 
@@ -314,7 +379,7 @@ public:
   begin() const;
 
  boundary_sptr
-  end() const;
+ end() const;
 
   static insertion_range::integer_boundary_sptr
   create_integer_boundary(int value);
@@ -326,9 +391,9 @@ public:
   create_fn_call_expr_boundary(const string&);
 
   static bool
-  eval_boundary(boundary_sptr	boundary,
-		class_decl_sptr context,
-		uint64_t&	value);
+  eval_boundary(const boundary_sptr	boundary,
+		const class_or_union*	context,
+		uint64_t&		value);
 
   static bool
   boundary_value_is_end(uint64_t value);
@@ -386,6 +451,37 @@ public:
   operator ini::function_call_expr_sptr () const;
   ~fn_call_expr_boundary();
 }; //end class type_suppression::insertion_range::fn_call_expr_boundary
+
+/// Abstraction of a negated type suppression specification.
+///
+/// A negated type suppression suppresses a type if the negation of
+/// the equivalent propositions for a @ref type_suppression are valid.
+class negated_type_suppression : virtual public type_suppression,
+				 virtual public negated_suppression_base
+{
+
+public:
+
+  negated_type_suppression(const string& label,
+			   const string& type_name_regexp,
+			   const string& type_name);
+
+  virtual bool
+  suppresses_diff(const diff* diff) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type,
+		  const diff_context_sptr& ctxt) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type,
+		  const scope_decl* type_scope) const;
+
+  virtual ~negated_type_suppression();
+};// end class negated_type_suppression
 
 class function_suppression;
 
@@ -821,7 +917,72 @@ is_private_type_suppr_spec(const type_suppression&);
 
 bool
 is_private_type_suppr_spec(const suppression_sptr& s);
+
+bool
+suppression_can_match(const fe_iface&,
+		      const suppression_base&);
+
+bool
+suppression_matches_function_name(const fe_iface&,
+				  const suppr::function_suppression&,
+				  const string&);
+
+bool
+suppression_matches_function_sym_name(const fe_iface&,
+				      const suppr::function_suppression& s,
+				      const string& fn_linkage_name);
+
+bool
+suppression_matches_variable_name(const fe_iface&,
+				  const suppr::variable_suppression& s,
+				  const string& var_name);
+
+bool
+suppression_matches_variable_sym_name(const fe_iface&,
+				      const suppr::variable_suppression&,
+				      const string&);
+
+bool
+suppression_matches_type_name_or_location(const fe_iface&,
+					  const suppr::type_suppression&,
+					  const string&,
+					  const location&);
+
+bool
+is_elf_symbol_suppressed(const fe_iface&,
+			 const elf_symbol_sptr& symbol);
+
+bool
+is_elf_symbol_suppressed(const fe_iface&,
+			 const string& sym_name,
+			 elf_symbol::type sym_type);
+
+bool
+is_function_suppressed(const fe_iface&	fe,
+		       const string&		fn_name,
+		       const string&		fn_linkage_name,
+		       bool			require_drop_property = false);
+
+bool
+is_variable_suppressed(const fe_iface&	fe,
+		       const string&	var_name,
+		       const string&	var_linkage_name,
+		       bool			require_drop_property = false);
+
+bool
+is_type_suppressed(const fe_iface&	fe,
+		   const string&	type_name,
+		   const location&	type_location,
+		   bool&		type_is_private,
+		   bool			require_drop_property = false);
+
+bool
+is_data_member_offset_in_range(const var_decl_sptr&,
+			       const type_suppression::insertion_range_sptr&,
+			       const class_or_union*);
+
 } // end namespace suppr
+
 
 } // end namespace abigail
 

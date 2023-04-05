@@ -133,6 +133,7 @@
                 underlying type 'const mp_limb_t*' changed:
                   entity changed from 'const mp_limb_t*' to 'unsigned long int'
                   type size hasn't changed
+                  type alignment changed from 64 to 0
               parameter 2 of type 'typedef mp_size_t' changed:
                 typedef name changed from mp_size_t to mp_limb_t
                 underlying type 'long int' changed:

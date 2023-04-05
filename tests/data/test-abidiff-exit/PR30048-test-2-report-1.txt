@@ -1,0 +1,136 @@
+Functions changes summary: 0 Removed, 7 Changed, 0 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+7 functions with some indirect sub-type change:
+
+  [C] 'function int[7]* N()' at PR30048-test-2-v0.cc:62:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'int[7]*' to 'int'
+      type size changed from 64 to 32 (in bits)
+
+  [C] 'function int* O()' at PR30048-test-2-v0.cc:64:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'int*' to 'int'
+      type size changed from 64 to 32 (in bits)
+
+  [C] 'function int ()* P()' at PR30048-test-2-v0.cc:67:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'int ()*' to 'int'
+      type size changed from 64 to 32 (in bits)
+
+  [C] 'function amusement* fun()' at PR30048-test-2-v0.cc:57:1 has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'struct amusement' at PR30048-test-2-v1.cc:1:1:
+        type size changed from 6528 to 768 (in bits)
+        24 data member changes:
+          type of 'int A[7]' changed:
+            entity changed from 'int[7]' to 'int'
+            type size changed from 224 to 32 (in bits)
+          type of 'int* B' changed:
+            entity changed from 'int*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 256 to 32 (in bits) (by -224 bits)
+          type of 'int ()* C' changed:
+            entity changed from 'int ()*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 320 to 64 (in bits) (by -256 bits)
+          type of 'int D[7][7]' changed:
+            entity changed from 'int[7][7]' to 'int'
+            type size changed from 1568 to 32 (in bits)
+          and offset changed from 384 to 96 (in bits) (by -288 bits)
+          type of 'int* E[7]' changed:
+            entity changed from 'int*[7]' to 'int'
+            type size changed from 448 to 32 (in bits)
+          and offset changed from 1984 to 128 (in bits) (by -1856 bits)
+          type of 'int ()* F[7]' changed:
+            entity changed from 'int ()*[7]' to 'int'
+            type size changed from 448 to 32 (in bits)
+          and offset changed from 2432 to 160 (in bits) (by -2272 bits)
+          type of 'int[7]* G' changed:
+            entity changed from 'int[7]*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 2880 to 192 (in bits) (by -2688 bits)
+          type of 'int** H' changed:
+            entity changed from 'int**' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 2944 to 224 (in bits) (by -2720 bits)
+          type of 'int ()* I' changed:
+            entity changed from 'int ()*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3008 to 256 (in bits) (by -2752 bits)
+          type of 'int[7]* ()* J' changed:
+            entity changed from 'int[7]* ()*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3072 to 288 (in bits) (by -2784 bits)
+          type of 'int* ()* K' changed:
+            entity changed from 'int* ()*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3136 to 320 (in bits) (by -2816 bits)
+          type of 'int ()* ()* L' changed:
+            entity changed from 'int ()* ()*' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3200 to 352 (in bits) (by -2848 bits)
+          type of 'volatile int a[7]' changed:
+            entity changed from 'volatile int[7]' to 'int'
+            type size changed from 224 to 32 (in bits)
+          and offset changed from 3264 to 384 (in bits) (by -2880 bits)
+          type of 'volatile int* const b' changed:
+            entity changed from 'volatile int* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3520 to 416 (in bits) (by -3104 bits)
+          type of 'int ()* const c' changed:
+            entity changed from 'int ()* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 3584 to 448 (in bits) (by -3136 bits)
+          type of 'volatile int d[7][7]' changed:
+            entity changed from 'volatile int[7][7]' to 'int'
+            type size changed from 1568 to 32 (in bits)
+          and offset changed from 3648 to 480 (in bits) (by -3168 bits)
+          type of 'volatile int* const e[7]' changed:
+            entity changed from 'volatile int* const[7]' to 'int'
+            type size changed from 448 to 32 (in bits)
+          and offset changed from 5248 to 512 (in bits) (by -4736 bits)
+          type of 'int ()* const f[7]' changed:
+            entity changed from 'int ()* const[7]' to 'int'
+            type size changed from 448 to 32 (in bits)
+          and offset changed from 5696 to 544 (in bits) (by -5152 bits)
+          type of 'volatile int[7]* const g' changed:
+            entity changed from 'volatile int[7]* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6144 to 576 (in bits) (by -5568 bits)
+          type of 'volatile int* const* const h' changed:
+            entity changed from 'volatile int* const* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6208 to 608 (in bits) (by -5600 bits)
+          type of 'int ()* const i' changed:
+            entity changed from 'int ()* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6272 to 640 (in bits) (by -5632 bits)
+          type of 'volatile int[7]* ()* const j' changed:
+            entity changed from 'volatile int[7]* ()* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6336 to 672 (in bits) (by -5664 bits)
+          type of 'volatile int* ()* const k' changed:
+            entity changed from 'volatile int* ()* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6400 to 704 (in bits) (by -5696 bits)
+          type of 'int ()* ()* const l' changed:
+            entity changed from 'int ()* ()* const' to 'int'
+            type size changed from 64 to 32 (in bits)
+          and offset changed from 6464 to 736 (in bits) (by -5728 bits)
+
+  [C] 'function volatile int[7]* n()' at PR30048-test-2-v0.cc:72:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'volatile int[7]*' to 'int'
+      type size changed from 64 to 32 (in bits)
+
+  [C] 'function volatile int* o()' at PR30048-test-2-v0.cc:74:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'volatile int*' to 'int'
+      type size changed from 64 to 32 (in bits)
+
+  [C] 'function int ()* p()' at PR30048-test-2-v0.cc:77:1 has some indirect sub-type changes:
+    return type changed:
+      entity changed from 'int ()*' to 'int'
+      type size changed from 64 to 32 (in bits)
+

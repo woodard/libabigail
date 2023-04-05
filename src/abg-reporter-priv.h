@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -157,6 +157,13 @@ represent(const var_diff_sptr	&diff,
 	  bool			local_only = false);
 
 void
+represent(const subrange_diff&		diff,
+	  const diff_context_sptr	ctxt,
+	  ostream&			out,
+	  const string&		indent = "",
+	  bool				local_only = false);
+
+void
 report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 				  type_or_decl_base_sptr	second,
 				  diff_context_sptr		ctxt,
@@ -205,6 +212,13 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 			     const diff_context_sptr&	ctxt,
 			     ostream&			out,
 			     const string&		indent);
+
+bool
+maybe_report_diff_for_variable(const decl_base_sptr&	decl1,
+			       const decl_base_sptr&	decl2,
+			       const diff_context_sptr& ctxt,
+			       ostream&		out,
+			       const string&		indent);
 
 void
 maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,

@@ -1174,7 +1174,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 6 functions with some indirect sub-type change:
 
-  [C] 'method void Engine::fini_process(bool)' at offload_engine.h:560:1 has some indirect sub-type changes:
+  [C] 'method void Engine::fini_process(bool)' at offload_engine.h:409:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'Engine*' has sub-type changes:
       in pointed to type 'struct Engine' at offload_engine.h:395:1:
         type size changed from 0x158 to 0x2b0 (in bytes)
@@ -1234,7 +1234,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             array type subrange 1 changed length from 6 to 7
           and offset changed from 0x128 to 0x278 (in bytes) (by +0x150 bytes)
 
-  [C] 'method void OffloadDescriptor::cleanup()' at offload_host.h:186:1 has some indirect sub-type changes:
+  [C] 'method void OffloadDescriptor::cleanup()' at offload_host.h:143:1 has some indirect sub-type changes:
     implicit parameter 0 of type 'OffloadDescriptor*' has sub-type changes:
       in pointed to type 'struct OffloadDescriptor' at offload_host.h:68:1:
         type size changed from 0x118 to 0x128 (in bytes)
@@ -1292,7 +1292,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           'uint64_t m_out_datalen' offset changed from 0x108 to 0x110 (in bytes) (by +0x8 bytes)
           'bool m_need_runfunction' offset changed from 0x110 to 0x118 (in bytes) (by +0x8 bytes)
 
-  [C] 'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' at offload_host.h:206:1 has some indirect sub-type changes:
+  [C] 'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' at offload_host.h:157:1 has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' has sub-type changes:
       underlying type 'enum error_types' at liboffload_error_codes.h:38:1 changed:
         type size hasn't changed
@@ -1412,7 +1412,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           'error_types::c_report_myorelease' from value '122' to '126' at liboffload_error_codes.h:38:1
           'error_types::c_coipipe_max_number' from value '123' to '133' at liboffload_error_codes.h:38:1
 
-  [C] 'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' at offload_myo_host.cpp:691:1 has some indirect sub-type changes:
+  [C] 'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' at offload_myo_host.cpp:475:1 has some indirect sub-type changes:
     parameter 1 of type 'InitTableEntry*' has sub-type changes:
       in pointed to type 'struct InitTableEntry' at offload_table.h:296:1:
         entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry' at offload_table.h:296:1
@@ -1422,7 +1422,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
               in pointed to type 'function type void ()':
                 parameter 1 of type 'typedef MyoArena' was added
 
-  [C] 'function void __offload_register_image(void*)' at offload_host.cpp:5531:1 has some indirect sub-type changes:
+  [C] 'function void __offload_register_image(void*)' at offload_host.cpp:4245:1 has some indirect sub-type changes:
     return type changed:
       type name changed from 'void' to 'bool'
       type size changed from 0 to 0x1 (in bytes)

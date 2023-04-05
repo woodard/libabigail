@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -118,6 +118,10 @@ typedef vector<type_base*> type_base_ptrs_type;
 /// Helper typedef for a vector of shared pointer to a type_base.
 typedef vector<type_base_sptr> type_base_sptrs_type;
 
+void
+sort_types(const canonical_type_sptr_set_type& types,
+	   vector<type_base_sptr>& result);
+
 /// This is an abstraction of the set of resources necessary to manage
 /// several aspects of the internal representations of the Abigail
 /// library.
@@ -196,6 +200,15 @@ public:
 
   const config&
   get_config() const;
+
+  bool
+  user_set_analyze_exported_interfaces_only() const;
+
+  void
+  analyze_exported_interfaces_only(bool f);
+
+  bool
+  analyze_exported_interfaces_only() const;
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
   void
@@ -524,6 +537,10 @@ typedef unordered_set<const type_or_decl_base*,
 /// value is a @ref type_base_wptr.
 typedef unordered_map<string, type_base_wptr> string_type_base_wptr_map_type;
 
+/// A convenience typedef for a map which key is a string and which
+/// value is a @ref type_base_sptr.
+typedef unordered_map<string, type_base_sptr> string_type_base_sptr_map_type;
+
 /// A convenience typedef for a map which key is an @ref
 /// interned_string and which value is a @ref type_base_wptr.
 typedef unordered_map<interned_string, type_base_wptr, hash_interned_string>
@@ -676,20 +693,14 @@ public:
   };
 
 public:
-  translation_unit(const ir::environment*	env,
+  translation_unit(const ir::environment&	env,
 		   const std::string&		path,
 		   char			address_size = 0);
 
   virtual ~translation_unit();
 
-  const environment*
+  const environment&
   get_environment() const;
-
-  environment*
-  get_environment();
-
-  void
-  set_environment(const environment*);
 
   language
   get_language() const;
@@ -916,7 +927,7 @@ private:
 
   elf_symbol();
 
-  elf_symbol(const environment* e,
+  elf_symbol(const environment& e,
 	     size_t		i,
 	     size_t		s,
 	     const string&	n,
@@ -927,7 +938,7 @@ private:
 	     const version&	ve,
 	     visibility		vi,
 	     bool		is_in_ksymtab = false,
-	     const abg_compat::optional<uint64_t>&	crc = {},
+	     const abg_compat::optional<uint32_t>&	crc = {},
 	     const abg_compat::optional<std::string>&	ns = {},
 	     bool		is_suppressed = false);
 
@@ -939,29 +950,23 @@ private:
 public:
 
   static elf_symbol_sptr
-  create();
-
-  static elf_symbol_sptr
-  create(const environment* e,
-	 size_t		    i,
-	 size_t		    s,
-	 const string&	    n,
-	 type		    t,
-	 binding	    b,
-	 bool		    d,
-	 bool		    c,
-	 const version&	    ve,
-	 visibility	    vi,
-	 bool		    is_in_ksymtab = false,
-	 const abg_compat::optional<uint64_t>&		crc = {},
+  create(const environment&	e,
+	 size_t		i,
+	 size_t		s,
+	 const string&		n,
+	 type			t,
+	 binding		b,
+	 bool			d,
+	 bool			c,
+	 const version&	ve,
+	 visibility		vi,
+	 bool			is_in_ksymtab = false,
+	 const abg_compat::optional<uint32_t>&		crc = {},
 	 const abg_compat::optional<std::string>&	ns = {},
-	 bool		    is_suppressed = false);
+	 bool						is_suppressed = false);
 
-  const environment*
+  const environment&
   get_environment() const;
-
-  void
-  set_environment(const environment*) const;
 
   size_t
   get_index() const;
@@ -1026,11 +1031,11 @@ public:
   void
   set_is_in_ksymtab(bool is_in_ksymtab);
 
-  const abg_compat::optional<uint64_t>&
+  const abg_compat::optional<uint32_t>&
   get_crc() const;
 
   void
-  set_crc(const abg_compat::optional<uint64_t>& crc);
+  set_crc(const abg_compat::optional<uint32_t>& crc);
 
   const abg_compat::optional<std::string>&
   get_namespace() const;
@@ -1088,6 +1093,9 @@ public:
 
   elf_symbol_sptr
   get_alias_which_equals(const elf_symbol& other) const;
+
+  elf_symbol_sptr
+  get_alias_with_default_symbol_version() const;
 
   string
   get_aliases_id_string(const string_elf_symbols_map_type& symtab,
@@ -1327,6 +1335,7 @@ class type_or_decl_base : public ir_traversable_base
   mutable std::unique_ptr<priv> priv_;
 
   type_or_decl_base();
+  type_or_decl_base(const type_or_decl_base&);
 
 protected:
 
@@ -1386,12 +1395,13 @@ protected:
 
   void hashing_started(bool) const;
 
+  type_or_decl_base&
+  operator=(const type_or_decl_base&);
+
 public:
 
-  type_or_decl_base(const environment*,
+  type_or_decl_base(const environment&,
 		    enum type_or_decl_kind k = ABSTRACT_TYPE_OR_DECL);
-
-  type_or_decl_base(const type_or_decl_base&);
 
   virtual ~type_or_decl_base();
 
@@ -1401,14 +1411,8 @@ public:
   void
   set_is_artificial(bool);
 
-  const environment*
+  const environment&
   get_environment() const;
-
-  environment*
-  get_environment();
-
-  void
-  set_environment(const environment*);
 
   void
   set_artificial_location(const location &);
@@ -1433,9 +1437,6 @@ public:
 
   translation_unit*
   get_translation_unit();
-
-  type_or_decl_base&
-  operator=(const type_or_decl_base&);
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -1497,14 +1498,6 @@ operator==(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
 
 bool
 operator!=(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
-
-void
-set_environment_for_artifact(type_or_decl_base* artifact,
-			     const environment* env);
-
-void
-set_environment_for_artifact(type_or_decl_base_sptr artifact,
-			     const environment* env);
 
 /// The base type of all declarations.
 class decl_base : public virtual type_or_decl_base
@@ -1578,23 +1571,22 @@ protected:
 
   void
   set_context_rel(context_rel *c);
+  decl_base(const decl_base&);
 
 public:
-  decl_base(const environment* e,
+  decl_base(const environment& e,
 	    const string& name,
 	    const location& locus,
 	    const string& mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
 
-  decl_base(const environment* e,
+  decl_base(const environment& e,
 	    const interned_string& name,
 	    const location& locus,
 	    const interned_string& mangled_name = interned_string(),
 	    visibility vis = VISIBILITY_DEFAULT);
 
-  decl_base(const environment*, const location&);
-
-  decl_base(const decl_base&);
+  decl_base(const environment&, const location&);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1699,14 +1691,14 @@ public:
   void
   set_is_declaration_only(bool f);
 
-  friend type_base_sptr
-  canonicalize(type_base_sptr);
-
   friend bool
   equals(const decl_base&, const decl_base&, change_kind*);
 
   friend bool
   equals(const var_decl&, const var_decl&, change_kind*);
+
+  friend bool
+  var_equals_modulo_types(const var_decl&, const var_decl&, change_kind*);
 
   friend bool
   maybe_compare_as_member_decls(const decl_base& l,
@@ -1799,7 +1791,7 @@ protected:
   virtual decl_base_sptr
   add_member_decl(const decl_base_sptr& member);
 
-  virtual decl_base_sptr
+  decl_base_sptr
   insert_member_decl(decl_base_sptr member, declarations::iterator before);
 
   virtual void
@@ -1808,11 +1800,11 @@ protected:
 public:
   struct hash;
 
-  scope_decl(const environment* env,
+  scope_decl(const environment& env,
 	     const string& name, const location& locus,
 	     visibility	vis = VISIBILITY_DEFAULT);
 
-  scope_decl(const environment* env, location& l);
+  scope_decl(const environment& env, location& l);
 
   virtual size_t
   get_hash() const;
@@ -1862,6 +1854,28 @@ public:
   bool
   find_iterator_for_member(const decl_base_sptr, declarations::iterator&);
 
+  void
+  insert_member_type(type_base_sptr t,
+		     declarations::iterator before);
+
+  void
+  add_member_type(type_base_sptr t);
+
+  type_base_sptr
+  add_member_type(type_base_sptr t, access_specifier a);
+
+  void
+  remove_member_type(type_base_sptr t);
+
+  const type_base_sptrs_type&
+  get_member_types() const;
+
+  const type_base_sptrs_type&
+  get_sorted_member_types() const;
+
+  type_base_sptr
+  find_member_type(const string& name) const;
+
   virtual bool
   traverse(ir_node_visitor&);
 
@@ -1877,9 +1891,6 @@ public:
 
   friend void
   remove_decl_from_scope(decl_base_sptr decl);
-
-  friend type_base_sptr
-  canonicalize(type_base_sptr);
 };//end class scope_decl
 
 bool
@@ -1965,7 +1976,7 @@ public:
   /// runtime type of the type pointed to.
   struct shared_ptr_hash;
 
-  type_base(const environment* e, size_t s, size_t a);
+  type_base(const environment& e, size_t s, size_t a);
 
   friend type_base_sptr canonicalize(type_base_sptr);
 
@@ -2069,7 +2080,7 @@ public:
   /// Facility to hash instance of type_decl
   struct hash;
 
-  type_decl(const environment*	env,
+  type_decl(const environment&	env,
 	    const string&	name,
 	    size_t		size_in_bits,
 	    size_t		alignment_in_bits,
@@ -2086,7 +2097,14 @@ public:
   virtual bool
   operator==(const type_decl&) const;
 
-  bool operator!=(const type_decl&)const;
+  virtual bool
+  operator!=(const type_base&)const;
+
+  virtual bool
+  operator!=(const decl_base&)const;
+
+  virtual bool
+  operator!=(const type_decl&)const;
 
   virtual void
   get_qualified_name(interned_string& qualified_name,
@@ -2124,7 +2142,7 @@ public:
   /// Hasher for instances of scope_type_decl
   struct hash;
 
-  scope_type_decl(const environment* env, const string& name,
+  scope_type_decl(const environment& env, const string& name,
 		  size_t size_in_bits, size_t alignment_in_bits,
 		  const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
@@ -2145,7 +2163,7 @@ class namespace_decl : public scope_decl
 {
 public:
 
-  namespace_decl(const environment* env, const string& name,
+  namespace_decl(const environment& env, const string& name,
 		 const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
   virtual string
@@ -2162,6 +2180,9 @@ public:
 
   bool is_empty_or_has_empty_sub_namespaces() const;
 };// end class namespace_decl
+
+/// A convenience typedef for vectors of @ref namespace_decl_sptr
+typedef vector<namespace_decl_sptr> namespaces_type;
 
 bool
 equals(const qualified_type_def&, const qualified_type_def&, change_kind*);
@@ -2196,7 +2217,7 @@ public:
 
   qualified_type_def(type_base_sptr type, CV quals, const location& locus);
 
-  qualified_type_def(environment* env, CV quals, const location& locus);
+  qualified_type_def(const environment& env, CV quals, const location& locus);
 
   virtual size_t
   get_size_in_bits() const;
@@ -2297,9 +2318,8 @@ public:
   pointer_type_def(const type_base_sptr& pointed_to_type, size_t size_in_bits,
 		   size_t alignment_in_bits, const location& locus);
 
-  pointer_type_def(environment* env, size_t size_in_bits,
+  pointer_type_def(const environment& env, size_t size_in_bits,
 		   size_t alignment_in_bits, const location& locus);
-
 
   void
   set_pointed_to_type(const type_base_sptr&);
@@ -2362,7 +2382,7 @@ public:
 		     bool lvalue, size_t size_in_bits,
 		     size_t alignment_in_bits, const location& locus);
 
-  reference_type_def(const environment* env, bool lvalue, size_t size_in_bits,
+  reference_type_def(const environment& env, bool lvalue, size_t size_in_bits,
 		     size_t alignment_in_bits, const location& locus);
 
   void
@@ -2484,7 +2504,7 @@ public:
     /// Hasher for an instance of array::subrange
     struct hash;
 
-    subrange_type(const environment*	env,
+    subrange_type(const environment&	env,
 		  const string&	name,
 		  bound_value		lower_bound,
 		  bound_value		upper_bound,
@@ -2492,14 +2512,14 @@ public:
 		  const location&	loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
-    subrange_type(const environment* env,
+    subrange_type(const environment& env,
 		  const string& name,
 		  bound_value lower_bound,
 		  bound_value upper_bound,
 		  const location& loc,
 		  translation_unit::language l = translation_unit::LANG_C11);
 
-    subrange_type(const environment* env,
+    subrange_type(const environment& env,
 		  const string& name,
 		  bound_value upper_bound,
 		  const location& loc,
@@ -2545,6 +2565,12 @@ public:
     operator==(const subrange_type& o) const;
 
     bool
+    operator!=(const decl_base& o) const;
+
+    bool
+    operator!=(const type_base& o) const;
+
+    bool
     operator!=(const subrange_type& o) const;
 
     string
@@ -2565,7 +2591,7 @@ public:
 		 const std::vector<subrange_sptr>& subs,
 		 const location& locus);
 
-  array_type_def(environment* env,
+  array_type_def(const environment& env,
 		 const std::vector<subrange_sptr>& subs,
 		 const location& locus);
 
@@ -2625,6 +2651,11 @@ is_subrange_type(const type_or_decl_base *type);
 
 array_type_def::subrange_sptr
 is_subrange_type(const type_or_decl_base_sptr &type);
+
+bool
+equals(const array_type_def::subrange_type&,
+       const array_type_def::subrange_type&,
+       change_kind*);
 
 bool
 equals(const enum_type_decl&, const enum_type_decl&, change_kind*);
@@ -2723,7 +2754,7 @@ public:
 
   ~enumerator();
 
-  enumerator(const environment* env, const string& name, int64_t value);
+  enumerator(const string& name, int64_t value);
 
   enumerator(const enumerator&);
 
@@ -2736,13 +2767,10 @@ public:
   bool
   operator!=(const enumerator& other) const;
 
-  const environment*
-  get_environment() const;
-
-  const interned_string&
+  const string&
   get_name() const;
 
-  const interned_string&
+  const string&
   get_qualified_name(bool internal = false) const;
 
   void
@@ -2785,7 +2813,7 @@ public:
 	       visibility vis = VISIBILITY_DEFAULT);
 
   typedef_decl(const string& name,
-	       environment* env,
+	       const environment& env,
 	       const location& locus,
 	       const string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);
@@ -2871,6 +2899,9 @@ bool
 equals(const var_decl&, const var_decl&, change_kind*);
 
 bool
+var_equals_modulo_types(const var_decl&, const var_decl&, change_kind*);
+
+bool
 equals_modulo_cv_qualifier(const array_type_def*, const array_type_def*);
 
 /// Abstracts a variable declaration.
@@ -2905,6 +2936,9 @@ public:
 
   const type_base_sptr
   get_type() const;
+
+  void
+  set_type(type_base_sptr&);
 
   const type_base*
   get_naked_type() const;
@@ -3282,7 +3316,7 @@ public:
 		size_t		size_in_bits,
 		size_t		alignment_in_bits);
 
-  function_type(const environment*	env,
+  function_type(const environment&	env,
 		size_t		size_in_bits,
 		size_t		alignment_in_bits);
 
@@ -3377,7 +3411,7 @@ public:
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  method_type(const environment* env,
+  method_type(const environment& env,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -3414,7 +3448,7 @@ public:
   /// Hasher.
   struct hash;
 
-  template_decl(const environment*	env,
+  template_decl(const environment&	env,
 		const string&		name,
 		const location&	locus,
 		visibility		vis = VISIBILITY_DEFAULT);
@@ -3424,6 +3458,9 @@ public:
 
   const std::list<template_parameter_sptr>&
   get_template_parameters() const;
+
+  virtual bool
+  operator==(const decl_base& o) const;
 
   virtual bool
   operator==(const template_decl& o) const;
@@ -3500,6 +3537,12 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const type_decl&) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   virtual bool
   operator==(const template_parameter&) const;
@@ -3580,6 +3623,9 @@ public:
   operator==(const type_base&) const;
 
   virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
   operator==(const template_parameter&) const;
 
   virtual bool
@@ -3645,7 +3691,7 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  function_tdecl(const environment*	env,
+  function_tdecl(const environment&	env,
 		 const location&	locus,
 		 visibility		vis = VISIBILITY_DEFAULT,
 		 binding		bind = BINDING_NONE);
@@ -3694,7 +3740,7 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  class_tdecl(const environment* env, const location& locus,
+  class_tdecl(const environment& env, const location& locus,
 	      visibility vis = VISIBILITY_DEFAULT);
 
   class_tdecl(class_decl_sptr	pattern,
@@ -3892,8 +3938,8 @@ protected:
   virtual decl_base_sptr
   add_member_decl(const decl_base_sptr&);
 
-  virtual decl_base_sptr
-  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+  decl_base_sptr
+  insert_member_decl(decl_base_sptr member);
 
   virtual void
   remove_member_decl(decl_base_sptr);
@@ -3915,17 +3961,17 @@ public:
   typedef unordered_map<string, method_decl_sptr> string_mem_fn_sptr_map_type;
   /// @}
 
-  class_or_union(const environment* env, const string& name,
+  class_or_union(const environment& env, const string& name,
 		 size_t size_in_bits, size_t align_in_bits,
 		 const location& locus, visibility vis,
 		 member_types& mbrs, data_members& data_mbrs,
 		 member_functions& member_fns);
 
-  class_or_union(const environment* env, const string& name,
+  class_or_union(const environment& env, const string& name,
 		 size_t size_in_bits, size_t align_in_bits,
 		 const location& locus, visibility vis);
 
-  class_or_union(const environment* env, const string& name,
+  class_or_union(const environment& env, const string& name,
 		 bool is_declaration_only = true);
 
   virtual void
@@ -3940,22 +3986,6 @@ public:
   virtual void
   set_alignment_in_bits(size_t);
 
- void
-  insert_member_type(type_base_sptr t,
-		     declarations::iterator before);
-
-  void
-  add_member_type(type_base_sptr t);
-
-  type_base_sptr
-  add_member_type(type_base_sptr t, access_specifier a);
-
-  void
-  remove_member_type(type_base_sptr t);
-
-  const member_types&
-  get_member_types() const;
-
   virtual size_t
   get_num_anonymous_member_classes() const;
 
@@ -3964,9 +3994,6 @@ public:
 
   virtual size_t
   get_num_anonymous_member_enums() const;
-
-  type_base_sptr
-  find_member_type(const string& name) const;
 
   void
   add_data_member(var_decl_sptr v, access_specifier a,
@@ -4105,8 +4132,8 @@ class class_decl : public class_or_union
 
 protected:
 
-  virtual decl_base_sptr
-  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+  decl_base_sptr
+  insert_member_decl(decl_base_sptr member);
 
 public:
   /// Hasher.
@@ -4140,30 +4167,30 @@ private:
 
 public:
 
-  class_decl(const environment* env, const string& name,
+  class_decl(const environment& env, const string& name,
 	     size_t size_in_bits, size_t align_in_bits,
 	     bool is_struct, const location& locus,
 	     visibility vis, base_specs& bases,
 	     member_types& mbrs, data_members& data_mbrs,
 	     member_functions& member_fns);
 
-  class_decl(const environment* env, const string& name,
+  class_decl(const environment& env, const string& name,
 	     size_t size_in_bits, size_t align_in_bits,
 	     bool is_struct, const location& locus,
 	     visibility vis, base_specs& bases,
 	     member_types& mbrs, data_members& data_mbrs,
 	     member_functions& member_fns, bool is_anonymous);
 
-  class_decl(const environment* env, const string& name,
+  class_decl(const environment& env, const string& name,
 	     size_t size_in_bits, size_t align_in_bits,
 	     bool is_struct, const location& locus, visibility vis);
 
-  class_decl(const environment* env, const string& name,
+  class_decl(const environment& env, const string& name,
 	     size_t size_in_bits, size_t align_in_bits,
 	     bool is_struct, const location& locus,
 	     visibility vis, bool is_anonymous);
 
-  class_decl(const environment* env, const string& name, bool is_struct,
+  class_decl(const environment& env, const string& name, bool is_struct,
 	     bool is_declaration_only = true);
 
   virtual string
@@ -4217,6 +4244,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const class_or_union&) const;
 
   virtual bool
   operator==(const class_decl&) const;
@@ -4357,26 +4387,26 @@ class union_decl : public class_or_union
 
 public:
 
-  union_decl(const environment* env, const string& name,
+  union_decl(const environment& env, const string& name,
 	     size_t size_in_bits, const location& locus,
 	     visibility vis, member_types& mbrs,
 	     data_members& data_mbrs, member_functions& member_fns);
 
-  union_decl(const environment* env, const string& name,
+  union_decl(const environment& env, const string& name,
 	     size_t size_in_bits, const location& locus,
 	     visibility vis, member_types& mbrs,
 	     data_members& data_mbrs, member_functions& member_fns,
 	     bool is_anonymous);
 
-  union_decl(const environment* env, const string& name,
+  union_decl(const environment& env, const string& name,
 	     size_t size_in_bits, const location& locus,
 	     visibility vis);
 
-  union_decl(const environment* env, const string& name,
+  union_decl(const environment& env, const string& name,
 	     size_t size_in_bits, const location& locus,
 	     visibility vis, bool is_anonymous);
 
-  union_decl(const environment* env, const string& name,
+  union_decl(const environment& env, const string& name,
 	     bool is_declaration_only = true);
 
   virtual string
@@ -4388,6 +4418,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const class_or_union&) const;
 
   virtual bool
   operator==(const union_decl&) const;
@@ -4647,6 +4680,9 @@ public:
 
   virtual bool
   operator==(const member_base& o) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   virtual bool
   operator==(const member_class_template&) const;

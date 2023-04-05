@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2016-2022 Red Hat, Inc.
+// Copyright (C) 2016-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -26,6 +26,16 @@ namespace ir
 {
 
 using std::string;
+using abg_compat::optional;
+
+/// The result of structural comparison of type ABI artifacts.
+enum comparison_result
+{
+  COMPARISON_RESULT_DIFFERENT = 0,
+  COMPARISON_RESULT_EQUAL = 1,
+  COMPARISON_RESULT_CYCLE_DETECTED = 2,
+  COMPARISON_RESULT_UNKNOWN = 3,
+}; //end enum comparison_result
 
 /// The internal representation of an integral type.
 ///
@@ -131,7 +141,7 @@ parse_integral_type(const string& type_name,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  const environment*				env_;
+  const environment&				env_;
   corpus*					corp;
   bool						is_constructed_;
   char						address_size_;
@@ -146,7 +156,7 @@ struct translation_unit::priv
   type_maps					types_;
 
 
-  priv(const environment* env)
+  priv(const environment& env)
     : env_(env),
       corp(),
       is_constructed_(),
@@ -190,12 +200,14 @@ struct type_base::priv
   // The set of canonical recursive types this type depends on.
   unordered_set<uintptr_t> depends_on_recursive_type_;
   bool canonical_type_propagated_;
+  bool propagated_canonical_type_confirmed_;
 
   priv()
     : size_in_bits(),
       alignment_in_bits(),
       naked_canonical_type(),
-      canonical_type_propagated_(false)
+      canonical_type_propagated_(false),
+      propagated_canonical_type_confirmed_(false)
   {}
 
   priv(size_t s,
@@ -205,7 +217,8 @@ struct type_base::priv
       alignment_in_bits(a),
       canonical_type(c),
       naked_canonical_type(c.get()),
-      canonical_type_propagated_(false)
+      canonical_type_propagated_(false),
+      propagated_canonical_type_confirmed_(false)
   {}
 
   /// Test if the current type depends on recursive type comparison.
@@ -296,17 +309,45 @@ struct type_base::priv
   set_canonical_type_propagated(bool f)
   {canonical_type_propagated_ = f;}
 
+  /// Getter of the property propagated-canonical-type-confirmed.
+  ///
+  /// If canonical_type_propagated() returns true, then this property
+  /// says if the propagated canonical type has been confirmed or not.
+  /// If it hasn't been confirmed, then it means it can still
+  /// cancelled.
+  ///
+  /// @return true iff the propagated canonical type has been
+  /// confirmed.
+  bool
+  propagated_canonical_type_confirmed() const
+  {return propagated_canonical_type_confirmed_;}
+
+  /// Setter of the property propagated-canonical-type-confirmed.
+  ///
+  /// If canonical_type_propagated() returns true, then this property
+  /// says if the propagated canonical type has been confirmed or not.
+  /// If it hasn't been confirmed, then it means it can still
+  /// cancelled.
+  ///
+  /// @param f If this is true then the propagated canonical type has
+  /// been confirmed.
+  void
+  set_propagated_canonical_type_confirmed(bool f)
+  {propagated_canonical_type_confirmed_ = f;}
+
   /// If the current canonical type was set as the result of the
   /// "canonical type propagation optimization", then clear it.
-  void
+  bool
   clear_propagated_canonical_type()
   {
-    if (canonical_type_propagated_)
+    if (canonical_type_propagated_ && !propagated_canonical_type_confirmed_)
       {
 	canonical_type.reset();
 	naked_canonical_type = nullptr;
 	set_canonical_type_propagated(false);
+	return true;
       }
+    return false;
   }
 }; // end struct type_base::priv
 
@@ -330,6 +371,13 @@ typedef std::pair<uint64_t, uint64_t> uint64_t_pair_type;
 /// A convenience typedef for a set of @ref uint64_t_pair
 typedef unordered_set<uint64_t_pair_type,
 		      uint64_t_pair_hash> uint64_t_pairs_set_type;
+
+/// A convenience typedef for a set of pointer to @ref class_or_union
+typedef unordered_set<const class_or_union*> class_set_type;
+
+/// A convenience typedef for a set of pointer to @ref function_type.
+typedef unordered_set<const function_type*> fn_set_type;
+
 /// A convenience typedef for a map which key is a pair of uint64_t
 /// and which value is a boolean.  This is initially intended to cache
 /// the result of comparing two (sub-)types.
@@ -348,12 +396,14 @@ struct environment::priv
   // used to avoid endless loops while recursively comparing types.
   // This should be empty when none of the 'equal' overloads are
   // currently being invoked.
-  uint64_t_pairs_set_type		classes_being_compared_;
+  class_set_type			left_classes_being_compared_;
+  class_set_type			right_classes_being_compared_;
   // The set of pairs of function types being currently compared.  It's used
   // to avoid endless loops while recursively comparing types.  This
   // should be empty when none of the 'equal' overloads are currently
   // being invoked.
-  uint64_t_pairs_set_type		fn_types_being_compared_;
+  fn_set_type				left_fn_types_being_compared_;
+  fn_set_type				right_fn_types_being_compared_;
   // This is a cache for the result of comparing two sub-types (of
   // either class or function types) that are designated by their
   // memory address in the IR.
@@ -409,6 +459,15 @@ struct environment::priv
   // the canonical type propagation is cancelled, the canonical types
   // must be cleared.
   pointer_set		types_with_non_confirmed_propagated_ct_;
+  pointer_set		recursive_types_;
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  // Set of types which propagated canonical type has been cleared
+  // during the "canonical type propagation optimization" phase. Those
+  // types are tracked in this set to ensure that they are later
+  // canonicalized.  This means that at the end of the
+  // canonicalization process, this set must be empty.
+  mutable pointer_set	types_with_cleared_propagated_ct_;
+#endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
   // This is used for debugging purposes.
   // When abidw is used with the option --debug-abidiff, some
@@ -434,6 +493,7 @@ struct environment::priv
   bool					decl_only_class_equals_definition_;
   bool					use_enum_binary_only_equality_;
   bool					allow_type_comparison_results_caching_;
+  optional<bool>			analyze_exported_interfaces_only_;
 #ifdef WITH_DEBUG_SELF_COMPARISON
   bool					self_comparison_debug_on_;
 #endif
@@ -507,11 +567,19 @@ struct environment::priv
   void
   cache_type_comparison_result(T& first, T& second, bool r)
   {
-    if (allow_type_comparison_results_caching())
-      type_comparison_results_cache_.emplace
-	(std::make_pair(reinterpret_cast<uint64_t>(&first),
-			reinterpret_cast<uint64_t>(&second)),
-	 r);
+    if (allow_type_comparison_results_caching()
+	&& (r == false
+	    ||
+	    (!is_recursive_type(&first)
+	     && !is_recursive_type(&second)
+	     && !is_type(&first)->priv_->depends_on_recursive_type()
+	     && !is_type(&second)->priv_->depends_on_recursive_type())))
+      {
+	type_comparison_results_cache_.emplace
+	  (std::make_pair(reinterpret_cast<uint64_t>(&first),
+			  reinterpret_cast<uint64_t>(&second)),
+	   r);
+      }
   }
 
   /// Retrieve the result of comparing two sub-types from the cache,
@@ -555,48 +623,6 @@ struct environment::priv
   void
   clear_type_comparison_results_cache()
   {type_comparison_results_cache_.clear();}
-
-  /// Dumps a textual representation (to the standard error output) of
-  /// the content of the set of classes being currently compared using
-  /// the @ref equal overloads.
-  ///
-  /// This function is for debugging purposes.
-  void
-  dump_classes_being_compared()
-  {
-    std::cerr << "classes being compared: " << classes_being_compared_.size()
-	      << "\n"
-	      << "=====================================\n";
-    for (auto& p : classes_being_compared_)
-      {
-	class_or_union* c = reinterpret_cast<class_or_union*>(p.first);
-	std::cerr << "'" << c->get_pretty_representation()
-		  << " / (" << std::hex << p.first << "," << p.second << ")"
-		  << "'\n";
-      }
-    std::cerr << "=====================================\n";
-  }
-
-  /// Dumps a textual representation (to the standard error output) of
-  /// the content of the set of classes being currently compared using
-  /// the @ref equal overloads.
-  ///
-  /// This function is for debugging purposes.
-  void
-  dump_fn_types_being_compared()
-  {
-    std::cerr << "fn_types being compared: " << fn_types_being_compared_.size()
-	      << "\n"
-	      << "=====================================\n";
-    for (auto& p : fn_types_being_compared_)
-      {
-	function_type* c = reinterpret_cast<function_type*>(p.first);
-	std::cerr << "'" << c->get_pretty_representation()
-		  << " / (" << std::hex << p.first << "," << p.second << ")"
-		  << "'\n";
-      }
-    std::cerr << "=====================================\n";
-  }
 
   /// Push a pair of operands on the stack of operands of the current
   /// type comparison, during type canonicalization.
@@ -738,8 +764,29 @@ struct environment::priv
     result |=
       mark_dependant_types(right,
 			   right_type_comp_operands_);
+    recursive_types_.insert(reinterpret_cast<uintptr_t>(right));
     return result;
   }
+
+  /// Test if a type is a recursive one.
+  ///
+  /// @param t the type to consider.
+  ///
+  /// @return true iff @p t is recursive.
+  bool
+  is_recursive_type(const type_base* t)
+  {
+    return (recursive_types_.find(reinterpret_cast<uintptr_t>(t))
+	    != recursive_types_.end());
+  }
+
+
+  /// Unflag a type as being recursive
+  ///
+  /// @param t the type to unflag
+  void
+  set_is_not_recursive(const type_base* t)
+  {recursive_types_.erase(reinterpret_cast<uintptr_t>(t));}
 
   /// Propagate the canonical type of a type to another one.
   ///
@@ -757,6 +804,11 @@ struct environment::priv
     dest.priv_->canonical_type = canonical;
     dest.priv_->naked_canonical_type = canonical.get();
     dest.priv_->set_canonical_type_propagated(true);
+#ifdef WITH_DEBUG_CT_PROPAGATION
+    // If dest was previously a type which propagated canonical type
+    // has been cleared, let the book-keeping system know.
+    erase_type_with_cleared_propagated_canonical_type(&dest);
+#endif
     return true;
   }
 
@@ -769,21 +821,123 @@ struct environment::priv
   /// propagation optimization" at @ref OnTheFlyCanonicalization, in
   /// the src/abg-ir.cc file.
   void
-  confirm_ct_propagation(const type_base* dependant_type)
+  confirm_ct_propagation_for_types_dependant_on(const type_base* dependant_type)
   {
     pointer_set to_remove;
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->priv_->depends_on_recursive_type());
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type(dependant_type);
 	if (!t->priv_->depends_on_recursive_type())
-	  to_remove.insert(i);
+	  {
+	    to_remove.insert(i);
+	    t->priv_->set_propagated_canonical_type_confirmed(true);
+	  }
       }
 
     for (auto i : to_remove)
       types_with_non_confirmed_propagated_ct_.erase(i);
   }
+
+  /// Mark a type that has been the target of canonical type
+  /// propagation as being permanently canonicalized.
+  ///
+  /// This function also marks the set of types that have been the
+  /// target of canonical type propagation and that depend on a
+  /// recursive type as being permanently canonicalized.
+  ///
+  /// To understand the sentence above, please read the description of
+  /// type canonicalization and especially about the "canonical type
+  /// propagation optimization" at @ref OnTheFlyCanonicalization, in
+  /// the src/abg-ir.cc file.
+  void
+  confirm_ct_propagation(const type_base*t)
+  {
+    if (!t || t->priv_->propagated_canonical_type_confirmed())
+      return;
+
+    const environment& env = t->get_environment();
+
+    env.priv_->confirm_ct_propagation_for_types_dependant_on(t);
+    t->priv_->set_does_not_depend_on_recursive_type();
+    env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+    env.priv_->set_is_not_recursive(t);
+    t->priv_->set_propagated_canonical_type_confirmed(true);
+  }
+
+  /// Mark all the types that have been the target of canonical type
+  /// propagation and that are not yet confirmed as being permanently
+  /// canonicalized (aka confirmed).
+  ///
+  /// To understand the sentence above, please read the description of
+  /// type canonicalization and especially about the "canonical type
+  /// propagation optimization" at @ref OnTheFlyCanonicalization, in
+  /// the src/abg-ir.cc file.
+  void
+  confirm_ct_propagation()
+  {
+    for (auto i : types_with_non_confirmed_propagated_ct_)
+      {
+	type_base *t = reinterpret_cast<type_base*>(i);
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
+	t->priv_->set_does_not_depend_on_recursive_type();
+	t->priv_->set_propagated_canonical_type_confirmed(true);
+      }
+    types_with_non_confirmed_propagated_ct_.clear();
+  }
+
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  /// Getter for the set of types which propagated canonical type has
+  /// been cleared during the "canonical type propagation
+  /// optimization" phase. Those types are tracked in this set to
+  /// ensure that they are later canonicalized.  This means that at
+  /// the end of the canonicalization process, this set must be empty.
+  ///
+  /// @return the set of types which propagated canonical type has
+  /// been cleared.
+  const pointer_set&
+  types_with_cleared_propagated_ct() const
+  {return types_with_cleared_propagated_ct_;}
+
+  /// Getter for the set of types which propagated canonical type has
+  /// been cleared during the "canonical type propagation
+  /// optimization" phase. Those types are tracked in this set to
+  /// ensure that they are later canonicalized.  This means that at
+  /// the end of the canonicalization process, this set must be empty.
+  ///
+  /// @return the set of types which propagated canonical type has
+  /// been cleared.
+  pointer_set&
+  types_with_cleared_propagated_ct()
+  {return types_with_cleared_propagated_ct_;}
+
+  /// Record a type which propagated canonical type has been cleared
+  /// during the "canonical type propagation optimization phase".
+  ///
+  /// @param t the type to record.
+  void
+  record_type_with_cleared_propagated_canonical_type(const type_base* t)
+  {
+    uintptr_t ptr = reinterpret_cast<uintptr_t>(t);
+    types_with_cleared_propagated_ct_.insert(ptr);
+  }
+
+  /// Erase a type (which propagated canonical type has been cleared
+  /// during the "canonical type propagation optimization phase") from
+  /// the set of types that have been recorded by the invocation of
+  /// record_type_with_cleared_propagated_canonical_type()
+  ///
+  /// @param t the type to erase from the set.
+  void
+  erase_type_with_cleared_propagated_canonical_type(const type_base* t)
+  {
+    uintptr_t ptr = reinterpret_cast<uintptr_t>(t);
+    types_with_cleared_propagated_ct_.erase(ptr);
+  }
+#endif //WITH_DEBUG_CT_PROPAGATION
 
   /// Collect the types that depends on a given "target" type.
   ///
@@ -826,7 +980,7 @@ struct environment::priv
   /// depend on a given recursive type.
   ///
   /// Once the canonical type of a type in that set is reset, the type
-  /// is marked as non being dependant on a recursive type anymore.
+  /// is marked as being non-dependant on a recursive type anymore.
   ///
   /// To understand the sentences above, please read the description
   /// of type canonicalization and especially about the "canonical
@@ -837,7 +991,7 @@ struct environment::priv
   /// type propagation optimizationdepends on a this target type, then
   /// cancel its canonical type.
   void
-  cancel_ct_propagation(const type_base* target)
+  cancel_ct_propagation_for_types_dependant_on(const type_base* target)
   {
     pointer_set to_remove;
     collect_types_that_depends_on(target,
@@ -847,17 +1001,92 @@ struct environment::priv
     for (auto i : to_remove)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->priv_->depends_on_recursive_type());
+	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
+		   || t->priv_->depends_on_recursive_type());
 	type_base_sptr canonical = t->priv_->canonical_type.lock();
 	if (canonical)
 	  {
-	    t->priv_->clear_propagated_canonical_type();
+	    clear_propagated_canonical_type(t);
 	    t->priv_->set_does_not_depend_on_recursive_type();
 	  }
       }
 
     for (auto i : to_remove)
       types_with_non_confirmed_propagated_ct_.erase(i);
+  }
+
+  /// Reset the canonical type (set it nullptr) of a type that has
+  /// been the target of canonical type propagation.
+  ///
+  /// This also resets the propagated canonical type of the set of
+  /// types that depends on a given recursive type.
+  ///
+  /// Once the canonical type of a type in that set is reset, the type
+  /// is marked as being non-dependant on a recursive type anymore.
+  ///
+  /// To understand the sentences above, please read the description
+  /// of type canonicalization and especially about the "canonical
+  /// type propagation optimization" at @ref OnTheFlyCanonicalization,
+  /// in the src/abg-ir.cc file.
+  ///
+  /// @param target if a type which has been subject to the canonical
+  /// type propagation optimizationdepends on a this target type, then
+  /// cancel its canonical type.
+  void
+  cancel_ct_propagation(const type_base* t)
+  {
+    if (!t)
+      return;
+
+    const environment& env = t->get_environment();
+    env.priv_->cancel_ct_propagation_for_types_dependant_on(t);
+    if (t->priv_->depends_on_recursive_type()
+	|| env.priv_->is_recursive_type(t))
+      {
+	// This cannot carry any tentative canonical type at this
+	// point.
+	clear_propagated_canonical_type(t);
+	// Reset the marking of the type as it no longer carries a
+	// tentative canonical type that might be later cancelled.
+	t->priv_->set_does_not_depend_on_recursive_type();
+	env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+      }
+  }
+
+  /// Clear the propagated canonical type of a given type.
+  ///
+  /// This function also updates the book-keeping of the set of types
+  /// which propagated canonical types have been cleared.
+  ///
+  /// Please note that at the end of the canonicalization of all the
+  /// types in the system, all the types which propagated canonical
+  /// type has been cleared must be canonicalized.
+  ///
+  /// @param t the type to
+  void
+  clear_propagated_canonical_type(const type_base *t)
+  {
+    if (t->priv_->clear_propagated_canonical_type())
+      {
+#ifdef WITH_DEBUG_CT_PROPAGATION
+	// let the book-keeping system know that t has its propagated
+	// canonical type cleared.
+	record_type_with_cleared_propagated_canonical_type(t)
+#endif
+	  ;
+      }
+  }
+
+  /// Add a given type to the set of types that have been
+  /// non-confirmed subjects of the canonical type propagation
+  /// optimization.
+  ///
+  /// @param t the dependant type to consider.
+  void
+  add_to_types_with_non_confirmed_propagated_ct(const type_base *t)
+  {
+    uintptr_t v = reinterpret_cast<uintptr_t>(t);
+    types_with_non_confirmed_propagated_ct_.insert(v);
   }
 
   /// Remove a given type from the set of types that have been
@@ -950,11 +1179,68 @@ struct environment::priv
 #endif
 };// end struct environment::priv
 
+/// Compute the canonical type for all the IR types of the system.
+///
+/// After invoking this function, the time it takes to compare two
+/// types of the IR is equivalent to the time it takes to compare
+/// their pointer value.  That is faster than performing a structural
+/// (A.K.A. member-wise) comparison.
+///
+/// Note that this function performs some sanity checks after* the
+/// canonicalization process.  It ensures that at the end of the
+/// canonicalization process, all types have been canonicalized.  This
+/// is important because the canonicalization algorithm sometimes
+/// clears some canonical types after having speculatively set them
+/// for performance purposes.  At the end of the process however, all
+/// types must be canonicalized, and this function detects violations
+/// of that assertion.
+///
+/// @tparam input_iterator the type of the input iterator of the @p
+/// beging and @p end.
+///
+/// @tparam deref_lambda a lambda function which takes in parameter
+/// the input iterator of type @p input_iterator and dereferences it
+/// to return the type to canonicalize.
+///
+/// @param begin an iterator pointing to the first type of the set of types
+/// to canonicalize.
+///
+/// @param end an iterator pointing to the end (after the last type) of
+/// the set of types to canonicalize.
+///
+/// @param deref a lambda function that knows how to dereference the
+/// iterator @p begin to return the type to canonicalize.
+template<typename input_iterator,
+	 typename deref_lambda>
+void
+canonicalize_types(const input_iterator& begin,
+		   const input_iterator& end,
+		   deref_lambda deref)
+{
+  if (begin == end)
+    return;
+
+  // First, let's compute the canonical type of this type.
+  for (auto t = begin; t != end; ++t)
+    canonicalize(deref(t));
+
+#ifdef WITH_DEBUG_CT_PROPAGATION
+  // Then now, make sure that all types -- which propagated canonical
+  // type has been cleared -- have been canonicalized.  In other
+  // words, the set of types which have been recorded because their
+  // propagated canonical type has been cleared must be empty.
+  const environment& env = deref(begin)->get_environment();
+  pointer_set to_canonicalize =
+    env.priv_->types_with_cleared_propagated_ct();
+
+  ABG_ASSERT(to_canonicalize.empty());
+#endif // WITH_DEBUG_CT_PROPAGATION
+}
+
 // <class_or_union::priv definitions>
 struct class_or_union::priv
 {
   typedef_decl_wptr		naming_typedef_;
-  member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
   member_functions		member_functions_;
@@ -969,11 +1255,9 @@ struct class_or_union::priv
   priv()
   {}
 
-  priv(class_or_union::member_types& mbr_types,
-       class_or_union::data_members& data_mbrs,
+  priv(class_or_union::data_members& data_mbrs,
        class_or_union::member_functions& mbr_fns)
-    : member_types_(mbr_types),
-      data_members_(data_mbrs),
+    : data_members_(data_mbrs),
       member_functions_(mbr_fns)
   {
     for (data_members::const_iterator i = data_members_.begin();
@@ -1001,11 +1285,10 @@ struct class_or_union::priv
   mark_as_being_compared(const class_or_union& first,
 			 const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.insert
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+    const environment& env = first.get_environment();
+
+    env.priv_->left_classes_being_compared_.insert(&first);
+    env.priv_->right_classes_being_compared_.insert(&second);
   }
 
   /// Mark a pair of classes or unions as being currently compared
@@ -1064,11 +1347,10 @@ struct class_or_union::priv
   unmark_as_being_compared(const class_or_union& first,
 			   const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->classes_being_compared_.erase
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+    const environment& env = first.get_environment();
+
+    env.priv_->left_classes_being_compared_.erase(&first);
+    env.priv_->right_classes_being_compared_.erase(&second);
   }
 
   /// If a pair of class_or_union has been previously marked as
@@ -1106,12 +1388,12 @@ struct class_or_union::priv
   comparison_started(const class_or_union& first,
 		     const class_or_union& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->
-      classes_being_compared_.count
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>((&second))));
+    const environment& env = first.get_environment();
+
+    return (env.priv_->left_classes_being_compared_.count(&first)
+	    || env.priv_->right_classes_being_compared_.count(&second)
+	    || env.priv_->right_classes_being_compared_.count(&first)
+	    || env.priv_->left_classes_being_compared_.count(&second));
   }
 
   /// Test if a pair of class_or_union is being currently compared.
@@ -1167,11 +1449,10 @@ struct function_type::priv
   mark_as_being_compared(const function_type& first,
 			 const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.insert
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+    const environment& env = first.get_environment();
+
+    env.priv_->left_fn_types_being_compared_.insert(&first);
+    env.priv_->right_fn_types_being_compared_.insert(&second);
   }
 
   /// Mark a given pair of @ref function_type as being compared.
@@ -1185,11 +1466,10 @@ struct function_type::priv
   unmark_as_being_compared(const function_type& first,
 			   const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    env->priv_->fn_types_being_compared_.erase
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+    const environment& env = first.get_environment();
+
+    env.priv_->left_fn_types_being_compared_.erase(&first);
+    env.priv_->right_fn_types_being_compared_.erase(&second);
   }
 
   /// Tests if a @ref function_type is currently being compared.
@@ -1201,11 +1481,11 @@ struct function_type::priv
   comparison_started(const function_type& first,
 		     const function_type& second) const
   {
-    const environment* env = first.get_environment();
-    ABG_ASSERT(env);
-    return env->priv_->fn_types_being_compared_.count
-      (std::make_pair(reinterpret_cast<uint64_t>(&first),
-		      reinterpret_cast<uint64_t>(&second)));
+    const environment& env = first.get_environment();
+
+    return (env.priv_->left_fn_types_being_compared_.count(&first)
+	    ||
+	    env.priv_->right_fn_types_being_compared_.count(&second));
   }
 };// end struc function_type::priv
 

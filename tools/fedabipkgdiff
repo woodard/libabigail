@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # -*- Mode: Python
 #
-# Copyright (C) 2013-2016 Red Hat, Inc.
+# Copyright (C) 2013-2023 Red Hat, Inc.
 #
 # Author: Chenxiong Qi
 
@@ -20,6 +20,7 @@ import shutil
 import six
 import subprocess
 import sys
+import time
 
 from collections import namedtuple
 from itertools import chain
@@ -612,26 +613,18 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
         debuginfo_list1 = []
         debuginfo_list2 = []
 
-        # If this is a *devel* package we are looking at, then get all
-        # the debug info packages associated to with the main package
-        # and stick them into the resulting comparison half.
+        # Get all debug info packages associated to with the main
+        # package and stick them into the resulting comparison half.
 
-        if _rpm.is_devel:
-            debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
-        else:
-            debuginfo_list1.append(rpm_col1.get_matching_debuginfo(_rpm))
-
+        debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
         devel1 = rpm_col1.get_sibling_devel(_rpm)
 
         if global_config.self_compare:
             debuginfo_list2 = debuginfo_list1
             devel2 = devel1
         else:
-            if rpm2.is_devel:
-                debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
-            else:
-                debuginfo_list2.append(rpm_col2.get_matching_debuginfo(rpm2))
-            devel2 = rpm_col2.get_sibling_devel(rpm2)
+             debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
+             devel2 = rpm_col2.get_sibling_devel(rpm2)
 
         yield (ComparisonHalf(subject=_rpm,
                               ancillary_debug=debuginfo_list1,
@@ -1195,9 +1188,14 @@ def abipkgdiff(cmp_half1, cmp_half2):
     # then we get its output.
     #
 
+    sleeptime = 0.2
     while True:
         if proc.poll() != None:
             break
+        time.sleep(sleeptime)
+        # cap the sleep time at 1.6s
+        if sleeptime < 2.0:
+            sleeptime = sleeptime * 2
 
     stdout = ''.join(proc.stdout.readlines())
     stderr = ''.join(proc.stderr.readlines())

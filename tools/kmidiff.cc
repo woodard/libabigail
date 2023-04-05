@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2022 Red Hat, Inc.
+// Copyright (C) 2017-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -29,10 +29,11 @@ using std::vector;
 using std::ostream;
 using std::cout;
 using std::cerr;
+using abg_compat::optional;
 
 using namespace abigail::tools_utils;
-using namespace abigail::dwarf_reader;
 using namespace abigail::ir;
+using namespace abigail;
 
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
@@ -47,7 +48,6 @@ using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
-using abigail::xml_reader::read_corpus_group_from_native_xml_file;
 
 /// The options of this program.
 struct options
@@ -56,12 +56,17 @@ struct options
   bool			display_version;
   bool			verbose;
   bool			missing_operand;
+  bool			perform_change_categorization;
   bool			leaf_changes_only;
   bool			show_hexadecimal_values;
   bool			show_offsets_sizes_in_bits;
   bool			show_impacted_interfaces;
+  optional<bool>	exported_interfaces_only;
 #ifdef WITH_CTF
   bool			use_ctf;
+#endif
+#ifdef WITH_BTF
+  bool			use_btf;
 #endif
   string		wrong_option;
   string		kernel_dist_root1;
@@ -80,6 +85,7 @@ struct options
       display_version(),
       verbose(),
       missing_operand(),
+      perform_change_categorization(true),
       leaf_changes_only(true),
       show_hexadecimal_values(true),
       show_offsets_sizes_in_bits(false),
@@ -87,6 +93,10 @@ struct options
 #ifdef WITH_CTF
       ,
       use_ctf(false)
+#endif
+#ifdef WITH_BTF
+    ,
+      use_btf(false)
 #endif
   {}
 }; // end struct options.
@@ -117,9 +127,17 @@ display_usage(const string& prog_name, ostream& out)
 #ifdef WITH_CTF
     << " --ctf use CTF instead of DWARF in ELF files\n"
 #endif
+#ifdef WITH_BTF
+    << " --btf use BTF instead of DWARF in ELF files\n"
+#endif
+    << " --no-change-categorization | -x don't perform categorization "
+    "of changes, for speed purposes\n"
     << " --impacted-interfaces|-i  show interfaces impacted by ABI changes\n"
     << " --full-impact|-f  show the full impact of changes on top-most "
 	 "interfaces\n"
+    << " --exported-interfaces-only  analyze exported interfaces only\n"
+    << " --allow-non-exported-interfaces  analyze interfaces that "
+    "might not be exported\n"
     << " --show-bytes  show size and offsets in bytes\n"
     << " --show-bits  show size and offsets in bits\n"
     << " --show-hex  show size and offset in hexadecimal\n"
@@ -256,12 +274,23 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--ctf"))
 	opts.use_ctf = true;
 #endif
+#ifdef WITH_BTF
+      else if (!strcmp(argv[i], "--btf"))
+	opts.use_btf = true;
+#endif
+      else if (!strcmp(argv[i], "--no-change-categorization")
+	       || !strcmp(argv[i], "-x"))
+	opts.perform_change_categorization = false;
       else if (!strcmp(argv[i], "--impacted-interfaces")
 	       || !strcmp(argv[i], "-i"))
 	opts.show_impacted_interfaces = true;
       else if (!strcmp(argv[i], "--full-impact")
 	       || !strcmp(argv[i], "-f"))
 	opts.leaf_changes_only = false;
+      else if (!strcmp(argv[i], "--exported-interfaces-only"))
+	opts.exported_interfaces_only = true;
+      else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
+	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--show-bytes"))
 	opts.show_offsets_sizes_in_bits = false;
       else if (!strcmp(argv[i], "--show-bits"))
@@ -322,6 +351,7 @@ set_diff_context(diff_context_sptr ctxt, const options& opts)
   ctxt->show_linkage_names(false);
   ctxt->show_symbols_unreferenced_by_debug_info
     (true);
+  ctxt->perform_change_categorization(opts.perform_change_categorization);
   ctxt->show_leaf_changes_only(opts.leaf_changes_only);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
   ctxt->show_hex_values(opts.show_hexadecimal_values);
@@ -406,15 +436,22 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  environment_sptr env(new environment);
+  environment env;
+
+  if (opts.exported_interfaces_only.has_value())
+    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   corpus_group_sptr group1, group2;
   string debug_info_root_dir;
-  corpus::origin origin =
+  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
 #ifdef WITH_CTF
-   opts.use_ctf ? corpus::CTF_ORIGIN :
+  if (opts.use_ctf)
+    requested_fe_kind = corpus::CTF_ORIGIN;
 #endif
-   corpus::DWARF_ORIGIN;
+#ifdef WITH_BTF
+  if (opts.use_btf)
+    requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
 
   if (!opts.kernel_dist_root1.empty())
     {
@@ -432,14 +469,14 @@ main(int argc, char* argv[])
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
-						      opts.verbose,
-						      env, origin);
+						      opts.verbose, env,
+						      requested_fe_kind);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root1, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group1 =
-	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root1,
-						 env.get());
+	  abixml::read_corpus_group_from_abixml_file(opts.kernel_dist_root1,
+						     env);
 
     }
 
@@ -458,14 +495,14 @@ main(int argc, char* argv[])
 						      opts.suppression_paths,
 						      opts.kabi_whitelist_paths,
 						      opts.read_time_supprs,
-						      opts.verbose,
-						      env, origin);
+						      opts.verbose, env,
+						      requested_fe_kind);
 	  print_kernel_dist_binary_paths_under(opts.kernel_dist_root2, opts);
 	}
       else if (ftype == FILE_TYPE_XML_CORPUS_GROUP)
 	group2 =
-	  read_corpus_group_from_native_xml_file(opts.kernel_dist_root2,
-						 env.get());
+	  abixml::read_corpus_group_from_abixml_file(opts.kernel_dist_root2,
+						     env);
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;

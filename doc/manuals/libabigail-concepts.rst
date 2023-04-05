@@ -423,6 +423,54 @@ The potential properties of this sections are listed below:
  defined in header files whose path match the regular expression
  provided a value of the property.
 
+ .. _suppr_has_data_member_label:
+
+* ``has_data_member``
+
+  Usage:
+
+    ``has_data_member`` ``=`` <``list-of-data-member-names``>
+
+Suppresses change reports involving a type which contains data members
+whose names are provided in the list value of this property.
+
+A usage examples of this property would be: ::
+
+  has_data_member = {private_data_member0, private_data_member1}
+
+
+The property above would match any type which contains at least two
+data members whose names are ``private_data_member0`` and
+``private_data_member1``.
+
+Another usage examples of this property would be: ::
+
+  has_data_member = another_private_data_member
+
+The property above would match any type which contains
+a data member which name is ``another_private_data_member0``.
+
+ .. _suppr_has_data_member_regexp_label:
+
+* ``has_data_member_regexp``
+
+  Usage:
+
+    ``has_data_member_regexp`` ``=`` <``a-regular-expression``>
+
+Suppresses change reports involving a type which contains data members
+whose names match the regular expression provided as the value of this
+property.
+
+A usage examples of this property would be: ::
+
+  has_data_member_regexp = ^private_data_member
+
+The property above would match any type which contains data members
+whose names match the regular expression ``^private_data_member``.  In
+other words, it would match any type which contains data members whose
+names start with the string "private_data_member".
+
  .. _suppr_has_data_member_inserted_at_label:
 
 * ``has_data_member_inserted_at``
@@ -433,9 +481,11 @@ The potential properties of this sections are listed below:
 
  Suppresses change reports involving a type which has at least one
  data member inserted at an offset specified by the property value
- ``offset-in-bit``.  Please note that if a type has a change in which
- at least one of its data members is removed or its size is reduced,
- the type will *NOT* be suppressed by the evaluation of this property.
+ ``offset-in-bit``.  Please note that if the size of the type changed,
+ then the type change will *NOT* be suppressed by the evaluation of
+ this property, unless the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  The value ``offset-in-bit`` is either:
 
@@ -443,24 +493,48 @@ The potential properties of this sections are listed below:
 	   offset of the insertion point of the data member, starting
 	   from the beginning of the relevant structure or class.
 
-	 - the keyword ``end`` which is a named constant which value
-	   equals the offset of the end of the of the structure or
-	   class.
+.. _suppr_data_member_offset_selector_expressions_label:
 
-	 - the function call expression
-	   ``offset_of(data-member-name)`` where `data-member-name` is
-	   the name of a given data member of the relevant structure
-	   or class.  The value of this function call expression is an
-	   integer that represents the offset of the data member
-	   denoted by ``data-member-name``.
+	 - data member offset selector expressions, such as:
 
-	 - the function call expression
-	   ``offset_after(data-member-name)`` where `data-member-name`
-	   is the name of a given data member of the relevant
-	   structure or class.  The value of this function call
-	   expression is an integer that represents the offset of the
-	   point that comes right after the region occupied by the
-	   data member denoted by ``data-member-name``.
+	     - the keyword ``end`` which is a named constant which value
+	       equals the offset of the end of the of the structure or
+	       class.
+
+	     - the function call expression
+	       ``offset_of(data-member-name)`` where `data-member-name` is
+	       the name of a given data member of the relevant structure
+	       or class.  The value of this function call expression is an
+	       integer that represents the offset of the data member
+	       denoted by ``data-member-name``.
+
+	     - the function call expression
+	       ``offset_after(data-member-name)`` where `data-member-name`
+	       is the name of a given data member of the relevant
+	       structure or class.  The value of this function call
+	       expression is an integer that represents the offset of the
+	       point that comes right after the region occupied by the
+	       data member denoted by ``data-member-name``.
+
+	     - the function call expression
+	       ``offset_of_first_data_member_regexp(data-member-name-regexp)``
+	       where `data-member-name-regexp` is a regular expression
+	       matching a data member.  The value of this function
+	       call expression is an integer that represents the
+	       offset of the first data member which name matches the
+	       regular expression argument.  If no data member of a
+	       given class type matches the regular expression, then
+	       the class type won't match the current directive.
+
+	     - the function call expression
+	       ``offset_of_last_data_member_regexp(data-member-name-regexp)``
+	       where `data-member-name-regexp` is a regular expression
+	       matching a data member.  The value of this function
+	       call expression is an integer that represents the
+	       offset of the last data member which name matches the
+	       regular expression argument.  If no data member of a
+	       given class type matches the regular expression, then
+	       the class type won't match the current directive.
 
   .. _suppr_has_data_member_inserted_between_label:
 
@@ -477,9 +551,16 @@ The potential properties of this sections are listed below:
  the values ``range-begin`` and ``range-end`` can be of the same form
  as the :ref:`has_data_member_inserted_at
  <suppr_has_data_member_inserted_at_label>` property above.  Please
- also note that if a type has a change in which at least one of its
- data members is removed or its size is reduced, the type will *NOT* be
- suppressed by the evaluation of this property.
+ also note that if the size of the type changed, then the type change
+ will *NOT* be suppressed by the evaluation of this property, unless
+ the :ref:`has_size_change<suppr_has_size_change_property_label>`
+ property is present and set to ``yes``.  Note that data member
+ deletions happening in the range between ``range-begin`` and
+ ``range-end`` won't prevent the type change from being suppressed by
+ the evaluation of this property if the size of the type doesn't
+ change or if the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  Usage examples of this properties are: ::
 
@@ -516,9 +597,15 @@ The potential properties of this sections are listed below:
  the ranges are of the same kind as for the
  :ref:`has_data_member_inserted_at
  <suppr_has_data_member_inserted_at_label>` property above.  Please
- note that if a type has a change in which at least one of its data
- members is removed or its size is reduced, the type will *NOT* be
- suppressed by the evaluation of this property.
+ also note that if the size of the type changed, then the type will
+ *NOT* be suppressed by the evaluation of this property, unless the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.  Note that data member deletions
+ happening in the defined ranges won't prevent the type change from
+ being suppressed by the evaluation of this property if the size of
+ the type doesn't change or if the
+ :ref:`has_size_change<suppr_has_size_change_property_label>` property
+ is present and set to ``yes``.
 
  Another usage example of this property is thus: ::
 
@@ -527,6 +614,23 @@ The potential properties of this sections are listed below:
 	  {offset_after(member0), offset_of(member1)},
 	  {72, end}
      }
+
+
+ .. _suppr_has_size_change_property_label:
+* ``has_size_change``
+
+ Usage:
+
+   ``has_size_change`` ``=`` yes | no
+
+
+This property is to be used in conjunction with the properties
+:ref:`has_data_member_inserted_between<suppr_has_data_member_inserted_between_label>`
+and
+:ref:`has_data_members_inserted_between<suppr_has_data_members_inserted_between_label>`.
+Those properties will not match a type change if the size of the type
+changes, unless the ``has_size_changes`` property is set to ``yes``.
+
 
  .. _suppr_accessed_through_property_label:
 

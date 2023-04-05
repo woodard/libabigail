@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 
 #include <string>
 #include <fstream>
@@ -14,6 +14,8 @@ using std::string;
 using std::ofstream;
 using std::cerr;
 using std::cout;
+
+using namespace abigail;
 
 ///@file
 ///
@@ -155,14 +157,13 @@ main(int argc, char **argv)
 
   string file_name = argv[1];
 
-  abigail::ir::environment_sptr env(new abigail::ir::environment);
+  abigail::ir::environment env;
   abigail::corpus_sptr c;
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_OK;
   std::vector<char**> di_roots;
-  if (!(c = abigail::dwarf_reader::read_corpus_from_elf(file_name, di_roots,
-							env.get(),
-							/*load_all_type=*/false,
-							status)))
+  if (!(c = dwarf::read_corpus_from_elf(file_name, di_roots, env,
+					/*load_all_type=*/false,
+					status)))
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;

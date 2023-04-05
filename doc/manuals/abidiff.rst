@@ -12,11 +12,15 @@ This tool can also compare the textual representations of the ABI of
 two ELF binaries (as emitted by ``abidw``) or an ELF binary against a
 textual representation of another ELF binary.
 
-For a comprehensive ABI change report that includes changes about
-function and variable sub-types, the two input shared libraries must
-be accompanied with their debug information in `DWARF`_ format.
-Otherwise, only `ELF`_ symbols that were added or removed are
-reported.
+For a comprehensive ABI change report between two input shared
+libraries that includes changes about function and variable sub-types,
+``abidiff`` uses by default, debug information in `DWARF`_ format, if
+present, otherwise it compares interfaces using debug information in
+`CTF`_ or `BTF`_ formats, if present. Finally, if no debug info in
+these formats is found, it only considers `ELF`_ symbols and report
+about their addition or removal.
+
+.. include:: tools-use-libabigail.txt
 
 .. _abidiff_invocation_label:
 
@@ -63,14 +67,37 @@ Options
 
     Display a short help about the command and exit.
 
-  * ``--debug``
+  * ``--debug-self-comparison``
 
-    In this mode, error messages are emitted for types which fail type canonicalization.
+    In this mode, error messages are emitted for types which fail type
+    canonicalization, in some circumstances, when comparing a binary
+    against itself.
 
-    This is an optional ebugging and sanity check option.  To enable
+    When comparing a binary against itself, canonical types of the
+    second binary should be equal (as much as possible) to canonical
+    types of the first binary.  When some discrepancies are detected
+    in this mode, an abort signal is emitted and execution is halted.
+    This option should be used while executing the tool in a debugger,
+    for troubleshooting purposes.
+
+    This is an optional debugging and sanity check option.  To enable
     it the libabigail package needs to be configured with
-    the --enable-debug-self-comparison option.
+    the --enable-debug-self-comparison configure option.
 
+  * ``--debug-tc``
+
+    In this mode, the process of type canonicalization is put under
+    heavy scrutiny.  Basically, during type canonicalization, each
+    type comparison is performed twice: once in a structural mode
+    (comparing every sub-type member-wise), and once using canonical
+    comparison.  The two comparisons should yield the same result.
+    Otherwise, an abort signal is emitted and the process can be
+    debugged to understand why the two kinds of comparison yield
+    different results.
+
+    This is an optional debugging and sanity check option.  To enable
+    it the libabigail package needs to be configured with
+    the --enable-debug-type-canonicalization configure option.
 
   * ``--version | -v``
 
@@ -196,6 +223,56 @@ Options
     memory.  It's meant to be mainly used to optimize the memory
     consumption of the tool on binaries with a lot of publicly defined
     and exported types.
+
+  * ``--exported-interfaces-only``
+
+    By default, when looking at the debug information accompanying a
+    binary, this tool analyzes the descriptions of the types reachable
+    by the interfaces (functions and variables) that are visible
+    outside of their translation unit.  Once that analysis is done, an
+    ABI corpus is constructed by only considering the subset of types
+    reachable from interfaces associated to `ELF`_ symbols that are
+    defined and exported by the binary.  It's those final ABI Corpora
+    that are compared by this tool.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    corpora like these can be extremely slow.
+
+    To mitigate that performance issue, this option allows libabigail
+    to only analyze types that are reachable from interfaces
+    associated with defined and exported `ELF`_ symbols.
+
+    Note that this option is turned on by default when analyzing the
+    `Linux Kernel`_.  Otherwise, it's turned off by default.
+
+  * ``--allow-non-exported-interfaces``
+
+    When looking at the debug information accompanying a binary, this
+    tool analyzes the descriptions of the types reachable by the
+    interfaces (functions and variables) that are visible outside of
+    their translation unit.  Once that analysis is done, an ABI corpus
+    is constructed by only considering the subset of types reachable
+    from interfaces associated to `ELF`_ symbols that are defined and
+    exported by the binary.  It's those final ABI Corpora that are
+    compared by this tool.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    Corpora like these can be extremely slow.
+
+    In the presence of an "average sized" binary however one can
+    afford having libabigail analyze all interfaces that are visible
+    outside of their translation unit, using this option.
+
+    Note that this option is turned on by default, unless we are in
+    the presence of the `Linux Kernel`_.
 
   * ``--stat``
 
@@ -504,9 +581,46 @@ Options
     changes.  Added or removed functions and variables do not have any
     diff nodes tree associated to them.
 
+  * ``--no-assume-odr-for-cplusplus``
+
+    When analysing a binary originating from C++ code using `DWARF`_
+    debug information, libabigail assumes the `One Definition Rule`_
+    to speed-up the analysis.  In that case, when several types have
+    the same name in the binary, they are assumed to all be equal.
+
+    This option disables that assumption and instructs libabigail to
+    actually actually compare the types to determine if they are
+    equal.
+
+  * ``--no-leverage-dwarf-factorization``
+
+    When analysing a binary which `DWARF`_ debug information was
+    processed with the `DWZ`_ tool, the type information is supposed
+    to be already factorized.  That context is used by libabigail to
+    perform some speed optimizations.
+
+    This option disables those optimizations.
+
+  * ``--no-change-categorization | -x``
+
+    This option disables the categorization of changes into harmless
+    and harmful changes.  Note that this categorization is a
+    pre-requisite for the filtering of changes so this option disables
+    that filtering.  The goal of this option is to speed-up the
+    execution of the program for cases where the graph of changes is
+    huge and where the user is just interested in looking at, for
+    instance, leaf node changes without caring about their possible
+    impact on interfaces.  In that case, this option would be used
+    along with the ``--leaf-changes-only`` one.
+
   * ``--ctf``
 
-    When comparing binaries, extract ABI information from CTF debug
+    When comparing binaries, extract ABI information from `CTF`_ debug
+    information, if present.
+
+  * ``--btf``
+
+    When comparing binaries, extract ABI information from `BTF`_ debug
     information, if present.
 
   * ``--stats``
@@ -733,4 +847,8 @@ Usage examples
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
-
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html
+.. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _DWZ: https://sourceware.org/dwz

@@ -1,6 +1,33 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+dnl Libabigail version number is handled here with the major and minor
+dnl version numbers.
 m4_define([version_major],   [2])
-m4_define([version_minor],   [1])
+m4_define([version_minor],   [3])
+
+dnl Below are the numbers to handle libabigail.so's versionning
+dnl following the libtool's versionning scheme to handle shared
+dnl libraries' compatibility.
+dnl
+dnl Below are the rules to follow to update the three numbers
+dnl (LIBABIGAIL_SO_CURRENT, LIBABIGAIL_SO_REVISION and LIBABIGAIL_SO_AGE):
+dnl
+dnl 1. If the library source code has changed at all since the last
+dnl    update, then increment LIBABIGAIL_SO_REVISION ('C:R:A' becomes
+dnl    'C:R+1:A').
+dnl 
+dnl 2. If any interfaces have been added, removed, or changed since
+dnl    the last update, increment LIBABIGAIL_SO_CURRENT, and set
+dnl    LIBABIGAIL_REVISION to 0.
+dnl 
+dnl 3. If any interfaces have been added since the last public release,
+dnl    then increment LIBABIGAIL_SO_AGE.
+dnl 
+dnl 4. If any interfaces have been removed or changed since the last
+dnl     public release, then set LIBABIGAIL_SO_AGE to 0.
+m4_define([libabigail_so_current],  [2])
+m4_define([libabigail_so_revision], [0])
+m4_define([libabigail_so_age],      [0])
 
 AC_INIT([libabigail],
 	[version_major.version_minor],
@@ -30,7 +57,7 @@ dnl This one is to be able to run "make check-valgrind"
 dnl and have unit tests run under  der Valgrind.
 m4_include([autoconf-archive/ax_valgrind_check.m4])
 
-AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects tar-ustar parallel-tests])
+AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects dist-xz tar-ustar parallel-tests])
 AM_MAINTAINER_MODE([enable])
 
 AM_SILENT_RULES([yes])
@@ -38,14 +65,28 @@ AM_SILENT_RULES([yes])
 VERSION_MAJOR=version_major
 VERSION_MINOR=version_minor
 VERSION_REVISION=0
+dnl The major version number of the abixml version should be changed
+dnl only if a new version of libabigail cannot read an old version of
+dnl abixml.  This should be very rare and should be avoided as much as
+dnl possible.
 ABIXML_VERSION_MAJOR=2
-ABIXML_VERSION_MINOR=1
+dnl The minor version number of the abixml version should be changed
+dnl each time and old version of libabigail can't handle a new version
+dnl of abixml.  Note however that when the major version number is
+dnl changed, the minor version number should be set to zero.
+ABIXML_VERSION_MINOR=2
+LIBABIGAIL_SO_CURRENT=libabigail_so_current
+LIBABIGAIL_SO_REVISION=libabigail_so_revision
+LIBABIGAIL_SO_AGE=libabigail_so_age
 
 AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_SUBST(ABIXML_VERSION_MAJOR)
 AC_SUBST(ABIXML_VERSION_MINOR)
+AC_SUBST(LIBABIGAIL_SO_CURRENT)
+AC_SUBST(LIBABIGAIL_SO_REVISION)
+AC_SUBST(LIBABIGAIL_SO_AGE)
 
 dnl This VERSION_SUFFIX environment variable is to allow appending
 dnl arbitrary text to the libabigail version string representation.
@@ -82,6 +123,12 @@ AC_ARG_ENABLE(debug-type-canonicalization,
 			     [enable debugging of type canonicalization 'abidw --debug-tc'(default is no)]),
 	      ENABLE_DEBUG_TYPE_CANONICALIZATION=$enableval,
 	      ENABLE_DEBUG_TYPE_CANONICALIZATION=no)
+
+AC_ARG_ENABLE(debug-ct-propagation,
+	      AS_HELP_STRING([--enable-debug-ct-propagation=yes|no],
+			     [enable debugging of canonical type propagation (default is no)]),
+	      ENABLE_DEBUG_CT_PROPAGATION=$enableval,
+	      ENABLE_DEBUG_CT_PROPAGATION=no)
 
 AC_ARG_ENABLE(show-type-use-in-abilint,
 	      AS_HELP_STRING([--enable-show-type-use-in-abilint=yes|no],
@@ -160,8 +207,14 @@ AC_ARG_ENABLE(ctf,
 	      AS_HELP_STRING([--enable-ctf=yes|no],
 			     [disable support of ctf files)]),
 	      ENABLE_CTF=$enableval,
-	      ENABLE_CTF=no)
+	      ENABLE_CTF=auto)
 
+dnl check if user has enabled BTF code
+AC_ARG_ENABLE(btf,
+	      AS_HELP_STRING([--enable-btf=yes|no],
+			     [disable support of btf files)]),
+	      ENABLE_BTF=$enableval,
+	      ENABLE_BTF=auto)
 dnl *************************************************
 dnl check for dependencies
 dnl *************************************************
@@ -278,18 +331,114 @@ AC_SUBST([ELF_LIBS])
 dnl check for libctf presence if CTF code has been enabled by command line
 dnl argument, and then define CTF flag (to build CTF file code) if libctf is
 dnl found on the system
-CTF_LIBS=
-if test x$ENABLE_CTF = xyes; then
+if test x$ENABLE_CTF != xno; then
+  CTF_HEADER=no
+  AC_CHECK_HEADER([ctf.h],
+		  [CTF_HEADER=yes],
+		  [AC_MSG_NOTICE([could not find ctf.h, going to disable CTF support])])
   LIBCTF=
-  AC_CHECK_LIB(ctf, ctf_open, [LIBCTF=yes], [LIBCTF=no])
+  if test x$CTF_HEADER = xyes; then
+       AC_CHECK_LIB(ctf, ctf_open, [LIBCTF=yes], [LIBCTF=no])
+  fi
+
   if test x$LIBCTF = xyes; then
-    AC_MSG_NOTICE([activating CTF code])
+    dnl Test if struct struct ctf_dict_t is present.
+    AC_LANG(C++)
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#include <ctf-api.h>
+					ctf_dict_t* c;]])],
+		      [HAVE_CTF_DICT_T=yes],
+		      [HAVE_CTF_DICT_T=no])
+
+    if test x$HAVE_CTF_DICT_T = xyes; then
+      AC_DEFINE([HAVE_CTF_DICT_T], 1, [struct ctf_dict_t is present])
+    fi
+  fi
+
+  if test x$HAVE_CTF_DICT_T = xno; then
+     AC_MSG_NOTICE([Some needed data structures are missing from ctf-api.h. Disabling CTF support.])
+     LIBCTF=no
+  fi
+
+  if test x$LIBCTF = xyes; then
+    AC_MSG_NOTICE([CTF support enabled])
     AC_DEFINE([WITH_CTF], 1,
 	     [Defined if user enables and system has the libctf library])
     CTF_LIBS=-lctf
+    ENABLE_CTF=yes
   else
-    AC_MSG_NOTICE([CTF enabled but no libctf found])
+    AC_MSG_NOTICE([no suitable libctf found, CTF support was disabled])
     ENABLE_CTF=no
+  fi
+fi
+
+dnl configure BTF usage
+BPF_LIBS=
+if test x$ENABLE_BTF != xno; then
+  AC_CHECK_HEADER([bpf/btf.h],
+		  [ENABLE_BTF=yes],
+		  [AC_MSG_NOTICE([could not find bpf/btf.h])])
+  if test x$ENABLE_BTF = xyes; then
+    AC_MSG_NOTICE([enable BTF support])
+    ENABLE_BTF=yes
+    AC_DEFINE([WITH_BTF], 1,
+	     [Defined if user enabled BTF usage])
+    BPF_LIBS=-lbpf
+  else
+    AC_MSG_NOTICE([BTF support was disabled])
+    ENABLE_BTF=no
+  fi
+
+dnl Test if various functions and structs are present.
+
+  if test x$ENABLE_BTF = xyes; then
+    dnl Test if struct btf_enum64 is present.
+    AC_CHECK_TYPE([struct btf_enum64],
+    		  [HAVE_BTF_ENUM64=yes],
+		  [HAVE_BTF_ENUM64=no],
+		  [#include <bpf/btf.h>])
+
+    if test x$HAVE_BTF_ENUM64 = xyes; then
+      AC_DEFINE([WITH_BTF_ENUM64], 1, [struct btf_enum64 is present])
+    fi
+
+    dnl Test if btf__get_nr_types is present
+    AC_CHECK_DECL([btf__get_nr_types],
+		  [HAVE_BTF__GET_NR_TYPES=yes],
+		  [HAVE_BTF__GET_NR_TYPES=no],
+		  [#include <bpf/btf.h>])
+
+    if test x$HAVE_BTF__GET_NR_TYPES = xyes; then
+       AC_DEFINE(WITH_BTF__GET_NR_TYPES, 1, [The function btf__get_nr_types is present])
+    fi
+
+    dnl Test if btf__type_cnt is present
+    AC_CHECK_DECL([btf__type_cnt],
+		  [HAVE_BTF__TYPE_CNT=yes],
+		  [HAVE_BTF__TYPE_CNT=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF__TYPE_CNT = xyes; then
+       AC_DEFINE(WITH_BTF__TYPE_CNT, 1, [The function btf__type_cnt is present])
+    fi
+
+    dnl Test if BTF_KIND_TYPE_TAG exists
+    AC_CHECK_DECL([int kind = BTF_KIND_TYPE_TAG],
+    		  [HAVE_BTF_KIND_TYPE_TAG=yes],
+		  [HAVE_BTF_KIND_TYPE_TAG=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF_KIND_TYPE_TAG = xyes; then
+       AC_DEFINE([WITH_BTF_KIND_TYPE_TAG], 1,
+       [The BTF_KIND_TYPE_TAG enumerator is present])
+    fi
+
+    dnl Test if BTF_KIND_DECL_TAG exists
+    AC_CHECK_DECL([int kind = BTF_KIND_DECL_TAG],
+    		  [HAVE_BTF_KIND_DECL_TAG=yes],
+		  [HAVE_BTF_KIND_DECL_TAG=no],
+		  [#include <bpf/btf.h>])
+    if test x$HAVE_BTF_KIND_DECL_TAG = xyes; then
+       AC_DEFINE([WITH_BTF_KIND_DECL_TAG], 1,
+       [The BTF_KIND_DECL_TAG enumerator is present])
+    fi
   fi
 fi
 
@@ -400,6 +549,15 @@ else
 fi
 
 AM_CONDITIONAL(ENABLE_DEBUG_TYPE_CANONICALIZATION, test x$ENABLE_DEBUG_TYPE_CANONICALIZATION = xyes)
+
+if test x$ENABLE_DEBUG_CT_PROPAGATION = xyes; then
+   AC_DEFINE([WITH_DEBUG_CT_PROPAGATION],
+   	     1,
+	     [compile support of debugging canonical type propagation])
+   AC_MSG_NOTICE([support of debugging canonical type propagation is enabled])
+else
+   AC_MSG_NOTICE([support of debugging canonical type propagation is disabled])
+fi
 
 dnl Check for the dpkg program
 if test x$ENABLE_DEB = xauto -o x$ENABLE_DEB = xyes; then
@@ -686,7 +844,7 @@ AX_VALGRIND_CHECK
 
 dnl Set the list of libraries libabigail depends on
 
-DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS $CTF_LIBS"
+DEPS_LIBS="$XML_LIBS $ELF_LIBS $DW_LIBS $CTF_LIBS $BPF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
@@ -727,6 +885,7 @@ fi
 dnl Set a few Automake conditionals
 
 AM_CONDITIONAL([CTF_READER],[test "x$ENABLE_CTF" = "xyes"])
+AM_CONDITIONAL([BTF_READER],[test "x$ENABLE_BTF" = "xyes"])
 
 dnl Set the level of C++ standard we use.
 CXXFLAGS="$CXXFLAGS -std=$CXX_STANDARD"
@@ -1030,12 +1189,14 @@ AC_MSG_NOTICE([
     Enable abilint --show-type-use <type-id>       : ${ENABLE_SHOW_TYPE_USE_IN_ABILINT}
     Enable self comparison debugging               : ${ENABLE_DEBUG_SELF_COMPARISON}
     Enable type canonicalization debugging         : ${ENABLE_DEBUG_TYPE_CANONICALIZATION}
+    Enable propagated canonical type debugging	   : ${ENABLE_DEBUG_CT_PROPAGATION}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
     Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
     Enable python 3				   : ${ENABLE_PYTHON3}
     Enable CTF front-end                           : ${ENABLE_CTF}
+    Enable BTF front-end                           : ${ENABLE_BTF}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Enable build with -fsanitize=address    	   : ${ENABLE_ASAN}
     Enable build with -fsanitize=memory    	   : ${ENABLE_MSAN}

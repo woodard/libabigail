@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -28,14 +28,12 @@ using abigail::tests::read_common::display_usage;
 using abigail::tests::read_common::options;
 using abigail::tests::get_build_dir;
 
-using abigail::dwarf_reader::read_corpus_from_elf;
-using abigail::dwarf_reader::read_context;
-using abigail::dwarf_reader::read_context_sptr;
-using abigail::dwarf_reader::create_read_context;
 using abigail::xml_writer::SEQUENCE_TYPE_ID_STYLE;
 using abigail::xml_writer::HASH_TYPE_ID_STYLE;
 using abigail::xml_writer::type_id_style_kind;
 using abigail::tools_utils::emit_prefix;
+
+using namespace abigail;
 
 static InOutSpec in_out_specs[] =
 {
@@ -45,7 +43,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test0.abi",
-    "output/test-read-dwarf/test0.abi"
+    "output/test-read-dwarf/test0.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test0",
@@ -53,7 +52,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test0.hash.abi",
-    "output/test-read-dwarf/test0.hash.abi"
+    "output/test-read-dwarf/test0.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test1",
@@ -61,7 +61,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test1.abi",
-    "output/test-read-dwarf/test1.abi"
+    "output/test-read-dwarf/test1.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test1",
@@ -69,7 +70,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test1.hash.abi",
-    "output/test-read-dwarf/test1.hash.abi"
+    "output/test-read-dwarf/test1.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test2.so",
@@ -77,7 +79,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test2.so.abi",
-    "output/test-read-dwarf/test2.so.abi"
+    "output/test-read-dwarf/test2.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test2.so",
@@ -85,7 +88,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test2.so.hash.abi",
-    "output/test-read-dwarf/test2.so.hash.abi"
+    "output/test-read-dwarf/test2.so.hash.abi",
+    NULL,
   },
   {
     "data/test-read-common/test3.so",
@@ -93,7 +97,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3.so.abi",
-    "output/test-read-dwarf/test3.so.abi"
+    "output/test-read-dwarf/test3.so.abi",
+    NULL,
   },
   {
     "data/test-read-common/test3.so",
@@ -101,7 +106,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3.so.hash.abi",
-    "output/test-read-dwarf/test3.so.hash.abi"
+    "output/test-read-dwarf/test3.so.hash.abi",
+    NULL,
   },
   // suppress all except the main symbol of a group of aliases
   {
@@ -110,7 +116,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-1.so.hash.abi",
-    "output/test-read-dwarf/test3-alias-1.so.hash.abi"
+    "output/test-read-dwarf/test3-alias-1.so.hash.abi",
+    NULL,
   },
   // suppress the main symbol of a group of aliases
   {
@@ -119,7 +126,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-2.so.hash.abi",
-    "output/test-read-dwarf/test3-alias-2.so.hash.abi"
+    "output/test-read-dwarf/test3-alias-2.so.hash.abi",
+    NULL,
   },
   // suppress all except one non main symbol of a group of aliases
   {
@@ -128,7 +136,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-3.so.hash.abi",
-    "output/test-read-dwarf/test3-alias-3.so.hash.abi"
+    "output/test-read-dwarf/test3-alias-3.so.hash.abi",
+    NULL,
   },
   // suppress all symbols of a group of aliases
   {
@@ -137,7 +146,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test3-alias-4.so.hash.abi",
-    "output/test-read-dwarf/test3-alias-4.so.hash.abi"
+    "output/test-read-dwarf/test3-alias-4.so.hash.abi",
+    NULL,
   },
   // suppress the main symbols with alias (function+variable) in .o file
   {
@@ -147,6 +157,7 @@ static InOutSpec in_out_specs[] =
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-suppressed-alias.o.abi",
     "output/test-read-dwarf/test-suppressed-alias.o.abi",
+    NULL,
   },
   {
     "data/test-read-common/test4.so",
@@ -154,7 +165,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test4.so.abi",
-    "output/test-read-dwarf/test4.so.abi"
+    "output/test-read-dwarf/test4.so.abi",
+    NULL,
   },
   {
     "data/test-read-common/test4.so",
@@ -162,7 +174,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test4.so.hash.abi",
-    "output/test-read-dwarf/test4.so.hash.abi"
+    "output/test-read-dwarf/test4.so.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test5.o",
@@ -170,7 +183,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test5.o.abi",
-    "output/test-read-dwarf/test5.o.abi"
+    "output/test-read-dwarf/test5.o.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test5.o",
@@ -178,7 +192,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test5.o.hash.abi",
-    "output/test-read-dwarf/test5.o.hash.abi"
+    "output/test-read-dwarf/test5.o.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test6.so",
@@ -186,7 +201,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test6.so.abi",
-    "output/test-read-dwarf/test6.so.abi"
+    "output/test-read-dwarf/test6.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test6.so",
@@ -194,7 +210,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test6.so.hash.abi",
-    "output/test-read-dwarf/test6.so.hash.abi"
+    "output/test-read-dwarf/test6.so.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test7.so",
@@ -202,7 +219,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test7.so.abi",
-    "output/test-read-dwarf/test7.so.abi"
+    "output/test-read-dwarf/test7.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test7.so",
@@ -210,7 +228,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test7.so.hash.abi",
-    "output/test-read-dwarf/test7.so.hash.abi"
+    "output/test-read-dwarf/test7.so.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
@@ -218,7 +237,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
-    "output/test-read-dwarf/test8-qualified-this-pointer.so.abi"
+    "output/test-read-dwarf/test8-qualified-this-pointer.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
@@ -226,7 +246,8 @@ static InOutSpec in_out_specs[] =
     "",
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi",
-    "output/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi"
+    "output/test-read-dwarf/test8-qualified-this-pointer.so.hash.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test9-pr18818-clang.so",
@@ -234,7 +255,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test9-pr18818-clang.so.abi",
-    "output/test-read-dwarf/test9-pr18818-clang.so.abi"
+    "output/test-read-dwarf/test9-pr18818-clang.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test10-pr18818-gcc.so",
@@ -242,7 +264,8 @@ static InOutSpec in_out_specs[] =
     "",
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test10-pr18818-gcc.so.abi",
-    "output/test-read-dwarf/test10-pr18818-gcc.so.abi"
+    "output/test-read-dwarf/test10-pr18818-gcc.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test11-pr18828.so",
@@ -251,6 +274,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test11-pr18828.so.abi",
     "output/test-read-dwarf/test11-pr18828.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test12-pr18844.so",
@@ -259,6 +283,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test12-pr18844.so.abi",
     "output/test-read-dwarf/test12-pr18844.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test13-pr18894.so",
@@ -267,6 +292,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test13-pr18894.so.abi",
     "output/test-read-dwarf/test13-pr18894.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test14-pr18893.so",
@@ -275,6 +301,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test14-pr18893.so.abi",
     "output/test-read-dwarf/test14-pr18893.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test15-pr18892.so",
@@ -283,6 +310,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test15-pr18892.so.abi",
     "output/test-read-dwarf/test15-pr18892.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test16-pr18904.so",
@@ -291,6 +319,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test16-pr18904.so.abi",
     "output/test-read-dwarf/test16-pr18904.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test17-pr19027.so",
@@ -299,6 +328,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test17-pr19027.so.abi",
     "output/test-read-dwarf/test17-pr19027.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so",
@@ -307,6 +337,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
     "output/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so",
@@ -315,6 +346,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
     "output/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so",
@@ -323,6 +355,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
     "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test21-pr19092.so",
@@ -331,6 +364,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test21-pr19092.so.abi",
     "output/test-read-dwarf/test21-pr19092.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so",
@@ -339,6 +373,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
     "output/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/libtest23.so",
@@ -347,6 +382,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest23.so.abi",
     "output/test-read-dwarf/libtest23.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
@@ -355,6 +391,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/libtest24-drop-fns.so",
@@ -363,6 +400,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/libtest24-drop-fns-2.so.abi",
     "output/test-read-dwarf/libtest24-drop-fns-2.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/PR22015-libboost_iostreams.so",
@@ -371,6 +409,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
     "output/test-read-dwarf/PR22015-libboost_iostreams.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/PR22122-libftdc.so",
@@ -379,6 +418,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR22122-libftdc.so.abi",
     "output/test-read-dwarf/PR22122-libftdc.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/PR24378-fn-is-not-scope.o",
@@ -387,6 +427,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR24378-fn-is-not-scope.abi",
     "output/test-read-dwarf/PR24378-fn-is-not-scope.abi",
+    NULL,
   },
 #if defined(HAVE_R_AARCH64_ABS64_MACRO) && defined(HAVE_R_AARCH64_PREL32_MACRO)
   {
@@ -396,6 +437,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25007-sdhci.ko.abi",
     "output/test-read-dwarf/PR25007-sdhci.ko.abi",
+    NULL,
   },
 #endif
 #if defined HAVE_DW_FORM_strx
@@ -406,6 +448,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
     "output/test-read-dwarf/PR25042-libgdbm-clang-dwarf5.so.6.0.0.abi",
+    NULL,
   },
 #endif
   {
@@ -413,6 +456,7 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
+    NULL,
     NULL,
     NULL,
   },
@@ -423,12 +467,14 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     NULL,
     NULL,
+    NULL,
   },
   {
     "data/test-read-dwarf/test27-bogus-binary.elf",
     "",
     "",
     SEQUENCE_TYPE_ID_STYLE,
+    NULL,
     NULL,
     NULL,
   },
@@ -439,6 +485,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR26261/PR26261-exe.abi",
     "output/test-read-dwarf/PR26261/PR26261-exe.abi",
+    NULL,
   },
   {
     "data/test-read-common/test-PR26568-1.o",
@@ -447,6 +494,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-PR26568-1.o.abi",
     "output/test-read-dwarf/test-PR26568-1.o.abi",
+    NULL,
   },
   {
     "data/test-read-common/test-PR26568-2.o",
@@ -455,6 +503,7 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-PR26568-2.o.abi",
     "output/test-read-dwarf/test-PR26568-2.o.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test-libandroid.so",
@@ -463,6 +512,7 @@ static InOutSpec in_out_specs[] =
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-libandroid.so.abi",
     "output/test-read-dwarf/test-libandroid.so.abi",
+    NULL,
   },
   {
     "data/test-read-common/PR27700/test-PR27700.o",
@@ -471,6 +521,7 @@ static InOutSpec in_out_specs[] =
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR27700/test-PR27700.abi",
     "output/test-read-dwarf/PR27700/test-PR27700.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/test-libaaudio.so",
@@ -479,6 +530,7 @@ static InOutSpec in_out_specs[] =
     HASH_TYPE_ID_STYLE,
     "data/test-read-dwarf/test-libaaudio.so.abi",
     "output/test-read-dwarf/test-libaaudio.so.abi",
+    NULL,
   },
   {
     "data/test-read-dwarf/PR28584/PR28584-smv.clang.o",
@@ -487,9 +539,43 @@ static InOutSpec in_out_specs[] =
     SEQUENCE_TYPE_ID_STYLE,
     "data/test-read-dwarf/PR28584/PR28584-smv.clang.o.abi",
     "output/test-read-dwarf/PR28584/PR28584-smv.clang.o.abi",
+    NULL,
   },
+  {
+    "data/test-read-dwarf/PR29443-missing-xx.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR29443-missing-xx.o.abi",
+    "output/test-read-dwarf/PR29443-missing-xx.o.abi",
+    NULL,
+  },
+  {
+    "data/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0.abi",
+    "output/test-read-dwarf/PR29692-kdelibs3-libkjava.so.1.0.0.abi",
+    NULL,
+  },
+  // DWARF fallback feature.
+  {
+    "data/test-read-dwarf/test-fallback.o",
+    "",
+    "",
+    SEQUENCE_TYPE_ID_STYLE,
+    "data/test-read-dwarf/test-fallback.abi",
+    "output/test-read-dwarf/test-fallback.abi",
+#ifdef WITH_CTF
+    "--ctf",
+#else
+    NULL,
+#endif
+  },
+
   // This should be the last entry.
-  {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL}
+  {NULL, NULL, NULL, SEQUENCE_TYPE_ID_STYLE, NULL, NULL, NULL}
 };
 
 using abigail::suppr::suppression_sptr;

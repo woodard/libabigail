@@ -36,27 +36,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                                     underlying type 'class std::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' changed:
                                       type name changed from 'std::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' to 'std::__cxx11::list<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >'
                                       type size changed from 128 to 192 (in bits)
-                                      1 base class change:
-                                        'class std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' changed:
-                                          type name changed from 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >' to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >'
-                                          type size changed from 128 to 192 (in bits)
-                                          1 data member change:
-                                            type of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl _M_impl' changed:
-                                              type name changed from 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl' to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl'
-                                              type size changed from 128 to 192 (in bits)
-                                              1 data member change:
-                                                type of 'std::__detail::_List_node_base _M_node' changed:
-                                                  type name changed from 'std::__detail::_List_node_base' to 'std::_List_node<long unsigned int>'
-                                                  type size changed from 128 to 192 (in bits)
-                                                  1 base class insertion:
-                                                    struct std::__detail::_List_node_base
-                                                  2 data member deletions:
-                                                    'std::__detail::_List_node_base* _M_next', at offset 0 (in bits)
-                                                    'std::__detail::_List_node_base* _M_prev', at offset 64 (in bits)
-                                                  1 data member insertion:
-                                                    'unsigned long int _M_data', at offset 128 (in bits)
-                                                and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_List_impl::_M_node'
-                                            and name of 'std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >::_M_impl'
+                                      1 base class deletion:
+                                        class std::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >
+                                      1 base class insertion:
+                                        class std::__cxx11::_List_base<sigc::internal::trackable_callback, std::allocator<sigc::internal::trackable_callback> >
                                   'bool clearing_' offset changed from 128 to 192 (in bits) (by +64 bits)
 
   [C] 'method bool sigc::connection::blocked()' has some indirect sub-type changes:
@@ -125,18 +108,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           type of 'std::list<sigc::slot_base, std::allocator<sigc::slot_base> > slots_' changed:
             type name changed from 'std::list<sigc::slot_base, std::allocator<sigc::slot_base> >' to 'std::__cxx11::list<sigc::slot_base, std::allocator<sigc::slot_base> >'
             type size changed from 128 to 192 (in bits)
-            1 base class change:
-              'class std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >' changed:
-                type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >'
-                type size changed from 128 to 192 (in bits)
-                1 data member change:
-                  type of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl _M_impl' changed:
-                    type name changed from 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl' to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl'
-                    type size changed from 128 to 192 (in bits)
-                    1 data member change:
-                      type of 'std::__detail::_List_node_base _M_node' changed, as reported earlier
-                      and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_List_impl::_M_node'
-                  and name of 'std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl' changed to 'std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_impl'
+            1 base class deletion:
+              class std::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >
+            1 base class insertion:
+              class std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >
 
   [C] 'method bool sigc::internal::signal_impl::blocked()' has some indirect sub-type changes:
     implicit parameter 0 of type 'const sigc::internal::signal_impl*' has sub-type changes:
@@ -148,6 +123,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       pointed to type 'struct sigc::internal::signal_impl' changed, as reported earlier
 
   [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::connect(const sigc::slot_base&)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed:
+        typedef name changed from std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator to std::__cxx11::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator
     implicit parameter 0 of type 'sigc::internal::signal_impl*' has sub-type changes:
       pointed to type 'struct sigc::internal::signal_impl' changed, as reported earlier
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
@@ -155,10 +133,14 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
   [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::erase(sigc::internal::signal_impl::iterator_type)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed, as reported earlier
     implicit parameter 0 of type 'sigc::internal::signal_impl*' has sub-type changes:
       pointed to type 'struct sigc::internal::signal_impl' changed, as reported earlier
 
   [C] 'method sigc::internal::signal_impl::iterator_type sigc::internal::signal_impl::insert(sigc::internal::signal_impl::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef std::list<sigc::slot_base, std::allocator<sigc::slot_base> >::iterator' changed, as reported earlier
     implicit parameter 0 of type 'sigc::internal::signal_impl*' has sub-type changes:
       pointed to type 'struct sigc::internal::signal_impl' changed, as reported earlier
     parameter 2 of type 'const sigc::slot_base&' has sub-type changes:
@@ -223,6 +205,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       pointed to type 'struct sigc::signal_base' changed, as reported earlier
 
   [C] 'method sigc::signal_base::iterator_type sigc::signal_base::connect(const sigc::slot_base&)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     implicit parameter 0 of type 'sigc::signal_base*' has sub-type changes:
       pointed to type 'struct sigc::signal_base' changed, as reported earlier
     parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
@@ -230,6 +214,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
 
   [C] 'method sigc::signal_base::iterator_type sigc::signal_base::erase(sigc::signal_base::iterator_type)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     implicit parameter 0 of type 'sigc::signal_base*' has sub-type changes:
       pointed to type 'struct sigc::signal_base' changed, as reported earlier
 
@@ -241,6 +227,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         unqualified underlying type 'struct sigc::signal_base' changed, as reported earlier
 
   [C] 'method sigc::signal_base::iterator_type sigc::signal_base::insert(sigc::signal_base::iterator_type, const sigc::slot_base&)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'typedef sigc::internal::signal_impl::iterator_type' changed, as reported earlier
     implicit parameter 0 of type 'sigc::signal_base*' has sub-type changes:
       pointed to type 'struct sigc::signal_base' changed, as reported earlier
     parameter 2 of type 'const sigc::slot_base&' has sub-type changes:

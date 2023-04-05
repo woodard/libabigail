@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 
 ///@file
 
@@ -46,6 +46,9 @@
 #include "abg-dwarf-reader.h"
 #ifdef WITH_CTF
 #include "abg-ctf-reader.h"
+#endif
+#ifdef WITH_BTF
+#include "abg-btf-reader.h"
 #endif
 #include "abg-internal.h"
 #include "abg-regex.h"
@@ -405,6 +408,133 @@ is_regular_file(const string& path)
   return false;
 }
 
+/// Test if a directory contains a CTF archive.
+///
+/// @param directory the directory to consider.
+///
+/// @param archive_prefix the prefix of the archive file.
+///
+/// @return true iff @p directory contains a CTF archive file.
+bool
+dir_contains_ctf_archive(const string& directory,
+			 const string& archive_prefix)
+{
+  string ctf_archive = directory + "/" + archive_prefix + ".ctfa";
+  if (file_exists(ctf_archive))
+    return true;
+  return false;
+}
+
+/// Test if an ELF file has DWARF debug info.
+///
+/// This function supports split debug info files as well.
+///
+/// @param elf_file_path the path to the ELF file to consider.
+///
+/// @param debug_info_root a vector of pointer to directory to look
+/// for debug info, in case the file is associated to split debug
+/// info.  If there is no split debug info then this vector can be
+/// empty.  Note that convert_char_stars_to_char_star_stars() can be
+/// used to ease the construction of this vector.
+///
+/// @return true iff the ELF file at @elf_file_path is an ELF file
+/// that contains debug info.
+bool
+file_has_dwarf_debug_info(const string& elf_file_path,
+			  const vector<char**>& debug_info_root_paths)
+{
+  if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path,
+		debug_info_root_paths,
+		env);
+
+  if (r.dwarf_debug_info())
+    return true;
+
+  return false;
+}
+
+/// Test if an ELF file has CTF debug info.
+///
+/// This function supports split debug info files as well.
+/// Linux Kernel with CTF debug information generates a CTF archive:
+/// a special file containing debug information for vmlinux and its
+/// modules (*.ko) files it is located by default in the Kernel build
+/// directory as "vmlinux.ctfa".
+///
+/// @param elf_file_path the path to the ELF file to consider.
+///
+/// @param debug_info_root a vector of pointer to directory to look
+/// for debug info, in case the file is associated to split debug
+/// info.  If there is no split debug info then this vector can be
+/// empty.  Note that convert_char_stars_to_char_star_stars() can be
+/// used to ease the construction of this vector.
+///
+/// @return true iff the ELF file at @elf_file_path is an ELF file
+/// that contains debug info.
+bool
+file_has_ctf_debug_info(const string& elf_file_path,
+			const vector<char**>& debug_info_root_paths)
+{
+  if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path,
+		debug_info_root_paths,
+		env);
+
+  if (r.find_ctf_section())
+    return true;
+
+  string vmlinux;
+  if (base_name(elf_file_path, vmlinux))
+    {
+      string dirname;
+      if (dir_name(elf_file_path, dirname)
+	    && dir_contains_ctf_archive(dirname, vmlinux))
+	return true;
+    }
+
+  // vmlinux.ctfa could be provided with --debug-info-dir
+  for (const auto& path : debug_info_root_paths)
+    if (find_file_under_dir(*path, "vmlinux.ctfa", vmlinux))
+      return true;
+
+  return false;
+}
+
+/// Test if an ELF file has BTFG debug info.
+///
+/// @param elf_file_path the path to the ELF file to consider.
+///
+/// @param debug_info_root a vector of pointer to directory to look
+/// for debug info, in case the file is associated to split debug
+/// info.  If there is no split debug info then this vector can be
+/// empty.  Note that convert_char_stars_to_char_star_stars() can be
+/// used to ease the construction of this vector.
+///
+/// @return true iff the ELF file at @elf_file_path is an ELF file
+/// that contains debug info.
+bool
+file_has_btf_debug_info(const string& elf_file_path,
+			const vector<char**>& debug_info_root_paths)
+{
+    if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return false;
+
+  environment env;
+  elf::reader r(elf_file_path, debug_info_root_paths, env);
+
+  if (r.find_btf_section())
+    return true;
+
+  return false;
+}
+
 /// Tests if a given path is a directory or a symbolic link to a
 /// directory.
 ///
@@ -429,9 +559,10 @@ is_dir(const string& path)
   return false;
 }
 
-static const char* ANONYMOUS_STRUCT_INTERNAL_NAME = "__anonymous_struct__";
-static const char* ANONYMOUS_UNION_INTERNAL_NAME =  "__anonymous_union__";
-static const char* ANONYMOUS_ENUM_INTERNAL_NAME =   "__anonymous_enum__";
+static const char* ANONYMOUS_STRUCT_INTERNAL_NAME =   "__anonymous_struct__";
+static const char* ANONYMOUS_UNION_INTERNAL_NAME =    "__anonymous_union__";
+static const char* ANONYMOUS_ENUM_INTERNAL_NAME =     "__anonymous_enum__";
+static const char* ANONYMOUS_SUBRANGE_INTERNAL_NAME = "__anonymous_range__";
 
 static int ANONYMOUS_STRUCT_INTERNAL_NAME_LEN =
   strlen(ANONYMOUS_STRUCT_INTERNAL_NAME);
@@ -456,12 +587,22 @@ const char*
 get_anonymous_union_internal_name_prefix()
 {return ANONYMOUS_UNION_INTERNAL_NAME;}
 
+static int ANONYMOUS_SUBRANGE_INTERNAL_NAME_LEN =
+  strlen(ANONYMOUS_SUBRANGE_INTERNAL_NAME);
+
 /// Getter of the prefix for the name of anonymous enums.
 ///
 /// @reaturn the prefix for the name of anonymous enums.
 const char*
 get_anonymous_enum_internal_name_prefix()
 {return ANONYMOUS_ENUM_INTERNAL_NAME;}
+
+/// Getter of the prefix for the name of anonymous range.
+///
+/// @reaturn the prefix for the name of anonymous range.
+const char*
+get_anonymous_subrange_internal_name_prefix()
+{return ANONYMOUS_SUBRANGE_INTERNAL_NAME;}
 
 /// Compare two fully qualified decl names by taking into account that
 /// they might have compontents that are anonymous types/namespace names.
@@ -1634,32 +1775,62 @@ get_rpm_arch(const string& str, string& arch)
 
 /// Tests if a given file name designates a kernel package.
 ///
-/// @param file_name the file name to consider.
+/// @param file_path the path to the file to consider.
 ///
 /// @param file_type the type of the file @p file_name.
 ///
 /// @return true iff @p file_name of kind @p file_type designates a
 /// kernel package.
 bool
-file_is_kernel_package(const string& file_name, file_type file_type)
+file_is_kernel_package(const string& file_path, file_type file_type)
 {
   bool result = false;
-  string package_name;
 
   if (file_type == FILE_TYPE_RPM)
     {
-      if (!get_rpm_name(file_name, package_name))
-	return false;
-      result = (package_name == "kernel");
+      if (rpm_contains_file(file_path, "vmlinuz"))
+	result = true;
     }
   else if (file_type == FILE_TYPE_DEB)
     {
-      if (!get_deb_name(file_name, package_name))
-	return false;
-      result = (string_begins_with(package_name, "linux-image"));
+      string file_name;
+      base_name(file_path, file_name);
+      string package_name;
+      if (get_deb_name(file_name, package_name))
+	result = (string_begins_with(package_name, "linux-image"));
     }
 
   return result;
+}
+
+/// Test if an RPM package contains a given file.
+///
+/// @param rpm_path the path to the RPM package.
+///
+/// @param file_name the file name to test the presence for in the
+/// rpm.
+///
+/// @return true iff the file named @file_name is present in the RPM.
+bool
+rpm_contains_file(const string& rpm_path, const string& file_name)
+{
+    vector<string> query_output;
+  // We don't check the return value of this command because on some
+  // system, the command can issue errors but still emit a valid
+  // output.  We'll rather rely on the fact that the command emits a
+  // valid output or not.
+  execute_command_and_get_output("rpm -qlp "
+				 + rpm_path + " 2> /dev/null",
+				 query_output);
+
+  for (auto& line : query_output)
+    {
+      line = trim_white_space(line);
+      if (string_ends_with(line, file_name))
+	return true;
+    }
+
+  return false;
 }
 
 /// Tests if a given file name designates a kernel debuginfo package.
@@ -1991,7 +2162,8 @@ gen_suppr_spec_from_kernel_abi_whitelists
 	   ++section_iter)
 	{
 	  std::string section_name = (*section_iter)->get_name();
-	  if (!string_ends_with(section_name, "whitelist"))
+	  if (!string_ends_with(section_name, "whitelist")
+	      && !string_ends_with(section_name, "stablelist"))
 	    continue;
 	  for (ini::config::properties_type::const_iterator
 		   prop_iter = (*section_iter)->get_properties().begin(),
@@ -2211,7 +2383,7 @@ find_file_under_dir(const string& root_dir,
 ///
 /// @param opts the options to consider.
 static void
-load_generate_apply_suppressions(dwarf_reader::read_context &read_ctxt,
+load_generate_apply_suppressions(elf_based_reader &rdr,
 				 vector<string>& suppr_paths,
 				 vector<string>& kabi_whitelist_paths,
 				 suppressions_type& supprs)
@@ -2229,7 +2401,7 @@ load_generate_apply_suppressions(dwarf_reader::read_context &read_ctxt,
       supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
     }
 
-  abigail::dwarf_reader::add_read_context_suppressions(read_ctxt, supprs);
+  rdr.add_suppressions(supprs);
 }
 
 /// Test if an FTSENT pointer (resulting from fts_read) represents the
@@ -2412,19 +2584,29 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
   string debug_info_root;
   if (dir_exists(dist_root + "/lib/modules"))
     {
-      dist_root + "/lib/modules";
+      kernel_modules_root = dist_root + "/lib/modules";
       debug_info_root = debug_info_root_path.empty()
-	? dist_root
+	? dist_root + "/usr/lib/debug"
 	: debug_info_root_path;
-      debug_info_root += "/usr/lib/debug";
     }
 
   if (dir_is_empty(debug_info_root))
     debug_info_root.clear();
 
   bool found = false;
-  string from = dist_root;
-  if (find_vmlinux_and_module_paths(from, vmlinux_path, module_paths))
+  // If vmlinux_path is empty, we want to look for it under
+  // debug_info_root, because this is where Enterprise Linux packages
+  // put it.  Modules however are to be looked for under
+  // kernel_modules_root.
+  if (// So, Let's look for modules under kernel_modules_root ...
+      find_vmlinux_and_module_paths(kernel_modules_root,
+				    vmlinux_path,
+				    module_paths)
+      // ... and if vmlinux_path is empty, look for vmlinux under the
+      // debug info root.
+      || find_vmlinux_and_module_paths(debug_info_root,
+				       vmlinux_path,
+				       module_paths))
     found = true;
 
   std::sort(module_paths.begin(), module_paths.end());
@@ -2489,12 +2671,13 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 					   module_paths);
 }
 
-/// If the @ref origin is DWARF_ORIGIN it build a @ref corpus_group
-/// made of vmlinux kernel file and the linux kernel modules found
-/// under @p root directory and under its sub-directories, recursively.
+/// It builds a @ref corpus_group made of vmlinux kernel file and
+/// the kernel modules found under @p root directory and under its
+/// sub-directories, recursively.
 ///
-/// @param origin the debug type information in vmlinux kernel and
-/// the linux kernel modules to be used to build the corpora @p group.
+/// @param rdr the raeder that should be used to extract the debug
+/// infomation from the linux kernel and its modules used to build
+/// the corpora @p group.
 ///
 /// @param the group @ref corpus_group to be built.
 ///
@@ -2526,32 +2709,24 @@ get_binary_paths_from_kernel_dist(const string&	dist_root,
 ///
 /// @param env the environment to create the corpus_group in.
 static void
-maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
-                                corpus_group_sptr&  group,
-                                const string&       vmlinux,
-                                vector<string>&     modules,
-                                const string&       root,
-                                vector<char**>&     di_roots,
-                                vector<string>&     suppr_paths,
-                                vector<string>&     kabi_wl_paths,
-                                suppressions_type&  supprs,
-                                bool                verbose,
-                                timer&              t,
-                                environment_sptr&   env)
+load_vmlinux_corpus(elf_based_reader_sptr rdr,
+                    corpus_group_sptr&  group,
+                    const string&       vmlinux,
+                    vector<string>&     modules,
+                    const string&       root,
+                    vector<char**>&     di_roots,
+                    vector<string>&     suppr_paths,
+                    vector<string>&     kabi_wl_paths,
+                    suppressions_type&  supprs,
+                    bool                verbose,
+                    timer&              t,
+                    environment&        env)
 {
-  if (!(origin & corpus::DWARF_ORIGIN))
-    return;
-
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
-  dwarf_reader::read_context_sptr ctxt;
-  ctxt =
-   dwarf_reader::create_read_context(vmlinux, di_roots, env.get(),
-                                     /*read_all_types=*/false,
-                                     /*linux_kernel_mode=*/true);
-  dwarf_reader::set_do_log(*ctxt, verbose);
+  abigail::fe_iface::status status = abigail::fe_iface::STATUS_OK;
+  rdr->options().do_log = verbose;
 
   t.start();
-  load_generate_apply_suppressions(*ctxt, suppr_paths,
+  load_generate_apply_suppressions(*rdr, suppr_paths,
                                    kabi_wl_paths, supprs);
   t.stop();
 
@@ -2560,9 +2735,9 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
      << t
      << "\n";
 
-  group.reset(new corpus_group(env.get(), root));
+  group.reset(new corpus_group(env, root));
 
-  set_read_context_corpus_group(*ctxt, group);
+  rdr->corpus_group(group);
 
   if (verbose)
     std::cerr << "reading kernel binary '"
@@ -2570,7 +2745,7 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
 
   // Read the vmlinux corpus and add it to the group.
   t.start();
-  read_and_add_corpus_to_group_from_elf(*ctxt, *group, status);
+  rdr->read_and_add_corpus_to_group(*group, status);
   t.stop();
 
   if (verbose)
@@ -2595,18 +2770,17 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
          << "/" << total_nb_modules
          << ") ... " << std::flush;
 
-      reset_read_context(ctxt, *m, di_roots, env.get(),
-                         /*read_all_types=*/false,
-                         /*linux_kernel_mode=*/true);
+      rdr->initialize(*m, di_roots,
+                      /*read_all_types=*/false,
+                      /*linux_kernel_mode=*/true);
 
-      load_generate_apply_suppressions(*ctxt, suppr_paths,
+      load_generate_apply_suppressions(*rdr, suppr_paths,
                                        kabi_wl_paths, supprs);
 
-      set_read_context_corpus_group(*ctxt, group);
+      rdr->corpus_group(group);
 
       t.start();
-      read_and_add_corpus_to_group_from_elf(*ctxt,
-                                            *group, status);
+      rdr->read_and_add_corpus_to_group(*group, status);
       t.stop();
       if (verbose)
         std::cerr << "module '"
@@ -2615,100 +2789,6 @@ maybe_load_vmlinux_dwarf_corpus(corpus::origin      origin,
          << t << "\n";
     }
 }
-
-/// If the @ref origin is CTF_ORIGIN it build a @ref corpus_group
-/// made of vmlinux kernel file and the linux kernel modules found
-/// under @p root directory and under its sub-directories, recursively.
-///
-/// @param origin the debug type information in vmlinux kernel and
-/// the linux kernel modules to be used to build the corpora @p group.
-///
-/// @param group the @ref corpus_group to be built.
-///
-/// @param vmlinux the path to the vmlinux binary.
-///
-/// @param modules a vector with the paths to the linux kernel
-/// modules.
-///
-/// @param root the path of the directory under which the kernel
-/// kernel modules were found.
-///
-/// @param di_root the directory in aboslute path which debug
-/// info is to be found for binaries under director @p root
-///
-/// @param verbose true if the function has to emit some verbose
-/// messages.
-///
-/// @param t time to trace time spent in each step.
-///
-/// @param env the environment to create the corpus_group in.
-#ifdef WITH_CTF
-static void
-maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
-                              corpus_group_sptr&  group,
-                              const string&       vmlinux,
-                              vector<string>&     modules,
-                              const string&       root,
-                              vector<char**>&     di_roots,
-                              bool                verbose,
-                              timer&              t,
-                              environment_sptr&   env)
-{
-  if (!(origin & corpus::CTF_ORIGIN))
-    return;
-
-  abigail::elf_reader::status status = abigail::elf_reader::STATUS_OK;
-  ctf_reader::read_context_sptr ctxt;
-  ctxt = ctf_reader::create_read_context(vmlinux, di_roots, env.get());
-  group.reset(new corpus_group(env.get(), root));
-  set_read_context_corpus_group(*ctxt, group);
-
-  if (verbose)
-    std::cerr << "reading kernel binary '"
-     << vmlinux << "' ...\n" << std::flush;
-
-  // Read the vmlinux corpus and add it to the group.
-  t.start();
-  read_and_add_corpus_to_group_from_elf(ctxt.get(), *group, status);
-  t.stop();
-
-  if (verbose)
-    std::cerr << vmlinux
-     << " reading DONE:"
-     << t << "\n";
-
-  if (group->is_empty())
-    return;
-
-  // Now add the corpora of the modules to the corpus group.
-  int total_nb_modules = modules.size();
-  int cur_module_index = 1;
-  for (vector<string>::const_iterator m = modules.begin();
-       m != modules.end();
-       ++m, ++cur_module_index)
-    {
-      if (verbose)
-        std::cerr << "reading module '"
-         << *m << "' ("
-         << cur_module_index
-         << "/" << total_nb_modules
-         << ") ... " << std::flush;
-
-      reset_read_context(ctxt, *m, di_roots, env.get());
-      set_read_context_corpus_group(*ctxt, group);
-
-      t.start();
-      read_and_add_corpus_to_group_from_elf(ctxt.get(),
-                                            *group, status);
-      t.stop();
-      if (verbose)
-        std::cerr << "module '"
-         << *m
-         << "' reading DONE: "
-         << t << "\n";
-    }
-}
-#endif
 
 /// Walk a given directory and build an instance of @ref corpus_group
 /// from the vmlinux kernel binary and the linux kernel modules found
@@ -2716,11 +2796,6 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
 ///
 /// The main corpus of the @ref corpus_group is made of the vmlinux
 /// binary.  The other corpora are made of the linux kernel binaries.
-///
-/// Depending of the @ref origin it delegates the corpus build @p group
-/// to:
-///     @ref maybe_load_vmlinux_dwarf_corpus
-///     @ref maybe_load_vmlinux_ctf_corpus
 ///
 /// @param root the path of the directory under which the kernel
 /// kernel modules are to be found.  The vmlinux can also be found
@@ -2749,6 +2824,9 @@ maybe_load_vmlinux_ctf_corpus(corpus::origin	  origin,
 /// messages.
 ///
 /// @param env the environment to create the corpus_group in.
+///
+/// @param requested_fe_kind the kind of front-end requested by the
+/// user.
 corpus_group_sptr
 build_corpus_group_from_kernel_dist_under(const string&	root,
 					  const string		debug_info_root,
@@ -2757,8 +2835,8 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  vector<string>&	kabi_wl_paths,
 					  suppressions_type&	supprs,
 					  bool			verbose,
-					  environment_sptr&	env,
-					  corpus::origin	origin)
+					  environment&		env,
+					  corpus::origin	requested_fe_kind)
 {
   string vmlinux = vmlinux_path;
   corpus_group_sptr group;
@@ -2766,7 +2844,10 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 
   if (verbose)
     std::cerr << "Analysing kernel dist root '"
-	      << root << "' ... " << std::flush;
+	      << root
+	      << "' with vmlinux path: '"
+	      << vmlinux_path
+	      << "' ... " << std::flush;
 
   timer t;
 
@@ -2786,18 +2867,127 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
       vector<char**> di_roots;
       di_roots.push_back(&di_root_ptr);
 
-      maybe_load_vmlinux_dwarf_corpus(origin, group, vmlinux,
-                                      modules, root, di_roots,
-                                      suppr_paths, kabi_wl_paths,
-                                      supprs, verbose, t, env);
 #ifdef WITH_CTF
-      maybe_load_vmlinux_ctf_corpus(origin, group, vmlinux,
-                                    modules, root, di_roots,
-                                    verbose, t, env);
+      shared_ptr<char> di_root_ctf;
+      if (requested_fe_kind & corpus::CTF_ORIGIN)
+        {
+          di_root_ctf = make_path_absolute(root.c_str());
+          char *di_root_ctf_ptr = di_root_ctf.get();
+          di_roots.push_back(&di_root_ctf_ptr);
+        }
 #endif
+
+      abigail::elf_based_reader_sptr reader =
+        create_best_elf_based_reader(vmlinux,
+                                     di_roots,
+                                     env,
+				     requested_fe_kind,
+                                     /*read_all_types=*/false,
+                                     /*linux_kernel_mode=*/true);
+      ABG_ASSERT(reader);
+      load_vmlinux_corpus(reader, group, vmlinux,
+                          modules, root, di_roots,
+                          suppr_paths, kabi_wl_paths,
+                          supprs, verbose, t, env);
     }
 
   return group;
+}
+
+/// Create the best elf based reader (or front-end), given an ELF
+/// file.
+///
+/// This function looks into the ELF file; depending on the kind of
+/// debug info it contains and on the request of the user, the "best"
+/// front-end is created.
+///
+/// If the user requested the use of the CTF front-end, then, if the
+/// file contains CTF debug info, the CTF front-end is created,
+/// assuming libabigail is built with CTF support.
+///
+/// If the binary ONLY has CTF debug info, then CTF front-end is
+/// created, even if the user hasn't explicitly requested the creation
+/// of the CTF front-end.
+///
+/// Otherwise, by default, the DWARF front-end is created.
+///
+/// @param elf_file_path a path to the ELF file to consider
+///
+/// @param debug_info_root_paths a vector of the paths where to look
+/// for debug info, if applicable.
+///
+/// @param env the environment to use for the front-end.
+///
+/// @param requested_fe_kind the kind of front-end specifically
+/// requested by the user. At the moment, only the CTF front-end can
+/// be requested, using the "--ctf" command line option on some tools
+/// using the library.
+///
+/// @param show_all_types option to be passed to elf based readers.
+///
+/// @param linux_kernel_mode option to bed passed to elf based readers,
+///
+/// @return the ELF based Reader that is better adapted for the binary
+/// designated by @p elf_file_path.
+elf_based_reader_sptr
+create_best_elf_based_reader(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths,
+			     environment& env,
+			     corpus::origin requested_fe_kind,
+			     bool show_all_types,
+			     bool linux_kernel_mode)
+{
+  elf_based_reader_sptr result;
+  if (guess_file_type(elf_file_path) != FILE_TYPE_ELF)
+    return result;
+
+  if (requested_fe_kind & corpus::CTF_ORIGIN)
+    {
+#ifdef WITH_CTF
+      if (file_has_ctf_debug_info(elf_file_path, debug_info_root_paths))
+	result = ctf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+    }
+  else if (requested_fe_kind & corpus::BTF_ORIGIN)
+    {
+#ifdef WITH_BTF
+      if (file_has_btf_debug_info(elf_file_path, debug_info_root_paths))
+	result = btf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+    }
+  else
+    {
+      // The user hasn't formally requested the use of the CTF front-end.
+#ifdef WITH_CTF
+      if (!file_has_dwarf_debug_info(elf_file_path, debug_info_root_paths)
+	  && file_has_ctf_debug_info(elf_file_path, debug_info_root_paths))
+	// The file has CTF debug info and no DWARF, let's use the CTF
+	// front end even if it wasn't formally requested by the user.
+	result = ctf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+
+#ifdef WITH_BTF
+      if (!file_has_dwarf_debug_info(elf_file_path, debug_info_root_paths)
+	  && file_has_btf_debug_info(elf_file_path, debug_info_root_paths))
+	// The file has BTF debug info and no BTF, let's use the BTF
+	// front-end even if it wasn't formally requested by the user.
+	result = btf::create_reader(elf_file_path, debug_info_root_paths, env);
+#endif
+    }
+
+  if (!result)
+    {
+      // This is the default case.  At worst, the DWARF reader knows
+      // how to handle just ELF data for the case where there is no
+      // DWARF debug info present.
+      result = dwarf::create_reader(elf_file_path,
+				    debug_info_root_paths,
+				    env,
+				    show_all_types,
+				    linux_kernel_mode);
+    }
+
+  return result;
 }
 
 }//end namespace tools_utils

@@ -1,0 +1,7 @@
+[allow_type]
+ type_kind = struct
+ has_data_member_regexp = rh_kabi_reserved
+
+[suppress_type]
+ type_kind = struct
+ has_data_member_inserted_between = {offset_of(rh_kabi_reserved1), end}
