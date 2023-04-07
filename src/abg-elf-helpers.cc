@@ -1521,13 +1521,17 @@ get_soname_of_elf_file(const string& path, string &soname)
           Elf_Scn* scn = gelf_offscn (elf, phdr->p_offset);
           GElf_Shdr shdr_mem;
           GElf_Shdr* shdr = gelf_getshdr (scn, &shdr_mem);
+	  if (!(shdr == NULL || (shdr->sh_type == SHT_DYNAMIC
+				 || shdr->sh_type == SHT_PROGBITS)))
+	    // This program header doesn't look like one we are
+	    // looking for.  Skip to the next.
+	    continue;
+
           size_t entsize = (shdr != NULL && shdr->sh_entsize != 0
                             ? shdr->sh_entsize
                             : gelf_fsize (elf, ELF_T_DYN, 1, EV_CURRENT));
           int maxcnt = (shdr != NULL
                         ? shdr->sh_size / entsize : INT_MAX);
-          ABG_ASSERT (shdr == NULL || (shdr->sh_type == SHT_DYNAMIC
-				       || shdr->sh_type == SHT_PROGBITS));
           Elf_Data* data = elf_getdata (scn, NULL);
           if (data == NULL)
             break;
