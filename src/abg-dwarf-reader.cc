@@ -523,6 +523,16 @@ die_die_attribute(const Dwarf_Die* die,
 		  Dwarf_Die& result,
 		  bool recursively = true);
 
+static bool
+subrange_die_indirect_bound_value(const Dwarf_Die *die,
+				  unsigned attr_name,
+				  array_type_def::subrange_type::bound_value& v,
+				  bool& is_signed);
+
+static bool
+subrange_die_indirectly_references_subrange_die(const Dwarf_Die *die,
+						unsigned attr_name,
+						Dwarf_Die& referenced_subrange);
 static string
 get_internal_anonymous_die_prefix_name(const Dwarf_Die *die);
 
@@ -6197,6 +6207,110 @@ die_die_attribute(const Dwarf_Die* die,
     return false;
 
   return dwarf_formref_die(&attr, &result);
+}
+
+/// Test if a subrange DIE indirectly references another subrange DIE
+/// through a given attribute.
+///
+/// A DW_TAG_subrange_type DIE can have its DW_AT_{lower,upper}_bound
+/// attribute be a reference to either a data member or a variable
+/// which type is itself a DW_TAG_subrange_type.  This latter subrange
+/// DIE is said to be "indirectly referenced" by the former subrange
+/// DIE.  In that case, the DW_AT_{lower,upper}_bound of the latter is
+/// the value we want for the DW_AT_upper_bound of the former.
+///
+/// This function tests if the former subrange DIE does indirectly
+/// reference another subrange DIE through a given attribute (not
+/// necessarily DW_AT_upper_bound).
+///
+/// @param die the DIE to consider.  Note that It must be a
+/// DW_TAG_subrange_type.
+///
+/// @param attr_name the name of the attribute to look through for the
+/// indirectly referenced subrange DIE.
+///
+/// @param referenced_subrange if the function returns true, then the
+/// argument of this parameter is set to the indirectly referenced
+/// DW_TAG_subrange_type DIE.
+///
+/// @return true iff @p DIE indirectly references a subrange DIE
+/// through the attribute @p attr_name.
+static bool
+subrange_die_indirectly_references_subrange_die(const Dwarf_Die *die,
+						unsigned attr_name,
+						Dwarf_Die& referenced_subrange)
+{
+  bool result = false;
+
+  if (dwarf_tag(const_cast<Dwarf_Die*>(die)) != DW_TAG_subrange_type)
+    return result;
+
+  Dwarf_Die referenced_die;
+  if (die_die_attribute(die, attr_name, referenced_die))
+    {
+      unsigned tag = dwarf_tag(&referenced_die);
+      if ( tag == DW_TAG_member || tag == DW_TAG_variable)
+	{
+	  Dwarf_Die type_die;
+	  if (die_die_attribute(&referenced_die, DW_AT_type, type_die))
+	    {
+	      tag = dwarf_tag(&type_die);
+	      if (tag == DW_TAG_subrange_type)
+		{
+		  memcpy(&referenced_subrange, &type_die, sizeof(type_die));
+		  result = true;
+		}
+	    }
+	}
+    }
+  return result;
+}
+
+/// Return the bound value of subrange die by looking at an indirectly
+/// referenced subrange DIE.
+///
+/// A DW_TAG_subrange_type DIE can have its DW_AT_{lower,upper}_bound
+/// attribute be a reference to either a data member or a variable
+/// which type is itself a DW_TAG_subrange_type.  This latter subrange
+/// DIE is said to be "indirectly referenced" by the former subrange
+/// DIE.  In that case, the DW_AT_{lower,upper}_bound of the latter is
+/// the value we want for the DW_AT_{lower,upper}_bound of the former.
+///
+/// This function gets the DW_AT_{lower,upper}_bound value of a
+/// subrange type by looking at the DW_AT_{lower,upper}_bound value of
+/// the indirectly referenced subrange type, if it exists.
+///
+/// @param die the subrange DIE to consider.
+///
+/// @param attr_name the name of the attribute to consider, typically,
+/// DW_AT_{lower,upper}_bound.
+///
+/// @param v the found value, iff this function returned true.
+///
+/// @param is_signed, this is set to true if @p v is signed.  This
+/// parameter is set at all only if the function returns true.
+///
+/// @return true iff the DW_AT_{lower,upper}_bound was found on the
+/// indirectly referenced subrange type.
+static bool
+subrange_die_indirect_bound_value(const Dwarf_Die *die,
+				  unsigned attr_name,
+				  array_type_def::subrange_type::bound_value& v,
+				  bool& is_signed)
+{
+  bool result = false;
+
+  if (dwarf_tag(const_cast<Dwarf_Die*>(die)) != DW_TAG_subrange_type)
+    return result;
+
+  Dwarf_Die subrange_die;
+  if (subrange_die_indirectly_references_subrange_die(die, attr_name,
+						      subrange_die))
+    {
+      if (die_constant_attribute(&subrange_die, attr_name, is_signed, v))
+	result = true;
+    }
+  return result;
 }
 
 /// Read and return an addresss class attribute from a given DIE.
@@ -14162,8 +14276,15 @@ build_subrange_type(reader&		rdr,
   // So let's look for DW_AT_lower_bound first.
   die_constant_attribute(die, DW_AT_lower_bound, is_signed, lower_bound);
 
+  bool found_upper_bound = die_constant_attribute(die, DW_AT_upper_bound,
+						  is_signed, upper_bound);
+  if (!found_upper_bound)
+    found_upper_bound = subrange_die_indirect_bound_value(die,
+							  DW_AT_upper_bound,
+							  upper_bound,
+							  is_signed);
   // Then, DW_AT_upper_bound.
-  if (!die_constant_attribute(die, DW_AT_upper_bound, is_signed, upper_bound))
+  if (!found_upper_bound)
     {
       // The DWARF 4 spec says, in [5.11 Subrange Type
       // Entries]:
