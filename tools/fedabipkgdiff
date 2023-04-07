@@ -30,6 +30,9 @@ import xdg.BaseDirectory
 import rpm
 import koji
 
+from timeit import default_timer as timer
+from datetime import timedelta
+
 # @file
 #
 # You might have known that abipkgdiff is a command line tool to compare two
@@ -261,8 +264,12 @@ def log_call(func):
                      func.__name__,
                      args if args else '',
                      kwargs if kwargs else '')
+        start = timer()
         result = func(*args, **kwargs)
-        logger.debug('Result from %s: %s', func.__name__, result)
+        end = timer();
+        elapsed_type = timedelta(seconds=end-start)
+        logger.debug('Result from %s: %s, in: %s',
+                     func.__name__, result, elapsed_type)
         return result
     return proxy
 
