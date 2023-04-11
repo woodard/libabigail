@@ -1047,7 +1047,9 @@ handle_error(abigail::fe_iface::status status_code,
 	     const string& prog_name,
 	     const options& opts)
 {
-  if (!(status_code & abigail::fe_iface::STATUS_OK))
+  if (!(status_code & abigail::fe_iface::STATUS_OK)
+      || status_code & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND
+      || status_code & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
     {
       emit_prefix(prog_name, cerr)
 	<< "failed to read input file " << opts.file1 << "\n";
@@ -1110,10 +1112,10 @@ handle_error(abigail::fe_iface::status status_code,
 	  emit_prefix(prog_name, cerr)
 	    << "could not find the alternate debug info file";
 
-	   if (rdr->alternate_dwarf_debug_info())
+	  if (!rdr->alternate_dwarf_debug_info_path().empty())
 	    cerr << " at: "
-		 << rdr->alternate_dwarf_debug_info_path()
-		 << "\n";
+		 << rdr->alternate_dwarf_debug_info_path();
+	  cerr << "\n";
 	}
 
       if (status_code & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)

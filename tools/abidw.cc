@@ -662,11 +662,6 @@ load_corpus_and_write_abixml(char* argv[],
     emit_prefix(argv[0], cerr)
       << "read corpus from elf file in: " << t << "\n";
 
-  // Clear some resources to gain back some space.
-  t.start();
-  reader.reset();
-  t.stop();
-
   if (opts.do_log)
     emit_prefix(argv[0], cerr)
       << "reset reader ELF in: " << t << "\n";
@@ -709,9 +704,26 @@ load_corpus_and_write_abixml(char* argv[],
 	emit_prefix(argv[0], cerr)
 	  << "Could not read ELF symbol information from "
 	  << opts.in_file_path << "\n";
+      else if (s & fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+	{
+	  emit_prefix(argv[0], cerr)
+	    << "Could not read alternate debug info file";
+	  if (!reader->alternate_dwarf_debug_info_path().empty())
+	    cerr << " '" << reader->alternate_dwarf_debug_info_path() << "'";
+	  cerr << " for '"
+	    << opts.in_file_path << "'.\n";
+	  emit_prefix(argv[0], cerr)
+	    << "You might have forgotten to install some "
+	    "additional needed debug info\n";
+	}
 
       return 1;
     }
+
+  // Clear some resources to gain back some space.
+  t.start();
+  reader.reset();
+  t.stop();
 
   // Now create a write context and write out an ABI XML description
   // of the read corpus.
