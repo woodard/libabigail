@@ -3944,6 +3944,25 @@ environment::get_type_id_from_pointer(uintptr_t ptr)
   return "";
 }
 
+/// Getter of the type-id that corresponds to the value of an
+/// abigail::ir::type_base that was created from the abixml reader.
+///
+/// That value is retrieved from the map returned from
+/// environment::get_pointer_type_id_map().
+///
+/// That map is populated at abixml reading time, (by build_type())
+/// when a given XML element representing a type is read into a
+/// corresponding abigail::ir::type_base.
+///
+/// This is used only for the purpose of debugging the
+/// self-comparison process.  That is, when invoking "abidw
+/// --debug-abidiff".
+///
+/// @return the type-id strings that corresponds
+string
+environment::get_type_id_from_type(const type_base *t)
+{return get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t));}
+
 /// Getter of the canonical type of the artifact designated by a
 /// type-id.
 ///

@@ -253,6 +253,9 @@ public:
   string
   get_type_id_from_pointer(uintptr_t ptr);
 
+  string
+  get_type_id_from_type(const type_base *ptr);
+
   uintptr_t
   get_canonical_type_from_type_id(const char*);
 #endif
