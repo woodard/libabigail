@@ -851,8 +851,8 @@ public:
   void
   maybe_check_abixml_canonical_type_stability(type_base_sptr& t)
   {
-    if (!get_environment()->self_comparison_debug_is_on()
-	|| get_environment()->get_type_id_canonical_type_map().empty())
+    if (!get_environment().self_comparison_debug_is_on()
+	|| get_environment().get_type_id_canonical_type_map().empty())
       return ;
 
     if (class_decl_sptr c = is_class_type(t))
@@ -864,15 +864,15 @@ public:
     // Let's get the type-id of this type as recorded in the
     // originating abixml file.
     string type_id =
-      get_environment()->get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t.get()));
+      get_environment().get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t.get()));
 
     if (!type_id.empty())
       {
 	// Now let's get the canonical type that initially led to the
 	// serialization of a type with this type-id, when the abixml
 	// was being serialized.
-	auto j = get_environment()->get_type_id_canonical_type_map().find(type_id);
-	if (j == get_environment()->get_type_id_canonical_type_map().end())
+	auto j = get_environment().get_type_id_canonical_type_map().find(type_id);
+	if (j == get_environment().get_type_id_canonical_type_map().end())
 	  {
 	    if (t->get_naked_canonical_type())
 	      std::cerr << "error: no type with type-id: '"
@@ -1107,9 +1107,8 @@ public:
 	  return nil;
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	if (get_environment()->self_comparison_debug_is_on())
-	  get_environment()->
-	    set_self_comparison_debug_input(corpus());
+	if (get_environment().self_comparison_debug_is_on())
+	  get_environment().set_self_comparison_debug_input(corpus());
 #endif
 
 	if (!corpus_group())
@@ -1168,9 +1167,8 @@ public:
     else
       {
 #ifdef WITH_DEBUG_SELF_COMPARISON
-	if (get_environment()->self_comparison_debug_is_on())
-	  get_environment()->
-	    set_self_comparison_debug_input(corpus());
+	if (get_environment().self_comparison_debug_is_on())
+	  get_environment().set_self_comparison_debug_input(corpus());
 #endif
 
 	if (!corpus_group())
@@ -2929,8 +2927,8 @@ maybe_map_type_with_type_id(const type_base_sptr& t,
       || is_non_canonicalized_type(t.get()))
     return false;
 
-  env.get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] =
-    type_id;
+  const_cast<environment&>(env).
+    get_pointer_type_id_map()[reinterpret_cast<uintptr_t>(t.get())] = type_id;
 
   return true;
 }
@@ -6243,7 +6241,7 @@ read_corpus_from_abixml_file(const string& path,
 bool
 load_canonical_type_ids(fe_iface& iface, const string &file_path)
 {
-  xml_reader::reader& rdr = dynamic_cast<xml_reader::reader&>(iface)
+  abixml::reader& rdr = dynamic_cast<abixml::reader&>(iface);
 
   xmlDocPtr doc = xmlReadFile(file_path.c_str(), NULL, XML_PARSE_NOERROR);
   if (!doc)
@@ -6302,7 +6300,7 @@ load_canonical_type_ids(fe_iface& iface, const string &file_path)
 	      // that are not canonicalized.  Look into function
 	      // hash_as_canonical_type_or_constant for the details.
 	      && v != 0xdeadbabe)
-	    rdr.get_environment()->get_type_id_canonical_type_map()[id] = v;
+	    rdr.get_environment().get_type_id_canonical_type_map()[id] = v;
 	}
     }
   return true;
