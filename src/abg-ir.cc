@@ -10618,6 +10618,19 @@ is_void_pointer_type(const type_base* type)
   return 0;
 }
 
+/// Test if a type is a pointer to void type.
+///
+/// Note that this looks trough typedefs or CV qualifiers to look for
+/// the void pointer.
+///
+/// @param type the type to consider.
+///
+/// @return the actual void pointer if @p is a void pointer or NULL if
+/// it's not.
+const type_base*
+is_void_pointer_type(const type_base& type)
+{return is_void_pointer_type(&type);}
+
 /// Test whether a type is a reference_type_def.
 ///
 /// @param t the type to test.
@@ -16551,6 +16564,15 @@ pointer_type_def::set_pointed_to_type(const type_base_sptr& t)
 bool
 equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 {
+  // In C and C++ languages, a pointer to void equals all other
+  // pointers.
+  if (l.get_translation_unit()
+      && r.get_translation_unit()
+      && is_c_language(l.get_translation_unit()->get_language())
+      && is_c_language(r.get_translation_unit()->get_language())
+      && (is_void_pointer_type(l) || is_void_pointer_type(r)))
+    return true;
+
   bool result = l.get_pointed_to_type() == r.get_pointed_to_type();
   if (!result)
     if (k)
@@ -26301,6 +26323,7 @@ is_non_canonicalized_type(const type_base *t)
 
   const environment& env = t->get_environment();
   return (is_declaration_only_class_or_union_type(t)
+	  || is_void_pointer_type(t)
 	  || env.is_void_type(t)
 	  || env.is_variadic_parameter_type(t));
 }

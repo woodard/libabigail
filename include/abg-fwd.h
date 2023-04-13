@@ -526,6 +526,9 @@ is_reference_type(const type_or_decl_base_sptr&);
 const type_base*
 is_void_pointer_type(const type_base*);
 
+const type_base*
+is_void_pointer_type(const type_base&);
+
 qualified_type_def*
 is_qualified_type(const type_or_decl_base*);
 

@@ -234,20 +234,19 @@
     <pointer-type-def type-id='type-id-67' size-in-bits='64' id='type-id-93'/>
     <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-95'/>
     <pointer-type-def type-id='type-id-21' size-in-bits='64' id='type-id-96'/>
-    <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-22'/>
-    <pointer-type-def type-id='type-id-37' size-in-bits='64' id='type-id-98'/>
-    <pointer-type-def type-id='type-id-98' size-in-bits='64' id='type-id-99'/>
+    <pointer-type-def type-id='type-id-37' size-in-bits='64' id='type-id-97'/>
+    <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-98'/>
     <namespace-decl name='std'>
       <class-decl name='allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='92' column='1' id='type-id-55'>
         <base-class access='public' layout-offset-in-bits='0' type-id='type-id-39'/>
         <member-type access='public'>
-          <typedef-decl name='const_reference' type-id='type-id-48' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='100' column='1' id='type-id-100'/>
+          <typedef-decl name='const_reference' type-id='type-id-48' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='100' column='1' id='type-id-99'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-41' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='99' column='1' id='type-id-101'/>
+          <typedef-decl name='reference' type-id='type-id-41' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='99' column='1' id='type-id-100'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='size_type' type-id='type-id-103' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='95' column='1' id='type-id-102'/>
+          <typedef-decl name='size_type' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/bits/allocator.h' line='95' column='1' id='type-id-101'/>
         </member-type>
       </class-decl>
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2510' column='1' id='type-id-58'>
@@ -261,7 +260,7 @@
         </member-type>
         <member-type access='private'>
           <class-decl name='_Rep' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2553' column='1' id='type-id-62'>
-            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-104'/>
+            <base-class access='public' layout-offset-in-bits='0' type-id='type-id-103'/>
             <data-member access='public' static='yes'>
               <var-decl name='_S_max_size' type-id='type-id-66' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='494' column='1'/>
             </data-member>
@@ -274,7 +273,7 @@
           </class-decl>
         </member-type>
         <member-type access='private'>
-          <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2546' column='1' id='type-id-104'>
+          <class-decl name='_Rep_base' size-in-bits='192' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2546' column='1' id='type-id-103'>
             <data-member access='public' layout-offset-in-bits='0'>
               <var-decl name='_M_length' type-id='type-id-65' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2548' column='1'/>
             </data-member>
@@ -287,28 +286,28 @@
           </class-decl>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='allocator_type' type-id='type-id-55' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2518' column='1' id='type-id-105'/>
+          <typedef-decl name='allocator_type' type-id='type-id-55' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2518' column='1' id='type-id-104'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='const_iterator' type-id='type-id-107' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2527' column='1' id='type-id-106'/>
+          <typedef-decl name='const_iterator' type-id='type-id-106' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2527' column='1' id='type-id-105'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='const_reference' type-id='type-id-100' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2522' column='1' id='type-id-108'/>
+          <typedef-decl name='const_reference' type-id='type-id-99' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2522' column='1' id='type-id-107'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='const_reverse_iterator' type-id='type-id-110' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2528' column='1' id='type-id-109'/>
+          <typedef-decl name='const_reverse_iterator' type-id='type-id-109' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2528' column='1' id='type-id-108'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='iterator' type-id='type-id-112' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2525' column='1' id='type-id-111'/>
+          <typedef-decl name='iterator' type-id='type-id-111' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2525' column='1' id='type-id-110'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-101' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2521' column='1' id='type-id-113'/>
+          <typedef-decl name='reference' type-id='type-id-100' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2521' column='1' id='type-id-112'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='reverse_iterator' type-id='type-id-115' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2529' column='1' id='type-id-114'/>
+          <typedef-decl name='reverse_iterator' type-id='type-id-114' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2529' column='1' id='type-id-113'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='size_type' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2519' column='1' id='type-id-65'/>
+          <typedef-decl name='size_type' type-id='type-id-101' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2519' column='1' id='type-id-65'/>
         </member-type>
         <data-member access='public' static='yes'>
           <var-decl name='npos' type-id='type-id-66' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2683' column='1'/>
@@ -317,7 +316,7 @@
           <var-decl name='_M_dataplus' type-id='type-id-88' visibility='default' filepath='/usr/include/c++/5.3.1/bits/basic_string.h' line='2687' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='233' column='1' id='type-id-116'>
+      <class-decl name='char_traits&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='233' column='1' id='type-id-115'>
         <member-type access='public'>
           <typedef-decl name='char_type' type-id='type-id-2' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='235' column='1' id='type-id-67'/>
         </member-type>
@@ -327,16 +326,16 @@
         <member-function access='public' static='yes'>
           <function-decl name='length' mangled-name='_ZNSt11char_traitsIcE6lengthEPKc' filepath='/usr/include/c++/5.3.1/bits/char_traits.h' line='266' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNSt11char_traitsIcE6lengthEPKc'>
             <parameter type-id='type-id-70'/>
-            <return type-id='type-id-103'/>
+            <return type-id='type-id-102'/>
           </function-decl>
         </member-function>
       </class-decl>
-      <typedef-decl name='ostream' type-id='type-id-117' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-94'/>
-      <typedef-decl name='size_t' type-id='type-id-28' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/c++config.h' line='1969' column='1' id='type-id-103'/>
+      <typedef-decl name='ostream' type-id='type-id-116' filepath='/usr/include/c++/5.3.1/iosfwd' line='141' column='1' id='type-id-94'/>
+      <typedef-decl name='size_t' type-id='type-id-28' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/c++config.h' line='1969' column='1' id='type-id-102'/>
       <typedef-decl name='string' type-id='type-id-58' filepath='/usr/include/c++/5.3.1/bits/stringfwd.h' line='74' column='1' id='type-id-74'/>
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-117'/>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-110'/>
-      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-115'/>
+      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-116'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-109'/>
+      <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-114'/>
       <function-decl name='operator+&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='1151' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_'>
         <parameter type-id='type-id-20' name='__lhs' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='1151' column='1'/>
         <parameter type-id='type-id-60' name='__rhs' filepath='/usr/include/c++/5.3.1/bits/basic_string.tcc' line='1152' column='1'/>
@@ -344,8 +343,10 @@
       </function-decl>
     </namespace-decl>
     <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-24'/>
-    <type-decl name='variadic parameter type' id='type-id-118'/>
-    <type-decl name='void' id='type-id-97'/>
+    <type-decl name='variadic parameter type' id='type-id-117'/>
+    <type-decl name='void' id='type-id-118'/>
+    <pointer-type-def type-id='type-id-118' size-in-bits='64' id='type-id-119'/>
+    <pointer-type-def type-id='type-id-118' size-in-bits='64' id='type-id-22'/>
     <function-decl name='foo' mangled-name='_Z3fooRKSs' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='14' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooRKSs'>
       <parameter type-id='type-id-76' name='s' filepath='/home/dodji/git/libabigail.git/suppr/tests/data/test-read-dwarf/test24-drop-fns.cc' line='14' column='1'/>
       <return type-id='type-id-74'/>
@@ -357,22 +358,22 @@
     <namespace-decl name='__gnu_cxx'>
       <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='58' column='1' id='type-id-39'>
         <member-type access='public'>
-          <typedef-decl name='const_pointer' type-id='type-id-20' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='64' column='1' id='type-id-119'/>
+          <typedef-decl name='const_pointer' type-id='type-id-20' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='64' column='1' id='type-id-120'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='const_reference' type-id='type-id-48' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='66' column='1' id='type-id-120'/>
+          <typedef-decl name='const_reference' type-id='type-id-48' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='66' column='1' id='type-id-121'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='pointer' type-id='type-id-18' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='63' column='1' id='type-id-121'/>
+          <typedef-decl name='pointer' type-id='type-id-18' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='63' column='1' id='type-id-122'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-41' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='65' column='1' id='type-id-122'/>
+          <typedef-decl name='reference' type-id='type-id-41' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='65' column='1' id='type-id-123'/>
         </member-type>
         <member-type access='public'>
-          <typedef-decl name='size_type' type-id='type-id-103' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='61' column='1' id='type-id-123'/>
+          <typedef-decl name='size_type' type-id='type-id-102' filepath='/usr/include/c++/5.3.1/ext/new_allocator.h' line='61' column='1' id='type-id-124'/>
         </member-type>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-124'>
+      <class-decl name='__numeric_traits_integer&lt;char&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-125'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-47' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -386,7 +387,7 @@
           <var-decl name='__digits' type-id='type-id-50' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-125'>
+      <class-decl name='__numeric_traits_integer&lt;int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-126'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-50' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -400,7 +401,7 @@
           <var-decl name='__digits' type-id='type-id-50' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-126'>
+      <class-decl name='__numeric_traits_integer&lt;long int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-127'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-51' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIlE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -414,7 +415,7 @@
           <var-decl name='__digits' type-id='type-id-50' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-127'>
+      <class-decl name='__numeric_traits_integer&lt;long unsigned int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-128'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-79' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -428,7 +429,7 @@
           <var-decl name='__digits' type-id='type-id-50' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerImE8__digitsE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;short int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-128'>
+      <class-decl name='__numeric_traits_integer&lt;short int&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='55' column='1' id='type-id-129'>
         <data-member access='public' static='yes'>
           <var-decl name='__min' type-id='type-id-54' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIsE5__minE' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='58' column='1'/>
         </data-member>
@@ -442,8 +443,8 @@
           <var-decl name='__digits' type-id='type-id-50' visibility='default' filepath='/usr/include/c++/5.3.1/ext/numeric_traits.h' line='64' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-107'/>
-      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-112'/>
+      <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-106'/>
+      <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-111'/>
     </namespace-decl>
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -454,26 +455,26 @@
       <return type-id='type-id-83'/>
     </function-decl>
     <function-decl name='wcscpy' filepath='/usr/include/wchar.h' line='147' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wcsncpy' filepath='/usr/include/wchar.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wcscat' filepath='/usr/include/wchar.h' line='155' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wcsncat' filepath='/usr/include/wchar.h' line='158' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wcscmp' filepath='/usr/include/wchar.h' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
@@ -492,7 +493,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='wcsxfrm' filepath='/usr/include/wchar.h' line='196' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-29'/>
       <return type-id='type-id-29'/>
@@ -508,10 +509,10 @@
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='wcstok' filepath='/usr/include/wchar.h' line='282' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
-      <return type-id='type-id-98'/>
+      <parameter type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wcslen' filepath='/usr/include/wchar.h' line='287' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
@@ -524,22 +525,22 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='wmemcpy' filepath='/usr/include/wchar.h' line='329' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wmemmove' filepath='/usr/include/wchar.h' line='334' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='wmemset' filepath='/usr/include/wchar.h' line='338' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-37'/>
       <parameter type-id='type-id-29'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -554,7 +555,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='mbrtowc' filepath='/usr/include/wchar.h' line='365' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-20'/>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-84'/>
@@ -573,7 +574,7 @@
       <return type-id='type-id-29'/>
     </function-decl>
     <function-decl name='mbsrtowcs' filepath='/usr/include/wchar.h' line='408' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-49'/>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-84'/>
@@ -588,40 +589,40 @@
     </function-decl>
     <function-decl name='wcstod' filepath='/usr/include/wchar.h' line='450' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <return type-id='type-id-6'/>
     </function-decl>
     <function-decl name='wcstof' filepath='/usr/include/wchar.h' line='457' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <return type-id='type-id-7'/>
     </function-decl>
     <function-decl name='wcstold' filepath='/usr/include/wchar.h' line='459' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='wcstol' filepath='/usr/include/wchar.h' line='468' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <parameter type-id='type-id-8'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='wcstoul' filepath='/usr/include/wchar.h' line='473' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <parameter type-id='type-id-8'/>
       <return type-id='type-id-28'/>
     </function-decl>
     <function-decl name='wcstoll' filepath='/usr/include/wchar.h' line='483' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <parameter type-id='type-id-8'/>
       <return type-id='type-id-11'/>
     </function-decl>
     <function-decl name='wcstoull' filepath='/usr/include/wchar.h' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
-      <parameter type-id='type-id-99'/>
+      <parameter type-id='type-id-98'/>
       <parameter type-id='type-id-8'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -642,7 +643,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='swprintf' filepath='/usr/include/wchar.h' line='604' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-81'/>
       <parameter is-variadic='yes'/>
@@ -660,7 +661,7 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='vswprintf' filepath='/usr/include/wchar.h' line='625' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-96'/>
@@ -726,10 +727,10 @@
       <return type-id='type-id-33'/>
     </function-decl>
     <function-decl name='fgetws' filepath='/usr/include/wchar.h' line='774' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-8'/>
       <parameter type-id='type-id-38'/>
-      <return type-id='type-id-98'/>
+      <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='fputws' filepath='/usr/include/wchar.h' line='781' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-81'/>
@@ -742,7 +743,7 @@
       <return type-id='type-id-33'/>
     </function-decl>
     <function-decl name='wcsftime' filepath='/usr/include/wchar.h' line='855' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-98'/>
+      <parameter type-id='type-id-97'/>
       <parameter type-id='type-id-29'/>
       <parameter type-id='type-id-81'/>
       <parameter type-id='type-id-78'/>

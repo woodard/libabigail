@@ -279,7 +279,6 @@
     <typedef-decl name='time_t' type-id='65eda9c0' filepath='bionic/libc/include/sys/types.h' line='96' column='1' id='c9d12d66'/>
     <typedef-decl name='uint32_t' type-id='62f1140c' filepath='bionic/libc/include/stdint.h' line='65' column='1' id='8f92235e'/>
     <typedef-decl name='va_list' type-id='7f896fb4' filepath='prebuilts/clang/host/linux-x86/clang-r416183b/lib64/clang/12.0.5/include/stdarg.h' line='14' column='1' id='2aee9912'/>
-    <typedef-decl name='wctrans_t' type-id='eaa32e2f' filepath='bionic/libc/include/bits/wctype.h' line='60' column='1' id='183c72c3'/>
     <typedef-decl name='wctype_t' type-id='95e97e5f' filepath='bionic/libc/include/bits/wctype.h' line='56' column='1' id='ba50424d'/>
     <typedef-decl name='wint_t' type-id='f0981eeb' filepath='bionic/libc/include/bits/wctype.h' line='36' column='1' id='6dd37369'/>
     <type-decl name='unnamed-enum-underlying-type-32' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='9cac1fee'/>
@@ -345,7 +344,6 @@
     <pointer-type-def type-id='4ea6ed15' size-in-bits='64' id='3405aa89'/>
     <pointer-type-def type-id='ee076206' size-in-bits='64' id='953b12f8'/>
     <pointer-type-def type-id='513cf94a' size-in-bits='64' id='ea545054'/>
-    <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e2f'/>
     <pointer-type-def type-id='c523b9f1' size-in-bits='64' id='323d93c1'/>
     <pointer-type-def type-id='323d93c1' size-in-bits='64' id='01efdaf1'/>
     <namespace-decl name='aaudio'>
@@ -691,7 +689,7 @@
         </member-function>
         <member-function access='private' static='yes'>
           <function-decl name='check_not_on_stack' mangled-name='_ZN7android2spIN6aaudio11AudioStreamEE18check_not_on_stackEPKv' filepath='system/core/libutils/include/utils/StrongPointer.h' line='123' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='eaa32e2f'/>
+            <parameter type-id='eaa32e30'/>
             <return type-id='48b5725f'/>
           </function-decl>
         </member-function>
@@ -721,6 +719,8 @@
     <class-decl name='__sFILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='8d7b2c1e'/>
     <type-decl name='variadic parameter type' id='2c1145c5'/>
     <type-decl name='void' id='48b5725f'/>
+    <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e2f'/>
+    <pointer-type-def type-id='48b5725f' size-in-bits='64' id='eaa32e30'/>
     <function-decl name='iswalnum' filepath='bionic/libc/include/bits/wctype.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='6dd37369'/>
       <return type-id='95e97e5e'/>
@@ -786,6 +786,7 @@
       <parameter type-id='ba50424d'/>
       <return type-id='95e97e5e'/>
     </function-decl>
+    <typedef-decl name='wctrans_t' type-id='eaa32e30' filepath='bionic/libc/include/bits/wctype.h' line='60' column='1' id='183c72c3'/>
     <function-decl name='towctrans' filepath='bionic/libc/include/bits/wctype.h' line='61' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='6dd37369'/>
       <parameter type-id='183c72c3'/>
@@ -1573,8 +1574,8 @@
       <return type-id='95e97e5e'/>
     </function-decl>
     <function-decl name='bsearch' filepath='bionic/libc/include/stdlib.h' line='96' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='eaa32e2f'/>
-      <parameter type-id='eaa32e2f'/>
+      <parameter type-id='eaa32e30'/>
+      <parameter type-id='eaa32e30'/>
       <parameter type-id='b59d7dce'/>
       <parameter type-id='b59d7dce'/>
       <parameter type-id='585e1de9'/>
@@ -1650,8 +1651,8 @@
       <return type-id='48b5725f'/>
     </function-decl>
     <function-decl name='memcmp' filepath='bionic/libc/include/string.h' line='52' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='eaa32e2f'/>
-      <parameter type-id='eaa32e2f'/>
+      <parameter type-id='eaa32e30'/>
+      <parameter type-id='eaa32e30'/>
       <parameter type-id='b59d7dce'/>
       <return type-id='95e97e5e'/>
     </function-decl>
@@ -2183,7 +2184,7 @@
     </function-decl>
     <function-decl name='AAudioStream_write' mangled-name='AAudioStream_write' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='339' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='AAudioStream_write@@LIBAAUDIO'>
       <parameter type-id='b2a1b704' name='stream' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='339' column='1'/>
-      <parameter type-id='eaa32e2f' name='buffer' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='340' column='1'/>
+      <parameter type-id='eaa32e30' name='buffer' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='340' column='1'/>
       <parameter type-id='3ff5601b' name='numFrames' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='341' column='1'/>
       <parameter type-id='9da381c4' name='timeoutNanoseconds' filepath='frameworks/av/media/libaaudio/src/core/AAudioAudio.cpp' line='342' column='1'/>
       <return type-id='da775bc6'/>
@@ -2307,8 +2308,8 @@
       <return type-id='ae10ac8d'/>
     </function-type>
     <function-type size-in-bits='64' id='96ee24a5'>
-      <parameter type-id='eaa32e2f'/>
-      <parameter type-id='eaa32e2f'/>
+      <parameter type-id='eaa32e30'/>
+      <parameter type-id='eaa32e30'/>
       <return type-id='95e97e5e'/>
     </function-type>
     <function-type size-in-bits='64' id='ee076206'>
