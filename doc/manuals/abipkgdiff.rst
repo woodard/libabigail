@@ -583,3 +583,4 @@ In the later case, the value of the exit code is the same as for the
 .. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _DWZ: https://sourceware.org/dwz
+.. _Linux Kernel: https://kernel.org/

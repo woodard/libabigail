@@ -22,13 +22,13 @@ types.
 
 To generate either ABI or KMI representation, by default ``abidw``
 uses debug information in the `DWARF`_ format, if present, otherwise
-it looks for debug information in `CTF`_ or `BTF`_formats, if present.
+it looks for debug information in `CTF`_ or `BTF`_ formats, if present.
 Finally, if no debug info in these formats is found, it only considers
 `ELF`_ symbols and report about their addition or removal.
 
 .. include:: tools-use-libabigail.txt
 
-.. _abidiff_invocation_label:
+.. _abidw_invocation_label:
 
 Invocation
 ==========

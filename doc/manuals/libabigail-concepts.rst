@@ -617,6 +617,7 @@ names start with the string "private_data_member".
 
 
  .. _suppr_has_size_change_property_label:
+
 * ``has_size_change``
 
  Usage:

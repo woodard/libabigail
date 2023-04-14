@@ -852,3 +852,4 @@ Usage examples
 .. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
 .. _DWZ: https://sourceware.org/dwz
+.. _Linux Kernel: https://kernel.org/
