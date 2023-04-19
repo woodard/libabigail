@@ -1041,40 +1041,29 @@ return_comparison_result(T& l, T& r, bool value,
 	  // eventually fails.
 	  env.priv_->add_to_types_with_non_confirmed_propagated_ct(is_type(&r));
 	}
-      else if (value == true
-	       && (// The type is neither recursive nor dependant on a
-		   // recursive type ...
-		   (!env.priv_->is_recursive_type(&r)
-		    && !is_type(&r)->priv_->depends_on_recursive_type()
-		    && is_type(&r)->priv_->canonical_type_propagated()
-		    && !is_type(&r)->priv_->propagated_canonical_type_confirmed())
-		   ||
-		   // ... or the comparison stack is empty, meaning,
-		   // comparing r & l is completely done.
-		   env.priv_->right_type_comp_operands_.empty()))
+      else if (value == true && env.priv_->right_type_comp_operands_.empty())
 	{
-	  // Either:
-	  // 
-	  // A/ 'r' is neither recursive nor dependant on a
-	  // recursive type
+	  // The type provided in the 'r' argument is the type that is
+	  // being canonicalized; 'r' is not a mere subtype being
+	  // compared, it's the whole type being canonicalized.  And
+	  // its canonicalization has just succeeded.
 	  //
-	  // B/ Or the type provided in the 'r' argument is the type
-	  // that is being canonicalized; 'r' is not a mere subtype
-	  // being compared, it's the whole type being canonicalized.
-	  // And its canonicalization has just succeeded.
-	  //
-	  // In both cases, let's confirm the canonical type resulting
-	  // from the "canonical type propagation" optimization.
+	  // Let's confirm the canonical type resulting from the
+	  // "canonical type propagation" optimization.
 	  env.priv_->confirm_ct_propagation(&r);
 	}
+      else if (value == true)
+	// In any other case, we are not sure if propagated types
+	// should be confirmed yet.  So let's mark them as such.
+	env.priv_->add_to_types_with_non_confirmed_propagated_ct(is_type(&r));
       else if (value == false)
 	{
 	  // The comparison of the current sub-type failed.  So all
-	  // the types in
-	  // env.prix_->types_with_non_confirmed_propagated_ct_
+	  // the with non-confirmed propagated types (those in
+	  // env.prix_->types_with_non_confirmed_propagated_ct_)
 	  // should see their tentatively propagated canonical type
 	  // cancelled.
-	  env.priv_->cancel_ct_propagation(&r);
+	  env.priv_->cancel_all_non_confirmed_propagated_canonical_types();
 	}
     }
 

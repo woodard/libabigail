@@ -827,8 +827,6 @@ struct environment::priv
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
-		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type(dependant_type);
 	if (!t->priv_->depends_on_recursive_type())
 	  {
@@ -887,8 +885,6 @@ struct environment::priv
     for (auto i : types_with_non_confirmed_propagated_ct_)
       {
 	type_base *t = reinterpret_cast<type_base*>(i);
-	ABG_ASSERT(t->get_environment().priv_->is_recursive_type(t)
-		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type();
 	t->priv_->set_propagated_canonical_type_confirmed(true);
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -1049,17 +1045,13 @@ struct environment::priv
 
     const environment& env = t->get_environment();
     env.priv_->cancel_ct_propagation_for_types_dependant_on(t);
-    if (t->priv_->depends_on_recursive_type()
-	|| env.priv_->is_recursive_type(t))
-      {
-	// This cannot carry any tentative canonical type at this
-	// point.
-	clear_propagated_canonical_type(t);
-	// Reset the marking of the type as it no longer carries a
-	// tentative canonical type that might be later cancelled.
-	t->priv_->set_does_not_depend_on_recursive_type();
-	env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
-      }
+    // This cannot carry any tentative canonical type at this
+    // point.
+    clear_propagated_canonical_type(t);
+    // Reset the marking of the type as it no longer carries a
+    // tentative canonical type that might be later canceled.
+    t->priv_->set_does_not_depend_on_recursive_type();
+    env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
   }
 
   /// Clear the propagated canonical type of a given type.
@@ -1108,6 +1100,22 @@ struct environment::priv
   {
     uintptr_t i = reinterpret_cast<uintptr_t>(dependant);
     types_with_non_confirmed_propagated_ct_.erase(i);
+  }
+
+  /// Cancel the propagated canonical types of all the types which
+  /// propagated canonical type have not yet been confirmed.
+  void
+  cancel_all_non_confirmed_propagated_canonical_types()
+  {
+    vector<uintptr_t> to_erase;
+    for (auto i : types_with_non_confirmed_propagated_ct_)
+      to_erase.push_back(i);
+
+    for (auto i : to_erase)
+      {
+	type_base *t = reinterpret_cast<type_base*>(i);
+	cancel_ct_propagation(t);
+      }
   }
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
