@@ -881,13 +881,13 @@ public:
 	  }
 	else if (j->second
 		 != reinterpret_cast<uintptr_t>(t->get_canonical_type().get()))
-	  // So thecanonical type of 't' (at abixml de-serialization
+	  // So the canonical type of 't' (at abixml de-serialization
 	  // time) is different from the canonical type that led to
 	  // the serialization of 't' at abixml serialization time.
 	  // Report this because it needs further debugging.
 	  std::cerr << "error: canonical type for type '"
-		    << t->get_pretty_representation(/*internal=*/false,
-						    /*qualified=*/false)
+		    << t->get_pretty_representation(/*internal=*/true,
+						    /*qualified=*/true)
 		    << "' of type-id '" << type_id
 		    << "' changed from '" << std::hex
 		    << j->second << "' to '" << std::hex

@@ -1094,6 +1094,17 @@ return_comparison_result(T& l, T& r, bool value,
     // shall now confirm the propagation for all those types.
     env.priv_->confirm_ct_propagation();
 
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (value == false && env.priv_->right_type_comp_operands_.empty())
+    {
+      for (const auto i : env.priv_->types_with_non_confirmed_propagated_ct_)
+	{
+	  type_base *t = reinterpret_cast<type_base*>(i);
+	  env.priv_->check_abixml_canonical_type_propagation_during_self_comp(t);
+	}
+    }
+#endif
+
   ABG_RETURN(value);
 }
 
@@ -3899,9 +3910,39 @@ environment::get_canonical_type(const char* name, unsigned index)
 ///
 /// @return the set of abixml type-id and the pointer value of the
 /// (canonical) type it's associated to.
-unordered_map<string, uintptr_t>&
+const unordered_map<string, uintptr_t>&
 environment::get_type_id_canonical_type_map() const
-{return priv_->type_id_canonical_type_map_;}
+{return priv_->get_type_id_canonical_type_map();}
+
+/// Get the set of abixml type-id and the pointer value of the
+/// (canonical) type it's associated to.
+///
+/// This is useful for debugging purposes, especially in the context
+/// of the use of the command:
+///   'abidw --debug-abidiff <binary>'.
+///
+/// @return the set of abixml type-id and the pointer value of the
+/// (canonical) type it's associated to.
+unordered_map<string, uintptr_t>&
+environment::get_type_id_canonical_type_map()
+{return priv_->get_type_id_canonical_type_map();}
+
+/// Getter of the map that associates the values of type pointers to
+/// their type-id strings.
+///
+/// Note that this map is populated at abixml reading time, (by
+/// build_type()) when a given XML element representing a type is
+/// read into a corresponding abigail::ir::type_base.
+///
+/// This is used only for the purpose of debugging the
+/// self-comparison process.  That is, when invoking "abidw
+/// --debug-abidiff".
+///
+/// @return the map that associates the values of type pointers to
+/// their type-id strings.
+const unordered_map<uintptr_t, string>&
+environment::get_pointer_type_id_map() const
+{return priv_->get_pointer_type_id_map();}
 
 /// Getter of the map that associates the values of type pointers to
 /// their type-id strings.
@@ -3918,7 +3959,7 @@ environment::get_type_id_canonical_type_map() const
 /// their type-id strings.
 unordered_map<uintptr_t, string>&
 environment::get_pointer_type_id_map()
-{return priv_->pointer_type_id_map_;}
+{return priv_->get_pointer_type_id_map();}
 
 /// Getter of the type-id that corresponds to the value of a pointer
 /// to abigail::ir::type_base that was created from the abixml reader.
@@ -3936,13 +3977,8 @@ environment::get_pointer_type_id_map()
 ///
 /// @return the type-id strings that corresponds
 string
-environment::get_type_id_from_pointer(uintptr_t ptr)
-{
-  auto it = get_pointer_type_id_map().find(ptr);
-  if (it != get_pointer_type_id_map().end())
-    return it->second;
-  return "";
-}
+environment::get_type_id_from_pointer(uintptr_t ptr) const
+{return priv_->get_type_id_from_pointer(ptr);}
 
 /// Getter of the type-id that corresponds to the value of an
 /// abigail::ir::type_base that was created from the abixml reader.
@@ -3960,8 +3996,8 @@ environment::get_type_id_from_pointer(uintptr_t ptr)
 ///
 /// @return the type-id strings that corresponds
 string
-environment::get_type_id_from_type(const type_base *t)
-{return get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t));}
+environment::get_type_id_from_type(const type_base *t) const
+{return priv_->get_type_id_from_type(t);}
 
 /// Getter of the canonical type of the artifact designated by a
 /// type-id.
@@ -3978,16 +4014,10 @@ environment::get_type_id_from_type(const type_base *t)
 /// @return the set of abixml type-id and the pointer value of the
 /// (canonical) type it's associated to.
 uintptr_t
-environment::get_canonical_type_from_type_id(const char* type_id)
-{
-  if (!type_id)
-    return 0;
-  auto it = get_type_id_canonical_type_map().find(type_id);
-  if (it != get_type_id_canonical_type_map().end())
-    return it->second;
-  return 0;
-}
+environment::get_canonical_type_from_type_id(const char* type_id) const
+{return priv_->get_canonical_type_from_type_id(type_id);}
 #endif
+
 // </environment stuff>
 
 // <type_or_decl_base stuff>
@@ -14558,17 +14588,31 @@ type_base::get_canonical_type_for(type_base_sptr t)
 		  if (!env.priv_->
 		      check_canonical_type_from_abixml_during_self_comp(t,
 									result))
-		    // The canonical type of the type re-read from abixml
-		    // type doesn't match the canonical type that was
-		    // initially serialized down.
-		    std::cerr << "error: wrong canonical type for '"
-			      << repr
-			      << "' / type: @"
-			      << std::hex
-			      << t.get()
-			      << "/ canon: @"
-			      << result.get()
-			      << std::endl;
+		    {
+		      // The canonical type of the type re-read from abixml
+		      // type doesn't match the canonical type that was
+		      // initially serialized down.
+		      uintptr_t should_have_canonical_type = 0;
+		      string type_id = env.get_type_id_from_type(t.get());
+		      if (type_id.empty())
+			type_id = "type-id-<not-found>";
+		      else
+			should_have_canonical_type =
+			  env.get_canonical_type_from_type_id(type_id.c_str());
+		      std::cerr << "error: wrong canonical type for '"
+				<< repr
+				<< "' / type: @"
+				<< std::hex
+				<< t.get()
+				<< "/ canon: @"
+				<< result.get()
+				<< ", type-id: '"
+				<< type_id
+				<< "'.  Should have had canonical type: "
+				<< std::hex
+				<< should_have_canonical_type
+				<< std::endl;
+		    }
 		}
 	      else //!result
 		{
@@ -14596,12 +14640,12 @@ type_base::get_canonical_type_for(type_base_sptr t)
 			    << repr
 			    << "' from second corpus"
 			    << ", ptr: " << std::hex << t.get()
-			    << "type-id: " << type_id
+			    << " type-id: " << type_id
 			    << std::endl;
 		}
 	    }
 	}
-#endif
+#endif //WITH_DEBUG_SELF_COMPARISON
 
       if (!result)
 	{

@@ -834,6 +834,9 @@ struct environment::priv
 	  {
 	    to_remove.insert(i);
 	    t->priv_->set_propagated_canonical_type_confirmed(true);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	    check_abixml_canonical_type_propagation_during_self_comp(t);
+#endif
 	  }
       }
 
@@ -865,6 +868,9 @@ struct environment::priv
     env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
     env.priv_->set_is_not_recursive(t);
     t->priv_->set_propagated_canonical_type_confirmed(true);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+    check_abixml_canonical_type_propagation_during_self_comp(t);
+#endif
   }
 
   /// Mark all the types that have been the target of canonical type
@@ -885,6 +891,9 @@ struct environment::priv
 		   || t->priv_->depends_on_recursive_type());
 	t->priv_->set_does_not_depend_on_recursive_type();
 	t->priv_->set_propagated_canonical_type_confirmed(true);
+#ifdef WITH_DEBUG_SELF_COMPARISON
+	    check_abixml_canonical_type_propagation_during_self_comp(t);
+#endif
       }
     types_with_non_confirmed_propagated_ct_.clear();
   }
@@ -1102,6 +1111,47 @@ struct environment::priv
   }
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
+
+  const unordered_map<string, uintptr_t>&
+  get_type_id_canonical_type_map() const
+  {return type_id_canonical_type_map_;}
+
+  unordered_map<string, uintptr_t>&
+  get_type_id_canonical_type_map()
+  {return type_id_canonical_type_map_;}
+
+  const unordered_map<uintptr_t, string>&
+  get_pointer_type_id_map() const
+  {return pointer_type_id_map_;}
+
+  unordered_map<uintptr_t, string>&
+  get_pointer_type_id_map()
+  {return pointer_type_id_map_;}
+
+  string
+  get_type_id_from_pointer(uintptr_t ptr) const
+  {
+    auto it = get_pointer_type_id_map().find(ptr);
+    if (it != get_pointer_type_id_map().end())
+      return it->second;
+    return "";
+  }
+
+  string
+  get_type_id_from_type(const type_base *t) const
+  {return get_type_id_from_pointer(reinterpret_cast<uintptr_t>(t));}
+
+  uintptr_t
+  get_canonical_type_from_type_id(const char* type_id) const
+  {
+    if (!type_id)
+      return 0;
+    auto it = get_type_id_canonical_type_map().find(type_id);
+    if (it != get_type_id_canonical_type_map().end())
+      return it->second;
+    return 0;
+  }
+
   /// When debugging self comparison, verify that a type T
   /// de-serialized from abixml has the same canonical type as the
   /// initial type built from DWARF that was serialized into T in the
@@ -1109,10 +1159,11 @@ struct environment::priv
   ///
   /// @param t deserialized type (from abixml) to consider.
   ///
-  /// @param c the canonical type @p t should have.
+  /// @param c the canonical type that @p t has, as computed freshly
+  /// from the abixml file.
   ///
-  /// @return true iff @p c is the canonical type that @p t should
-  /// have.
+  /// @return true iff @p c has the same value as the canonical type
+  /// that @p t had before being serialized into abixml.
   bool
   check_canonical_type_from_abixml_during_self_comp(const type_base* t,
 						    const type_base* c)
@@ -1157,6 +1208,45 @@ struct environment::priv
       return true;
 
     return false;
+  }
+
+  /// When debugging self comparison, verify that a type T
+  /// de-serialized from abixml has the same canonical type as the
+  /// initial type built from DWARF that was serialized into T in the
+  /// first place.
+  ///
+  /// @param t deserialized type (from abixml) to consider.
+  ///
+  /// @return true iff @p c is the canonical type that @p t should
+  /// have.
+  bool
+  check_abixml_canonical_type_propagation_during_self_comp(const type_base* t)
+  {
+    if (t->get_corpus()
+	&& t->get_corpus()->get_origin() == ir::corpus::NATIVE_XML_ORIGIN)
+      {
+	type_base* c = t->get_naked_canonical_type();
+	if (c && !check_canonical_type_from_abixml_during_self_comp(t, c))
+	  {
+	    string repr = t->get_pretty_representation(true, true);
+	    string type_id = get_type_id_from_type(t);
+	    std::cerr << "error: canonical type propagation error for '"
+		      << repr
+		      << "' of type-id: '"
+		      << type_id
+		      << "' / type: @"
+		      << std::hex
+		      << t
+		      << "/ canon: @"
+		      << c
+		      << ", should have had canonical type: "
+		      << std::hex
+		      << get_canonical_type_from_type_id(type_id.c_str())
+		      << "\n";
+	    return false;
+	  }
+      }
+    return true;
   }
 
   /// When debugging self comparison, verify that a type T

@@ -244,20 +244,26 @@ public:
   type_base* get_canonical_type(const char* name, unsigned index);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
-  unordered_map<string, uintptr_t>&
+  const unordered_map<string, uintptr_t>&
   get_type_id_canonical_type_map() const;
+
+  unordered_map<string, uintptr_t>&
+  get_type_id_canonical_type_map();
+
+  const unordered_map<uintptr_t, string>&
+  get_pointer_type_id_map() const;
 
   unordered_map<uintptr_t, string>&
   get_pointer_type_id_map();
 
   string
-  get_type_id_from_pointer(uintptr_t ptr);
+  get_type_id_from_pointer(uintptr_t ptr) const;
 
   string
-  get_type_id_from_type(const type_base *ptr);
+  get_type_id_from_type(const type_base *ptr) const;
 
   uintptr_t
-  get_canonical_type_from_type_id(const char*);
+  get_canonical_type_from_type_id(const char*) const;
 #endif
 
   friend class class_or_union;

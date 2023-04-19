@@ -4906,16 +4906,20 @@ write_type_record(xml_writer::write_context&	ctxt,
   //       <c>0x25f9ba8</c>
   //     </type>
 
-  string id = ctxt.get_id_for_type (const_cast<type_base*>(type));
-  o << "  <type>\n"
-    << "    <id>" << id << "</id>\n"
-    << "    <c>"
-    << std::hex
-    << (type->get_canonical_type()
-	? reinterpret_cast<uintptr_t>(type->get_canonical_type().get())
-	: 0xdeadbabe)
-    << "</c>\n"
-    << "  </type>\n";
+    type_base* canonical = type->get_naked_canonical_type();
+    string id ;
+  if (canonical)
+    {
+      id = ctxt.get_id_for_type (const_cast<type_base*>(type));
+
+      o << "  <type>\n"
+	<< "    <id>" << id << "</id>\n"
+	<< "    <c>"
+	<< std::hex
+	<< reinterpret_cast<uintptr_t>(canonical)
+	<< "</c>\n"
+	<< "  </type>\n";
+    }
 }
 
 /// Serialize the map that is stored at
