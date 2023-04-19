@@ -6522,10 +6522,9 @@ scope_diff::ensure_lookup_tables_populated()
   edit_script& e = priv_->member_changes_;
 
   // Populate deleted types & decls lookup tables.
-  for (vector<deletion>::const_iterator i = e.deletions().begin();
-       i != e.deletions().end();
-       ++i)
+  for (const auto& deletion : e.deletions())
     {
+      unsigned i = deletion.index();
       decl_base_sptr decl = deleted_member_at(i);
       string qname = decl->get_qualified_name();
       if (is_type(decl))
