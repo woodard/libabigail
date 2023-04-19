@@ -14395,11 +14395,11 @@ types_defined_same_linux_kernel_corpus_public(const type_base& t1,
 /// @return true iff @p canonical_type equals @p candidate_type.
 ///
 static bool
-compare_types_during_canonicalization(const type_base_sptr& canonical_type,
-				      const type_base_sptr& candidate_type)
+compare_types_during_canonicalization(const type_base& canonical_type,
+				      const type_base& candidate_type)
 {
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-  const environment&env = canonical_type->get_environment();
+  const environment& env = canonical_type.get_environment();
   if (env.debug_type_canonicalization_is_on())
     {
       bool canonical_equality = false, structural_equality = false;
@@ -14410,7 +14410,7 @@ compare_types_during_canonicalization(const type_base_sptr& canonical_type,
       if (canonical_equality != structural_equality)
 	{
 	  std::cerr << "structural & canonical equality different for type: "
-		    << canonical_type->get_pretty_representation(true, true)
+		    << canonical_type.get_pretty_representation(true, true)
 		    << std::endl;
 	  ABG_ASSERT_NOT_REACHED;
 	}
@@ -14418,6 +14418,125 @@ compare_types_during_canonicalization(const type_base_sptr& canonical_type,
     }
 #endif //end WITH_DEBUG_TYPE_CANONICALIZATION
   return canonical_type == candidate_type;
+}
+
+/// Compare a canonical type against a candidate canonical type.
+///
+/// This is ultimately a sub-routine of the
+/// type_base::get_canonical_type_for().
+///
+/// The goal of this function is to ease debugging because it can be
+/// called from within type_base::get_canonical_type_for() from the
+/// prompt of the debugger (with some breakpoint appropriately set) to
+/// debug the comparison that happens during type canonicalization,
+/// between a candidate type being canonicalized, and an existing
+/// canonical type that is registered in the system, in as returned by
+/// environment::get_canonical_types()
+///
+/// @param canonical_type the canonical type to consider.
+///
+/// @param candidate_type the candidate type that is being
+/// canonicalized, and thus compared to @p canonical_type.
+///
+/// @return true iff @p canonical_type compares equal to @p
+/// candidate_type.
+static bool
+compare_canonical_type_against_candidate(const type_base& canonical_type,
+					 const type_base& candidate_type)
+{
+  environment& env = const_cast<environment&>(canonical_type.get_environment());
+
+  // Before the "*it == it" comparison below is done, let's
+  // perform on-the-fly-canonicalization.  For C types, let's
+  // consider that an unresolved struct declaration 'struct S'
+  // is different from a definition 'struct S'.  This is
+  // because normally, at this point all the declarations of
+  // struct S that are compatible with the definition of
+  // struct S have already been resolved to that definition,
+  // during the DWARF parsing.  The remaining unresolved
+  // declaration are thus considered different.  With this
+  // setup we can properly handle cases of two *different*
+  // struct S being defined in the same binary (in different
+  // translation units), and a third struct S being only
+  // declared as an opaque type in a third translation unit of
+  // its own, with no definition in there.  In that case, the
+  // declaration-only struct S should be left alone and not
+  // resolved to any of the two definitions of struct S.
+  bool saved_decl_only_class_equals_definition =
+    env.decl_only_class_equals_definition();
+  env.do_on_the_fly_canonicalization(true);
+  // Compare types by considering that decl-only classes don't
+  // equal their definition.
+  env.decl_only_class_equals_definition(false);
+  env.priv_->allow_type_comparison_results_caching(true);
+  bool equal = (types_defined_same_linux_kernel_corpus_public(canonical_type,
+							      candidate_type)
+		|| compare_types_during_canonicalization(canonical_type,
+							 candidate_type));
+  // Restore the state of the on-the-fly-canonicalization and
+  // the decl-only-class-being-equal-to-a-matching-definition
+  // flags.
+  env.priv_->allow_type_comparison_results_caching(false);
+  env.do_on_the_fly_canonicalization(false);
+  env.decl_only_class_equals_definition
+    (saved_decl_only_class_equals_definition);
+  return equal;
+}
+
+/// Compare a canonical type against a candidate canonical type.
+///
+/// This is ultimately a sub-routine of the
+/// type_base::get_canonical_type_for().
+///
+/// The goal of this function is to ease debugging because it can be
+/// called from within type_base::get_canonical_type_for() from the
+/// prompt of the debugger (with some breakpoint appropriately set) to
+/// debug the comparison that happens during type canonicalization,
+/// between a candidate type being canonicalized, and an existing
+/// canonical type that is registered in the system, in as returned by
+/// environment::get_canonical_types()
+///
+/// @param canonical_type the canonical type to consider.
+///
+/// @param candidate_type the candidate type that is being
+/// canonicalized, and thus compared to @p canonical_type.
+///
+/// @return true iff @p canonical_type compares equal to @p
+/// candidate_type.
+static bool
+compare_canonical_type_against_candidate(const type_base* canonical_type,
+					 const type_base* candidate_type)
+{
+  return compare_canonical_type_against_candidate(*canonical_type,
+						  *candidate_type);
+}
+
+/// Compare a canonical type against a candidate canonical type.
+///
+/// This is ultimately a sub-routine of the
+/// type_base::get_canonical_type_for().
+///
+/// The goal of this function is to ease debugging because it can be
+/// called from within type_base::get_canonical_type_for() from the
+/// prompt of the debugger (with some breakpoint appropriately set) to
+/// debug the comparison that happens during type canonicalization,
+/// between a candidate type being canonicalized, and an existing
+/// canonical type that is registered in the system, in as returned by
+/// environment::get_canonical_types()
+///
+/// @param canonical_type the canonical type to consider.
+///
+/// @param candidate_type the candidate type that is being
+/// canonicalized, and thus compared to @p canonical_type.
+///
+/// @return true iff @p canonical_type compares equal to @p
+/// candidate_type.
+static bool
+compare_canonical_type_against_candidate(const type_base_sptr& canonical_type,
+					 const type_base_sptr& candidate_type)
+{
+  return compare_canonical_type_against_candidate(canonical_type.get(),
+						  candidate_type.get());
 }
 
 /// Compute the canonical type for a given instance of @ref type_base.
@@ -14530,38 +14649,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	   it != v.rend();
 	   ++it)
 	{
-	  // Before the "*it == it" comparison below is done, let's
-	  // perform on-the-fly-canonicalization.  For C types, let's
-	  // consider that an unresolved struct declaration 'struct S'
-	  // is different from a definition 'struct S'.  This is
-	  // because normally, at this point all the declarations of
-	  // struct S that are compatible with the definition of
-	  // struct S have already been resolved to that definition,
-	  // during the DWARF parsing.  The remaining unresolved
-	  // declaration are thus considered different.  With this
-	  // setup we can properly handle cases of two *different*
-	  // struct S being defined in the same binary (in different
-	  // translation units), and a third struct S being only
-	  // declared as an opaque type in a third translation unit of
-	  // its own, with no definition in there.  In that case, the
-	  // declaration-only struct S should be left alone and not
-	  // resolved to any of the two definitions of struct S.
-	  bool saved_decl_only_class_equals_definition =
-	    env.decl_only_class_equals_definition();
-	  env.do_on_the_fly_canonicalization(true);
-	  // Compare types by considering that decl-only classes don't
-	  // equal their definition.
-	  env.decl_only_class_equals_definition(false);
-	  env.priv_->allow_type_comparison_results_caching(true);
-	  bool equal = (types_defined_same_linux_kernel_corpus_public(**it, *t)
-			|| compare_types_during_canonicalization(*it, t));
-	  // Restore the state of the on-the-fly-canonicalization and
-	  // the decl-only-class-being-equal-to-a-matching-definition
-	  // flags.
-	  env.priv_->allow_type_comparison_results_caching(false);
-	  env.do_on_the_fly_canonicalization(false);
-	  env.decl_only_class_equals_definition
-	    (saved_decl_only_class_equals_definition);
+	  bool equal = compare_canonical_type_against_candidate(*it, t);
 	  if (equal)
 	    {
 	      result = *it;
