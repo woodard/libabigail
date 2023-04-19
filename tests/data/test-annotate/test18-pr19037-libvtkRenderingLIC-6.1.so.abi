@@ -7505,6 +7505,7 @@
     <pointer-type-def type-id='type-id-97' size-in-bits='64' id='type-id-229'/>
     <!-- wchar_t** -->
     <pointer-type-def type-id='type-id-229' size-in-bits='64' id='type-id-230'/>
+    <!-- _IO_lock_t* -->
     <pointer-type-def type-id='type-id-83' size-in-bits='64' id='type-id-73'/>
     <!-- class vtkAlgorithm -->
     <class-decl name='vtkAlgorithm' visibility='default' is-declaration-only='yes' id='type-id-192'>
@@ -10290,7 +10291,9 @@
     <type-decl name='variadic parameter type' id='type-id-254'/>
     <!-- void -->
     <type-decl name='void' id='type-id-18'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-255'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-48'/>
     <!-- int getchar() -->
     <function-decl name='getchar' filepath='/usr/include/bits/stdio.h' line='45' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -12418,7 +12421,9 @@
         <return type-id='type-id-178'/>
       </function-decl>
     </namespace-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-279'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-278'/>
     <!-- std::basic_ostream<char, std::char_traits<char> >& (std::basic_ostream<char, std::char_traits<char> >&) -->
     <function-type size-in-bits='64' id='type-id-266'>
@@ -16783,7 +16788,9 @@
     </namespace-decl>
     <!-- struct vtkRenderWindow -->
     <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-434'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-386'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-399'/>
     <!-- namespace vtkLineIntegralConvolution2DUtil -->
     <namespace-decl name='vtkLineIntegralConvolution2DUtil'>
@@ -17160,7 +17167,9 @@
       <!-- class std::ios_base -->
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-445'/>
     </namespace-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-50'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-446'/>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkStructuredGridLIC2D.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
@@ -18226,7 +18235,9 @@
     <class-decl name='vtkProgressObserver' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-498'/>
     <!-- struct vtkRenderWindow -->
     <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-499'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-497'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-500'/>
     <!-- namespace detail -->
     <namespace-decl name='detail'>
@@ -20177,7 +20188,9 @@
     <class-decl name='vtkOpenGLRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-553'/>
     <!-- struct vtkTextureObject -->
     <class-decl name='vtkTextureObject' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-554'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-509'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-555'/>
     <!-- namespace __gnu_cxx -->
     <namespace-decl name='__gnu_cxx'>
@@ -22509,7 +22522,9 @@
     <class-decl name='vtkRepresentationPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-589'/>
     <!-- struct vtkScalarsToColorsPainter -->
     <class-decl name='vtkScalarsToColorsPainter' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-591'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-625'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-622'/>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkSurfaceLICPainter.cxx' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC' language='LANG_C_plus_plus'>
@@ -27232,7 +27247,9 @@
     <class-decl name='vtkRenderWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-810'/>
     <!-- struct vtkWindow -->
     <class-decl name='vtkWindow' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-766'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-778'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-811'/>
     <!-- namespace vtkSurfaceLICPainterUtil -->
     <namespace-decl name='vtkSurfaceLICPainterUtil'>
@@ -27605,7 +27622,9 @@
     </namespace-decl>
     <!-- struct vtkTextureObject -->
     <class-decl name='vtkTextureObject' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-829'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-825'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-18' size-in-bits='64' id='type-id-830'/>
   </abi-instr>
   <abi-instr address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/spack-build/Rendering/LIC/vtkLineIntegralConvolution2D_AAH.cxx' language='LANG_C_plus_plus'>

@@ -2741,15 +2741,19 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
 
   ostream& o = ctxt.get_ostream();
 
+  annotate(decl, ctxt, indent);
+
+  do_indent(o, indent);
+
+  string i;
+
+  o << "<pointer-type-def ";
 
   type_base_sptr pointed_to_type = decl->get_pointed_to_type();
 
-  annotate(decl->get_canonical_type(), ctxt, indent);
+  i = ctxt.get_id_for_type(pointed_to_type);
 
-  do_indent(o, indent);
-  o << "<pointer-type-def type-id='"
-    << ctxt.get_id_for_type(pointed_to_type)
-    << "'";
+  o << "type-id='" << i << "'";
 
   ctxt.record_type_as_referenced(pointed_to_type);
 
@@ -2759,7 +2763,7 @@ write_pointer_type_def(const pointer_type_def_sptr&	decl,
 			    : decl->get_translation_unit()->get_address_size()),
 			   0);
 
-  string i = id;
+  i = id;
   if (i.empty())
     i = ctxt.get_id_for_type(decl);
 

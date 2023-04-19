@@ -3036,6 +3036,7 @@
     <elf-symbol name='__asan_cplus_demangle_operators' size='1488' type='object-type' binding='global-binding' visibility='default-visibility' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr address-size='64' path='../../.././libsanitizer/interception/interception_linux.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/interception' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <!-- namespace __interception -->
     <namespace-decl name='__interception'>
@@ -3155,7 +3156,9 @@
         <var-decl name='size' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='60' column='1'/>
       </data-member>
     </class-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-8'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-26'/>
     <!-- int __asan_backtrace_dwarf_add(backtrace_state*, uintptr_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, const unsigned char*, size_t, int, backtrace_error_callback, void*, fileline*) -->
     <function-decl name='__asan_backtrace_dwarf_add' mangled-name='__asan_backtrace_dwarf_add' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/dwarf.c' line='2958' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_dwarf_add'>
@@ -3401,7 +3404,9 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-37'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-38'/>
     <!-- int __asan_backtrace_initialize(backtrace_state*, int, backtrace_error_callback, void*, fileline*) -->
     <function-decl name='__asan_backtrace_initialize' mangled-name='__asan_backtrace_initialize' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/elf.c' line='921' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_initialize'>
@@ -3464,6 +3469,7 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-43'/>
     <!-- int __asan_backtrace_pcinfo(backtrace_state*, uintptr_t, backtrace_full_callback, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_pcinfo' mangled-name='__asan_backtrace_pcinfo' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/fileline.c' line='166' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_pcinfo'>
@@ -3508,7 +3514,9 @@
         <var-decl name='size' type-id='type-id-13' visibility='default' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='60' column='1'/>
       </data-member>
     </class-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-44'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-45'/>
     <!-- void* __asan_backtrace_vector_finish(backtrace_state*, backtrace_vector*, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_vector_finish' mangled-name='__asan_backtrace_vector_finish' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmap.c' line='258' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_vector_finish'>
@@ -3593,7 +3601,9 @@
     <typedef-decl name='off_t' type-id='type-id-46' filepath='/usr/include/sys/types.h' line='87' column='1' id='type-id-51'/>
     <!-- backtrace_view* -->
     <pointer-type-def type-id='type-id-47' size-in-bits='64' id='type-id-52'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-49'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-48'/>
     <!-- int __asan_backtrace_get_view(backtrace_state*, int, off_t, size_t, backtrace_error_callback, void*, backtrace_view*) -->
     <function-decl name='__asan_backtrace_get_view' mangled-name='__asan_backtrace_get_view' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/mmapio.c' line='53' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_get_view'>
@@ -3629,6 +3639,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/posix.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-53'/>
     <!-- int fcntl(int, int, ...) -->
     <function-decl name='fcntl' filepath='/usr/include/fcntl.h' line='122' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3659,10 +3670,13 @@
     </function-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/sort.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-54'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-55'/>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C89'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-56'/>
     <!-- backtrace_state* __asan_backtrace_create_state(const char*, int, backtrace_error_callback, void*) -->
     <function-decl name='__asan_backtrace_create_state' mangled-name='__asan_backtrace_create_state' filepath='../../.././libsanitizer/libbacktrace/../../libbacktrace/state.c' line='46' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_backtrace_create_state'>
@@ -4116,7 +4130,9 @@
     <pointer-type-def type-id='type-id-76' size-in-bits='64' id='type-id-74'/>
     <!-- demangle_component** -->
     <pointer-type-def type-id='type-id-74' size-in-bits='64' id='type-id-75'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-96'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-97'/>
     <!-- int __asan_cplus_demangle_fill_name(demangle_component*, const char*, int) -->
     <function-decl name='__asan_cplus_demangle_fill_name' mangled-name='__asan_cplus_demangle_fill_name' filepath='../../.././libsanitizer/libbacktrace/../../libiberty/cp-demangle.c' line='783' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__asan_cplus_demangle_fill_name'>
@@ -4343,7 +4359,9 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/libbacktrace/bridge.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/libbacktrace' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-101'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-102'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -4360,7 +4378,9 @@
     <pointer-type-def type-id='type-id-107' size-in-bits='64' id='type-id-108'/>
     <!-- void (typedef __sanitizer::uptr, typedef __sanitizer::uptr)* -->
     <pointer-type-def type-id='type-id-109' size-in-bits='64' id='type-id-110'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-111'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-112'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -4645,7 +4665,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-155' size-in-bits='64' id='type-id-156'/>
     <!-- unsigned long int** -->
     <pointer-type-def type-id='type-id-157' size-in-bits='64' id='type-id-158'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-159'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-160'/>
     <!-- void __sanitizer_set_report_path(const char*) -->
     <function-decl name='__sanitizer_set_report_path' mangled-name='__sanitizer_set_report_path' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.cc' line='250' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_set_report_path'>
@@ -5412,7 +5434,9 @@
     <pointer-type-def type-id='type-id-155' size-in-bits='64' id='type-id-198'/>
     <!-- unsigned int& -->
     <reference-type-def kind='lvalue' type-id='type-id-194' size-in-bits='64' id='type-id-199'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-200'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-201'/>
     <!-- void __sanitizer_cov(void*) -->
     <function-decl name='__sanitizer_cov' mangled-name='__sanitizer_cov' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_coverage.cc' line='107' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_cov'>
@@ -5671,7 +5695,9 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_flags.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-203'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-204'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -5680,7 +5706,9 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_libc.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-207'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-208'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -6200,7 +6228,9 @@
     <pointer-type-def type-id='type-id-256' size-in-bits='64' id='type-id-257'/>
     <!-- void (void*, typedef __sanitizer::uptr)* -->
     <pointer-type-def type-id='type-id-258' size-in-bits='64' id='type-id-259'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-239'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-260'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -6832,7 +6862,9 @@
     <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-99'/>
     <!-- struct _Unwind_Context -->
     <class-decl name='_Unwind_Context' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-283'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-290'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-291'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8043,7 +8075,9 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_posix.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-295'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-296'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8092,6 +8126,7 @@
     <qualified-type-def type-id='type-id-300' const='yes' id='type-id-301'/>
     <!-- const rlimit* -->
     <pointer-type-def type-id='type-id-301' size-in-bits='64' id='type-id-302'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-303'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8172,6 +8207,7 @@
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_printf.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
     <!-- void (const char*)* -->
     <pointer-type-def type-id='type-id-306' size-in-bits='64' id='type-id-307'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-308'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8229,7 +8265,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-329' size-in-bits='64' id='type-id-330'/>
     <!-- const __sanitizer::StackDepotReverseMap::IdDescPair* -->
     <pointer-type-def type-id='type-id-329' size-in-bits='64' id='type-id-331'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-332'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-333'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8621,6 +8659,7 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_stacktrace.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-335'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8662,7 +8701,9 @@
     <qualified-type-def type-id='type-id-340' const='yes' id='type-id-348'/>
     <!-- const __sanitizer::ScopedStackSpaceWithGuard* -->
     <pointer-type-def type-id='type-id-348' size-in-bits='64' id='type-id-349'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-350'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-351'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -8894,7 +8935,9 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_suppressions.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-357'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-358'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -9008,7 +9051,9 @@
     <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-359'/>
     <!-- void (void*, typedef uintptr_t, const char*, typedef uintptr_t, typedef uintptr_t)* -->
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-361'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-363'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-364'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -9111,7 +9156,9 @@
         <return type-id='type-id-30'/>
       </function-decl>
     </namespace-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-379'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-380'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -9886,6 +9933,7 @@
     </function-type>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_thread_registry.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/sanitizer_common' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-382'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -9943,7 +9991,9 @@
     <pointer-type-def type-id='type-id-135' size-in-bits='64' id='type-id-404'/>
     <!-- void -->
     <type-decl name='void' id='type-id-1'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-405'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-406'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -10536,6 +10586,7 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_fd.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-407'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -10673,6 +10724,7 @@
     <pointer-type-def type-id='type-id-132' size-in-bits='64' id='type-id-411'/>
     <!-- const char** -->
     <pointer-type-def type-id='type-id-5' size-in-bits='64' id='type-id-412'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-413'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -12373,14 +12425,18 @@
     <qualified-type-def type-id='type-id-268' volatile='yes' id='type-id-1281'/>
     <!-- wchar_t* -->
     <pointer-type-def type-id='type-id-983' size-in-bits='64' id='type-id-1282'/>
+    <!-- const kernel_sigset_t* -->
     <pointer-type-def type-id='type-id-1105' size-in-bits='64' id='type-id-1283'/>
+    <!-- kernel_sigset_t* -->
     <pointer-type-def type-id='type-id-654' size-in-bits='64' id='type-id-1284'/>
     <!-- namespace std -->
     <namespace-decl name='std'>
       <!-- struct std::nothrow_t -->
       <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/tsan/tsan_interceptors.cc' line='108' column='1' id='type-id-1106'/>
     </namespace-decl>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-430'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1285'/>
     <!-- namespace __interception -->
     <namespace-decl name='__interception'>
@@ -27292,6 +27348,7 @@
     <pointer-type-def type-id='type-id-1304' size-in-bits='64' id='type-id-1313'/>
     <!-- uu64* -->
     <pointer-type-def type-id='type-id-1305' size-in-bits='64' id='type-id-1314'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1315'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -27440,7 +27497,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-1328' size-in-bits='64' id='type-id-1329'/>
     <!-- const __tsan::Vector<__tsan::ExpectRace>* -->
     <pointer-type-def type-id='type-id-1328' size-in-bits='64' id='type-id-1330'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1331'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1332'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -28599,8 +28658,11 @@
     <pointer-type-def type-id='type-id-1536' size-in-bits='64' id='type-id-1551'/>
     <!-- volatile void -->
     <qualified-type-def type-id='type-id-1' volatile='yes' id='type-id-1539'/>
+    <!-- const volatile void* -->
     <pointer-type-def type-id='type-id-1540' size-in-bits='64' id='type-id-1357'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1381'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1552'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -35351,6 +35413,7 @@
     <pointer-type-def type-id='type-id-1569' size-in-bits='64' id='type-id-1570'/>
     <!-- __tsan::ScopedJavaFunc* -->
     <pointer-type-def type-id='type-id-1571' size-in-bits='64' id='type-id-1572'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1573'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -35582,7 +35645,9 @@
     <pointer-type-def type-id='type-id-1575' size-in-bits='64' id='type-id-1576'/>
     <!-- unsigned char* -->
     <pointer-type-def type-id='type-id-20' size-in-bits='64' id='type-id-1577'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1578'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1579'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -35698,7 +35763,9 @@
     <qualified-type-def type-id='type-id-1611' const='yes' id='type-id-1612'/>
     <!-- const __tsan::MapUnmapCallback* -->
     <pointer-type-def type-id='type-id-1612' size-in-bits='64' id='type-id-1613'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-217'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1554'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -36956,6 +37023,7 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_mutexset.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1624'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -37058,6 +37126,7 @@
     <pointer-type-def type-id='type-id-1645' size-in-bits='64' id='type-id-356'/>
     <!-- void (typedef __sanitizer::uptr, typedef __sanitizer::uptr, bool, __sanitizer::uptr*, typedef __sanitizer::uptr)* -->
     <pointer-type-def type-id='type-id-1646' size-in-bits='64' id='type-id-272'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1647'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -37604,6 +37673,7 @@
     <pointer-type-def type-id='type-id-1723' size-in-bits='64' id='type-id-1725'/>
     <!-- variadic parameter type -->
     <type-decl name='variadic parameter type' id='type-id-1726'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1727'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -39165,7 +39235,9 @@
     <qualified-type-def type-id='type-id-1558' volatile='yes' id='type-id-1745'/>
     <!-- volatile __sanitizer::atomic_uint8_t* -->
     <pointer-type-def type-id='type-id-1745' size-in-bits='64' id='type-id-130'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1747'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1748'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -40494,6 +40566,7 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr address-size='64' path='../../.././libsanitizer/tsan/tsan_rtl_mutex.cc' comp-dir-path='/tmp/legendre/spack-stage/spack-stage-ImG4Cf/gcc-4.9.2/x86_64-unknown-linux-gnu/libsanitizer/tsan' language='LANG_C_plus_plus'>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1751'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -40627,7 +40700,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-1760' size-in-bits='64' id='type-id-1761'/>
     <!-- unsigned long int& -->
     <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' id='type-id-181'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1614'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1617'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -40993,7 +41068,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-1797' size-in-bits='64' id='type-id-1798'/>
     <!-- const __tsan::Vector<__tsan::ThreadLeak>* -->
     <pointer-type-def type-id='type-id-1797' size-in-bits='64' id='type-id-1799'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1298'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1800'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -42877,6 +42954,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-1803' size-in-bits='64' id='type-id-222'/>
     <!-- const __sanitizer::InternalMmapVector<__sanitizer::Suppression*>* -->
     <pointer-type-def type-id='type-id-1803' size-in-bits='64' id='type-id-223'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1804'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -43043,7 +43121,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-1811' size-in-bits='64' id='type-id-1812'/>
     <!-- int* -->
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-39'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1813'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1814'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -43426,7 +43506,9 @@
     <pointer-type-def type-id='type-id-1819' size-in-bits='64' id='type-id-42'/>
     <!-- int (dl_phdr_info*, typedef size_t, void*)* -->
     <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-40'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1822'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1827'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
@@ -43474,7 +43556,9 @@
     <qualified-type-def type-id='type-id-1832' const='yes' id='type-id-1838'/>
     <!-- const __tsan::MBlock* -->
     <pointer-type-def type-id='type-id-1838' size-in-bits='64' id='type-id-1839'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1840'/>
+    <!-- void* -->
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-1553'/>
     <!-- namespace __sanitizer -->
     <namespace-decl name='__sanitizer'>
