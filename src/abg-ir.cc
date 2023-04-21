@@ -3539,10 +3539,19 @@ environment::get_variadic_parameter_type() const
 {
   if (!priv_->variadic_marker_type_)
     priv_->variadic_marker_type_.
-      reset(new type_decl(*this,
-			  intern("variadic parameter type"),
+      reset(new type_decl(*this, intern(get_variadic_parameter_type_name()),
 			  0, 0, location()));
   return priv_->variadic_marker_type_;
+}
+
+/// Getter of the name of the variadic parameter type.
+///
+/// @return the name of the variadic parameter type.
+string&
+environment::get_variadic_parameter_type_name()
+{
+  static string variadic_parameter_type_name = "variadic parameter type";
+  return variadic_parameter_type_name;
 }
 
 /// Test if the canonicalization of types created out of the current

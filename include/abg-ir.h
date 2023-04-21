@@ -165,6 +165,9 @@ public:
   const type_base_sptr&
   get_variadic_parameter_type() const;
 
+  static string&
+  get_variadic_parameter_type_name();
+
   bool
   canonicalization_is_done() const;
 

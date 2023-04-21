@@ -17,20 +17,20 @@
         <var-decl name='m0' type-id='type-id-4' visibility='default'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='POINTER' type-id='type-id-5' id='type-id-4'/>
-    <pointer-type-def type-id='type-id-1' size-in-bits='64' alignment-in-bits='64' id='type-id-6'/>
-    <pointer-type-def type-id='type-id-3' size-in-bits='64' alignment-in-bits='64' id='type-id-7'/>
-    <qualified-type-def type-id='type-id-8' const='yes' id='type-id-9'/>
-    <pointer-type-def type-id='type-id-9' size-in-bits='64' alignment-in-bits='64' id='type-id-5'/>
-    <pointer-type-def type-id='type-id-8' size-in-bits='64' alignment-in-bits='64' id='type-id-2'/>
+    <pointer-type-def type-id='type-id-1' size-in-bits='64' alignment-in-bits='64' id='type-id-5'/>
+    <pointer-type-def type-id='type-id-3' size-in-bits='64' alignment-in-bits='64' id='type-id-6'/>
+    <qualified-type-def type-id='type-id-7' const='yes' id='type-id-8'/>
+    <pointer-type-def type-id='type-id-8' size-in-bits='64' alignment-in-bits='64' id='type-id-9'/>
     <function-decl name='bar' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='bar'>
-      <parameter type-id='type-id-7'/>
-      <return type-id='type-id-8'/>
+      <parameter type-id='type-id-6'/>
+      <return type-id='type-id-7'/>
     </function-decl>
     <function-decl name='foo' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='foo'>
-      <parameter type-id='type-id-6'/>
-      <return type-id='type-id-8'/>
+      <parameter type-id='type-id-5'/>
+      <return type-id='type-id-7'/>
     </function-decl>
-    <type-decl name='void' id='type-id-8'/>
+    <typedef-decl name='POINTER' type-id='type-id-9' id='type-id-4'/>
+    <type-decl name='void' id='type-id-7'/>
+    <pointer-type-def type-id='type-id-7' size-in-bits='64' alignment-in-bits='64' id='type-id-2'/>
   </abi-instr>
 </abi-corpus>

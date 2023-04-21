@@ -9650,7 +9650,7 @@ die_return_and_parm_names_from_fn_type_die(const reader& rdr,
 	else if (child_tag == DW_TAG_unspecified_parameters)
 	  {
 	    // This is a variadic function parameter.
-	    parm_names.push_back("variadic parameter type");
+	    parm_names.push_back(rdr.env().get_variadic_parameter_type_name());
 	    // After a DW_TAG_unspecified_parameters tag, we shouldn't
 	    // keep reading for parameters.  The
 	    // unspecified_parameters TAG should be the last parameter

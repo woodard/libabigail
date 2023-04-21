@@ -3753,8 +3753,12 @@ build_type_decl(reader&		rdr,
     }
 
   const environment& env = rdr.get_environment();
-  type_decl_sptr decl(new type_decl(env, name, size_in_bits,
-				    alignment_in_bits, loc));
+  type_decl_sptr decl;
+  if (name == env.get_variadic_parameter_type_name())
+    decl = is_type_decl(env.get_variadic_parameter_type());
+  else
+    decl.reset(new type_decl(env, name, size_in_bits,
+			     alignment_in_bits, loc));
   maybe_set_artificial_location(rdr, node, decl);
   decl->set_is_anonymous(is_anonymous);
   decl->set_is_declaration_only(is_decl_only);
