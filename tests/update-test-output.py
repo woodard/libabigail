@@ -54,17 +54,20 @@ def main():
 
 
 def process(input_file):
-    source = ""
-    dest = ""
+    source = None
+    dest = None
     for line in input_file:
-        m = re.match(r'^--- (.*?)\t', line)
+        m = re.match(r'(.*?)--- (.*?)\t', line)
         if m:
-            dest = m.group(1)
+            dest = m.group(2)
         else:
-            m = re.match(r'^\+\+\+ (.*?)\t', line)
+            m = re.match(r'(.*?)\+\+\+ (.*?)\t', line)
             if m:
-                source = m.group(1)
-                sys.stdout.write("cp " + source + " " + dest + "\n");
+                source = m.group(2)
+                if source != None and dest != None:
+                    sys.stdout.write("cp " + source + " " + dest + "\n");
+                    source = None
+                    dest = None
 
 if __name__ == "__main__":
     main()
