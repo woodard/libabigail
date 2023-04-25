@@ -2302,13 +2302,20 @@ load_default_user_suppressions(suppr::suppressions_type& supprs)
 ///
 /// @param entry the FTSENT* to consider.
 ///
-/// @param fname the file name (or end of path) to consider.
+/// @param fname the file name (or end of path) to consider.  The file
+/// name can also be a path that is relative to the root directory the
+/// current visit is started from.  The root directory is given by @p
+/// root_dir.
+///
+/// @param root_dir the root dir from which the directory visit is
+/// being performed.
 ///
 /// @return true iff @p entry denotes a file which path ends with @p
 /// fname.
 static bool
 entry_of_file_with_name(const FTSENT *entry,
-			const string& fname)
+			const string& fname,
+			const string& root_dir)
 {
   if (entry == NULL
       || (entry->fts_info != FTS_F && entry->fts_info != FTS_SL)
@@ -2319,6 +2326,11 @@ entry_of_file_with_name(const FTSENT *entry,
   string fpath = ::basename(entry->fts_path);
   if (fpath == fname)
     return true;
+
+  fpath = trim_leading_string(entry->fts_path, root_dir);
+  if (fpath == fname)
+    return true;
+
   return false;
 }
 
@@ -2344,6 +2356,10 @@ find_file_under_dir(const string& root_dir,
   if (!file_hierarchy)
     return false;
 
+  string r = root_dir;
+  if (!string_ends_with(r, "/"))
+    r += "/";
+
   FTSENT *entry;
   while ((entry = fts_read(file_hierarchy)))
     {
@@ -2353,7 +2369,7 @@ find_file_under_dir(const string& root_dir,
 	  fts_set(file_hierarchy, entry, FTS_SKIP);
 	  continue;
 	}
-      if (entry_of_file_with_name(entry, file_path_to_look_for))
+      if (entry_of_file_with_name(entry, file_path_to_look_for, r))
 	{
 	  result = entry->fts_path;
 	  return true;

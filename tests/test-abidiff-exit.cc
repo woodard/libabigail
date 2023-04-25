@@ -37,6 +37,8 @@ struct InOutSpec
   const char*	in_suppr_path;
   const char*   in_elfv0_headers_dirs;
   const char*   in_elfv1_headers_dirs;
+  const char*   in_elfv0_debug_dir;
+  const char*   in_elfv1_debug_dir;
   const char*	abidiff_options;
   abidiff_status status;
   const char*	in_report_path;
@@ -48,6 +50,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test1-voffset-change-v0.o",
     "data/test-abidiff-exit/test1-voffset-change-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -63,6 +67,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test1-voffset-change.abignore",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test1-voffset-change-report1.txt",
@@ -71,6 +77,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test2-filtered-removed-fns-v0.o",
     "data/test-abidiff-exit/test2-filtered-removed-fns-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -86,6 +94,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test2-filtered-removed-fns.abignore",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test2-filtered-removed-fns-report1.txt",
@@ -94,6 +104,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-loc-v0.bi",
     "data/test-abidiff-exit/test-loc-v1.bi",
+    "",
+    "",
     "",
     "",
     "",
@@ -108,6 +120,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-show-locs",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-loc-without-locs-report.txt",
@@ -116,6 +130,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-no-stray-comma-v0.o",
     "data/test-abidiff-exit/test-no-stray-comma-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -130,6 +146,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-leaf-stats-report.txt",
@@ -138,6 +156,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-leaf-more-v0.o",
     "data/test-abidiff-exit/test-leaf-more-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -153,6 +173,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-leaf-fun-type-report.txt",
@@ -161,6 +183,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-leaf-redundant-v0.o",
     "data/test-abidiff-exit/test-leaf-redundant-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -175,6 +199,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-leaf-peeling-report.txt",
@@ -183,6 +209,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-leaf-cxx-members-v0.o",
     "data/test-abidiff-exit/test-leaf-cxx-members-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -199,6 +227,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-member-size-report0.txt",
     "output/test-abidiff-exit/test-member-size-report0.txt"
@@ -206,6 +236,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-member-size-v0.o",
     "data/test-abidiff-exit/test-member-size-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -217,6 +249,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-decl-struct-v0.o",
     "data/test-abidiff-exit/test-decl-struct-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -232,6 +266,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-fun-param-report.txt",
     "output/test-abidiff-exit/test-fun-param-report.txt"
@@ -239,6 +275,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-decl-enum-v0.o",
     "data/test-abidiff-exit/test-decl-enum-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -254,6 +292,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-decl-enum-report-2.txt",
     "output/test-abidiff-exit/test-decl-enum-report-2.txt"
@@ -261,6 +301,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-decl-enum-v0.o",
     "data/test-abidiff-exit/test-decl-enum-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -272,6 +314,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-net-change-v0.o",
     "data/test-abidiff-exit/test-net-change-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -287,6 +331,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-net-change.abignore",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-net-change-report1.txt",
@@ -295,6 +341,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-net-change-v0.o",
     "data/test-abidiff-exit/test-net-change-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -310,6 +358,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-net-change.abignore",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --no-show-locs --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-net-change-report3.txt",
@@ -321,6 +371,8 @@ InOutSpec in_out_specs[] =
     "",
     "data/test-abidiff-exit/test-headers-dirs/headers-a",
     "data/test-abidiff-exit/test-headers-dirs/headers-a",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-headers-dirs/test-headers-dir-report-1.txt",
@@ -334,6 +386,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-headers-dirs/headers-b",
     "data/test-abidiff-exit/test-headers-dirs/headers-a, "
     "data/test-abidiff-exit/test-headers-dirs/headers-b",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-headers-dirs/test-headers-dir-report-2.txt",
@@ -342,6 +396,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
     "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -356,6 +412,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--harmless",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/qualifier-typedef-array-report-1.txt",
@@ -364,6 +422,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/qualifier-typedef-array-v0.o",
     "data/test-abidiff-exit/qualifier-typedef-array-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -378,6 +438,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--harmless --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/qualifier-typedef-array-report-3.txt",
@@ -386,6 +448,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-non-leaf-array-v0.o",
     "data/test-abidiff-exit/test-non-leaf-array-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -401,6 +465,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-crc-report.txt",
     "output/test-abidiff-exit/test-crc-report.txt"
@@ -412,6 +478,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-missing-alias-report.txt",
     "output/test-abidiff-exit/test-missing-alias-report.txt"
@@ -419,6 +487,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-PR28316-v0.o",
     "data/test-abidiff-exit/test-PR28316-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -433,6 +503,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --harmless",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-PR29144-report.txt",
@@ -441,6 +513,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-PR29144-v0.o",
     "data/test-abidiff-exit/test-PR29144-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -455,6 +529,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-ld-2.28-210.so--ld-2.28-211.so.txt",
@@ -463,6 +539,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-rhbz2114909-v0.o",
     "data/test-abidiff-exit/test-rhbz2114909-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -477,6 +555,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/PR30048-test-report-0.txt",
@@ -485,6 +565,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/PR30048-test-2-v0.o",
     "data/test-abidiff-exit/PR30048-test-2-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -499,6 +581,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-array-v0--v1-report-1.txt",
@@ -510,6 +594,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-array-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-allow-type-array-v0--v1-report-2.txt",
@@ -518,6 +604,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-array-v0.o",
     "data/test-abidiff-exit/test-allow-type-array-v2.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -532,6 +620,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-array-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-array-v0--v2-report-2.txt",
@@ -540,6 +630,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-array-v0.o",
     "data/test-abidiff-exit/test-allow-type-array-v3.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -554,6 +646,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-array-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-allow-type-array-v0--v3-report-2.txt",
@@ -562,6 +656,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-region-v0.o",
     "data/test-abidiff-exit/test-allow-type-region-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -576,6 +672,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-allow-type-region-v0--v1-report-2.txt",
@@ -587,6 +685,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-region-v0--v2-report-1.txt",
@@ -595,6 +695,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-region-v0.o",
     "data/test-abidiff-exit/test-allow-type-region-v2.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -609,6 +711,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-region-v0--v2-report-2.txt",
@@ -617,6 +721,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-region-v0.o",
     "data/test-abidiff-exit/test-allow-type-region-v3.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -631,6 +737,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-region-v0--v3-report-2.txt",
@@ -639,6 +747,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-region-v0.o",
     "data/test-abidiff-exit/test-allow-type-region-v4.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -653,6 +763,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test-allow-type-region-v0--v4-report-2.txt",
@@ -661,6 +773,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/test-allow-type-region-v0.o",
     "data/test-abidiff-exit/test-allow-type-region-v5.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -675,6 +789,8 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test-allow-type-region-suppr.txt",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/test-allow-type-region-v0--v5-report-2.txt",
@@ -683,6 +799,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v0/test1.o",
     "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/v1/test1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -697,6 +815,8 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --leaf-changes-only",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/ada-subrange/test1-ada-subrange/test1-ada-subrange-report-2.txt",
@@ -708,14 +828,18 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-1.txt",
     "output/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-1.txt"
   },
-    {
+  {
     "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v0/test.o",
     "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/v1/test.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -724,10 +848,25 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-2.txt",
     "output/test-abidiff-exit/ada-subrange/test2-ada-subrange-redundant/test2-ada-subrange-redundant-report-2.txt"
   },
+  {
+    "data/test-abidiff-exit/PR30329/old-image/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+    "data/test-abidiff-exit/PR30329/new-image/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+    "",
+    "",
+    "",
+    "data/test-abidiff-exit/PR30329/old-image/usr/lib/debug",
+    "data/test-abidiff-exit/PR30329/new-image/usr/lib/debug",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/PR30329/PR30329-report-1.txt",
+    "output/test-abidiff-exit/PR30329/PR30329-report-1.txt"
+  },
 #ifdef WITH_BTF
   {
     "data/test-abidiff-exit/btf/test0-v0.o",
     "data/test-abidiff-exit/btf/test0-v1.o",
+    "",
+    "",
     "",
     "",
     "",
@@ -742,13 +881,15 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "--no-default-suppression --harmless --btf",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE,
     "data/test-abidiff-exit/btf/test0-report-2.txt",
     "output/test-abidiff-exit/btf/test0-report-2.txt"
   },
 #endif
-  {0, 0, 0 ,0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
+  {0, 0, 0 ,0, 0, 0, 0, 0, abigail::tools_utils::ABIDIFF_OK, 0, 0}
 };
 
 /// Prefix the strings in a vector of string.
@@ -780,7 +921,8 @@ main()
 
   string in_elfv0_path, in_elfv1_path,
     in_suppression_path, abidiff_options, abidiff, cmd, diff_cmd,
-    ref_diff_report_path, out_diff_report_path;
+    ref_diff_report_path, out_diff_report_path, in_elfv0_debug_dir,
+    in_elfv1_debug_dir;
   vector<string> in_elfv0_headers_dirs, in_elfv1_headers_dirs;
   string source_dir_prefix = string(get_src_dir()) + "/tests/";
   string build_dir_prefix = string(get_build_dir()) + "/tests/";
@@ -790,6 +932,8 @@ main()
 	bool is_ok = true;
 	in_elfv0_path = source_dir_prefix + s->in_elfv0_path;
 	in_elfv1_path = source_dir_prefix + s->in_elfv1_path;
+	in_elfv0_debug_dir = source_dir_prefix + s->in_elfv0_debug_dir;
+	in_elfv1_debug_dir = source_dir_prefix + s->in_elfv1_debug_dir;
 	split_string(s->in_elfv0_headers_dirs, ",", in_elfv0_headers_dirs);
 	split_string(s->in_elfv1_headers_dirs, ",", in_elfv1_headers_dirs);
 	do_prefix_strings(in_elfv0_headers_dirs, source_dir_prefix);
@@ -807,7 +951,8 @@ main()
 	if (!ensure_parent_dir_created(out_diff_report_path))
 	  {
 	    cerr << "could not create parent directory for "
-		 << out_diff_report_path;
+		 << out_diff_report_path
+		 << "\n";
 	    is_ok = false;
 	    continue;
 	  }
@@ -815,6 +960,12 @@ main()
 	abidiff = string(get_build_dir()) + "/tools/abidiff";
 	if (!abidiff_options.empty())
 	  abidiff += " " + abidiff_options;
+
+	if (!in_elfv0_debug_dir.empty())
+	  abidiff += " --debug-info-dir1 " + in_elfv0_debug_dir;
+
+	if (!in_elfv1_debug_dir.empty())
+	  abidiff += " --debug-info-dir2 " + in_elfv1_debug_dir;
 
 	if (!in_elfv0_headers_dirs.empty())
 	  for (vector<string>::const_iterator s = in_elfv0_headers_dirs.begin();

@@ -132,6 +132,11 @@ find_alt_dwarf_debug_info_path(const vector<char**> root_dirs,
     return false;
 
   string altfile_name = tools_utils::trim_leading_string(alt_file_name, "../");
+  // In case the alt dwarf debug info file is to be found under
+  // "/usr/lib/debug", look for it under the provided root directories
+  // instead.
+  altfile_name = tools_utils::trim_leading_string(altfile_name,
+						  "/usr/lib/debug/");
 
   for (vector<char**>::const_iterator i = root_dirs.begin();
        i != root_dirs.end();
