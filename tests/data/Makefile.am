@@ -320,6 +320,7 @@ test-abidiff-exit/PR30329/new-image/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
 test-abidiff-exit/PR30329/old-image/usr/lib/debug/dwz/components/sqlite.bst/x86_64-unknown-linux-gnu \
 test-abidiff-exit/PR30329/old-image/usr/lib/debug/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6.debug \
 test-abidiff-exit/PR30329/old-image/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6 \
+test-abidiff-exit/PR30329/PR30329-report-1.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
