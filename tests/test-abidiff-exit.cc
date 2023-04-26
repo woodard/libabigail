@@ -934,10 +934,19 @@ main()
 	in_elfv1_path = source_dir_prefix + s->in_elfv1_path;
 	in_elfv0_debug_dir = source_dir_prefix + s->in_elfv0_debug_dir;
 	in_elfv1_debug_dir = source_dir_prefix + s->in_elfv1_debug_dir;
-	split_string(s->in_elfv0_headers_dirs, ",", in_elfv0_headers_dirs);
-	split_string(s->in_elfv1_headers_dirs, ",", in_elfv1_headers_dirs);
-	do_prefix_strings(in_elfv0_headers_dirs, source_dir_prefix);
-	do_prefix_strings(in_elfv1_headers_dirs, source_dir_prefix);
+	in_elfv0_headers_dirs.clear();
+	in_elfv1_headers_dirs.clear();
+	if (s->in_elfv0_headers_dirs && strcmp(s->in_elfv0_headers_dirs, ""))
+	  {
+	    split_string(s->in_elfv0_headers_dirs, ",", in_elfv0_headers_dirs);
+	    do_prefix_strings(in_elfv0_headers_dirs, source_dir_prefix);
+	  }
+
+	if (s->in_elfv1_headers_dirs && strcmp(s->in_elfv1_headers_dirs, ""))
+	  {
+	    split_string(s->in_elfv1_headers_dirs, ",", in_elfv1_headers_dirs);
+	    do_prefix_strings(in_elfv1_headers_dirs, source_dir_prefix);
+	  }
 
 	if (s->in_suppr_path && strcmp(s->in_suppr_path, ""))
 	  in_suppression_path = source_dir_prefix + s->in_suppr_path;
