@@ -2328,6 +2328,8 @@ test-fedabipkgdiff/nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm \
 \
 test-ini/test01-equal-in-property-string.abignore.expected \
 test-ini/test01-equal-in-property-string.abignore \
+test-ini/test02-buggy-property-value.abignore \
+test-ini/test02-buggy-property-value.abignore.expected \
 \
 test-kmi-whitelist/whitelist-with-single-entry \
 test-kmi-whitelist/whitelist-with-another-single-entry \

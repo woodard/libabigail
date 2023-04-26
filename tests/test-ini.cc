@@ -48,6 +48,12 @@ InOutSpec in_out_specs[] =
     "output/test-ini/test01-equal-in-property-string.abignore",
     ""
   }
+  {
+    "data/test-ini/test02-buggy-property-value.abignore",
+    "data/test-ini/test02-buggy-property-value.abignore.expected",
+    "output/test-ini/test02-buggy-property-value.abignore",
+    ""
+  }
   ,
   // This one must always remain the last one.
   {0, 0, 0, 0}

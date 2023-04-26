@@ -1353,7 +1353,7 @@ public:
       }
 
     list_property_value_sptr list = read_list_property_value();
-    if (list->get_content().size() == 1)
+    if (list && list->get_content().size() == 1)
       result.reset(new string_property_value(list->get_content()[0]));
     else
       result = list;
