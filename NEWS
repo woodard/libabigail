@@ -1,3 +1,125 @@
+2.3
+===
+Aleksei Vetrov (1):
+      symtab: fix getting CRC in relocatable modules
+
+Ben Woodard (1):
+      Have fedabipkgdiff sleep while waiting for abipkgdiff
+
+Dodji Seketeli (92):
+      ir: Improve get_debug_representation
+      ir: Add a debug_comp_stack debugging function
+      Bug 29857 - Don't pop comparison operands that haven't been pushed
+      Bug 29857 - dwarf-reader: Resolve decl-only unions
+      Bug 29857 - Better detect comparison cycles in type graph
+      ir: Cache more aggregate type comparison results
+      NEWS: Update for 2.2 release
+      ChangeLog: Update for 2.2 release
+      configure: Bump version number to 2.3
+      Update website documentation for 2.2
+      Bug 29901 - abidiff hangs when comparing libgs.so.10 with itself
+      Bug 29934 - Handle buggy data members with empty names
+      dwarf-reader: Bug 29932 - Handle function DIE as type as needed
+      elf-reader: Don't free CTF resources too early
+      ir: misc cleanups
+      ir: Bug 29934 - Fix propagated canonical type confirmation
+      ir: Add sanity checking to canonical type propagation confirmation
+      Update copyright year for 2023
+      Don't use the "infinite" keyword for arrays of unknown size
+      dwarf-reader: Bug 29811 - Support updating of variable type
+      Bug 29811 - Better categorize harmless unknown array size changes
+      fix comparing array subrange DIEs
+      configure: Enable the CTF front-end by default
+      Add support for BTF
+      Update the copyright notice for the BTF reader
+      btf-reader: Use abigail::ir::canonicalize_types to canonicalize types
+      Better detect suitable libctf version
+      Update CTF's ctf_dict_t detection
+      fe-iface: Add missing virtual destructor
+      dwarf-reader: Remove unused code
+      corpus: Handle empty symbol table cases
+      {dwarf,elf_based}-reader,writer: Avoid duplicating corpora in corpus_group
+      default-reporter: Fix source location in functions change report
+      PR30048 - wrong pretty representation of qualified pointers
+      configure: Bump the CURRENT library number
+      ir: Add missing virtual methods overloads
+      ctf-reader: Fix GCC 13 warnings
+      abipkgdiff: Emit better logs in verbose mode
+      abipkgdiff: Emit error when no vmlinux is found in debug package
+      ini: Fix parsing list property values
+      suppr: Support has_data_member and has_data_member_regexp properties
+      suppression: Factorize out is_data_member_offset_in_range
+      suppression: Support the has_size_change property for suppress_type
+      suppression: Support offset_of_{first,last}_data_member_regexp offset selectors
+      comparison, suppression: Support [allow_type] directive
+      Misc white space fixes
+      abidiff: Add extensive logging
+      tools-utils: Support kernel stablelist
+      comp-filter: Don't re-visit node while applying filters to diff nodes
+      comparison: Add a mode to not apply filters on interface sub-graphs
+      comparison: When marking leaf nodes don't do unnecessary impact analysis
+      comp-filter: Speed up harmless/harmful categorization
+      tools-utils: Improve logging in build_corpus_group_from_kernel_dist_under
+      ir: Fix cycle detection for union types
+      Bug 29977 - dwarf-reader: Fix canonical DIE propagation canceling
+      dwarf-reader,abidiff: Fix compilation with --enable-debug-type-canonicalization
+      Bug 29912 - Better support an ELF symbol alias that designates several functions
+      Bug 29911 - fedabipkgdiff forgets to provide some debuginfo RPMs to abipkgdiff
+      Bug 29692 - Support binaries with empty symbol table
+      abipkgdiff: Fix a typo
+      test-symtab: Update after support for empty symtabs
+      Bug 29690 - Out of range exception in add_or_update_class_type
+      Bug 29686 - Fix testing the presence of anonymous data member in a struct
+      Bug 29345 - abipkgdiff is confused by symlinked binaries in RPMs
+      Bug 29340 - Add support for Ada range types
+      Fix redundancy filtering of range types
+      Bug rhbz#2182807 --  abipkgdiff crashes on missing debuginfo package
+      dwarf-reader: Support Ada subranges having upper_bound < lower_bound
+      abipkgdiff: Don't use user-specific filesystem info in error msg
+      reader: Make reader::get_scope_for_node handle subranges at array scope.
+      dwarf-reader: Support DW_OP_GNU_variable_value
+      dwarf-reader: Fix typo in comment
+      dwarf-reader: Support indirectly referenced subrange_type DIEs
+      fedabipkgdiff: Add timing data in debug logs
+      fedabipkgdiff: Remove busy loop when forking abipkgdiff
+      Bug 29339 - elf-helpers: Don't crash on unexpected ELF file
+      abi{dw,diff}: Better error messages when alternate debuginfo not found
+      abidiff,reader: Fix compilation with --debug-self-comparison
+      ir: Add new environment::get_type_id_from_type
+      ir: Recognize "void* as being equal to all other pointers in C
+      tests/update-test-output.py: Adapt to some broken test output
+      Improve self-comparison debug mode
+      ir: Improve debugging type_base::get_canonical_type_for
+      writer: Annotate pointer representation
+      comparison: Fix index error when interpreting scope comparison
+      ir: fix canonical type propagation canceling error
+      reader: Recognize variadic parameter type from abixml
+      Bug 30309 - Support absolute path to alt debug info file in DWARF
+      Fix the test of the patch for Bug 30309
+      test-abidiff-exit: Fix the command line passed to abidiff
+      ini: Do not crash on incorrect property value
+      test-ini: Fix a typo
+
+Giuliano Procida (1):
+      DWARF reader: avoid C++20 operator!= overload ambiguity
+
+Guillermo E. Martinez (4):
+      ctf-front-end: Add test for alias symbols
+      ctf-reader: Fix missing initializer for member in test suite
+      abipkgdiff: Fix kernel package detection when comparing kABIs
+      tools-utils: Fix looking for vmlinux binary in debuginfo package
+
+Mark Wielaard (1):
+      doc: Fix some typos and add some missing references
+
+Petr Pavlu (2):
+      Fix de-initialization of elf::reader::priv
+      abidiff: Fix handling of linux-kernel-mode
+
+Xiaole He (1):
+      elf-reader: reclaim fd and mem before break
+
+
 2.2
 ===
 Aleksei Vetrov (1):
