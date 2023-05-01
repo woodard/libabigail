@@ -6,6 +6,7 @@
 /// @file
 ///
 /// This contains the definitions of the ELF utilities for the dwarf reader.
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
