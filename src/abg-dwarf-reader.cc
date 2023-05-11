@@ -10572,13 +10572,11 @@ propagate_canonical_type(const reader& rdr,
 
 
   if (!l_has_canonical_die_offset
+      && r_has_canonical_die_offset
       // A DIE can be equivalent only to another DIE of the same
       // source.
       && l_source == r_source)
     {
-      if (!r_has_canonical_die_offset)
-	rdr.compute_canonical_die_offset(r, r_canonical_die_offset,
-					  /*die_as_type=*/true);
       ABG_ASSERT(r_canonical_die_offset);
       rdr.set_canonical_die_offset(l, r_canonical_die_offset,
 				    /*die_as_type=*/true);
