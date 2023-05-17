@@ -4825,7 +4825,7 @@ build_class_decl(reader&		rdr,
   maybe_set_naming_typedef(rdr, node, decl);
 
   for (xmlNodePtr n = xmlFirstElementChild(node);
-       !is_decl_only && n;
+       n;
        n = xmlNextElementSibling(n))
     {
       if (xmlStrEqual(n->name, BAD_CAST("base-class")))
