@@ -1,0 +1,18 @@
+Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+1 function with some indirect sub-type change:
+
+  [C] 'function void foo(ns2::C&)' at test-rhbz2114909-v0.cc:32:1 has some indirect sub-type changes:
+    parameter 1 of type 'ns2::C&' has sub-type changes:
+      in referenced type 'class ns2::C' at test-rhbz2114909-v1.cc:22:1:
+        type size changed from 160 to 96 (in bits)
+        2 base class deletions:
+          class ns1::base_1 at test-rhbz2114909-v0.cc:3:1
+          class ns2::base_1 at test-rhbz2114909-v0.cc:16:1
+        1 base class change:
+          'class ns1::base_2' at test-rhbz2114909-v0.cc:8:1 changed:
+        2 data member changes:
+          'int m0' offset changed from 96 to 32 (in bits) (by -64 bits)
+          'char m1' offset changed from 128 to 64 (in bits) (by -64 bits)
+

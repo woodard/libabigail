@@ -1,0 +1,16 @@
+This tool uses the libabigail library to analyze the binary as well as its
+associated debug information.  Here is its general mode of operation.
+
+When instructed to do so, a binary and its associated debug
+information is read and analyzed.  To that effect, libabigail analyzes
+by default the descriptions of the types reachable by the interfaces
+(functions and variables) that are visible outside of their
+translation unit.  Once that analysis is done, an Application Binary
+Interface Corpus is constructed by only considering the subset of
+types reachable from interfaces associated to `ELF`_ symbols that are
+defined and exported by the binary.  It's that final ABI corpus which
+libabigail considers as representing the ABI of the analyzed binary.
+
+Libabigail then has capabilities to generate textual representations
+of ABI Corpora, compare them, analyze their changes and report about
+them.

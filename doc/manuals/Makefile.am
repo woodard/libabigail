@@ -14,7 +14,8 @@ libabigail-concepts.rst \
 libabigail-overview.rst \
 libabigail-tools.rst \
 fedabipkgdiff.rst \
-kmidiff.rst
+kmidiff.rst \
+tools-use-libabigail.txt
 
 # You can set these variables from the command line.
 SPHINXOPTS    =

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 
 /// @file
 
@@ -109,6 +109,28 @@ corpus::functions&
 corpus::exported_decls_builder::exported_functions()
 {return priv_->fns_;}
 
+/// Test if a given function ID maps to several functions in the same corpus.
+///
+/// The magic of ELF symbol aliases makes it possible for an ELF
+/// symbol alias to designate several different functions.  This
+/// function tests if the ELF symbol of a given function has a aliases
+/// that designates another function or not.
+///
+/// @param fn the function to consider.
+///
+/// @return the set of functions designated by the ELF symbol of @p
+/// fn, or nullptr if the function ID maps to just @p fn.
+std::unordered_set<function_decl*>*
+corpus::exported_decls_builder::fn_id_maps_to_several_fns(function_decl* fn)
+{
+  std::unordered_set<function_decl*> *fns_for_id =
+    priv_->fn_id_is_in_id_fns_map(fn);
+  if (fns_for_id && fns_for_id->size() > 1)
+    return fns_for_id;
+
+  return nullptr;
+}
+
 /// Getter for the reference to the vector of exported variables.
 /// This vector is shared with with the @ref corpus.  It's where the
 /// set of exported variable is ultimately stored.
@@ -156,7 +178,7 @@ corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
 ///
 /// @param fn the variable to add the set of exported variables.
 void
-corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
+corpus::exported_decls_builder::maybe_add_var_to_exported_vars(const var_decl* var)
 {
   if (!var->get_is_in_public_symbol_table())
     return;
@@ -313,9 +335,15 @@ corpus::priv::get_sorted_fun_symbols() const
 {
   if (!sorted_fun_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_functions();
-      sorted_fun_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_functions();
+	  sorted_fun_symbols = elf_symbols(symtab_->begin(filter),
+					   symtab_->end());
+	}
+      else
+	sorted_fun_symbols = elf_symbols();
     }
   return *sorted_fun_symbols;
 }
@@ -349,13 +377,18 @@ corpus::priv::get_sorted_undefined_fun_symbols() const
 {
   if (!sorted_undefined_fun_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_functions();
-      filter.set_undefined_symbols();
-      filter.set_public_symbols(false);
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_functions();
+	  filter.set_undefined_symbols();
+	  filter.set_public_symbols(false);
 
-      sorted_undefined_fun_symbols =
-	elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_undefined_fun_symbols =
+	    elf_symbols(symtab_->begin(filter), symtab_->end());
+	}
+      else
+	sorted_undefined_fun_symbols = elf_symbols();
     }
   return *sorted_undefined_fun_symbols;
 }
@@ -446,10 +479,16 @@ corpus::priv::get_sorted_var_symbols() const
 {
   if (!sorted_var_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_variables();
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_variables();
 
-      sorted_var_symbols = elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_var_symbols = elf_symbols(symtab_->begin(filter),
+					   symtab_->end());
+	}
+      else
+	sorted_var_symbols = elf_symbols();
     }
   return *sorted_var_symbols;
 }
@@ -483,13 +522,18 @@ corpus::priv::get_sorted_undefined_var_symbols() const
 {
   if (!sorted_undefined_var_symbols)
     {
-      auto filter = symtab_->make_filter();
-      filter.set_variables();
-      filter.set_undefined_symbols();
-      filter.set_public_symbols(false);
+      if (symtab_)
+	{
+	  auto filter = symtab_->make_filter();
+	  filter.set_variables();
+	  filter.set_undefined_symbols();
+	  filter.set_public_symbols(false);
 
-      sorted_undefined_var_symbols =
-	  elf_symbols(symtab_->begin(filter), symtab_->end());
+	  sorted_undefined_var_symbols =
+	    elf_symbols(symtab_->begin(filter), symtab_->end());
+	}
+      else
+	sorted_undefined_var_symbols = elf_symbols();
     }
   return *sorted_undefined_var_symbols;
 }
@@ -596,7 +640,7 @@ corpus::priv::~priv()
 /// @param env the environment of the corpus.
 ///
 /// @param path the path to the file containing the ABI corpus.
-corpus::corpus(ir::environment* env, const string& path)
+corpus::corpus(const ir::environment& env, const string& path)
 {
   priv_.reset(new priv(path, env));
   init_format_version();
@@ -607,31 +651,25 @@ corpus::~corpus() = default;
 /// Getter of the enviroment of the corpus.
 ///
 /// @return the environment of this corpus.
-const environment*
+const environment&
 corpus::get_environment() const
 {return priv_->env;}
 
-/// Getter of the enviroment of the corpus.
+/// Test if logging was requested.
 ///
-/// @return the environment of this corpus.
-environment*
-corpus::get_environment()
-{return priv_->env;}
+/// @return true iff logging was requested.
+bool
+corpus::do_log() const
+{return priv_->do_log;}
 
-/// Setter of the environment of this corpus.
+/// Request logging, or not.
 ///
-/// @param e the new environment.
+/// @param f true iff logging is requested.
 void
-corpus::set_environment(environment* e)
-{
-  priv_->env = e;
-  init_format_version();
-}
+corpus::do_log(bool f)
+{priv_->do_log = f;}
 
-/// Add a translation unit to the current ABI Corpus. Next time
-/// corpus::save is called, all the translation unit that got added to
-/// the corpus are going to be serialized on disk in the file
-/// associated to the current corpus.
+/// Add a translation unit to the current ABI Corpus.
 ///
 /// Note that two translation units with the same path (as returned by
 /// translation_unit::get_path) cannot be added to the same @ref
@@ -639,13 +677,8 @@ corpus::set_environment(environment* e)
 ///
 /// @param tu the new translation unit to add.
 void
-corpus::add(const translation_unit_sptr tu)
+corpus::add(const translation_unit_sptr& tu)
 {
-  if (!tu->get_environment())
-    tu->set_environment(get_environment());
-
-  ABG_ASSERT(tu->get_environment() == get_environment());
-
   ABG_ASSERT(priv_->members.insert(tu).second);
 
   if (!tu->get_absolute_path().empty())
@@ -741,7 +774,7 @@ void
 corpus::record_type_as_reachable_from_public_interfaces(const type_base& t)
 {
   string repr = get_pretty_representation(&t, /*internal=*/true);
-  interned_string s = t.get_environment()->intern(repr);
+  interned_string s = t.get_environment().intern(repr);
   priv_->get_public_types_pretty_representations()->insert(s);
 }
 
@@ -759,7 +792,7 @@ bool
 corpus::type_is_reachable_from_public_interfaces(const type_base& t) const
 {
   string repr = get_pretty_representation(&t, /*internal=*/true);
-  interned_string s = t.get_environment()->intern(repr);
+  interned_string s = t.get_environment().intern(repr);
 
   return (priv_->get_public_types_pretty_representations()->find(s)
 	  !=  priv_->get_public_types_pretty_representations()->end());
@@ -839,13 +872,10 @@ corpus::set_group(corpus_group* g)
 void
 corpus::init_format_version()
 {
-  if (priv_->env)
-    {
-      set_format_major_version_number
-	(priv_->env->get_config().get_format_major_version_number());
-      set_format_minor_version_number
-	(priv_->env->get_config().get_format_minor_version_number());
-    }
+  set_format_major_version_number
+    (priv_->env.get_config().get_format_major_version_number());
+  set_format_minor_version_number
+    (priv_->env.get_config().get_format_minor_version_number());
 }
 
 /// Getter for the origin of the corpus.
@@ -1013,7 +1043,9 @@ corpus::is_empty() const
   return (members_empty
 	  && (!get_symtab() || !get_symtab()->has_symbols())
 	  && priv_->soname.empty()
-	  && priv_->needed.empty());
+	  && priv_->needed.empty()
+	  && priv_->architecture_name.empty()
+	  && !priv_->group);
 }
 
 /// Compare the current @ref corpus against another one.
@@ -1304,12 +1336,11 @@ corpus::get_functions() const
 ///
 /// @return the vector functions which ID is @p id, or nil if no
 /// function with that ID was found.
-const vector<function_decl*>*
+const std::unordered_set<function_decl*>*
 corpus::lookup_functions(const string& id) const
 {
   exported_decls_builder_sptr b = get_exported_decls_builder();
-  str_fn_ptrs_map_type::const_iterator i =
-    b->priv_->id_fns_map_.find(id);
+  auto i = b->priv_->id_fns_map_.find(id);
   if (i == b->priv_->id_fns_map_.end())
     return 0;
   return &i->second;
@@ -1690,8 +1721,12 @@ struct corpus_group::priv
   }
 }; // end corpus_group::priv
 
-/// Default constructor of the @ref corpus_group type.
-corpus_group::corpus_group(environment* env, const string& path = "")
+/// Constructor of the @ref corpus_group type.
+///
+/// @param env the environment of the @ref corpus_group.
+///
+/// @param path the path to the file represented by the corpus group.
+corpus_group::corpus_group(const environment& env, const string& path = "")
   : corpus(env, path), priv_(new priv)
 {}
 
@@ -1707,15 +1742,6 @@ corpus_group::add_corpus(const corpus_sptr& corp)
 {
   if (!corp)
     return;
-
-  // Ensure the new environment patches the current one.
-  if (const environment* cur_env = get_environment())
-    {
-      if (environment* corp_env = corp->get_environment())
-	ABG_ASSERT(cur_env == corp_env);
-    }
-  else
-    set_environment(corp->get_environment());
 
   // Ensure the new architecture name matches the current one.
   string cur_arch = get_architecture_name(),

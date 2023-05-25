@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -46,6 +46,12 @@ InOutSpec in_out_specs[] =
     "data/test-ini/test01-equal-in-property-string.abignore",
     "data/test-ini/test01-equal-in-property-string.abignore.expected",
     "output/test-ini/test01-equal-in-property-string.abignore",
+    ""
+  },
+  {
+    "data/test-ini/test02-buggy-property-value.abignore",
+    "data/test-ini/test02-buggy-property-value.abignore.expected",
+    "output/test-ini/test02-buggy-property-value.abignore",
     ""
   }
   ,

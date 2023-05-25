@@ -13,12 +13,19 @@ binaries.
 For a comprehensive ABI change report that includes changes about
 function and variable sub-types, the two input packages must be
 accompanied with their debug information packages that contain debug
-information either in `DWARF`_ or in `CTF` formats.  Please note
-however that some packages contain binaries that embed the debug
+information either in `DWARF`_, `CTF`_ or in `BTF`_ formats.  Please
+note however that some packages contain binaries that embed the debug
 information directly in a section of said binaries.  In those cases,
 obviously, no separate debug information package is needed as the tool
 will find the debug information inside the binaries.
 
+By default, ``abipkgdiff`` uses debug information in `DWARF`_ format,
+if present, otherwise it compares binaries interfaces using debug
+information in `CTF`_ or in `BTF`_ formats, if present. Finally, if no
+debug info in these formats is found, it only considers `ELF`_ symbols
+and report about their addition or removal.
+
+.. include:: tools-use-libabigail.txt
 
 .. _abipkgdiff_invocation_label:
 
@@ -277,6 +284,56 @@ Options
     global functions and variables are analyzed, so the tool detects
     and reports changes on these reachable types only.
 
+  * ``--exported-interfaces-only``
+
+    By default, when looking at the debug information accompanying a
+    binary, this tool analyzes the descriptions of the types reachable
+    by the interfaces (functions and variables) that are visible
+    outside of their translation unit.  Once that analysis is done, an
+    ABI corpus is constructed by only considering the subset of types
+    reachable from interfaces associated to `ELF`_ symbols that are
+    defined and exported by the binary.  It's those final ABI Corpora
+    that are compared by this tool.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    corpora like these can be extremely slow.
+
+    To mitigate that performance issue, this option allows libabigail
+    to only analyze types that are reachable from interfaces
+    associated with defined and exported `ELF`_ symbols.
+
+    Note that this option is turned on by default when analyzing the
+    `Linux Kernel`_.  Otherwise, it's turned off by default.
+
+  * ``--allow-non-exported-interfaces``
+
+    When looking at the debug information accompanying a binary, this
+    tool analyzes the descriptions of the types reachable by the
+    interfaces (functions and variables) that are visible outside of
+    their translation unit.  Once that analysis is done, an ABI corpus
+    is constructed by only considering the subset of types reachable
+    from interfaces associated to `ELF`_ symbols that are defined and
+    exported by the binary.  It's those final ABI Corpora that are
+    compared by this tool.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    Corpora like these can be extremely slow.
+
+    In the presence of an "average sized" binary however one can
+    afford having libabigail analyze all interfaces that are visible
+    outside of their translation unit, using this option.
+
+    Note that this option is turned on by default, unless we are in
+    the presence of the `Linux Kernel`_.
+
   *  ``--redundant``
 
     In the diff reports, do display redundant changes.  A redundant
@@ -471,11 +528,36 @@ Options
       $ abipkgdiff --self-check --d1 mesa-libGLU-debuginfo-9.0.1-3.fc33.x86_64.rpm  mesa-libGLU-9.0.1-3.fc33.x86_64.rpm
        ==== SELF CHECK SUCCEEDED for 'libGLU.so.1.3.1' ====
       $
+  * ``--no-assume-odr-for-cplusplus``
+
+    When analysing a binary originating from C++ code using `DWARF`_
+    debug information, libabigail assumes the `One Definition Rule`_
+    to speed-up the analysis.  In that case, when several types have
+    the same name in the binary, they are assumed to all be equal.
+
+    This option disables that assumption and instructs libabigail to
+    actually actually compare the types to determine if they are
+    equal.
+
+  * ``--no-leverage-dwarf-factorization``
+
+    When analysing a binary which `DWARF`_ debug information was
+    processed with the `DWZ`_ tool, the type information is supposed
+    to be already factorized.  That context is used by libabigail to
+    perform some speed optimizations.
+
+    This option disables those optimizations.
+
 
   * ``--ctf``
 
-     This is used to compare packages with CTF debug information, if
-     present.
+     This is used to compare packages with `CTF`_ debug information,
+     if present.
+
+  * ``--btf``
+
+     This is used to compare packages with `BTF`_ debug information,
+     if present.
 
 .. _abipkgdiff_return_value_label:
 
@@ -495,4 +577,10 @@ In the later case, the value of the exit code is the same as for the
 .. _Deb: https://en.wikipedia.org/wiki/Deb_%28file_format%29
 .. _tar: https://en.wikipedia.org/wiki/Tar_%28computing%29
 .. _DWARF: http://www.dwarfstd.org
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html
 .. _Development Package: https://fedoraproject.org/wiki/Packaging:Guidelines?rd=Packaging/Guidelines#Devel_Packages
+.. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _DWZ: https://sourceware.org/dwz
+.. _Linux Kernel: https://kernel.org/

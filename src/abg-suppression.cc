@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2016-2022 Red Hat, Inc.
+// Copyright (C) 2016-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -23,6 +23,8 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-comp-filter.h"
 #include "abg-suppression.h"
 #include "abg-tools-utils.h"
+#include "abg-fe-iface.h"
+#include "abg-comparison.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -34,6 +36,9 @@ namespace abigail
 
 namespace suppr
 {
+
+// Inject the abigail::comparison namespace in here.
+using namespace comparison;
 
 using std::dynamic_pointer_cast;
 using regex::regex_t_sptr;
@@ -267,6 +272,67 @@ suppression_base::has_soname_related_property() const
 {
   return (!(get_soname_regex_str().empty()
 	    && get_soname_not_regex_str().empty()));
+}
+
+/// Constructor of the @ref negated_suppression_base.
+negated_suppression_base::negated_suppression_base()
+{
+}
+
+/// Destructor of the @ref negated_suppression_base.
+negated_suppression_base::~negated_suppression_base()
+{
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true iff @p s is an instance of @ref
+/// negated_suppression_base.
+bool
+is_negated_suppression(const suppression_base& s)
+{
+  bool result = true;
+  try
+    {
+      dynamic_cast<const negated_suppression_base&>(s);
+    }
+  catch (...)
+    {
+      result = false;
+    }
+  return result;
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true a pointer to the @ref negated_suppression_base which
+/// @p s, or nil if it's not a negated suppression.
+/// negated_suppression_base.
+const negated_suppression_base*
+is_negated_suppression(const suppression_base* s)
+{
+  const negated_suppression_base* result = nullptr;
+  result = dynamic_cast<const negated_suppression_base*>(s);
+  return result;
+}
+
+/// Test if a suppression specification is a negated suppression.
+///
+/// @param s the suppression to consider.
+///
+/// @return true a pointer to the @ref negated_suppression_base which
+/// @p s, or nil if it's not a negated suppression.
+/// negated_suppression_base.
+negated_suppression_sptr
+is_negated_suppression(const suppression_sptr& s)
+{
+  negated_suppression_sptr result;
+  result = dynamic_pointer_cast<negated_suppression_base>(s);
+  return result;
 }
 
 /// Check if the SONAMEs of the two binaries being compared match the
@@ -568,6 +634,52 @@ void
 type_suppression::set_reach_kind(reach_kind k)
 {priv_->reach_kind_ = k;}
 
+/// Getter of the "has_size_change" property.
+///
+/// @return the value of the "has_size_change" property.
+bool
+type_suppression::get_has_size_change() const
+{return priv_->has_size_change_;}
+
+/// Setter of the "has_size_change" property.
+///
+/// @param flag the new value of the "has_size_change" property.
+void
+type_suppression::set_has_size_change(bool flag)
+{priv_->has_size_change_ = flag;}
+
+/// Getter of the "potential_data_member_names" property.
+///
+/// @return the set of potential data member names of this
+/// suppression.
+const unordered_set<string>&
+type_suppression::get_potential_data_member_names() const
+{return priv_->potential_data_members_;}
+
+/// Setter of the "potential_data_member_names" property.
+///
+/// @param s the new set of potential data member names of this
+/// suppression.
+void
+type_suppression::set_potential_data_member_names
+(const string_set_type& s) const
+{priv_->potential_data_members_ = s;}
+
+/// Getter of the "potential_data_member_names_regex" string.
+///
+/// @return the "potential_data_member_names_regex" string.
+const string&
+type_suppression::get_potential_data_member_names_regex_str() const
+{return priv_->potential_data_members_regex_str_;}
+
+/// Setter of the "potential_data_member_names_regex" string.
+///
+/// @param d the new "potential_data_member_names_regex" string.
+void
+type_suppression::set_potential_data_member_names_regex_str
+(const string& d) const
+{priv_->potential_data_members_regex_str_ = d;}
+
 /// Setter for the vector of data member insertion ranges that
 /// specifies where a data member is inserted as far as this
 /// suppression specification is concerned.
@@ -777,6 +889,43 @@ type_suppression::suppresses_diff(const diff* diff) const
   // Now let's consider class diffs in the context of a suppr spec
   // that contains properties like "has_data_member_inserted_*".
 
+  const class_or_union_diff* cou_diff = is_class_or_union_diff(d);
+  if (cou_diff)
+    {
+      class_or_union_sptr f = cou_diff->first_class_or_union();
+      // We are looking at the a class or union diff ...
+      if (!get_potential_data_member_names().empty())
+	{
+	  // ... and the suppr spec has a:
+	  //
+	  //    "has_data_member = {foo, bar}" property
+	  //
+	  for (string var_name : get_potential_data_member_names())
+	    if (!f->find_data_member(var_name))
+	      return false;
+	}
+
+      if (!get_potential_data_member_names_regex_str().empty())
+	{
+	  if (const regex_t_sptr& data_member_name_regex =
+	      priv_->get_potential_data_member_names_regex())
+	    {
+	      bool data_member_matched = false;
+	      for (var_decl_sptr dm : f->get_data_members())
+		{
+		  if (regex::match(data_member_name_regex, dm->get_name()))
+		    {
+		      data_member_matched = true;
+		      break;
+		    }
+		}
+	      if (!data_member_matched)
+		return false;
+	    }
+	}
+    }
+
+  // Evaluate has_data_member_inserted_*" clauses.
   const class_diff* klass_diff = dynamic_cast<const class_diff*>(d);
   if (klass_diff)
     {
@@ -785,75 +934,48 @@ type_suppression::suppresses_diff(const diff* diff) const
 	{
 	  // ... and the suppr spec contains a
 	  // "has_data_member_inserted_*" clause ...
-	  if (klass_diff->deleted_data_members().empty()
-	      && (klass_diff->first_class_decl()->get_size_in_bits()
-		  <= klass_diff->second_class_decl()->get_size_in_bits()))
+	  if ((klass_diff->first_class_decl()->get_size_in_bits()
+	       == klass_diff->second_class_decl()->get_size_in_bits())
+	      || get_has_size_change())
 	    {
 	      // That "has_data_member_inserted_*" clause doesn't hold
-	      // if the class has deleted data members or shrunk.
+	      // if the class changed size, unless the user specified
+	      // that suppression applies to types that have size
+	      // change.
 
 	      const class_decl_sptr& first_type_decl =
 		klass_diff->first_class_decl();
 
-	      for (string_decl_base_sptr_map::const_iterator m =
-		     klass_diff->inserted_data_members().begin();
-		   m != klass_diff->inserted_data_members().end();
-		   ++m)
+	      // All inserted data members must be in an allowed
+	      // insertion range.
+	      for (const auto& m : klass_diff->inserted_data_members())
 		{
-		  decl_base_sptr member = m->second;
-		  size_t dm_offset = get_data_member_offset(member);
+		  decl_base_sptr member = m.second;
 		  bool matched = false;
 
-		  for (insertion_ranges::const_iterator i =
-			 get_data_member_insertion_ranges().begin();
-		       i != get_data_member_insertion_ranges().end();
-		       ++i)
-		    {
-		      type_suppression::insertion_range_sptr range = *i;
-		      uint64_t range_begin_val = 0, range_end_val = 0;
-		      if (!type_suppression::insertion_range::eval_boundary
-			  (range->begin(), first_type_decl, range_begin_val))
-			break;
-		      if (!type_suppression::insertion_range::eval_boundary
-			  (range->end(), first_type_decl, range_end_val))
-			break;
-
-		      uint64_t range_begin = range_begin_val;
-		      uint64_t range_end = range_end_val;
-
-		      if (insertion_range::boundary_value_is_end(range_begin)
-			  && insertion_range::boundary_value_is_end(range_end))
-			{
-			  // This idiom represents the predicate
-			  // "has_data_member_inserted_at = end"
-			  if (dm_offset >
-			      get_data_member_offset(get_last_data_member
-						     (first_type_decl)))
-			    {
-			      // So the data member was added after
-			      // last data member of the klass.  That
-			      // matches the suppr spec
-			      // "has_data_member_inserted_at = end".
-			      matched = true;
-			      continue;
-			    }
-			}
-
-			if (range_begin > range_end)
-			  // Wrong suppr spec.  Ignore it.
-			  continue;
-
-		      if (dm_offset < range_begin || dm_offset > range_end)
-			// The offset of the added data member doesn't
-			// match the insertion range specified.  So
-			// the diff object won't be suppressed.
-			continue;
-
-		      // If we reached this point, then all the
-		      // insertion range constraints have been
-		      // satisfied.  So
+		  for (const auto& range : get_data_member_insertion_ranges())
+		    if (is_data_member_offset_in_range(is_var_decl(member),
+						       range,
+						       first_type_decl.get()))
 		      matched = true;
-		    }
+
+		  if (!matched)
+		    return false;
+		}
+
+	      // Similarly, all deleted data members must be in an
+	      // allowed insertion range.
+	      for (const auto& m : klass_diff->deleted_data_members())
+		{
+		  decl_base_sptr member = m.second;
+		  bool matched = false;
+
+		  for (const auto& range : get_data_member_insertion_ranges())
+		    if (is_data_member_offset_in_range(is_var_decl(member),
+						       range,
+						       first_type_decl.get()))
+		      matched = true;
+
 		  if (!matched)
 		    return false;
 		}
@@ -1334,9 +1456,9 @@ type_suppression::insertion_range::create_fn_call_expr_boundary(const string& s)
 /// @return true iff the evaluation was successful and @p value
 /// contains the resulting value.
 bool
-type_suppression::insertion_range::eval_boundary(boundary_sptr	 boundary,
-						 class_decl_sptr context,
-						 uint64_t&	 value)
+type_suppression::insertion_range::eval_boundary(const boundary_sptr	boundary,
+						 const class_or_union*	context,
+						 uint64_t&		value)
 {
   if (integer_boundary_sptr b = is_integer_boundary(boundary))
     {
@@ -1347,32 +1469,56 @@ type_suppression::insertion_range::eval_boundary(boundary_sptr	 boundary,
     {
       ini::function_call_expr_sptr fn_call = b->as_function_call_expr();
       if ((fn_call->get_name() == "offset_of"
-	   || fn_call->get_name() == "offset_after")
+	   || fn_call->get_name() == "offset_after"
+	   || fn_call->get_name() == "offset_of_first_data_member_regexp"
+	   || fn_call->get_name() == "offset_of_last_data_member_regexp")
 	  && fn_call->get_arguments().size() == 1)
 	{
-	  string member_name = fn_call->get_arguments()[0];
-	  for (class_decl::data_members::const_iterator it =
-		 context->get_data_members().begin();
-	       it != context->get_data_members().end();
-	       ++it)
+	  if (fn_call->get_name() == "offset_of"
+	      || fn_call->get_name() == "offset_after")
 	    {
-	      if (!get_data_member_is_laid_out(**it))
-		continue;
-	      if ((*it)->get_name() == member_name)
+	      string member_name = fn_call->get_arguments()[0];
+	      for (class_decl::data_members::const_iterator it =
+		     context->get_data_members().begin();
+		   it != context->get_data_members().end();
+		   ++it)
 		{
-		  if (fn_call->get_name() == "offset_of")
-		    value = get_data_member_offset(*it);
-		  else if (fn_call->get_name() == "offset_after")
+		  if (!get_data_member_is_laid_out(**it))
+		    continue;
+		  if ((*it)->get_name() == member_name)
 		    {
-		      if (!get_next_data_member_offset(context, *it, value))
+		      if (fn_call->get_name() == "offset_of")
+			value = get_data_member_offset(*it);
+		      else if (fn_call->get_name() == "offset_after")
 			{
-			  value = get_data_member_offset(*it) +
-			    (*it)->get_type()->get_size_in_bits();
+			  if (!get_next_data_member_offset(context, *it, value))
+			    {
+			      value = get_data_member_offset(*it) +
+				(*it)->get_type()->get_size_in_bits();
+			    }
 			}
+		      else
+			// We should not reach this point.
+			abort();
+		      return true;
 		    }
-		  else
-		    // We should not reach this point.
-		    abort();
+		}
+	    }
+	  else if (fn_call->get_name() == "offset_of_first_data_member_regexp"
+		   || fn_call->get_name() == "offset_of_last_data_member_regexp")
+	    {
+	      string name_regexp = fn_call->get_arguments()[0];
+	      auto r = regex::compile(name_regexp);
+	      var_decl_sptr dm;
+
+	      if (fn_call->get_name() == "offset_of_first_data_member_regexp")
+		dm = find_first_data_member_matching_regexp(*context, r);
+	      else if (fn_call->get_name() == "offset_of_last_data_member_regexp")
+		dm = find_last_data_member_matching_regexp(*context, r);
+
+	      if (dm)
+		{
+		  value = get_data_member_offset(dm);
 		  return true;
 		}
 	    }
@@ -1534,6 +1680,52 @@ is_type_suppression(suppression_sptr suppr)
 
 // </type_suppression stuff>
 
+// <negated_type_suppression stuff>
+
+/// Constructor for @ref negated_type_suppression.
+///
+/// @param label the label of the suppression.  This is just a free
+/// form comment explaining what the suppression is about.
+///
+/// @param type_name_regexp the regular expression describing the
+/// types about which diff reports should be suppressed.  If it's an
+/// empty string, the parameter is ignored.
+///
+/// @param type_name the name of the type about which diff reports
+/// should be suppressed.  If it's an empty string, the parameter is
+/// ignored.
+///
+/// Note that parameter @p type_name_regexp and @p type_name_regexp
+/// should not necessarily be populated.  It usually is either one or
+/// the other that the user wants.
+negated_type_suppression::negated_type_suppression(const string& label,
+						   const string& type_name_regexp,
+						   const string& type_name)
+  : type_suppression(label, type_name_regexp, type_name),
+    negated_suppression_base()
+{
+}
+
+/// Evaluate this suppression specification on a given diff node and
+/// say if the diff node should be suppressed or not.
+///
+/// @param diff the diff node to evaluate this suppression
+/// specification against.
+///
+/// @return true if @p diff should be suppressed.
+bool
+negated_type_suppression::suppresses_diff(const diff* diff) const
+{
+  return !type_suppression::suppresses_diff(diff);
+}
+
+/// Destructor of the @ref negated_type_suppression type.
+negated_type_suppression::~negated_type_suppression()
+{
+}
+
+// </negated_type_suppression stuff>
+
 /// Parse the value of the "type_kind" property in the "suppress_type"
 /// section.
 ///
@@ -1596,7 +1788,8 @@ read_type_suppression(const ini::config::section& section)
 {
   type_suppression_sptr result;
 
-  if (section.get_name() != "suppress_type")
+  if (section.get_name() != "suppress_type"
+      && section.get_name() != "allow_type")
     return result;
 
   static const char *const sufficient_props[] = {
@@ -1623,6 +1816,13 @@ read_type_suppression(const ini::config::section& section)
 
   string drop_artifact_str = drop_artifact
     ? drop_artifact->get_value()->as_string()
+    : "";
+
+  ini::simple_property_sptr has_size_change =
+    is_simple_property(section.find_property("has_size_change"));
+
+  string has_size_change_str = has_size_change
+    ? has_size_change->get_value()->as_string()
     : "";
 
   ini::simple_property_sptr label =
@@ -1719,6 +1919,56 @@ read_type_suppression(const ini::config::section& section)
 	read_suppression_reach_kind(reach_kind_prop->get_value()->as_string());
     }
 
+  // Support has_data_member = {}
+  string_set_type potential_data_member_names;
+  if (ini::property_sptr propertee = section.find_property("has_data_member"))
+    {
+      // This is either has_data_member = {foo, blah} or
+      // has_data_member = foo.
+      ini::tuple_property_value_sptr tv;
+      ini::string_property_value_sptr sv;
+      if (ini::tuple_property_sptr prop = is_tuple_property(propertee))
+	// Value is of the form {foo,blah}
+	tv = prop->get_value();
+      else if (ini::simple_property_sptr prop = is_simple_property(propertee))
+	// Value is of the form foo.
+	sv = prop->get_value();
+
+      // Ensure that the property value has the form {"foo", "blah", ...};
+      // Meaning it's a tuple of one element which is a list or a string.
+      if (tv
+	  && tv->get_value_items().size() == 1
+	  && (is_list_property_value(tv->get_value_items().front())
+	      || is_string_property_value(tv->get_value_items().front())))
+	{
+	  ini::list_property_value_sptr val =
+	    is_list_property_value(tv->get_value_items().front());
+	  if (!val)
+	    {
+	      // We have just one potential data member name,as a
+	      // string_property_value.
+	      string name =
+		is_string_property_value(tv->get_value_items().front())
+		->as_string();
+	      potential_data_member_names.insert(name);
+	    }
+	  else
+	    for (const string& name : val->get_content())
+	      potential_data_member_names.insert(name);
+	}
+      else if (sv)
+	{
+	  string name = sv->as_string();
+	  potential_data_member_names.insert(name);
+	}
+    }
+
+  // Support has_data_member_regexp = str
+  string potential_data_member_names_regexp_str;
+  if (ini::simple_property_sptr prop =
+      is_simple_property(section.find_property("has_data_member_regexp")))
+      potential_data_member_names_regexp_str = prop->get_value()->as_string();
+
   // Support has_data_member_inserted_at
   vector<type_suppression::insertion_range_sptr> insert_ranges;
   bool consider_data_member_insertion = false;
@@ -1757,9 +2007,9 @@ read_type_suppression(const ini::config::section& section)
       // and not (for instance):
       //  has_data_member_inserted_between = {{0 , end}, {1, foo}}
       //
-      //  This means that the tuple_property_value contains just one
-      //  value, which is a list_property that itself contains 2
-      //  values.
+      // This means that the tuple_property_value contains just one
+      // value, which is a list_property that itself contains 2
+      // values.
       type_suppression::insertion_range::boundary_sptr begin, end;
       ini::tuple_property_value_sptr v = prop->get_value();
       if (v
@@ -1904,7 +2154,11 @@ read_type_suppression(const ini::config::section& section)
 	changed_enumerator_names.push_back(p->get_value()->as_string());
     }
 
-  result.reset(new type_suppression(label_str, name_regex_str, name_str));
+  if (section.get_name() == "suppress_type")
+    result.reset(new type_suppression(label_str, name_regex_str, name_str));
+  else if (section.get_name() == "allow_type")
+    result.reset(new negated_type_suppression(label_str, name_regex_str,
+					      name_str));
 
   if (consider_type_kind)
     {
@@ -1917,6 +2171,13 @@ read_type_suppression(const ini::config::section& section)
       result->set_consider_reach_kind(true);
       result->set_reach_kind(reach_kind);
     }
+
+  if (!potential_data_member_names.empty())
+    result->set_potential_data_member_names(potential_data_member_names);
+
+  if (!potential_data_member_names_regexp_str.empty())
+    result->set_potential_data_member_names_regex_str
+      (potential_data_member_names_regexp_str);
 
   if (consider_data_member_insertion)
     result->set_data_member_insertion_ranges(insert_ranges);
@@ -1948,6 +2209,9 @@ read_type_suppression(const ini::config::section& section)
 	   || !srcloc_not_regexp_str.empty()
 	   || !srcloc_not_in.empty())))
     result->set_drops_artifact_from_ir(true);
+
+  if (has_size_change_str == "yes" || has_size_change_str == "true")
+    result->set_has_size_change(true);
 
   if (result->get_type_kind() == type_suppression::ENUM_TYPE_KIND
       && !changed_enumerator_names.empty())
@@ -2930,78 +3194,6 @@ operator|(function_suppression::change_kind l,
 {
     return static_cast<function_suppression::change_kind>
       (static_cast<unsigned>(l) | static_cast<unsigned>(r));
-}
-
-  /// Test whether if a given function suppression matches a function
-  /// designated by a regular expression that describes its name.
-  ///
-  /// @param s the suppression specification to evaluate to see if it
-  /// matches a given function name.
-  ///
-  /// @param fn_name the name of the function of interest.  Note that
-  /// this name must be *non* qualified.
-  ///
-  /// @return true iff the suppression specification @p s matches the
-  /// function whose name is @p fn_name.
-bool
-suppression_matches_function_name(const suppr::function_suppression& s,
-				  const string& fn_name)
-{
-  if (regex_t_sptr regexp = s.priv_->get_name_regex())
-    {
-      if (!regex::match(regexp, fn_name))
-	return false;
-    }
-  else if (regex_t_sptr regexp = s.priv_->get_name_not_regex())
-    {
-      if (regex::match(regexp, fn_name))
-	return false;
-    }
-  else if (s.priv_->name_.empty())
-    return false;
-  else // if (!s.priv_->name_.empty())
-    {
-      if (s.priv_->name_ != fn_name)
-	return false;
-    }
-
-  return true;
-}
-
-/// Test whether if a given function suppression matches a function
-/// designated by a regular expression that describes its linkage
-/// name (symbol name).
-///
-/// @param s the suppression specification to evaluate to see if it
-/// matches a given function linkage name
-///
-/// @param fn_linkage_name the linkage name of the function of interest.
-///
-/// @return true iff the suppression specification @p s matches the
-/// function whose linkage name is @p fn_linkage_name.
-bool
-suppression_matches_function_sym_name(const suppr::function_suppression& s,
-				      const string& fn_linkage_name)
-{
-  if (regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
-    {
-      if (!regex::match(regexp, fn_linkage_name))
-	return false;
-    }
-  else if (regex_t_sptr regexp = s.priv_->get_symbol_name_not_regex())
-    {
-      if (regex::match(regexp, fn_linkage_name))
-	return false;
-    }
-  else if (s.priv_->symbol_name_.empty())
-    return false;
-  else // if (!s.priv_->symbol_name_.empty())
-    {
-      if (s.priv_->symbol_name_ != fn_linkage_name)
-	return false;
-    }
-
-  return true;
 }
 
 /// Test if a variable suppression matches a variable denoted by its name.
@@ -4239,6 +4431,43 @@ read_variable_suppression(const ini::config::section& section)
   return result;
 }
 
+/// Test if a given variable is suppressed by at least one suppression
+/// specification among a vector of suppression specifications.
+///
+/// @param supprs the vector of suppression specifications to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @param var_linkage_name the linkage name of the variable to consider.
+///
+/// @param require_drop_property if yes, then only suppression
+/// specifications that require that the variable be dropped from the
+/// internal representation are taking into account.
+///
+/// @return true if there is at least one suppression specification in
+/// @p supprs which matches a variable named @p var_name, OR a
+/// variable which linkage name is @p var_linkage_name.
+bool
+variable_is_suppressed(const suppr::suppressions_type& supprs,
+		       const string&		var_name,
+		       const string&		var_linkage_name,
+		       bool			require_drop_property)
+{
+  for (auto i : supprs)
+    if (suppr::variable_suppression_sptr suppr = is_variable_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!var_name.empty()
+	    && suppression_matches_variable_name(*suppr, var_name))
+	  return true;
+	if (!var_linkage_name.empty()
+	    && suppression_matches_variable_sym_name(*suppr,
+						     var_linkage_name))
+	  return true;
+      }
+  return false;
+}
 // </variable_suppression stuff>
 
 // <file_suppression stuff>
@@ -4501,7 +4730,426 @@ is_private_type_suppr_spec(const suppression_sptr& s)
   return (type_suppr
 	  && type_suppr->get_label() == get_private_types_suppr_spec_label());
 }
-
 // </file_suppression stuff>
+
+/// Test if a given suppression specification can match an ABI
+/// artifact coming from the corpus being analyzed by a given
+/// front-end interface.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression speficication to consider.
+///
+/// @return true if the suppression specification @p s CAN patch ABI
+/// artifacts coming from the ABI corpus being analyzed by the
+/// front-end @p fe.
+bool
+suppression_can_match(const fe_iface& fe,
+		      const suppression_base& s)
+{
+  if (!s.priv_->matches_soname(fe.dt_soname()))
+    if (s.has_soname_related_property())
+      // The suppression has some SONAME related properties, but
+      // none of them match the SONAME of the current binary.  So
+      // the suppression cannot match the current binary.
+      return false;
+
+  if (!s.priv_->matches_binary_name(fe.corpus_path()))
+    if (s.has_file_name_related_property())
+      // The suppression has some file_name related properties, but
+      // none of them match the file name of the current binary.  So
+      // the suppression cannot match the current binary.
+      return false;
+
+  return true;
+}
+
+/// Test if a given function is suppressed by a suppression
+/// specification.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param fn_name the name of the function to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// function which name is @p fn_name.
+bool
+suppression_matches_function_name(const fe_iface& fe,
+				  const suppr::function_suppression& s,
+				  const string& fn_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  if (regex::regex_t_sptr regexp = s.priv_->get_name_regex())
+    {
+      if (!regex::match(regexp, fn_name))
+	return false;
+    }
+  else if (regex::regex_t_sptr regexp = s.priv_->get_name_not_regex())
+    {
+      if (regex::match(regexp, fn_name))
+	return false;
+    }
+  else if (s.priv_->name_.empty())
+    return false;
+  else // if (!s.priv_->name_.empty())
+    {
+      if (s.priv_->name_ != fn_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a given function is suppressed by a suppression
+/// specification.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param fn_linkage_name the linkage name of the function to
+/// consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// function which linkage name is @p fn_linkage_name.
+bool
+suppression_matches_function_sym_name(const fe_iface& fe,
+				      const suppr::function_suppression& s,
+				      const string& fn_linkage_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  if (regex::regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
+    {
+      if (!regex::match(regexp, fn_linkage_name))
+	return false;
+    }
+  else if (regex::regex_t_sptr regexp = s.priv_->get_symbol_name_not_regex())
+    {
+      if (regex::match(regexp, fn_linkage_name))
+	return false;
+    }
+  else if (s.priv_->symbol_name_.empty())
+    return false;
+  else // if (!s.priv_->symbol_name_.empty())
+    {
+      if (s.priv_->symbol_name_ != fn_linkage_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a suppression specification matches a variable of a given
+/// name, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the variable suppression specification to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// variable which name is @p var_name.
+bool
+suppression_matches_variable_name(const fe_iface& fe,
+				  const suppr::variable_suppression& s,
+				  const string& var_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_variable_name(s, var_name);
+}
+
+/// Test if a suppression specification matches a variable which ELF
+/// symbol has a given name, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the variable suppression specification to consider.
+///
+/// @param var_linkage_name the name of the ELF symbol of the variable
+/// to consider.
+///
+/// @return true iff the suppression specification @p s matches the
+/// variable which ELF symbol name is @p var_linkage_name.
+bool
+suppression_matches_variable_sym_name(const fe_iface& fe,
+				      const suppr::variable_suppression& s,
+				      const string& var_linkage_name)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_variable_sym_name(s, var_linkage_name);
+}
+
+/// Test if a suppression specification matches a type designated by
+/// its name and source location, in the context of a given front-end.
+///
+/// @param fe the front-end to consider.
+///
+/// @param s the suppression specification to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the source location of the type designated by
+/// @p type_name.
+///
+/// @return true iff the suppression @p s matches the type designated
+/// by @p type_name at source location @type_location.
+bool
+suppression_matches_type_name_or_location(const fe_iface& fe,
+					  const suppr::type_suppression& s,
+					  const string& type_name,
+					  const location& type_location)
+{
+  if (!suppression_can_match(fe, s))
+    return false;
+
+  return suppression_matches_type_name_or_location(s, type_name,
+						   type_location);
+}
+
+/// Test if an ELF symbol is suppressed by at least one of the
+/// suppression specifications associated with a given front-end.
+///
+/// The function looks for each suppression specification provided to
+/// a given libabigail front-end and analyzes them to see if they
+/// match a given ELF symbol.
+///
+/// @param fe the front-end to consider.
+///
+/// @param symbol the ELF symbol to consider.
+///
+/// @return true iff the symbol @p symbol is matched by at least a
+/// suppression specification associated with the front-end @p fe.
+bool
+is_elf_symbol_suppressed(const fe_iface& fe,
+			 const elf_symbol_sptr& symbol)
+{
+  if (elf_symbol_is_function(symbol->get_type()))
+    return is_function_suppressed(fe, /*fn_name=*/"",
+				  /*symbol_name=*/symbol->get_name());
+  else if (elf_symbol_is_variable(symbol->get_type()))
+    return is_variable_suppressed(fe, /*var_name=*/"",
+				  /*symbol_name=*/symbol->get_name());
+  return false;
+}
+
+/// Test if an ELF symbol is suppressed by at least one of the
+/// suppression specifications associated with a given front-end.
+///
+/// The function looks for each suppression specification provided to
+/// a given libabigail front-end and analyzes them to see if they
+/// match a given ELF symbol, designated by its name and kind.
+///
+/// @param fe the front-end to consider.
+///
+/// @param sym_name the name of the symbol to consider.
+///
+/// @return true iff the symbol denoted by @p sym_name, of kind @p
+/// sym_type, is matched by at least a suppression specification
+/// associated with the front-end @p fe.
+bool
+is_elf_symbol_suppressed(const fe_iface& fe,
+			 const string& sym_name,
+			 elf_symbol::type sym_type)
+{
+  if (elf_symbol_is_function(sym_type))
+    return is_function_suppressed(fe, /*fn_name=*/"",
+				  /*symbol_name=*/sym_name);
+  else if (elf_symbol_is_variable(sym_type))
+    return is_variable_suppressed(fe, /*var_name=*/"",
+				  /*symbol_name=*/sym_name);
+  return false;
+}
+
+/// Test if a function is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The function is designated by its name and its linkage_name.
+///
+/// @param fe the front-end to consider.
+///
+/// @param fn_name the name of the function to consider.
+///
+/// @param fn_linkage_name the linkage name of the function to
+/// consider.
+///
+/// @param require_drop_property if true, this function requires the
+/// suppression specification to contain the "drop" property to match
+/// the function.
+///
+/// @return true iff the function is matched by at least one
+/// suppression specification coming from the front-end.
+bool
+is_function_suppressed(const fe_iface&	fe,
+		       const string&	fn_name,
+		       const string&	fn_linkage_name,
+		       bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::function_suppression_sptr suppr = is_function_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!fn_name.empty()
+	    && suppression_matches_function_name(fe, *suppr, fn_name))
+	  return true;
+	if (!fn_linkage_name.empty()
+	    && suppression_matches_function_sym_name(fe, *suppr,
+						     fn_linkage_name))
+	  return true;
+      }
+  return false;
+}
+
+/// Test if a variable is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The variable is designated by its name and its linkage_name.
+///
+/// @param fe the front-end to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @param var_linkage_name the linkage name of the variable to
+/// consider.
+///
+/// @param require_drop_property if true, this variable requires the
+/// suppression specification to contain the "drop" property to match
+/// the function.
+///
+/// @return true iff the variable is matched by at least one
+/// suppression specification coming from the front-end.
+bool
+is_variable_suppressed(const fe_iface&	fe,
+		       const string&	var_name,
+		       const string&	var_linkage_name,
+		       bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::variable_suppression_sptr suppr = is_variable_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (!var_name.empty()
+	    && suppression_matches_variable_name(fe, *suppr, var_name))
+	  return true;
+	if (!var_linkage_name.empty()
+	    && suppression_matches_variable_sym_name(fe, *suppr,
+						     var_linkage_name))
+	  return true;
+      }
+  return false;
+}
+
+/// Test if a type is matched by at least one suppression
+/// specification associated with a given front-end.
+///
+/// The type is designated by its name and its source location.
+///
+/// @param fe the front-end to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the source location of the type.
+///
+/// @param type_is_private output parameter.  This is set to true if
+/// the type was matched by one suppression specification, and if the
+/// suppression was for private types.
+///
+/// @param require_drop_property if true, this type requires the
+/// suppression specification to contain the "drop" property to match
+/// the type.
+///
+/// @return true iff the type is matched by at least one suppression
+/// specification coming from the front-end.
+bool
+is_type_suppressed(const fe_iface&	fe,
+		   const string&	type_name,
+		   const location&	type_location,
+		   bool&		type_is_private,
+		   bool		require_drop_property)
+{
+  for (auto i : fe.suppressions())
+    if (suppr::type_suppression_sptr suppr = is_type_suppression(i))
+      {
+	if (require_drop_property && !i->get_drops_artifact_from_ir())
+	  continue;
+	if (suppression_matches_type_name_or_location(fe, *suppr,
+						      type_name,
+						      type_location))
+	  {
+	    if (is_private_type_suppr_spec(*suppr))
+	      type_is_private = true;
+
+	    return true;
+	  }
+      }
+
+  type_is_private = false;
+  return false;
+}
+
+/// Test if a data memer offset is in a given insertion range.
+///
+/// @param dm the data member to consider.
+///
+/// @param range the insertion range to consider.
+///
+/// @param the class (or union) type to consider as the context in
+/// which to evaluate the insertion range denoted by @p range.
+///
+/// @return true iff the offset of the data member @p dm is in the
+/// insertion range @p range in the context of the type denoted by @p
+/// context.
+bool
+is_data_member_offset_in_range(const var_decl_sptr& dm,
+			       const type_suppression::insertion_range_sptr& range,
+			       const class_or_union* context)
+{
+  ABG_ASSERT(dm && range && context);
+
+  uint64_t range_begin = 0, range_end = 0;
+  if (!type_suppression::insertion_range::eval_boundary (range->begin(),
+							 context,
+							 range_begin))
+    return false;
+
+  if (!type_suppression::insertion_range::eval_boundary (range->end(),
+							 context,
+							 range_end))
+    return false;
+
+  if (range_begin > range_end)
+    // wrong range, ignore it.
+    return false;
+
+  uint64_t dm_offset = get_data_member_offset(dm);
+  if (type_suppression::insertion_range::boundary_value_is_end(range_begin)
+      && type_suppression::insertion_range::boundary_value_is_end(range_end))
+    {
+      // This idiom represents the predicate
+      // "has_data_member_inserted_at = end"
+      if (dm_offset > get_data_member_offset(get_last_data_member(context)))
+	return true;
+      return false;
+    }
+
+  if (dm_offset < range_begin || dm_offset > range_end)
+    // The offset of the data member is outside the range.
+    return false;
+
+  return true;
+}
+
 }// end namespace suppr
 } // end namespace abigail

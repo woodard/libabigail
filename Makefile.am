@@ -53,7 +53,7 @@ check-valgrind-recursive:
 update-changelog:
 	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
 
-TARBALL = $(PACKAGE_NAME)-$(VERSION).tar.gz
+TARBALL = $(PACKAGE_NAME)-$(VERSION).tar.xz
 RELEASED_BRANCH = master
 
 $(TARBALL): distcheck
@@ -86,7 +86,7 @@ tag-and-all: distcheck check-self-compare
 # the default for GZIP_ENV is --best, which is pretty slow for check runs
 # distcheck-fast therefore compresses with --fast instead
 distcheck-fast:
-	$(MAKE) distcheck GZIP_ENV="--fast"
+	$(MAKE) distcheck GZIP_ENV="--fast" XZ_OPT="-0"
 
 # This makes us compare libabigail.so against its own ABIXML
 # representation.  It's super slow (more than 5 minutes on one of my

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2022 Red Hat, Inc.
+// Copyright (C) 2017-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -174,11 +174,22 @@ struct diff_context::priv
   unordered_diff_sptr_set		live_diffs_;
   vector<diff_sptr>			canonical_diffs;
   vector<filtering::filter_base_sptr>	filters_;
+  // All the suppressions specifications are stored in this data
+  // member.
   suppressions_type			suppressions_;
+  // The negated suppressions specifications that are in
+  // suppressions_ are stored here.  Each time suppressions_ is
+  // modified, this data member should be cleared.
+  suppressions_type			negated_suppressions_;
+  // The non-negated suppressions specifications that are in
+  // suppressions_ are stored here.  Each time suppressions_ is
+  // modified, this data member should be cleared.
+  suppressions_type			direct_suppressions_;
   pointer_map				visited_diff_nodes_;
   corpus_diff_sptr			corpus_diff_;
   ostream*				default_output_stream_;
   ostream*				error_output_stream_;
+  bool					perform_change_categorization_;
   bool					leaf_changes_only_;
   bool					forbid_visiting_a_node_twice_;
   bool					reset_visited_diffs_for_each_interface_;
@@ -202,12 +213,14 @@ struct diff_context::priv
   bool					show_unreachable_types_;
   bool					show_impacted_interfaces_;
   bool					dump_diff_tree_;
+  bool					do_log_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
       reporter_(),
       default_output_stream_(),
       error_output_stream_(),
+      perform_change_categorization_(true),
       leaf_changes_only_(),
       forbid_visiting_a_node_twice_(true),
       reset_visited_diffs_for_each_interface_(),
@@ -230,7 +243,8 @@ struct diff_context::priv
       show_added_syms_unreferenced_by_di_(true),
       show_unreachable_types_(false),
       show_impacted_interfaces_(true),
-      dump_diff_tree_()
+      dump_diff_tree_(),
+      do_log_()
    {}
 };// end struct diff_context::priv
 
@@ -302,6 +316,13 @@ public:
       return false;
 
     if (ctxt->get_allowed_category() == EVERYTHING_CATEGORY)
+      return false;
+
+    // If this node is on the path of a node that *must* be reported,
+    // then do not filter it.
+    if (category & (HAS_DESCENDANT_WITH_ALLOWED_CHANGE_CATEGORY
+		    | HAS_PARENT_WITH_ALLOWED_CHANGE_CATEGORY
+		    | HAS_ALLOWED_CHANGE_CATEGORY))
       return false;
 
   /// We don't want to display nodes suppressed by a user-provided
@@ -392,6 +413,17 @@ struct pointer_diff::priv
     : underlying_type_diff_(ud)
   {}
 };//end struct pointer_diff::priv
+
+/// The internal type for the impl idiom implementation of @ref
+/// subrange_diff.
+struct subrange_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+
+  priv(diff_sptr u)
+    : underlying_type_diff_(u)
+  {}
+}; // end struct subrange_diff::priv
 
 struct array_diff::priv
 {

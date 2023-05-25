@@ -1,4 +1,4 @@
-<abi-corpus version='2.1' architecture='elf-amd-x86_64'>
+<abi-corpus version='2.2'>
   <elf-needed>
     <dependency name='libstdc++.so.6'/>
     <dependency name='libm.so.6'/>
@@ -72,6 +72,8 @@
         <enumerator name='e0' value='0'/>
         <enumerator name='e1' value='1'/>
       </enum-decl>
+      <!-- typedef long long int ns0::long_long -->
+      <typedef-decl name='long_long' type-id='type-id-4' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='type-id-15'/>
       <!-- void ns0::bar(const int, ...) -->
       <function-decl name='bar' mangled-name='_ZN3ns03barEiz' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='12' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns03barEiz'>
         <!-- parameter of type 'const int' -->
@@ -94,8 +96,6 @@
         <!-- void -->
         <return type-id='type-id-14'/>
       </function-decl>
-      <!-- typedef long long int ns0::long_long -->
-      <typedef-decl name='long_long' type-id='type-id-4' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='25' column='1' id='type-id-15'/>
       <!-- ns0::long_long ns0::baz2(int&) -->
       <function-decl name='baz2' mangled-name='_ZN3ns04baz2ERi' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='28' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN3ns04baz2ERi'>
         <!-- parameter of type 'int&' -->

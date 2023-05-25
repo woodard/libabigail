@@ -40,6 +40,7 @@ struct InOutSpec
   type_id_style_kind type_id_style;
   const char* in_abi_path;
   const char* out_abi_path;
+  const char* options;
 };// end struct InOutSpec
 
 /// The task that performs the tests.

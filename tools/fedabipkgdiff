@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # -*- Mode: Python
 #
-# Copyright (C) 2013-2016 Red Hat, Inc.
+# Copyright (C) 2013-2023 Red Hat, Inc.
 #
 # Author: Chenxiong Qi
 
@@ -20,6 +20,7 @@ import shutil
 import six
 import subprocess
 import sys
+import time
 
 from collections import namedtuple
 from itertools import chain
@@ -28,6 +29,9 @@ import xdg.BaseDirectory
 
 import rpm
 import koji
+
+from timeit import default_timer as timer
+from datetime import timedelta
 
 # @file
 #
@@ -260,8 +264,12 @@ def log_call(func):
                      func.__name__,
                      args if args else '',
                      kwargs if kwargs else '')
+        start = timer()
         result = func(*args, **kwargs)
-        logger.debug('Result from %s: %s', func.__name__, result)
+        end = timer();
+        elapsed_type = timedelta(seconds=end-start)
+        logger.debug('Result from %s: %s, in: %s',
+                     func.__name__, result, elapsed_type)
         return result
     return proxy
 
@@ -612,26 +620,18 @@ def generate_comparison_halves(rpm_col1, rpm_col2):
         debuginfo_list1 = []
         debuginfo_list2 = []
 
-        # If this is a *devel* package we are looking at, then get all
-        # the debug info packages associated to with the main package
-        # and stick them into the resulting comparison half.
+        # Get all debug info packages associated to with the main
+        # package and stick them into the resulting comparison half.
 
-        if _rpm.is_devel:
-            debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
-        else:
-            debuginfo_list1.append(rpm_col1.get_matching_debuginfo(_rpm))
-
+        debuginfo_list1 = rpm_col1.get_all_debuginfo_rpms(_rpm)
         devel1 = rpm_col1.get_sibling_devel(_rpm)
 
         if global_config.self_compare:
             debuginfo_list2 = debuginfo_list1
             devel2 = devel1
         else:
-            if rpm2.is_devel:
-                debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
-            else:
-                debuginfo_list2.append(rpm_col2.get_matching_debuginfo(rpm2))
-            devel2 = rpm_col2.get_sibling_devel(rpm2)
+             debuginfo_list2 = rpm_col2.get_all_debuginfo_rpms(rpm2)
+             devel2 = rpm_col2.get_sibling_devel(rpm2)
 
         yield (ComparisonHalf(subject=_rpm,
                               ancillary_debug=debuginfo_list1,
@@ -1182,25 +1182,8 @@ def abipkgdiff(cmp_half1, cmp_half2):
     proc = subprocess.Popen(' '.join(cmd), shell=True,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             universal_newlines=True)
-    # So we could have done: stdout, stderr = proc.communicate()
-    # But then the documentatin of proc.communicate says:
-    #
-    #    Note: The data read is buffered in memory, so do not use this
-    #    method if the data size is large or unlimited. "
-    #
-    # In practice, we are seeing random cases where this
-    # proc.communicate() function does *NOT* terminate and seems to be
-    # in a deadlock state.  So we are avoiding it altogether.  We are
-    # then busy looping, waiting for the spawn process to finish, and
-    # then we get its output.
-    #
 
-    while True:
-        if proc.poll() != None:
-            break
-
-    stdout = ''.join(proc.stdout.readlines())
-    stderr = ''.join(proc.stderr.readlines())
+    stdout, stderr = proc.communicate()
 
     is_ok = proc.returncode == ABIDIFF_OK
     is_internal_error = proc.returncode & ABIDIFF_ERROR or proc.returncode & ABIDIFF_USAGE_ERROR

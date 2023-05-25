@@ -1,0 +1,7 @@
+[allow_type]
+ kind = struct
+ has_data_member_inserted_between = {offsetof(rh_kabi_reserved1), end}
+
+[allow_type]
+ kind = union
+ has_data_member_inserted_between = {offsetof(rh_kabi_reserved1), end}

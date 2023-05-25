@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 
 ///@file
 
@@ -15,6 +15,7 @@
 #include <set>
 #include <string>
 #include "abg-suppression.h"
+#include "abg-elf-based-reader.h"
 
 namespace abigail
 {
@@ -33,9 +34,16 @@ const char* get_system_libdir();
 const char* get_anonymous_struct_internal_name_prefix();
 const char* get_anonymous_union_internal_name_prefix();
 const char* get_anonymous_enum_internal_name_prefix();
+const char* get_anonymous_subrange_internal_name_prefix();
 
 bool file_exists(const string&);
 bool is_regular_file(const string&);
+bool file_has_dwarf_debug_info(const string& elf_file_path,
+			       const vector<char**>& debug_info_root_paths);
+bool file_has_ctf_debug_info(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths);
+bool file_has_btf_debug_info(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths);
 bool is_dir(const string&);
 bool dir_exists(const string&);
 bool dir_is_empty(const string &);
@@ -294,6 +302,10 @@ file_is_kernel_package(const string& file_path,
 		       file_type file_type);
 
 bool
+rpm_contains_file(const string& rpm_path,
+		  const string& file_name);
+
+bool
 file_is_kernel_debuginfo_package(const string& file_path,
 				 file_type file_type);
 
@@ -311,8 +323,17 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  vector<string>&	kabi_wl_paths,
 					  suppr::suppressions_type&	supprs,
 					  bool				verbose,
-					  environment_sptr&		env,
-					  corpus::origin	origin = corpus::DWARF_ORIGIN);
+					  environment&			env,
+					  corpus::origin	requested_fe_kind = corpus::DWARF_ORIGIN);
+
+elf_based_reader_sptr
+create_best_elf_based_reader(const string& elf_file_path,
+			     const vector<char**>& debug_info_root_paths,
+			     environment& env,
+			     corpus::origin requested_debug_info_kind,
+			     bool show_all_types,
+			     bool linux_kernel_mode = false);
+
 }// end namespace tools_utils
 
 /// A macro that expands to aborting the program when executed.

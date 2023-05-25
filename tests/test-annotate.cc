@@ -131,6 +131,11 @@ InOutSpec in_out_specs[] =
     "data/test-annotate/test-anonymous-members-0.o.abi",
     "output/test-annotate/test-anonymous-members-0.o.abi",
   },
+  {
+    "data/test-read-dwarf/PR29443-missing-xx.o",
+    "data/test-annotate/PR29443-missing-xx.o.annotated.abi",
+    "output/test-annotate/PR29443-missing-xx.o.annotated.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };
@@ -148,7 +153,7 @@ main()
   string abidw;
 
   abidw = string(get_build_dir()) + "/tools/abidw "
-    "--annotate --no-corpus-path";
+    "--annotate --no-corpus-path --no-architecture";
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
       bool is_ok = true;

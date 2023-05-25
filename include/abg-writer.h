@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -36,7 +36,7 @@ class write_context;
 typedef shared_ptr<write_context> write_context_sptr;
 
 write_context_sptr
-create_write_context(const environment *env,
+create_write_context(const environment& env,
 		     ostream& output_stream);
 
 void

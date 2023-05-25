@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -90,6 +90,13 @@ has_anonymous_data_member_change(const diff_sptr &d);
 
 bool
 has_data_member_replaced_by_anon_dm(const diff* diff);
+
+bool
+is_var_1_dim_unknown_size_array_change(const diff*);
+
+bool
+is_var_1_dim_unknown_size_array_change(const var_decl_sptr& var1,
+				       const var_decl_sptr& var2);
 
 struct filter_base;
 /// Convenience typedef for a shared pointer to filter_base
