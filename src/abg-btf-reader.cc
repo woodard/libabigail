@@ -524,13 +524,20 @@ public:
   build_ir_node_for_void_type()
   {
     type_base_sptr t = env().get_void_type();
-    decl_base_sptr type_declaration = get_type_declaration(t);
-    if (!has_scope(type_declaration))
-      {
-	add_decl_to_scope(type_declaration, cur_tu()->get_global_scope());
-	canonicalize(t);
-      }
+    add_decl_to_scope(is_decl(t), cur_tu()->get_global_scope());
+    canonicalize(t);
+    return t;
+  }
 
+  /// Build an IR node for the "void" type.
+  ///
+  /// @return the IR node for the void type.
+  type_base_sptr
+  build_ir_node_for_void_pointer_type()
+  {
+    type_base_sptr t = env().get_void_pointer_type();
+    add_decl_to_scope(is_decl(t), cur_tu()->get_global_scope());
+    canonicalize(t);
     return t;
   }
 
@@ -541,12 +548,9 @@ public:
   build_ir_node_for_variadic_parameter_type()
   {
     type_base_sptr t = env().get_variadic_parameter_type();
+    add_decl_to_scope(is_decl(t), cur_tu()->get_global_scope());
     decl_base_sptr t_decl = get_type_declaration(t);
-    if (!has_scope(t_decl))
-      {
-	add_decl_to_scope(t_decl, cur_tu()->get_global_scope());
-	canonicalize(t);
-      }
+    canonicalize(t);
     return t;
   }
 
@@ -752,6 +756,10 @@ public:
       is_type(build_ir_node_from_btf_type(t->type));
     if (!underlying_type)
       return type_or_decl_base_sptr();
+    if (env().is_void_type(underlying_type))
+      // Recognize a pointer to void and return a special unique IR
+      // for it.
+      return build_ir_node_for_void_pointer_type();
 
     int size = elf_helpers::get_architecture_word_size(elf_handle());
     size *= 8;

@@ -163,6 +163,9 @@ public:
   get_void_type() const;
 
   const type_base_sptr&
+  get_void_pointer_type() const;
+
+  const type_base_sptr&
   get_variadic_parameter_type() const;
 
   static string&
@@ -191,6 +194,12 @@ public:
 
   bool
   is_void_type(const type_base*) const;
+
+  bool
+  is_void_pointer_type(const type_base_sptr&) const;
+
+  bool
+  is_void_pointer_type(const type_base*) const;
 
   bool
   is_variadic_parameter_type(const type_base*) const;

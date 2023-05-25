@@ -1667,9 +1667,9 @@ has_void_ptr_to_ptr_change(const diff* dif)
       f = peel_qualified_or_typedef_type(f);
       s = peel_qualified_or_typedef_type(s);
 
-      if (is_void_pointer_type(f)
+      if (is_void_pointer_type_equivalent(f)
 	  && is_pointer_type(s)
-	  && !is_void_pointer_type(s)
+	  && !is_void_pointer_type_equivalent(s)
 	  && f->get_size_in_bits() == s->get_size_in_bits())
 	return true;
     }
@@ -1681,9 +1681,9 @@ has_void_ptr_to_ptr_change(const diff* dif)
       f = peel_qualified_or_typedef_type(f);
       s = peel_qualified_or_typedef_type(s);
 
-      if (is_void_pointer_type(f)
+      if (is_void_pointer_type_equivalent(f)
 	  && is_pointer_type(s)
-	  && !is_void_pointer_type(s)
+	  && !is_void_pointer_type_equivalent(s)
 	  && f->get_size_in_bits() == s->get_size_in_bits())
 	return true;
     }
@@ -1695,9 +1695,9 @@ has_void_ptr_to_ptr_change(const diff* dif)
       f = peel_qualified_or_typedef_type(f);
       s = peel_qualified_or_typedef_type(s);
 
-      if (is_void_pointer_type(f)
+      if (is_void_pointer_type_equivalent(f)
 	  && is_pointer_type(s)
-	  && !is_void_pointer_type(s)
+	  && !is_void_pointer_type_equivalent(s)
 	  && f->get_size_in_bits() == s->get_size_in_bits())
 	return true;
     }

@@ -452,6 +452,9 @@ typedef_decl_sptr
 is_typedef(const type_or_decl_base_sptr);
 
 const typedef_decl*
+is_typedef(const type_or_decl_base*);
+
+const typedef_decl*
 is_typedef(const type_base*);
 
 typedef_decl*
@@ -479,10 +482,12 @@ class_decl_sptr
 is_class_type(const type_or_decl_base_sptr&);
 
 bool
-is_declaration_only_class_or_union_type(const type_base *t);
+is_declaration_only_class_or_union_type(const type_base *t,
+					bool look_through_decl_only = false);
 
 bool
-is_declaration_only_class_or_union_type(const type_base_sptr&);
+is_declaration_only_class_or_union_type(const type_base_sptr& t,
+					bool look_through_decl_only = false);
 
 class_or_union*
 is_class_or_union_type(const type_or_decl_base*);
@@ -514,6 +519,15 @@ is_pointer_type(const type_or_decl_base*);
 pointer_type_def_sptr
 is_pointer_type(const type_or_decl_base_sptr&);
 
+bool
+is_pointer_to_decl_only_class_or_union_type(const type_or_decl_base*);
+
+bool
+is_reference_to_decl_only_class_or_union_type(const type_or_decl_base*);
+
+bool
+is_typedef_to_decl_only_class_or_union_type(const type_or_decl_base* t);
+
 reference_type_def*
 is_reference_type(type_or_decl_base*);
 
@@ -526,8 +540,14 @@ is_reference_type(const type_or_decl_base_sptr&);
 const type_base*
 is_void_pointer_type(const type_base*);
 
+const type_base_sptr
+is_void_pointer_type(const type_base_sptr&);
+
 const type_base*
-is_void_pointer_type(const type_base&);
+is_void_pointer_type_equivalent(const type_base*);
+
+const type_base*
+is_void_pointer_type_equivalent(const type_base&);
 
 qualified_type_def*
 is_qualified_type(const type_or_decl_base*);
@@ -1479,6 +1499,12 @@ is_non_canonicalized_type(const type_base *);
 
 bool
 is_non_canonicalized_type(const type_base_sptr&);
+
+bool
+is_unique_type(const type_base_sptr&);
+
+bool
+is_unique_type(const type_base*);
 
 /// For a given type, return its exemplar type.
 ///

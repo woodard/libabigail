@@ -391,6 +391,7 @@ struct environment::priv
   canonical_types_map_type		canonical_types_;
   mutable vector<type_base_sptr>	sorted_canonical_types_;
   type_base_sptr			void_type_;
+  type_base_sptr			void_pointer_type_;
   type_base_sptr			variadic_marker_type_;
   // The set of pairs of class types being currently compared.  It's
   // used to avoid endless loops while recursively comparing types.
