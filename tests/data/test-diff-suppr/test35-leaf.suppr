@@ -6,3 +6,4 @@
 
   name_regexp = .*
   has_data_member_inserted_between = {offset_after(member0), end}
+  has_size_change = true

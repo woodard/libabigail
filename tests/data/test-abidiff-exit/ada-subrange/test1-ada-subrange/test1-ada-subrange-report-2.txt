@@ -1,0 +1,19 @@
+Leaf changes summary: 3 artifacts changed
+Changed leaf types summary: 1 leaf type changed
+Removed/Changed/Added functions summary: 0 Removed, 2 Changed, 0 Added function
+Removed/Changed/Added variables summary: 0 Removed, 0 Changed, 0 Added variable
+
+2 functions with some sub-type change:
+
+  [C] 'function test1__my_int[6] test1__first_function()' at test1.adb:6:1 has some sub-type changes:
+    return type changed:
+      type name changed from 'test1__my_int[6]' to 'test1__my_int[7]'
+      array type size changed from 6000 to 7000
+      array type subrange 1 changed length from 6 to 7
+
+  [C] 'function test1__my_index test1__second_function()' at test1.adb:14:1 has some sub-type changes:
+    return type changed:
+      upper bound of range 'test1__my_index' change from '5' to '6'
+
+'<range test1__my_index>[6]' changed:
+  upper bound of range 'test1__my_index' change from '5' to '6'

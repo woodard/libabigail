@@ -1,0 +1,13 @@
+Functions changes summary: 0 Removed, 0 Changed, 0 Added function
+Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
+
+1 Changed variable:
+
+  [C] 'unsigned int is_basic_table[]' was changed to 'unsigned int is_basic_table[1]' at test-PR29811-0-v1.c:1:1:
+    size of variable symbol ( 32 (in bits)) hasn't changed
+    but it does have a harmless type change
+    type of variable changed:
+      type name changed from 'unsigned int[]' to 'unsigned int[1]'
+      array type size changed from 'unknown' to 32
+      array type subrange 1 changed length from 'unknown' to 1
+

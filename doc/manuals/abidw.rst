@@ -8,18 +8,27 @@ representation of its ABI to standard output.  The emitted
 representation format, named ``ABIXML``, includes all the globally
 defined functions and variables, along with a complete representation
 of their types.  It also includes a representation of the globally
-defined ELF symbols of the file.  The input shared library must
-contain associated debug information in `DWARF`_ format.
+defined ELF symbols of the file.
 
 When given the ``--linux-tree`` option, this program can also handle a
-Linux kernel tree.  That is, a directory tree that contains both the
-vmlinux binary and Linux kernel modules.  It analyses those Linux
-kernel binaries and emits an XML representation of the interface
-between the kernel and its module, to standard output.  In this case,
-we don't call it an ABI, but a KMI (Kernel Module Interface).  The
-emitted KMI includes all the globally defined functions and variables,
-along with a complete representation of their types.  The input
-binaries must contain associated debug information in `DWARF`_ format.
+`Linux kernel`_ tree.  That is, a directory tree that contains both
+the vmlinux binary and `Linux Kernel`_ modules.  It analyses those
+`Linux Kernel`_ binaries and emits an XML representation of the
+interface between the kernel and its module, to standard output.  In
+this case, we don't call it an ABI, but a KMI (Kernel Module
+Interface).  The emitted KMI includes all the globally defined
+functions and variables, along with a complete representation of their
+types.
+
+To generate either ABI or KMI representation, by default ``abidw``
+uses debug information in the `DWARF`_ format, if present, otherwise
+it looks for debug information in `CTF`_ or `BTF`_ formats, if present.
+Finally, if no debug info in these formats is found, it only considers
+`ELF`_ symbols and report about their addition or removal.
+
+.. include:: tools-use-libabigail.txt
+
+.. _abidw_invocation_label:
 
 Invocation
 ==========
@@ -92,7 +101,7 @@ Options
 
   * ``--kmi-whitelist | -kaw`` <*path-to-whitelist*>
 
-    When analyzing a Linux kernel binary, this option points to the
+    When analyzing a `Linux Kernel`_ binary, this option points to the
     white list of names of ELF symbols of functions and variables
     which ABI must be written out.  That white list is called a "
     Kernel Module Interface white list".  This is because for the
@@ -105,7 +114,7 @@ Options
 
     If this option is not provided -- thus if no white list is
     provided -- then the entire KMI, that is, all publicly defined and
-    exported functions and global variables by the Linux Kernel
+    exported functions and global variables by the `Linux Kernel`_
     binaries is emitted.
     
   * ``--linux-tree | --lt``
@@ -115,9 +124,10 @@ Options
     In that case, this program emits the representation of the Kernel
     Module Interface (KMI) on the standard output.
 
-    Below is an example of usage of ``abidw`` on a Linux Kernel tree.
+    Below is an example of usage of ``abidw`` on a `Linux Kernel`_
+    tree.
 
-    First, checkout a Linux kernel source tree and build it.  Then
+    First, checkout a `Linux Kernel`_ source tree and build it.  Then
     install the kernel modules in a directory somewhere.  Copy the
     vmlinux binary into that directory too.  And then serialize the
     KMI of that kernel to disk, using ``abidw``: ::
@@ -170,6 +180,56 @@ Options
     ELF symbol is undefined are dropped from the internal
     representation build by Libabigail to represent the ABI and will
     not end up in the abi XML file.
+
+  * ``--exported-interfaces-only``
+
+    By default, when looking at the debug information accompanying a
+    binary, this tool analyzes the descriptions of the types reachable
+    by the interfaces (functions and variables) that are visible
+    outside of their translation unit.  Once that analysis is done, an
+    ABI corpus is constructed by only considering the subset of types
+    reachable from interfaces associated to `ELF`_ symbols that are
+    defined and exported by the binary.  It's that final ABI corpus
+    which textual representation is saved as ``ABIXML``.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    corpora like these can be extremely slow.
+
+    To mitigate that performance issue, this option allows libabigail
+    to only analyze types that are reachable from interfaces
+    associated with defined and exported `ELF`_ symbols.
+
+    Note that this option is turned on by default when analyzing the
+    `Linux Kernel`_.  Otherwise, it's turned off by default.
+
+  * ``--allow-non-exported-interfaces``
+
+    When looking at the debug information accompanying a binary, this
+    tool analyzes the descriptions of the types reachable by the
+    interfaces (functions and variables) that are visible outside of
+    their translation unit.  Once that analysis is done, an ABI corpus
+    is constructed by only considering the subset of types reachable
+    from interfaces associated to `ELF`_ symbols that are defined and
+    exported by the binary.  It's that final ABI corpus which textual
+    representation is saved as ``ABIXML``.
+
+    The problem with that approach however is that analyzing all the
+    interfaces that are visible from outside their translation unit
+    can amount to a lot of data, especially when those binaries are
+    applications, as opposed to shared libraries.  One example of such
+    applications is the `Linux Kernel`_.  Analyzing massive ABI
+    corpora like these can be extremely slow.
+
+    In the presence of an "average sized" binary however one can
+    afford having libabigail analyze all interfaces that are visible
+    outside of their translation unit, using this option.
+
+    Note that this option is turned on by default, unless we are in
+    the presence of the `Linux Kernel`_.
 
   * ``--no-linux-kernel-mode``
 
@@ -267,10 +327,29 @@ Options
     This option is available only if the package was configured with
     the --enable-debug-type-canonicalization option.
 
+  * ``--no-assume-odr-for-cplusplus``
+
+    When analysing a binary originating from C++ code using `DWARF`_
+    debug information, libabigail assumes the `One Definition Rule`_
+    to speed-up the analysis.  In that case, when several types have
+    the same name in the binary, they are assumed to all be equal.
+
+    This option disables that assumption and instructs libabigail to
+    actually actually compare the types to determine if they are
+    equal.
+
+  * ``--no-leverage-dwarf-factorization``
+
+    When analysing a binary which `DWARF`_ debug information was
+    processed with the `DWZ`_ tool, the type information is supposed
+    to be already factorized.  That context is used by libabigail to
+    perform some speed optimizations.
+
+    This option disables those optimizations.
 
   * ``--ctf``
 
-    Extract ABI information from CTF debug information, if present in
+    Extract ABI information from `CTF`_ debug information, if present in
     the given object.
 
   *  ``--annotate``
@@ -308,4 +387,9 @@ standard `here
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
 .. _GNU: http://www.gnu.org
-
+.. _Linux Kernel: https://kernel.org/
+.. _CTF: https://raw.githubusercontent.com/wiki/oracle/binutils-gdb/files/ctf-spec.pdf
+.. _BTF: https://docs.kernel.org/bpf/btf.html
+.. _ODR: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _One Definition Rule: https://en.wikipedia.org/wiki/One_Definition_Rule
+.. _DWZ: https://sourceware.org/dwz

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2022 Red Hat, Inc.
+// Copyright (C) 2017-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -140,6 +140,9 @@ report_type_changes_from_diff_maps(const leaf_reporter& reporter,
   // typedefs
   report_diffs(reporter, maps.get_typedef_diff_map(), out, indent);
 
+  // subranges
+  report_diffs(reporter, maps.get_subrange_diff_map(), out, indent);
+
   // arrays
   report_diffs(reporter, maps.get_array_diff_map(), out, indent);
 
@@ -207,6 +210,12 @@ leaf_reporter::report(const qualified_type_diff& d, ostream& out,
     return;
 
   report_local_qualified_type_changes(d, out, indent);
+
+  // Note that changes that are local to the underlying type of a
+  // qualified type are considered to be local to the qualified type
+  // itself.  So let's go ahead and report the local changes of the
+  // underlying type.
+  report_underlying_changes_of_qualified_type(d, out, indent);
 }
 
 /// Report the changes carried by a @ref pointer_diff node.
@@ -428,6 +437,30 @@ leaf_reporter::report(const scope_diff& d,
 
   if (emitted)
     out << "\n";
+}
+
+/// Report about the change carried by a @ref subrange_diff diff node
+/// in a serialized form.
+///
+/// @param d the diff node to consider.
+///
+/// @param out the output stream to report to.
+///
+/// @param indent the indentation string to use in the report.
+void
+leaf_reporter::report(const subrange_diff& d, std::ostream& out,
+		      const std::string& indent) const
+{
+  if (!diff_to_be_reported(&d))
+    return;
+
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(d.first_subrange(),
+						    d.second_subrange(),
+						    "range type");
+
+  represent(d, d.context(), out,indent, /*local_only=*/true);
+
+  maybe_report_interfaces_impacted_by_diff(&d, out, indent);
 }
 
 /// Report the changes carried by a @ref array_diff node.

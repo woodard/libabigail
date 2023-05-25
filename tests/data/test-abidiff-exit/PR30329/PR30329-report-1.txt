@@ -1,0 +1,170 @@
+Functions changes summary: 0 Removed, 1 Changed (145 filtered out), 1 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+1 Added function:
+
+  [A] 'function int sqlite3_value_encoding(sqlite3_value*)'    {sqlite3_value_encoding}
+
+1 function with some indirect sub-type change:
+
+  [C] 'function void* sqlite3_aggregate_context(sqlite3_context*, int)' at sqlite3.c:86987:1 has some indirect sub-type changes:
+    parameter 1 of type 'sqlite3_context*' has sub-type changes:
+      in pointed to type 'typedef sqlite3_context' at sqlite3.c:4730:1:
+        underlying type 'struct sqlite3_context' at sqlite3.c:22549:1 changed:
+          type size hasn't changed
+          1 data member changes (4 filtered):
+            type of 'Mem* pOut' changed:
+              in pointed to type 'typedef Mem' at sqlite3.c:15805:1:
+                underlying type 'struct sqlite3_value' at sqlite3.c:22387:1 changed:
+                  type size hasn't changed
+                  1 data member changes (1 filtered):
+                    type of 'sqlite3* db' changed:
+                      in pointed to type 'typedef sqlite3' at sqlite3.c:578:1:
+                        underlying type 'struct sqlite3' at sqlite3.c:16840:1 changed:
+                          type size changed from 6464 to 6528 (in bits)
+                          29 data member changes (6 filtered):
+                            type of 'Vdbe* pVdbe' changed:
+                              in pointed to type 'struct Vdbe' at sqlite3.c:22731:1:
+                                type size hasn't changed
+                                3 data member changes (11 filtered):
+                                  type of 'Vdbe* pPrev' changed:
+                                    in pointed to type 'typedef Vdbe':
+                                      entity changed from 'typedef Vdbe' to 'Vdbe*'
+                                      type size changed from 2432 to 64 (in bits)
+                                  and name of 'Vdbe::pPrev' changed to 'Vdbe::ppVPrev' at sqlite3.c:22733:1
+                                  name of 'Vdbe::pNext' changed to 'Vdbe::pVNext' at sqlite3.c:22733:1
+                                  type of 'Parse* pParse' changed:
+                                    in pointed to type 'typedef Parse' at sqlite3.c:14707:1:
+                                      underlying type 'struct Parse' at sqlite3.c:18897:1 changed:
+                                        type size changed from 3264 to 3328 (in bits)
+                                        1 data member insertion:
+                                          'IndexedExpr* pIdxExpr', at offset 768 (in bits) at sqlite3.c:19060:1
+                                        45 data member changes (3 filtered):
+                                          type of 'ExprList* pConstExpr' changed:
+                                            in pointed to type 'typedef ExprList' at sqlite3.c:14691:1:
+                                              underlying type 'struct ExprList' at sqlite3.c:18309:1 changed:
+                                                type size hasn't changed
+                                                1 data member change:
+                                                  type of 'ExprList_item a[1]' changed:
+                                                    array element type 'struct ExprList_item' changed:
+                                                      type size hasn't changed
+                                                      1 data member change:
+                                                        type of 'Expr* pExpr' changed:
+                                                          in pointed to type 'typedef Expr' at sqlite3.c:14690:1:
+                                                            underlying type 'struct Expr' at sqlite3.c:18113:1 changed:
+                                                              type size hasn't changed
+                                                              1 data member changes (4 filtered):
+                                                                type of 'union {ExprList* pList; Select* pSelect;} x' changed:
+                                                                  type size hasn't changed
+                                                                  1 data member changes (1 filtered):
+                                                                    type of 'Select* pSelect' changed:
+                                                                      in pointed to type 'typedef Select' at sqlite3.c:14715:1:
+                                                                        underlying type 'struct Select' at sqlite3.c:18636:1 changed:
+                                                                          type size hasn't changed
+                                                                          1 data member changes (11 filtered):
+                                                                            type of 'SrcList* pSrc' changed:
+                                                                              in pointed to type 'typedef SrcList' at sqlite3.c:14719:1:
+                                                                                underlying type 'struct SrcList' at sqlite3.c:18462:1 changed:
+                                                                                  type size hasn't changed
+                                                                                  1 data member change:
+                                                                                    type of 'SrcItem a[1]' changed:
+                                                                                      array element type 'typedef SrcItem' changed:
+                                                                                        underlying type 'struct SrcItem' at sqlite3.c:18391:1 changed:
+                                                                                          type size hasn't changed
+                                                                                          1 data member changes (5 filtered):
+                                                                                            type of 'Schema* pSchema' changed:
+                                                                                              in pointed to type 'typedef Schema' at sqlite3.c:14689:1:
+                                                                                                underlying type 'struct Schema' at sqlite3.c:16646:1 changed:
+                                                                                                  type size hasn't changed
+                                                                                                  1 data member change:
+                                                                                                    type of 'Table* pSeqTab' changed:
+                                                                                                      in pointed to type 'typedef Table' at sqlite3.c:14721:1:
+                                                                                                        underlying type 'struct Table' at sqlite3.c:17574:1 changed:
+                                                                                                          type size hasn't changed
+                                                                                                          1 data member changes (4 filtered):
+                                                                                                            type of 'Index* pIndex' changed:
+                                                                                                              in pointed to type 'typedef Index' at sqlite3.c:14697:1:
+                                                                                                                underlying type 'struct Index' at sqlite3.c:17896:1 changed:
+                                                                                                                  type size hasn't changed
+                                                                                                                  1 data member insertion:
+                                                                                                                    'unsigned int bHasExpr', at offset 803 (in bits) at sqlite3.c:18035:1
+                                                                                                                  no data member changes (5 filtered);
+                                                                                      type size hasn't changed
+                                                    type size hasn't changed
+                                          'Token constraintName' offset changed from 768 to 832 (in bits) (by +64 bits)
+                                          'yDbMask writeMask' offset changed from 896 to 960 (in bits) (by +64 bits)
+                                          'yDbMask cookieMask' offset changed from 928 to 992 (in bits) (by +64 bits)
+                                          'int regRowid' offset changed from 960 to 1024 (in bits) (by +64 bits)
+                                          'int regRoot' offset changed from 992 to 1056 (in bits) (by +64 bits)
+                                          'int nMaxArg' offset changed from 1024 to 1088 (in bits) (by +64 bits)
+                                          'int nSelect' offset changed from 1056 to 1120 (in bits) (by +64 bits)
+                                          'int nTableLock' offset changed from 1088 to 1152 (in bits) (by +64 bits)
+                                          'TableLock* aTableLock' offset changed from 1152 to 1216 (in bits) (by +64 bits)
+                                          'AutoincInfo* pAinc' offset changed from 1216 to 1280 (in bits) (by +64 bits)
+                                          'Parse* pToplevel' offset changed from 1280 to 1344 (in bits) (by +64 bits)
+                                          'Table* pTriggerTab' offset changed from 1344 to 1408 (in bits) (by +64 bits)
+                                          'TriggerPrg* pTriggerPrg' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+                                          'ParseCleanup* pCleanup' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+                                          'union {int addrCrTab; Returning* pReturning;} u1' offset changed from 1536 to 1600 (in bits) (by +64 bits)
+                                          'u32 nQueryLoop' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+                                          'u32 oldmask' offset changed from 1632 to 1696 (in bits) (by +64 bits)
+                                          'u32 newmask' offset changed from 1664 to 1728 (in bits) (by +64 bits)
+                                          'u8 eTriggerOp' offset changed from 1696 to 1760 (in bits) (by +64 bits)
+                                          'u8 bReturning' offset changed from 1704 to 1768 (in bits) (by +64 bits)
+                                          'u8 eOrconf' offset changed from 1712 to 1776 (in bits) (by +64 bits)
+                                          'u8 disableTriggers' offset changed from 1720 to 1784 (in bits) (by +64 bits)
+                                          'int aTempReg[8]' offset changed from 1728 to 1792 (in bits) (by +64 bits)
+                                          'Parse* pOuterParse' offset changed from 1984 to 2048 (in bits) (by +64 bits)
+                                          'Token sNameToken' offset changed from 2048 to 2112 (in bits) (by +64 bits)
+                                          'Token sLastToken' offset changed from 2176 to 2240 (in bits) (by +64 bits)
+                                          'ynVar nVar' offset changed from 2304 to 2368 (in bits) (by +64 bits)
+                                          'u8 iPkSortOrder' offset changed from 2320 to 2384 (in bits) (by +64 bits)
+                                          'u8 explain' offset changed from 2328 to 2392 (in bits) (by +64 bits)
+                                          'u8 eParseMode' offset changed from 2336 to 2400 (in bits) (by +64 bits)
+                                          'int nVtabLock' offset changed from 2368 to 2432 (in bits) (by +64 bits)
+                                          'int nHeight' offset changed from 2400 to 2464 (in bits) (by +64 bits)
+                                          'int addrExplain' offset changed from 2432 to 2496 (in bits) (by +64 bits)
+                                          'VList* pVList' offset changed from 2496 to 2560 (in bits) (by +64 bits)
+                                          'Vdbe* pReprepare' offset changed from 2560 to 2624 (in bits) (by +64 bits)
+                                          'const char* zTail' offset changed from 2624 to 2688 (in bits) (by +64 bits)
+                                          'Table* pNewTable' offset changed from 2688 to 2752 (in bits) (by +64 bits)
+                                          'Index* pNewIndex' offset changed from 2752 to 2816 (in bits) (by +64 bits)
+                                          'Trigger* pNewTrigger' offset changed from 2816 to 2880 (in bits) (by +64 bits)
+                                          'const char* zAuthContext' offset changed from 2880 to 2944 (in bits) (by +64 bits)
+                                          'Token sArg' offset changed from 2944 to 3008 (in bits) (by +64 bits)
+                                          'Table** apVtabLock' offset changed from 3072 to 3136 (in bits) (by +64 bits)
+                                          'With* pWith' offset changed from 3136 to 3200 (in bits) (by +64 bits)
+                                          'RenameToken* pRename' offset changed from 3200 to 3264 (in bits) (by +64 bits)
+                            type of 'Lookaside lookaside' changed:
+                              underlying type 'struct Lookaside' at sqlite3.c:16734:1 changed:
+                                type size changed from 704 to 768 (in bits)
+                                1 data member insertion:
+                                  'void* pTrueEnd', at offset 704 (in bits) at sqlite3.c:16849:1
+                            'sqlite3_xauth xAuth' offset changed from 3968 to 4032 (in bits) (by +64 bits)
+                            'void* pAuthArg' offset changed from 4032 to 4096 (in bits) (by +64 bits)
+                            'int (void*)* xProgress' offset changed from 4096 to 4160 (in bits) (by +64 bits)
+                            'void* pProgressArg' offset changed from 4160 to 4224 (in bits) (by +64 bits)
+                            'unsigned int nProgressOps' offset changed from 4224 to 4288 (in bits) (by +64 bits)
+                            'int nVTrans' offset changed from 4256 to 4320 (in bits) (by +64 bits)
+                            'Hash aModule' offset changed from 4288 to 4352 (in bits) (by +64 bits)
+                            'VtabCtx* pVtabCtx' offset changed from 4480 to 4544 (in bits) (by +64 bits)
+                            'VTable** aVTrans' offset changed from 4544 to 4608 (in bits) (by +64 bits)
+                            'VTable* pDisconnect' offset changed from 4608 to 4672 (in bits) (by +64 bits)
+                            'Hash aFunc' offset changed from 4672 to 4736 (in bits) (by +64 bits)
+                            'Hash aCollSeq' offset changed from 4864 to 4928 (in bits) (by +64 bits)
+                            'BusyHandler busyHandler' offset changed from 5056 to 5120 (in bits) (by +64 bits)
+                            'Db aDbStatic[2]' offset changed from 5248 to 5312 (in bits) (by +64 bits)
+                            'Savepoint* pSavepoint' offset changed from 5760 to 5824 (in bits) (by +64 bits)
+                            'int nAnalysisLimit' offset changed from 5824 to 5888 (in bits) (by +64 bits)
+                            'int busyTimeout' offset changed from 5856 to 5920 (in bits) (by +64 bits)
+                            'int nSavepoint' offset changed from 5888 to 5952 (in bits) (by +64 bits)
+                            'int nStatement' offset changed from 5920 to 5984 (in bits) (by +64 bits)
+                            'i64 nDeferredCons' offset changed from 5952 to 6016 (in bits) (by +64 bits)
+                            'i64 nDeferredImmCons' offset changed from 6016 to 6080 (in bits) (by +64 bits)
+                            'int* pnBytesFreed' offset changed from 6080 to 6144 (in bits) (by +64 bits)
+                            'sqlite3* pBlockingConnection' offset changed from 6144 to 6208 (in bits) (by +64 bits)
+                            'sqlite3* pUnlockConnection' offset changed from 6208 to 6272 (in bits) (by +64 bits)
+                            'void* pUnlockArg' offset changed from 6272 to 6336 (in bits) (by +64 bits)
+                            'void (void**, int)* xUnlockNotify' offset changed from 6336 to 6400 (in bits) (by +64 bits)
+                            'sqlite3* pNextBlocked' offset changed from 6400 to 6464 (in bits) (by +64 bits)
+

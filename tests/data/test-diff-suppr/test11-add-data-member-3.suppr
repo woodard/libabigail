@@ -1,3 +1,4 @@
 [suppress_type]
 	name = S
 	has_data_member_inserted_at = end
+	has_size_change = true

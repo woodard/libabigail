@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -1353,7 +1353,7 @@ public:
       }
 
     list_property_value_sptr list = read_list_property_value();
-    if (list->get_content().size() == 1)
+    if (list && list->get_content().size() == 1)
       result.reset(new string_property_value(list->get_content()[0]));
     else
       result = list;
@@ -1440,6 +1440,7 @@ public:
 	char c = 0;
 	read_next_char(c);
 	ABG_ASSERT(c == ',');
+	skip_white_spaces();
       }
 
     if (!content.empty())

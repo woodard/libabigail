@@ -30,6 +30,10 @@ if CTF_READER
 TESTS += runtestreadctf
 endif
 
+if BTF_READER
+TESTS += runtestreadbtf
+endif
+
 # rather cheap tests
 TESTS+=				\
 runtestabicompat		\
@@ -109,6 +113,13 @@ runtestreadctf_SOURCES=test-read-ctf.cc
 runtestreadctf_LDADD=libtestreadcommon.la libtestutils.la	\
 		     $(top_builddir)/src/libabigail.la
 runtestreadctf_LDFLAGS=-pthread
+endif
+
+if BTF_READER
+runtestreadbtf_SOURCES=test-read-btf.cc
+runtestreadbtf_LDADD=libtestreadcommon.la libtestutils.la	\
+		     $(top_builddir)/src/libabigail.la
+runtestreadbtf_LDFLAGS=-pthread
 endif
 
 runtestannotate_SOURCES=test-annotate.cc

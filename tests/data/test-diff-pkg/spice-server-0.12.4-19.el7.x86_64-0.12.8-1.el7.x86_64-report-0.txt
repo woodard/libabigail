@@ -19,7 +19,7 @@
 
   1 function with some indirect sub-type change:
 
-    [C] 'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:3618:1 has some indirect sub-type changes:
+    [C] 'function spice_image_compression_t spice_server_get_image_compression(SpiceServer*)' at reds.c:4294:1 has some indirect sub-type changes:
       return type changed:
         typedef name changed from spice_image_compression_t to SpiceImageCompression at enums.h:197:1
         underlying type 'enum spice_image_compression_t' at spice.h:471:1 changed:

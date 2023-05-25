@@ -1,5 +1,5 @@
 ================ changes of 'libgmp.so.10.3.2'===============
-  Functions changes summary: 25 Removed, 0 Changed (1 filtered out), 85 Added functions
+  Functions changes summary: 25 Removed, 0 Changed, 85 Added functions
   Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
   Function symbols changes summary: 3 Removed, 21 Added function symbols not referenced by debug info
   Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -133,6 +133,7 @@
                 underlying type 'const mp_limb_t*' changed:
                   entity changed from 'const mp_limb_t*' to 'unsigned long int'
                   type size hasn't changed
+                  type alignment changed from 64 to 0
               parameter 2 of type 'typedef mp_size_t' changed:
                 typedef name changed from mp_size_t to mp_limb_t
                 underlying type 'long int' changed:

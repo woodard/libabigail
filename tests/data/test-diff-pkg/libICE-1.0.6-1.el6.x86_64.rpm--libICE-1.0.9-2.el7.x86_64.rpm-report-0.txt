@@ -10,7 +10,7 @@
 
   1 function with some indirect sub-type change:
 
-    [C] 'function IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus*)' at accept.c:38:1 has some indirect sub-type changes:
+    [C] 'function IceConn IceAcceptConnection(IceListenObj, IceAcceptStatus*)' at accept.c:39:1 has some indirect sub-type changes:
       return type changed:
         underlying type '_IceConn*' changed:
           in pointed to type 'struct _IceConn' at ICEconn.h:131:1:

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -815,6 +815,36 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test-PR28013-fn-variadic.c.report.txt",
    "output/test-diff-filter/test-PR28013-fn-variadic.c.report.txt",
   },
+  {
+   "data/test-diff-filter/test-PR29387-v0.o",
+   "data/test-diff-filter/test-PR29387-v1.o",
+   "--no-default-suppression",
+   "data/test-diff-filter/test-PR29387-report.txt",
+   "output/test-diff-filter/test-PR29387-report.txt",
+  },
+  {
+    "data/test-diff-filter/test-PR29811-0-v0.o",
+    "data/test-diff-filter/test-PR29811-0-v1.o",
+    "--no-default-suppression",
+    "data/test-diff-filter/test-PR29811-0-report-0.txt",
+    "output/test-diff-filter/test-PR29811-0-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/test-PR29811-0-v0.o",
+    "data/test-diff-filter/test-PR29811-0-v1.o",
+    "--harmless --no-default-suppression",
+    "data/test-diff-filter/test-PR29811-0-report-1.txt",
+    "output/test-diff-filter/test-PR29811-0-report-1.txt",
+  },
+#ifdef WITH_CTF
+  {
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-DWARF.o",
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-CTF.o",
+   "--ctf --no-default-suppression",
+   "data/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-report.txt",
+   "output/test-diff-filter/test-PR29811-unknown-size-array-dwarf-ctf-report.txt",
+  },
+#endif
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

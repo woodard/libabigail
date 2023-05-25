@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2020-2022 Google, Inc.
+// Copyright (C) 2020-2023 Google, Inc.
 //
 // Author: Matthias Maennich
 
@@ -243,7 +243,7 @@ public:
 
   static symtab_ptr
   load(Elf*		elf_handle,
-       ir::environment* env,
+       const ir::environment& env,
        symbol_predicate is_suppressed = NULL);
 
   static symtab_ptr
@@ -283,7 +283,9 @@ private:
   addr_symbol_map_type entry_addr_symbol_map_;
 
   bool
-  load_(Elf* elf_handle, ir::environment* env, symbol_predicate is_suppressed);
+  load_(Elf* elf_handle,
+	const ir::environment& env,
+	symbol_predicate is_suppressed);
 
   bool
   load_(string_elf_symbols_map_sptr function_symbol_map,

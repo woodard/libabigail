@@ -1,3 +1,4 @@
 [suppress_type]
 	name = S
 	has_data_member_inserted_between = {offset_after(m0), end}
+	has_size_change = true

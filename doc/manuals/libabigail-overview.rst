@@ -1,6 +1,6 @@
-####################
+#################################
 Overview of the Abigail framework
-####################
+#################################
 
 **ABIGAIL** stands for the Application Binary Interface Generic
 Analysis and Instrumentation Library.

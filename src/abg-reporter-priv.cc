@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2017-2022 Red Hat, Inc.
+// Copyright (C) 2017-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -712,6 +712,77 @@ represent(const var_diff_sptr	&diff,
     out << "\n";
 }
 
+/// Represent the changes carried by an instance of @ref subrange_diff
+/// that represent a difference between two ranges.
+///
+/// @param diff diff the diff node to represent.
+///
+/// @param ctxt the diff context to use.
+///
+/// @param local_only if true, only display local changes.
+///
+/// @param out the output stream to send the representation to.
+///
+/// @param indent the indentation string to use for the change report.
+void
+represent(const subrange_diff&		d,
+	  const diff_context_sptr	ctxt,
+	  ostream&			out,
+	  const string&		indent,
+	  bool				local_only)
+{
+  array_type_def::subrange_sptr o = d.first_subrange();
+  array_type_def::subrange_sptr n = d.second_subrange();
+  string oor = o->get_pretty_representation();
+  string nr = n->get_pretty_representation();
+  string on = o->get_name();
+  string nn = n->get_name();
+  int64_t olb = o->get_lower_bound();
+  int64_t nlb = n->get_lower_bound();
+  int64_t oub = o->get_upper_bound();
+  int64_t nub = n->get_upper_bound();
+
+    if (on != nn)
+    {
+      out << indent << "name of range changed from '"
+	  << on << "' to '" << nn << "'\n";
+    }
+
+  if (olb != nlb)
+    {
+      out << indent << "lower bound of range '"
+	  << on
+	  << "' change from '";
+      emit_num_value(olb, *ctxt, out);
+      out << "' to '";
+      emit_num_value(nlb, *ctxt, out);
+      out << "'\n";
+    }
+
+  if (oub != nub)
+    {
+      out << indent << "upper bound of range '"
+	  << on
+	  << "' change from '";
+      emit_num_value(oub, *ctxt, out);
+      out << "' to '";
+      emit_num_value(nub, *ctxt, out);
+      out << "'\n";
+    }
+
+  if (!local_only)
+    {
+      diff_sptr dif = d.underlying_type_diff();
+      if (dif && dif->to_be_reported())
+	{
+	  // report range underlying type changes
+	  out << indent << "underlying type of range '"
+	      << oor << "' changed:\n";
+	  dif->report(out, indent + "  ");
+	}
+    }
+}
+
 /// Report the size and alignment changes of a type.
 ///
 /// @param first the first type to consider.
@@ -763,12 +834,12 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 	      // arrays ...
 	      out << indent << "array type size changed from ";
 	      if (first_array->is_infinite())
-		out << "infinity";
+		out << "\'unknown\'";
 	      else
 		emit_num_value(first_array->get_size_in_bits(), *ctxt, out);
 	      out << " to ";
 	      if (second_array->is_infinite())
-		out << "infinity";
+		out << "\'unknown\'";
 	      else
 		emit_num_value(second_array->get_size_in_bits(), *ctxt, out);
 	      out << "\n";
@@ -797,14 +868,14 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 			  << " changed length from ";
 
 		      if ((*i)->is_infinite())
-			out << "infinity";
+			out << "\'unknown\'";
 		      else
 			out << (*i)->get_length();
 
 		      out << " to ";
 
 		      if ((*j)->is_infinite())
-			out << "infinity";
+			out << "\'unknown\'";
 		      else
 			out << (*j)->get_length();
 		      out << "\n";
@@ -1070,6 +1141,49 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
   return reported;
 }
 
+/// Report the differences between two generic variables.
+///
+/// @param decl1 the first version of the variable.
+///
+/// @param decl2 the second version of the variable.
+///
+/// @param ctxt the context of the diff.
+///
+/// @param out the output stream to emit the change report to.
+///
+/// @param indent the indentation prefix to emit.
+///
+/// @return true if any text has been emitted to the output stream.
+bool
+maybe_report_diff_for_variable(const decl_base_sptr&	decl1,
+			       const decl_base_sptr&	decl2,
+			       const diff_context_sptr& ctxt,
+			       ostream&		out,
+			       const string&		indent)
+{
+  bool reported = false;
+
+  var_decl_sptr var1 = is_var_decl(decl1);
+  var_decl_sptr var2 = is_var_decl(decl2);
+
+  if (!var1 || !var2)
+    return reported;
+
+  if (filtering::is_var_1_dim_unknown_size_array_change(var1, var2))
+    {
+      uint64_t var_size_in_bits = var1->get_symbol()->get_size() * 8;
+
+      out << indent;
+      show_offset_or_size("size of variable symbol (",
+			  var_size_in_bits, *ctxt, out);
+      out << ") hasn't changed\n"
+	  << indent << "but it does have a harmless type change\n";
+      reported = true;
+    }
+
+  return reported;
+}
+
 /// Report the difference between two ELF symbols, if there is any.
 ///
 /// @param symbol1 the first symbol to consider.
@@ -1149,8 +1263,8 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 	  << "\n";
     }
 
-  const abg_compat::optional<uint64_t>& crc1 = symbol1->get_crc();
-  const abg_compat::optional<uint64_t>& crc2 = symbol2->get_crc();
+  const abg_compat::optional<uint32_t>& crc1 = symbol1->get_crc();
+  const abg_compat::optional<uint32_t>& crc2 = symbol2->get_crc();
   if (crc1 != crc2)
     {
       const std::string none = "(none)";

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2016-2022 Red Hat, Inc.
+// Copyright (C) 2016-2023 Red Hat, Inc.
 //
 // Author: Dodji Seketeli
 
@@ -404,58 +404,9 @@ bool
 suppression_matches_variable_name(const suppr::variable_suppression& s,
 				  const string& var_name);
 
-
 bool
 suppression_matches_variable_sym_name(const suppr::variable_suppression& s,
 				      const string& var_linkage_name);
-
-/// Test if a given function denoted by its name and linkage name is
-/// suppressed by any of the suppression specifications associated to
-/// a given read context used to build the current internal
-/// representation of ABI corpus.
-///
-/// @param ctxt the reading context of interest.
-///
-/// @param fn_name the name of the function that a specification can
-/// match.
-///
-/// @param fn_linkage_name the linkage name of the function that a
-/// specification can match.
-///
-/// @param require_drop_property if set to "true", tests if the
-/// function is suppressed and if its representation is dropped from
-/// the ABI corpus being built.  Otherwise, if set to "false", only
-/// test if the function is suppressed.
-///
-/// @return true iff at least one function specification matches a
-/// function with name @p fn_name or with linkage name @p
-/// fn_linkage_name.
-template <typename ReadContextType>
-bool
-function_is_suppressed(const ReadContextType&	ctxt,
-		       const string&		fn_name,
-		       const string&		fn_linkage_name,
-		       bool			require_drop_property = false)
-{
-  for (suppr::suppressions_type::const_iterator i =
-	 ctxt.get_suppressions().begin();
-       i != ctxt.get_suppressions().end();
-       ++i)
-    if (suppr::function_suppression_sptr suppr = is_function_suppression(*i))
-      {
-	if (require_drop_property && !(*i)->get_drops_artifact_from_ir())
-	  continue;
-	if (!fn_name.empty()
-	    && ctxt.suppression_matches_function_name(*suppr, fn_name))
-	  return true;
-	if (!fn_linkage_name.empty()
-	    && ctxt.suppression_matches_function_sym_name(*suppr,
-							  fn_linkage_name))
-	  return true;
-      }
-  return false;
-}
-// </function_suppression stuff>
 
 // <variable_suppression stuff>
 /// The type of the private data of the @ref variable_suppression
@@ -604,32 +555,6 @@ struct variable_suppression::priv
   }
 };// end class variable_supppression::priv
 
-template <typename ReadContextType>
-bool
-variable_is_suppressed(const ReadContextType&	ctxt,
-		       const string&		var_name,
-		       const string&		var_linkage_name,
-		       bool			require_drop_property = false)
-{
-  for (suppr::suppressions_type::const_iterator i =
-	 ctxt.get_suppressions().begin();
-       i != ctxt.get_suppressions().end();
-       ++i)
-    if (suppr::variable_suppression_sptr suppr = is_variable_suppression(*i))
-      {
-	if (require_drop_property && !(*i)->get_drops_artifact_from_ir())
-	  continue;
-	if (!var_name.empty()
-	    && ctxt.suppression_matches_variable_name(*suppr, var_name))
-	  return true;
-	if (!var_linkage_name.empty()
-	    && ctxt.suppression_matches_variable_sym_name(*suppr,
-							  var_linkage_name))
-	  return true;
-      }
-  return false;
-}
-
 // </variable_suppression stuff>
 
 // <type_suppression stuff>
@@ -645,8 +570,18 @@ class type_suppression::priv
   type_suppression::type_kind		type_kind_;
   bool					consider_reach_kind_;
   type_suppression::reach_kind		reach_kind_;
+  bool					has_size_change_;
+  // The data members a class needs to have to match this suppression
+  // specification.  These might be selected by a regular expression.
+  string_set_type			potential_data_members_;
+  // The regular expression string that selects the potential data
+  // members of the class.
+  string				potential_data_members_regex_str_;
+  // The compiled regular expression that selects the potential data
+  // members of the class.
+  mutable regex::regex_t_sptr		potential_data_members_regex_;
   type_suppression::insertion_ranges	insertion_ranges_;
-  unordered_set<string>			source_locations_to_keep_;
+  unordered_set<string>		source_locations_to_keep_;
   string				source_location_to_keep_regex_str_;
   mutable regex::regex_t_sptr		source_location_to_keep_regex_;
   mutable vector<string>		changed_enumerator_names_;
@@ -665,7 +600,8 @@ public:
       consider_type_kind_(consider_type_kind),
       type_kind_(type_kind),
       consider_reach_kind_(consider_reach_kind),
-      reach_kind_(reach_kind)
+      reach_kind_(reach_kind),
+      has_size_change_(false)
   {}
 
   /// Get the regular expression object associated to the 'type_name_regex'
@@ -752,6 +688,34 @@ public:
   set_source_location_to_keep_regex(regex::regex_t_sptr r)
   {source_location_to_keep_regex_ = r;}
 
+  /// Getter for the "potential_data_member_names_regex" object.
+  ///
+  /// This regex object matches the names of the data members that are
+  /// needed for this suppression specification to select the type.
+  ///
+  /// @return the "potential_data_member_names_regex" object.
+  const regex::regex_t_sptr
+  get_potential_data_member_names_regex() const
+  {
+    if (!potential_data_members_regex_
+	&& !potential_data_members_regex_str_.empty())
+      {
+	potential_data_members_regex_ =
+	  regex::compile(potential_data_members_regex_str_);
+      }
+    return potential_data_members_regex_;
+  }
+
+  /// Setter for the "potential_data_member_names_regex" object.
+  ///
+  /// This regex object matches the names of the data members that are
+  /// needed for this suppression specification to select the type.
+  ///
+  /// @param r the new "potential_data_member_names_regex" object.
+  void
+  set_potential_data_member_names_regex(regex::regex_t_sptr &r)
+  {potential_data_members_regex_ = r;}
+
   friend class type_suppression;
 }; // class type_suppression::priv
 
@@ -776,110 +740,6 @@ bool
 suppression_matches_type_name_or_location(const type_suppression& s,
 					  const string& type_name,
 					  const location& type_location);
-
-/// Test if a type (designated by its name and location) is suppressed
-/// by at least one suppression specification associated with a given
-/// read context.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_name the name of the type to consider.
-///
-/// @param type_location the location of the type to consider.
-///
-/// @param require_drop_property if set to "true", tests if the type
-/// is suppressed and if its representation is dropped from the ABI
-/// corpus being built.  Otherwise, if set to "false", only test if
-/// the type is suppressed.
-///
-/// @return true iff at least one type specification matches a type
-/// with name @p type_name and with location @p type_location.
-template <typename ReadContextType>
-bool
-type_is_suppressed(const ReadContextType&	ctxt,
-		   const string&		type_name,
-		   const location&		type_location)
-{
-  bool type_is_private = false;
-  return type_is_suppressed(ctxt, type_name, type_location, type_is_private);
-}
-
-/// Test if a type (designated by its name and location) is suppressed
-/// by at least one suppression specification associated with a given
-/// read context.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_name the name of the type to consider.
-///
-/// @param type_location the location of the type to consider.
-///
-/// @param type_is_private out parameter. If the type is suppressed
-/// because it's private then this out parameter is set to true.
-///
-/// @param require_drop_property if set to "true", tests if the type
-/// is suppressed and if its representation is dropped from the ABI
-/// corpus being built.  Otherwise, if set to "false", only test if
-/// the type is suppressed.
-///
-/// @return true iff at least one type specification matches a type
-/// with name @p type_name and with location @p type_location.
-template <typename ReadContextType>
-bool
-type_is_suppressed(const ReadContextType&	ctxt,
-		   const string&		type_name,
-		   const location&		type_location,
-		   bool&			type_is_private,
-		   bool require_drop_property = false)
-{
-  for (suppr::suppressions_type::const_iterator i =
-	 ctxt.get_suppressions().begin();
-       i != ctxt.get_suppressions().end();
-       ++i)
-    if (suppr::type_suppression_sptr suppr = is_type_suppression(*i))
-      {
-	if (require_drop_property && !(*i)->get_drops_artifact_from_ir())
-	  continue;
-	if (ctxt.suppression_matches_type_name_or_location(*suppr, type_name,
-							   type_location))
-	  {
-	    if (is_private_type_suppr_spec(*suppr))
-	      type_is_private = true;
-
-	    return true;
-	  }
-      }
-
-  type_is_private = false;
-  return false;
-}
-
-/// Test if a given ELF symbol is suppressed by a suppression
-/// specification.
-///
-/// @param ctxt the read context to use.
-///
-/// @param sym_name the name of the symbol to consider.
-///
-/// @param sym_type the type of the symbol to consider.
-///
-/// @return true iff the elf symbol denoted by @p sym_name and @p
-/// sym_type is suppressed.
-template<typename ReadContextType>
-bool
-is_elf_symbol_suppressed(const ReadContextType& ctxt,
-			 const string& sym_name,
-			 elf_symbol::type sym_type)
-{
-  if (elf_symbol_is_function(sym_type))
-    return suppr::function_is_suppressed(ctxt, /*fn_name=*/"",
-					 /*symbol_name=*/sym_name);
-  else if (elf_symbol_is_variable(sym_type))
-    return suppr::variable_is_suppressed(ctxt, /*var_name=*/"",
-					 /*symbol_name=*/sym_name);
-
-  return false;
-}
 
 // </type_suppression stuff>
 

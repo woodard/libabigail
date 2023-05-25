@@ -26,8 +26,10 @@ abg-suppression-priv.h			\
 abg-suppression.cc			\
 abg-comp-filter.cc			\
 abg-reader.cc				\
-abg-elf-reader-common.cc		\
 abg-dwarf-reader.cc			\
+abg-fe-iface.cc				\
+abg-elf-based-reader.cc			\
+abg-elf-reader.cc			\
 abg-libxml-utils.cc			\
 abg-hash.cc				\
 abg-writer.cc				\
@@ -46,8 +48,12 @@ if CTF_READER
 libabigail_la_SOURCES += abg-ctf-reader.cc
 endif
 
+if BTF_READER
+libabigail_la_SOURCES += abg-btf-reader.cc
+endif
+
 libabigail_la_LIBADD = $(DEPS_LIBS) $(FTS_LIBS)
-libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined -version-info 1:0:0
+libabigail_la_LDFLAGS = -lpthread -Wl,--as-needed -no-undefined -version-info $(LIBABIGAIL_SO_CURRENT):$(LIBABIGAIL_SO_REVISION):$(LIBABIGAIL_SO_AGE)
 
 CUSTOM_MACROS = -DABIGAIL_ROOT_SYSTEM_LIBDIR=\"${libdir}\"
 

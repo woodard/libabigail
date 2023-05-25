@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2022 Red Hat, Inc.
+// Copyright (C) 2013-2023 Red Hat, Inc.
 
 /// @file
 
@@ -45,9 +45,11 @@ public:
   {
     ARTIFICIAL_ORIGIN = 0,
     NATIVE_XML_ORIGIN = 1,
-    DWARF_ORIGIN      = 1 << 1,
-    CTF_ORIGIN        = 1 << 2,
-    LINUX_KERNEL_BINARY_ORIGIN = 1 << 3
+    ELF_ORIGIN        = 1 << 1,
+    DWARF_ORIGIN      = 1 << 2,
+    CTF_ORIGIN        = 1 << 3,
+    BTF_ORIGIN        = 1 << 4,
+    LINUX_KERNEL_BINARY_ORIGIN = 1 << 5
   };
 
 private:
@@ -60,21 +62,21 @@ public:
   struct priv;
   std::unique_ptr<priv> priv_;
 
-  corpus(ir::environment*, const string& path= "");
+  corpus(const ir::environment&, const string& path= "");
 
   virtual ~corpus();
 
-  const environment*
+  const environment&
   get_environment() const;
 
-  environment*
-  get_environment();
+  bool
+  do_log() const;
 
   void
-  set_environment(environment*);
+  do_log(bool);
 
   void
-  add(const translation_unit_sptr);
+  add(const translation_unit_sptr&);
 
   const translation_units&
   get_translation_units() const;
@@ -216,7 +218,7 @@ public:
   virtual const functions&
   get_functions() const;
 
-  const vector<function_decl*>*
+  const std::unordered_set<function_decl*>*
   lookup_functions(const string& id) const;
 
   void
@@ -300,13 +302,13 @@ operator&=(corpus::origin &l, corpus::origin r);
 /// parameters needed.
 class corpus::exported_decls_builder
 {
-  class priv;
-  std::unique_ptr<priv> priv_;
-
   // Forbid default construction.
   exported_decls_builder();
 
 public:
+  class priv;
+  std::unique_ptr<priv> priv_;
+
   friend class corpus;
 
   exported_decls_builder(functions& fns,
@@ -325,6 +327,9 @@ public:
   functions&
   exported_functions();
 
+  std::unordered_set<function_decl*>*
+  fn_id_maps_to_several_fns(function_decl*);
+
   const variables&
   exported_variables() const;
 
@@ -335,7 +340,7 @@ public:
   maybe_add_fn_to_exported_fns(function_decl*);
 
   void
-  maybe_add_var_to_exported_vars(var_decl*);
+  maybe_add_var_to_exported_vars(const var_decl*);
 }; //corpus::exported_decls_builder
 
 /// Abstraction of a group of corpora.
@@ -355,7 +360,7 @@ class corpus_group : public corpus
 public:
   typedef vector<corpus_sptr> corpora_type;
 
-  corpus_group(ir::environment*, const string&);
+  corpus_group(const ir::environment&, const string&);
 
   virtual ~corpus_group();
 
