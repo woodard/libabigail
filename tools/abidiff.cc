@@ -208,6 +208,17 @@ struct options
     prepared_di_root_paths1.clear();
     prepared_di_root_paths2.clear();
   }
+
+  /// Convert di_root_paths{1,2} into prepared_di_root_paths{1,2}
+  /// which is the suitable type format that the dwarf_reader expects.
+  void prepare_di_root_paths()
+  {
+    abigail::tools_utils::convert_char_stars_to_char_star_stars
+      (this->di_root_paths1, this->prepared_di_root_paths1);
+
+    abigail::tools_utils::convert_char_stars_to_char_star_stars
+      (this->di_root_paths2, this->prepared_di_root_paths2);
+  }
 };//end struct options;
 
 static void
@@ -997,21 +1008,6 @@ adjust_diff_context_for_kmidiff(diff_context &ctxt)
   ctxt.show_linkage_names(false);
 }
 
-/// Convert options::di_root_paths{1,2} into
-/// options::prepared_di_root_paths{1,2} which is the suitable type
-/// format that the dwarf_reader expects.
-///
-/// @param o the options to consider.
-static void
-prepare_di_root_paths(options& o)
-{
-  abigail::tools_utils::convert_char_stars_to_char_star_stars
-    (o.di_root_paths1, o.prepared_di_root_paths1);
-
-  abigail::tools_utils::convert_char_stars_to_char_star_stars
-    (o.di_root_paths2, o.prepared_di_root_paths2);
-}
-
 /// Emit an appropriate error message if necessary, given an error
 /// code.
 ///
@@ -1194,7 +1190,7 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  prepare_di_root_paths(opts);
+  opts.prepare_di_root_paths();
 
   if (!maybe_check_suppression_files(opts))
     return (abigail::tools_utils::ABIDIFF_USAGE_ERROR

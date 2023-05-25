@@ -181,6 +181,13 @@ struct options
 
     prepared_di_root_paths.clear();
   }
+  /// Convert di_root_paths into prepared_di_root_paths
+  /// which is the suitable type format that the dwarf_reader expects.
+  void prepare_di_root_paths()
+  {
+    tools_utils::convert_char_stars_to_char_star_stars(this->di_root_paths,
+						       this->prepared_di_root_paths);
+  }
 };
 
 static void
@@ -955,18 +962,6 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   return exit_code;
 }
 
-/// Convert options::di_root_paths into
-/// options::prepared_di_root_paths which is the suitable type format
-/// that the dwarf_reader expects.
-///
-/// @param o the options to consider.
-static void
-prepare_di_root_paths(options& o)
-{
-  tools_utils::convert_char_stars_to_char_star_stars(o.di_root_paths,
-						     o.prepared_di_root_paths);
-}
-
 int
 main(int argc, char* argv[])
 {
@@ -1015,7 +1010,7 @@ main(int argc, char* argv[])
 		| abigail::tools_utils::ABIDIFF_ERROR);
     }
 
-  prepare_di_root_paths(opts);
+  opts.prepare_di_root_paths();
 
   if (!maybe_check_suppression_files(opts))
     return 1;
