@@ -128,6 +128,7 @@ struct options
 #ifdef WITH_DEBUG_SELF_COMPARISON
   string		type_id_file_path;
 #endif
+  environment env;
 
   options()
     : check_alt_debug_info_path(),
@@ -627,15 +628,12 @@ set_generic_options(abigail::elf_based_reader& rdr, options& opts)
 ///
 /// @param argv the arguments the program was called with.
 ///
-/// @param env the environment the ABI artifacts are being created in.
-///
 /// @param opts the options of the program.
 ///
 /// @return the exit code: 0 if everything went fine, non-zero
 /// otherwise.
 static int
 load_corpus_and_write_abixml(char* argv[],
-			     environment& env,
 			     options& opts)
 {
   int exit_code = 0;
@@ -643,14 +641,14 @@ load_corpus_and_write_abixml(char* argv[],
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
   if (opts.debug_abidiff)
-    env.self_comparison_debug_is_on(true);
+    opts.env.self_comparison_debug_is_on(true);
 #endif
 
 #ifdef WITH_DEBUG_TYPE_CANONICALIZATION
   if (opts.debug_type_canonicalization)
-    env.debug_type_canonicalization_is_on(true);
+    opts.env.debug_type_canonicalization_is_on(true);
   if (opts.debug_die_canonicalization)
-    env.debug_die_canonicalization_is_on(true);
+    opts.env.debug_die_canonicalization_is_on(true);
 #endif
 
   corpus_sptr corp;
@@ -670,7 +668,7 @@ load_corpus_and_write_abixml(char* argv[],
   abigail::elf_based_reader_sptr reader =
     create_best_elf_based_reader(opts.in_file_path,
 				 opts.prepared_di_root_paths,
-				 env, requested_fe_kind,
+				 opts.env, requested_fe_kind,
 				 opts.load_all_types,
 				 opts.linux_kernel_mode);
   ABG_ASSERT(reader);
@@ -708,7 +706,7 @@ load_corpus_and_write_abixml(char* argv[],
   // ... ff we are asked to only analyze exported interfaces (to stay
   // concise), then take that into account ...
   if (opts.exported_interfaces_only.has_value())
-    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+    opts.env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   // And now, really read/analyze the ABI of the input file.
   t.start();
@@ -784,7 +782,7 @@ load_corpus_and_write_abixml(char* argv[],
   // Now create a write context and write out an ABI XML description
   // of the read corpus.
   t.start();
-  const write_context_sptr& write_ctxt = create_write_context(env, cout);
+  const write_context_sptr& write_ctxt = create_write_context(opts.env, cout);
   set_common_options(*write_ctxt, opts);
   t.stop();
 
@@ -810,7 +808,7 @@ load_corpus_and_write_abixml(char* argv[],
           write_canonical_type_ids(*write_ctxt, opts.type_id_file_path);
         }
 #endif
-      fe_iface_sptr rdr = abixml::create_reader(tmp_file->get_path(), env);
+      fe_iface_sptr rdr = abixml::create_reader(tmp_file->get_path(), opts.env);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
       if (opts.debug_abidiff
@@ -905,15 +903,12 @@ load_corpus_and_write_abixml(char* argv[],
 ///
 /// @param argv the arguments this program was called with.
 ///
-/// @param env the environment the ABI artifacts are created in.
-///
 /// @param opts the options this program was created with.
 ///
 /// @return the exit code.  Zero if everything went well, non-zero
 /// otherwise.
 static int
 load_kernel_corpus_group_and_write_abixml(char* argv[],
-					  environment& env,
 					  options& opts)
 {
   if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
@@ -929,7 +924,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   suppressions_type supprs;
 
   if (opts.exported_interfaces_only.has_value())
-    env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+    opts.env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   if (opts.do_log)
     emit_prefix(argv[0], cerr)
@@ -948,7 +943,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
-					      supprs, opts.do_log, env,
+					      supprs, opts.do_log, opts.env,
 					      requested_fe_kind);
   t.stop();
 
@@ -965,7 +960,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
   if (!opts.noout)
     {
       const xml_writer::write_context_sptr& ctxt
-	  = xml_writer::create_write_context(env, cout);
+	  = xml_writer::create_write_context(opts.env, cout);
       set_common_options(*ctxt, opts);
 
       if (!opts.out_file_path.empty())
@@ -1028,24 +1023,22 @@ main(int argc, char* argv[])
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
-  abigail::tools_utils::file_type type =
-    abigail::tools_utils::guess_file_type(opts.in_file_path);
-  if (type != abigail::tools_utils::FILE_TYPE_ELF
-      && type != abigail::tools_utils::FILE_TYPE_AR
-      && type != abigail::tools_utils::FILE_TYPE_DIR)
-    {
-      emit_prefix(argv[0], cerr)
-	<< "files of the kind of "<< opts.in_file_path << " are not handled\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
-    }
-
-  environment env;
   int exit_code = 0;
 
-  if (tools_utils::is_regular_file(opts.in_file_path))
-    exit_code = load_corpus_and_write_abixml(argv, env, opts);
-  else
-    exit_code = load_kernel_corpus_group_and_write_abixml(argv, env, opts);
+  switch(abigail::tools_utils::guess_file_type(opts.in_file_path))
+    {
+    case abigail::tools_utils::FILE_TYPE_ELF:
+    case abigail::tools_utils::FILE_TYPE_AR:
+      exit_code = load_corpus_and_write_abixml(argv, opts);
+      break;
+    case abigail::tools_utils::FILE_TYPE_DIR:
+      exit_code = load_kernel_corpus_group_and_write_abixml(argv, opts);
+      break;
+    default:
+      emit_prefix(argv[0], cerr)
+	<< "files of the kind of "<< opts.in_file_path << " are not handled\n";
+      exit_code = abigail::tools_utils::ABIDIFF_ERROR;
+    }
 
   return exit_code;
 }
