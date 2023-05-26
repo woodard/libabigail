@@ -88,9 +88,6 @@ struct options
   vector<string>	suppression_paths;
   vector<string>	kabi_whitelist_paths;
   suppressions_type	kabi_whitelist_supprs;
-  bool                  display_usage;
-  bool			display_version;
-  bool			display_abixml_version;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
@@ -133,9 +130,7 @@ struct options
 #endif
 
   options()
-    : display_version(),
-      display_abixml_version(),
-      check_alt_debug_info_path(),
+    : check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
       write_corpus_path(true),
@@ -317,20 +312,24 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--version")
 	       || !strcmp(argv[i], "-v"))
 	{
-	  opts.display_version = true;
-	  return true;
+	  emit_prefix(argv[0], cout)
+	    << abigail::tools_utils::get_library_version_string()
+	    << "\n";
+	  exit(0);
 	}
       else if (!strcmp(argv[i], "--abixml-version")
 	       || !strcmp(argv[i], "-v"))
 	{
-	  opts.display_abixml_version = true;
-	  return true;
+	  emit_prefix(argv[0], cout)
+	    << abigail::tools_utils::get_abixml_version_string()
+	    << "\n";
+	  exit(0);
 	}
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "-h"))
 	{
-	  opts.display_usage = true;
-	  return true;
+	  display_usage(argv[0], cout);
+	  exit(0);
 	}
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
@@ -501,6 +500,27 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  return false;
 	}
     }
+
+  // final checks
+  ABG_ASSERT(!opts.in_file_path.empty());
+  if (opts.corpus_group_for_linux)
+    {
+      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
+	return false;
+    }
+  else
+    {
+      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
+	return false;
+    }
+
+  if (!opts.maybe_check_suppression_files())
+    return false;
+
+  if (!opts.maybe_check_header_files())
+    return false;
+
+  opts.prepare_di_root_paths();
 
   // final checks
   ABG_ASSERT(!opts.in_file_path.empty());
@@ -1007,54 +1027,6 @@ main(int argc, char* argv[])
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
-
-  if (opts.display_usage)
-    {
-      display_usage(argv[0], cout);
-      return 0;
-    }
-
-  if (opts.display_version)
-    {
-      emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_library_version_string()
-	<< "\n";
-      return 0;
-    }
-
-  if (opts.display_abixml_version)
-    {
-      emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_abixml_version_string()
-	<< "\n";
-      return 0;
-    }
-
-  ABG_ASSERT(!opts.in_file_path.empty());
-  if (opts.corpus_group_for_linux)
-    {
-      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
-	return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		| abigail::tools_utils::ABIDIFF_ERROR);
-    }
-  else
-    {
-      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
-	return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		| abigail::tools_utils::ABIDIFF_ERROR);
-    }
-
-  opts.prepare_di_root_paths();
-
-  if (!opts.maybe_check_suppression_files(opts))
-    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	    | abigail::tools_utils::ABIDIFF_ERROR);
-
-
-  if (!opts.maybe_check_header_files(opts))
-    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	    | abigail::tools_utils::ABIDIFF_ERROR);
-
 
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(opts.in_file_path);
