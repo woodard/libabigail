@@ -1158,10 +1158,10 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
-      emit_prefix(argv[0], cerr)
-	<< "unrecognized option: "
-	<< opts.wrong_option << "\n"
-	<< "try the --help option for more information\n";
+      if (!opts.wrong_option.empty())
+	emit_prefix(argv[0], cerr)
+	  << "unrecognized option: " << opts.wrong_option << "\n"
+	  << "try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }

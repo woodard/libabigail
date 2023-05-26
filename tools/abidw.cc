@@ -88,6 +88,7 @@ struct options
   vector<string>	suppression_paths;
   vector<string>	kabi_whitelist_paths;
   suppressions_type	kabi_whitelist_supprs;
+  bool                  display_usage;
   bool			display_version;
   bool			display_abixml_version;
   bool			check_alt_debug_info_path;
@@ -188,6 +189,45 @@ struct options
     tools_utils::convert_char_stars_to_char_star_stars(this->di_root_paths,
 						       this->prepared_di_root_paths);
   }
+  /// Check that the suppression specification files supplied are
+  /// present.  If not, emit an error on stderr.
+  ///
+  /// @return true if all suppression specification files are present,
+  /// false otherwise.
+  bool
+  maybe_check_suppression_files()
+  {
+    for (vector<string>::const_iterator i = suppression_paths.begin();
+	 i != suppression_paths.end();
+	 ++i)
+      if (!check_file(*i, cerr, "abidw"))
+	return false;
+
+    for (vector<string>::const_iterator i =
+	   kabi_whitelist_paths.begin();
+	 i != kabi_whitelist_paths.end();
+	 ++i)
+      if (!check_file(*i, cerr, "abidw"))
+	return false;
+
+    return true;
+  }
+
+  /// Check that the header files supplied are present.
+  /// If not, emit an error on stderr.
+  ///
+  /// @return true if all header files are present, false otherwise.
+  bool
+  maybe_check_header_files()
+  {
+    for (vector<string>::const_iterator file = header_files.begin();
+	 file != header_files.end();
+	 ++file)
+      if (!check_file(*file, cerr, "abidw"))
+	return false;
+
+    return true;
+  }
 };
 
 static void
@@ -276,10 +316,22 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--version")
 	       || !strcmp(argv[i], "-v"))
-	opts.display_version = true;
+	{
+	  opts.display_version = true;
+	  return true;
+	}
       else if (!strcmp(argv[i], "--abixml-version")
 	       || !strcmp(argv[i], "-v"))
-	opts.display_abixml_version = true;
+	{
+	  opts.display_abixml_version = true;
+	  return true;
+	}
+      else if (!strcmp(argv[i], "--help")
+	       || !strcmp(argv[i], "-h"))
+	{
+	  opts.display_usage = true;
+	  return true;
+	}
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
 	{
@@ -450,6 +502,27 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
     }
 
+  // final checks
+  ABG_ASSERT(!opts.in_file_path.empty());
+  if (opts.corpus_group_for_linux)
+    {
+      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
+	return false;
+    }
+  else
+    {
+      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
+	return false;
+    }
+
+  if (!opts.maybe_check_suppression_files())
+    return false;
+
+  if (!opts.maybe_check_header_files())
+    return false;
+
+  opts.prepare_di_root_paths();
+
   return true;
 }
 
@@ -467,50 +540,6 @@ set_diff_context(diff_context_sptr& ctxt)
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
      | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
      | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY);
-}
-
-/// Check that the suppression specification files supplied are
-/// present.  If not, emit an error on stderr.
-///
-/// @param opts the options instance to use.
-///
-/// @return true if all suppression specification files are present,
-/// false otherwise.
-static bool
-maybe_check_suppression_files(const options& opts)
-{
-  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-       i != opts.suppression_paths.end();
-       ++i)
-    if (!check_file(*i, cerr, "abidw"))
-      return false;
-
-  for (vector<string>::const_iterator i =
-	 opts.kabi_whitelist_paths.begin();
-       i != opts.kabi_whitelist_paths.end();
-       ++i)
-    if (!check_file(*i, cerr, "abidw"))
-      return false;
-
-  return true;
-}
-
-/// Check that the header files supplied are present.
-/// If not, emit an error on stderr.
-///
-/// @param opts the options instance to use.
-///
-/// @return true if all header files are present, false otherwise.
-static bool
-maybe_check_header_files(const options& opts)
-{
-  for (vector<string>::const_iterator file = opts.header_files.begin();
-       file != opts.header_files.end();
-       ++file)
-    if (!check_file(*file, cerr, "abidw"))
-      return false;
-
-  return true;
 }
 
 /// Set suppression specifications to the @p read_context used to load
@@ -967,17 +996,22 @@ main(int argc, char* argv[])
 {
   options opts;
 
-  if (!parse_command_line(argc, argv, opts)
-      || (opts.in_file_path.empty()
-	  && !opts.display_version
-	  && !opts.display_abixml_version))
+  if (!parse_command_line(argc, argv, opts))
     {
       if (!opts.wrong_option.empty())
 	emit_prefix(argv[0], cerr)
 	  << "unrecognized option: " << opts.wrong_option << "\n"
 	  << "try the --help option for more information\n";
+      else
+	display_usage(argv[0], cerr);
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
+    }
+
+  if (opts.display_usage)
+    {
+      display_usage(argv[0], cout);
+      return 0;
     }
 
   if (opts.display_version)
@@ -988,13 +1022,13 @@ main(int argc, char* argv[])
       return 0;
     }
 
-    if (opts.display_abixml_version)
-      {
-	emit_prefix(argv[0], cout)
-	  << abigail::tools_utils::get_abixml_version_string()
-	  << "\n";
-	return 0;
-      }
+  if (opts.display_abixml_version)
+    {
+      emit_prefix(argv[0], cout)
+	<< abigail::tools_utils::get_abixml_version_string()
+	<< "\n";
+      return 0;
+    }
 
   ABG_ASSERT(!opts.in_file_path.empty());
   if (opts.corpus_group_for_linux)
@@ -1012,11 +1046,15 @@ main(int argc, char* argv[])
 
   opts.prepare_di_root_paths();
 
-  if (!maybe_check_suppression_files(opts))
-    return 1;
+  if (!opts.maybe_check_suppression_files(opts))
+    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	    | abigail::tools_utils::ABIDIFF_ERROR);
 
-  if (!maybe_check_header_files(opts))
-    return 1;
+
+  if (!opts.maybe_check_header_files(opts))
+    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	    | abigail::tools_utils::ABIDIFF_ERROR);
+
 
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(opts.in_file_path);
