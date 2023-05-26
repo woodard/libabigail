@@ -979,9 +979,10 @@ main(int argc, char* argv[])
     {
       if (!opts.wrong_option.empty())
 	emit_prefix(argv[0], cerr)
-	  << "unrecognized option: " << opts.wrong_option << "\n";
-      display_usage(argv[0], cerr);
-      return 1;
+	  << "unrecognized option: " << opts.wrong_option << "\n"
+	  << "try the --help option for more information\n";
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_version)
@@ -1004,12 +1005,14 @@ main(int argc, char* argv[])
   if (opts.corpus_group_for_linux)
     {
       if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
-	return 1;
+	return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		| abigail::tools_utils::ABIDIFF_ERROR);
     }
   else
     {
       if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
-	return 1;
+	return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		| abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   prepare_di_root_paths(opts);
@@ -1028,7 +1031,7 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr)
 	<< "files of the kind of "<< opts.in_file_path << " are not handled\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   environment env;
