@@ -326,6 +326,24 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 					  environment&			env,
 					  corpus::origin	requested_fe_kind = corpus::DWARF_ORIGIN);
 
+class best_elf_based_reader_opts
+{
+public:
+  string elf_file_path;
+  vector<char**> debug_info_root_paths;
+  environment &env;
+  corpus::origin requested_fe_kind;
+  bool show_all_types;
+  bool linux_kernel_mode = true;
+
+  best_elf_based_reader_opts( environment &e):
+    env(e) {}
+  ~best_elf_based_reader_opts()
+  {
+    debug_info_root_paths.clear();
+  }
+};
+
 elf_based_reader_sptr
 create_best_elf_based_reader(const string& elf_file_path,
 			     const vector<char**>& debug_info_root_paths,
@@ -333,6 +351,16 @@ create_best_elf_based_reader(const string& elf_file_path,
 			     corpus::origin requested_debug_info_kind,
 			     bool show_all_types,
 			     bool linux_kernel_mode = false);
+
+inline elf_based_reader_sptr
+create_best_elf_based_reader( best_elf_based_reader_opts& reader_opts){
+  return create_best_elf_based_reader(reader_opts.elf_file_path,
+				      reader_opts.debug_info_root_paths,
+				      reader_opts.env,
+				      reader_opts.requested_fe_kind,
+				      reader_opts.show_all_types,
+				      reader_opts.linux_kernel_mode);
+}
 
 }// end namespace tools_utils
 

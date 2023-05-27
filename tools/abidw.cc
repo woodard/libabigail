@@ -51,6 +51,7 @@ using abigail::tools_utils::temp_file_sptr;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::timer;
+using abigail::tools_utils::best_elf_based_reader_opts;
 using abigail::tools_utils::create_best_elf_based_reader;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
@@ -78,10 +79,8 @@ using namespace abigail;
 struct options
 {
   string		wrong_option;
-  string		in_file_path;
   string		out_file_path;
   vector<char*>	di_root_paths;
-  vector<char**>	prepared_di_root_paths;
   vector<string>	headers_dirs;
   vector<string>	header_files;
   string		vmlinux;
@@ -97,8 +96,6 @@ struct options
   bool			write_parameter_names;
   bool			short_locs;
   bool			default_sizes;
-  bool			load_all_types;
-  bool			linux_kernel_mode;
   bool			corpus_group_for_linux;
   bool			show_stats;
   bool			noout;
@@ -129,6 +126,7 @@ struct options
   string		type_id_file_path;
 #endif
   environment env;
+  best_elf_based_reader_opts reader_opts;
 
   options()
     : check_alt_debug_info_path(),
@@ -140,8 +138,6 @@ struct options
       write_parameter_names(true),
       short_locs(false),
       default_sizes(true),
-      load_all_types(),
-      linux_kernel_mode(true),
       corpus_group_for_linux(false),
       show_stats(),
       noout(),
@@ -166,7 +162,8 @@ struct options
       drop_undefined_syms(false),
       assume_odr_for_cplusplus(true),
       leverage_dwarf_factorization(true),
-      type_id_style(SEQUENCE_TYPE_ID_STYLE)
+      type_id_style(SEQUENCE_TYPE_ID_STYLE),
+      reader_opts(env)
   {}
 
   ~options()
@@ -175,16 +172,41 @@ struct options
 	 i != di_root_paths.end();
 	 ++i)
       free(*i);
+  }
 
-    prepared_di_root_paths.clear();
-  }
-  /// Convert di_root_paths into prepared_di_root_paths
-  /// which is the suitable type format that the dwarf_reader expects.
-  void prepare_di_root_paths()
+  /// Do the final preparation of the reader_opts structure before handing it
+  /// off to create_best_elf_based_reader()
+  ///
+  /// @return reader_opts
+  best_elf_based_reader_opts &get_reader_opts()
   {
-    tools_utils::convert_char_stars_to_char_star_stars(this->di_root_paths,
-						       this->prepared_di_root_paths);
+    tools_utils::convert_char_stars_to_char_star_stars(di_root_paths,
+						       reader_opts.debug_info_root_paths);
+  reader_opts.requested_fe_kind = corpus::DWARF_ORIGIN;
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (debug_abidiff)
+    env.self_comparison_debug_is_on(true);
+#endif
+
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (debug_type_canonicalization)
+    env.debug_type_canonicalization_is_on(true);
+  if (debug_die_canonicalization)
+    env.debug_die_canonicalization_is_on(true);
+#endif
+
+#ifdef WITH_CTF
+    if (use_ctf)
+      reader_opts.requested_fe_kind = corpus::CTF_ORIGIN;
+#endif
+#ifdef WITH_BTF
+    if (use_btf)
+      reader_opts.requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
+    return reader_opts;
   }
+
   /// Check that the suppression specification files supplied are
   /// present.  If not, emit an error on stderr.
   ///
@@ -305,8 +327,8 @@ parse_command_line(int argc, char* argv[], options& opts)
     {
       if (argv[i][0] != '-')
 	{
-	  if (opts.in_file_path.empty())
-	    opts.in_file_path = argv[i];
+	  if (opts.reader_opts.elf_file_path.empty())
+	    opts.reader_opts.elf_file_path = argv[i];
 	  else
 	    return false;
 	}
@@ -444,16 +466,16 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  if (argc <= i + 1
 	      || argv[i + 1][0] == '-'
-	      || !opts.in_file_path.empty())
+	      || !opts.reader_opts.elf_file_path.empty())
 	    return false;
 	  if (!strcmp(argv[i], "--check-alternate-debug-info-base-name"))
 	    opts.show_base_name_alt_debug_info_path = true;
 	  opts.check_alt_debug_info_path = true;
-	  opts.in_file_path = argv[i + 1];
+	  opts.reader_opts.elf_file_path = argv[i + 1];
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
-	opts.load_all_types = true;
+	opts.reader_opts.show_all_types = true;
       else if (!strcmp(argv[i], "--drop-private-types"))
 	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--drop-undefined-syms"))
@@ -463,7 +485,7 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
 	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
-	opts.linux_kernel_mode = false;
+	opts.reader_opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
 	opts.abidiff = true;
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -503,46 +525,24 @@ parse_command_line(int argc, char* argv[], options& opts)
     }
 
   // final checks
-  ABG_ASSERT(!opts.in_file_path.empty());
+  ABG_ASSERT(!opts.reader_opts.elf_file_path.empty());
   if (opts.corpus_group_for_linux)
     {
-      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
+      if (!abigail::tools_utils::check_dir(opts.reader_opts.elf_file_path,
+					   cerr, argv[0]))
 	return false;
     }
   else
-    {
-      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
-	return false;
-    }
+    if (!abigail::tools_utils::check_file(opts.reader_opts.elf_file_path,
+					  cerr, argv[0]))
+      return false;
+
 
   if (!opts.maybe_check_suppression_files())
     return false;
 
   if (!opts.maybe_check_header_files())
     return false;
-
-  opts.prepare_di_root_paths();
-
-  // final checks
-  ABG_ASSERT(!opts.in_file_path.empty());
-  if (opts.corpus_group_for_linux)
-    {
-      if (!abigail::tools_utils::check_dir(opts.in_file_path, cerr, argv[0]))
-	return false;
-    }
-  else
-    {
-      if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
-	return false;
-    }
-
-  if (!opts.maybe_check_suppression_files())
-    return false;
-
-  if (!opts.maybe_check_header_files())
-    return false;
-
-  opts.prepare_di_root_paths();
 
   return true;
 }
@@ -638,39 +638,13 @@ load_corpus_and_write_abixml(char* argv[],
 {
   int exit_code = 0;
   timer t;
-
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  if (opts.debug_abidiff)
-    opts.env.self_comparison_debug_is_on(true);
-#endif
-
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-  if (opts.debug_type_canonicalization)
-    opts.env.debug_type_canonicalization_is_on(true);
-  if (opts.debug_die_canonicalization)
-    opts.env.debug_die_canonicalization_is_on(true);
-#endif
-
-  corpus_sptr corp;
   fe_iface::status s = fe_iface::STATUS_UNKNOWN;
-  corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
-#ifdef WITH_CTF
-  if (opts.use_ctf)
-    requested_fe_kind = corpus::CTF_ORIGIN;
-#endif
-#ifdef WITH_BTF
-  if (opts.use_btf)
-    requested_fe_kind = corpus::BTF_ORIGIN;
-#endif
+  corpus_sptr corp;
 
   // First of all, create a reader to read the ABI from the file
   // specfied in opts ...
   abigail::elf_based_reader_sptr reader =
-    create_best_elf_based_reader(opts.in_file_path,
-				 opts.prepared_di_root_paths,
-				 opts.env, requested_fe_kind,
-				 opts.load_all_types,
-				 opts.linux_kernel_mode);
+    create_best_elf_based_reader(opts.get_reader_opts());
   ABG_ASSERT(reader);
 
   // ... then tune a bunch of "buttons" on the newly created reader
@@ -730,7 +704,7 @@ load_corpus_and_write_abixml(char* argv[],
 	    {
 	      emit_prefix(argv[0], cerr)
 		<< "Could not read debug info from "
-		<< opts.in_file_path << "\n";
+		<< opts.reader_opts.elf_file_path << "\n";
 
 	      emit_prefix(argv[0], cerr)
 		<< "You might want to supply the root directory where "
@@ -741,7 +715,8 @@ load_corpus_and_write_abixml(char* argv[],
 	  else
 	    {
 	      emit_prefix(argv[0], cerr)
-		<< "Could not read debug info for '" << opts.in_file_path
+		<< "Could not read debug info for '"
+		<< opts.reader_opts.elf_file_path
 		<< "' from debug info root directory '";
 	      for (vector<char*>::const_iterator i =
 		     opts.di_root_paths.begin();
@@ -757,7 +732,7 @@ load_corpus_and_write_abixml(char* argv[],
       else if (s == fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(argv[0], cerr)
 	  << "Could not read ELF symbol information from "
-	  << opts.in_file_path << "\n";
+	  << opts.reader_opts.elf_file_path << "\n";
       else if (s & fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(argv[0], cerr)
@@ -765,7 +740,7 @@ load_corpus_and_write_abixml(char* argv[],
 	  if (!reader->alternate_dwarf_debug_info_path().empty())
 	    cerr << " '" << reader->alternate_dwarf_debug_info_path() << "'";
 	  cerr << " for '"
-	    << opts.in_file_path << "'.\n";
+	    << opts.reader_opts.elf_file_path << "'.\n";
 	  emit_prefix(argv[0], cerr)
 	    << "You might have forgotten to install some "
 	    "additional needed debug info\n";
@@ -808,7 +783,8 @@ load_corpus_and_write_abixml(char* argv[],
           write_canonical_type_ids(*write_ctxt, opts.type_id_file_path);
         }
 #endif
-      fe_iface_sptr rdr = abixml::create_reader(tmp_file->get_path(), opts.env);
+      fe_iface_sptr rdr = abixml::create_reader(tmp_file->get_path(),
+						opts.env);
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
       if (opts.debug_abidiff
@@ -911,7 +887,8 @@ static int
 load_kernel_corpus_group_and_write_abixml(char* argv[],
 					  options& opts)
 {
-  if (!(tools_utils::is_dir(opts.in_file_path) && opts.corpus_group_for_linux))
+  if (!(tools_utils::is_dir(opts.reader_opts.elf_file_path)
+	&& opts.corpus_group_for_linux))
     return 1;
 
   int exit_code = 0;
@@ -938,12 +915,13 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 #endif
     corpus::DWARF_ORIGIN;
   corpus_group_sptr group =
-    build_corpus_group_from_kernel_dist_under(opts.in_file_path,
+    build_corpus_group_from_kernel_dist_under(opts.reader_opts.elf_file_path,
 					      /*debug_info_root=*/"",
 					      opts.vmlinux,
 					      opts.suppression_paths,
 					      opts.kabi_whitelist_paths,
-					      supprs, opts.do_log, opts.env,
+					      supprs, opts.do_log,
+					      opts.env,
 					      requested_fe_kind);
   t.stop();
 
@@ -1025,7 +1003,7 @@ main(int argc, char* argv[])
 
   int exit_code = 0;
 
-  switch(abigail::tools_utils::guess_file_type(opts.in_file_path))
+  switch(abigail::tools_utils::guess_file_type(opts.reader_opts.elf_file_path))
     {
     case abigail::tools_utils::FILE_TYPE_ELF:
     case abigail::tools_utils::FILE_TYPE_AR:
@@ -1036,7 +1014,8 @@ main(int argc, char* argv[])
       break;
     default:
       emit_prefix(argv[0], cerr)
-	<< "files of the kind of "<< opts.in_file_path << " are not handled\n";
+	<< "files of the kind of "<< opts.reader_opts.elf_file_path
+	<< " are not handled\n";
       exit_code = abigail::tools_utils::ABIDIFF_ERROR;
     }
 
