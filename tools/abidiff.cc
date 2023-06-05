@@ -59,20 +59,14 @@ using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelists;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
+using abigail::tools_utils::best_elf_based_reader_opts;
 using abigail::tools_utils::create_best_elf_based_reader;
+using abigail::tools_utils::options_base;
 
 using namespace abigail;
 
-struct options
+struct options : public options_base
 {
-  bool display_usage;
-  bool display_version;
-  bool missing_operand;
-  string		wrong_option;
-  string		file1;
-  string		file2;
-  vector<string>	suppression_paths;
-  vector<string>	kernel_abi_whitelist_paths;
   vector<string>	drop_fn_regex_patterns;
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
@@ -83,7 +77,6 @@ struct options
   vector<string>        header_files2;
   bool			drop_private_types;
   optional<bool>	exported_interfaces_only;
-  bool			linux_kernel_mode;
   bool			no_default_supprs;
   bool			no_arch;
   bool			no_corpus;
@@ -104,7 +97,6 @@ struct options
   bool			show_changed_vars;
   bool			show_added_vars;
   bool			show_all_vars;
-  bool			show_all_types;
   bool			show_linkage_names;
   bool			show_locs;
   bool			show_harmful_changes;
@@ -116,31 +108,11 @@ struct options
   bool			leverage_dwarf_factorization;
   bool			perform_change_categorization;
   bool			dump_diff_tree;
-  bool			show_stats;
-  bool			do_log;
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  bool			do_debug_self_comparison;
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-  bool			do_debug_type_canonicalization;
-#endif
-#ifdef WITH_CTF
-  bool			use_ctf;
-#endif
-#ifdef WITH_BTF
-  bool			use_btf;
-#endif
-  vector<char*> di_root_paths1;
-  vector<char*> di_root_paths2;
-  vector<char**> prepared_di_root_paths1;
-  vector<char**> prepared_di_root_paths2;
+  vector<char*>         di_root_paths2;
+  best_elf_based_reader_opts reader_opts2;
 
   options()
-    : display_usage(),
-      display_version(),
-      missing_operand(),
-      drop_private_types(false),
-      linux_kernel_mode(true),
+    : drop_private_types(false),
       no_default_supprs(),
       no_arch(),
       no_corpus(),
@@ -161,7 +133,6 @@ struct options
       show_changed_vars(),
       show_added_vars(),
       show_all_vars(true),
-      show_all_types(false),
       show_linkage_names(true),
       show_locs(true),
       show_harmful_changes(true),
@@ -173,143 +144,122 @@ struct options
       leverage_dwarf_factorization(true),
       perform_change_categorization(true),
       dump_diff_tree(),
-      show_stats(),
-      do_log()
-#ifdef WITH_DEBUG_SELF_COMPARISON
-    ,
-      do_debug_self_comparison()
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-    ,
-      do_debug_type_canonicalization()
-#endif
-#ifdef WITH_CTF
-    ,
-      use_ctf()
-#endif
-#ifdef WITH_BTF
-    ,
-      use_btf()
-#endif
+      reader_opts2(env)
   {}
 
   ~options()
   {
-    for (vector<char*>::iterator i = di_root_paths1.begin();
-	 i != di_root_paths1.end();
-	 ++i)
-      free(*i);
-
     for (vector<char*>::iterator i = di_root_paths2.begin();
 	 i != di_root_paths2.end();
 	 ++i)
       free(*i);
-
-    prepared_di_root_paths1.clear();
-    prepared_di_root_paths2.clear();
   }
 
-  /// Convert di_root_paths{1,2} into prepared_di_root_paths{1,2}
-  /// which is the suitable type format that the dwarf_reader expects.
-  void prepare_di_root_paths()
+  best_elf_based_reader_opts &get_reader_opts()
   {
-    abigail::tools_utils::convert_char_stars_to_char_star_stars
-      (this->di_root_paths1, this->prepared_di_root_paths1);
-
-    abigail::tools_utils::convert_char_stars_to_char_star_stars
-      (this->di_root_paths2, this->prepared_di_root_paths2);
+    return reader_opts;
+  }
+  best_elf_based_reader_opts &get_reader_opts2()
+  {
+    tools_utils::
+      convert_char_stars_to_char_star_stars(di_root_paths,
+					    reader_opts2.debug_info_root_paths);
+    return reader_opts2;
   }
 };//end struct options;
+
+static const char usage[] = " [options] [<file1> <file2>]\n"
+  " where options can be:\n"
+  " --help|-h  display this message\n "
+  " --version|-v  display program version information and exit\n"
+  " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
+  " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
+  " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
+  " --header-file1|--hf1 <path>  the path to one header of file1\n"
+  " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
+  " --header-file2|--hf2 <path>  the path to one header of file2\n"
+  " --drop-private-types  drop private types from "
+  "internal representation\n"
+  "  --exported-interfaces-only  analyze exported interfaces only\n"
+  "  --allow-non-exported-interfaces  analyze interfaces that "
+  "might not be exported\n"
+  " --no-linux-kernel-mode  don't consider the input binaries as "
+  "linux kernel binaries\n"
+  " --kmi-whitelist|-w  path to a "
+  "linux kernel abi whitelist\n"
+  " --stat  only display the diff stats\n"
+  " --symtabs  only display the symbol tables of the corpora\n"
+  " --no-default-suppression  don't load any "
+  "default suppression specification\n"
+  " --no-architecture  do not take architecture in account\n"
+  " --no-corpus-path  do not take the path to the corpora into account\n"
+  " --ignore-soname  do not take the SONAMEs into account\n"
+  " --fail-no-debug-info  bail out if no debug info was found\n"
+  " --leaf-changes-only|-l  only show leaf changes, "
+  "so no change impact analysis (implies --redundant)\n"
+  " --deleted-fns  display deleted public functions\n"
+  " --changed-fns  display changed public functions\n"
+  " --added-fns  display added public functions\n"
+  " --deleted-vars  display deleted global public variables\n"
+  " --changed-vars  display changed global public variables\n"
+  " --added-vars  display added global public variables\n"
+  " --non-reachable-types|-t  consider types non reachable"
+  " from public interfaces\n"
+  " --no-added-syms  do not display added functions or variables\n"
+  " --no-linkage-name  do not display linkage names of "
+  "added/removed/changed\n"
+  " --no-unreferenced-symbols  do not display changes "
+  "about symbols not referenced by debug info\n"
+  " --no-show-locs  do now show location information\n"
+  " --show-bytes  show size and offsets in bytes\n"
+  " --show-bits  show size and offsets in bits\n"
+  " --show-hex  show size and offset in hexadecimal\n"
+  " --show-dec  show size and offset in decimal\n"
+  " --no-show-relative-offset-changes  do not show relative"
+  " offset changes\n"
+  " --suppressions|--suppr <path> specify a suppression file\n"
+  " --drop <regex>  drop functions and variables matching a regexp\n"
+  " --drop-fn <regex> drop functions matching a regexp\n"
+  " --drop-var <regex> drop variables matching a regexp\n"
+  " --keep <regex>  keep only functions and variables matching a regex\n"
+  " --keep-fn <regex>  keep only functions matching a regex\n"
+  " --keep-var  <regex>  keep only variables matching a regex\n"
+  " --harmless  display the harmless changes\n"
+  " --no-harmful  do not display the harmful changes\n"
+  " --redundant  display redundant changes\n"
+  " --no-redundant  do not display redundant changes "
+  "(this is the default)\n"
+  " --impacted-interfaces  display interfaces impacted by leaf changes\n"
+  " --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+  "speed-up the analysis of the binary\n"
+  " --no-change-categorization | -x don't perform categorization "
+  "of changes, for speed purposes\n"
+  " --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
+  "analysis of the binary\n"
+  " --dump-diff-tree  emit a debug dump of the internal diff tree to "
+  "the error output stream\n"
+  " --stats  show statistics about various internal stuff\n"
+#ifdef WITH_CTF
+  " --ctf use CTF instead of DWARF in ELF files\n"
+#endif
+#ifdef WITH_BTF
+  " --btf use BTF instead of DWARF in ELF files\n"
+#endif
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  " --debug-self-comparison debug the process of comparing "
+  "an ABI corpus against itself\n"
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  " --debug-tc debug the type canonicalization process\n"
+  " --debug-dc  debug the DIE canonicalization process\n"
+#endif
+  " --verbose show verbose messages about internal stuff\n";
 
 static void
 display_usage(const string& prog_name, ostream& out)
 {
   emit_prefix(prog_name, out)
-    << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
-    << " where options can be:\n"
-    << " --help|-h  display this message\n "
-    << " --version|-v  display program version information and exit\n"
-    << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
-    << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
-    << " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
-    << " --header-file1|--hf1 <path>  the path to one header of file1\n"
-    << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
-    << " --header-file2|--hf2 <path>  the path to one header of file2\n"
-    << " --drop-private-types  drop private types from "
-    "internal representation\n"
-    << "  --exported-interfaces-only  analyze exported interfaces only\n"
-    << "  --allow-non-exported-interfaces  analyze interfaces that "
-    "might not be exported\n"
-    << " --no-linux-kernel-mode  don't consider the input binaries as "
-       "linux kernel binaries\n"
-    << " --kmi-whitelist|-w  path to a "
-       "linux kernel abi whitelist\n"
-    << " --stat  only display the diff stats\n"
-    << " --symtabs  only display the symbol tables of the corpora\n"
-    << " --no-default-suppression  don't load any "
-       "default suppression specification\n"
-    << " --no-architecture  do not take architecture in account\n"
-    << " --no-corpus-path  do not take the path to the corpora into account\n"
-    << " --ignore-soname  do not take the SONAMEs into account\n"
-    << " --fail-no-debug-info  bail out if no debug info was found\n"
-    << " --leaf-changes-only|-l  only show leaf changes, "
-    "so no change impact analysis (implies --redundant)\n"
-    << " --deleted-fns  display deleted public functions\n"
-    << " --changed-fns  display changed public functions\n"
-    << " --added-fns  display added public functions\n"
-    << " --deleted-vars  display deleted global public variables\n"
-    << " --changed-vars  display changed global public variables\n"
-    << " --added-vars  display added global public variables\n"
-    << " --non-reachable-types|-t  consider types non reachable"
-    " from public interfaces\n"
-    << " --no-added-syms  do not display added functions or variables\n"
-    << " --no-linkage-name  do not display linkage names of "
-    "added/removed/changed\n"
-    << " --no-unreferenced-symbols  do not display changes "
-    "about symbols not referenced by debug info\n"
-    << " --no-show-locs  do now show location information\n"
-    << " --show-bytes  show size and offsets in bytes\n"
-    << " --show-bits  show size and offsets in bits\n"
-    << " --show-hex  show size and offset in hexadecimal\n"
-    << " --show-dec  show size and offset in decimal\n"
-    << " --no-show-relative-offset-changes  do not show relative"
-    " offset changes\n"
-    << " --suppressions|--suppr <path> specify a suppression file\n"
-    << " --drop <regex>  drop functions and variables matching a regexp\n"
-    << " --drop-fn <regex> drop functions matching a regexp\n"
-    << " --drop-var <regex> drop variables matching a regexp\n"
-    << " --keep <regex>  keep only functions and variables matching a regex\n"
-    << " --keep-fn <regex>  keep only functions matching a regex\n"
-    << " --keep-var  <regex>  keep only variables matching a regex\n"
-    << " --harmless  display the harmless changes\n"
-    << " --no-harmful  do not display the harmful changes\n"
-    << " --redundant  display redundant changes\n"
-    << " --no-redundant  do not display redundant changes "
-    "(this is the default)\n"
-    << " --impacted-interfaces  display interfaces impacted by leaf changes\n"
-    << " --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
-    "speed-up the analysis of the binary\n"
-    << " --no-change-categorization | -x don't perform categorization "
-    "of changes, for speed purposes\n"
-    << " --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
-    "analysis of the binary\n"
-    << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
-    "the error output stream\n"
-    <<  " --stats  show statistics about various internal stuff\n"
-#ifdef WITH_CTF
-    << " --ctf use CTF instead of DWARF in ELF files\n"
-#endif
-#ifdef WITH_BTF
-    << " --btf use BTF instead of DWARF in ELF files\n"
-#endif
-#ifdef WITH_DEBUG_SELF_COMPARISON
-    << " --debug-self-comparison debug the process of comparing "
-    "an ABI corpus against itself"
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-    << " --debug-tc debug the type canonicalization process"
-#endif
-    << " --verbose show verbose messages about internal stuff\n";
+    << "usage: " << prog_name << usage;
 }
 
 /// Parse the command line and set the options accordingly.
@@ -333,19 +283,18 @@ parse_command_line(int argc, char* argv[], options& opts)
     {
       if (argv[i][0] != '-')
 	{
-	  if (opts.file1.empty())
-	    opts.file1 = argv[i];
-	  else if (opts.file2.empty())
-	    opts.file2 = argv[i];
+	  if (opts.reader_opts.elf_file_path.empty())
+	    opts.reader_opts.elf_file_path = argv[i];
+	  else if (opts.reader_opts2.elf_file_path.empty())
+	    opts.reader_opts2.elf_file_path = argv[i];
 	  else
+	    // there is some unknown 3rd argument 
 	    return false;
 	}
-      else if (!strcmp(argv[i], "--version")
-	       || !strcmp(argv[i], "-v"))
-	{
-	  opts.display_version = true;
-	  return true;
-	}
+      else if (opts.common_options(argc, argv, i, usage))
+	continue; // we handled this option
+      else if( opts.missing_operand)
+	return false;
       else if (!strcmp(argv[i], "--debug-info-dir1")
 	       || !strcmp(argv[i], "--d1"))
 	{
@@ -354,11 +303,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_paths1.push_back
+	  opts.di_root_paths.push_back
 	    (abigail::tools_utils::make_path_absolute_to_be_freed(argv[j]));
 	  ++i;
 	}
@@ -370,7 +319,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
@@ -386,7 +335,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  // The user can specify several header files directories for
 	  // the first binary.
@@ -401,7 +350,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.header_files1.push_back(argv[j]);
 	  ++i;
@@ -414,7 +363,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  // The user can specify several header files directories for
 	  // the first binary.
@@ -429,34 +378,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.header_files2.push_back(argv[j]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--kmi-whitelist")
-	       || !strcmp(argv[i], "-w"))
-	{
-	  int j = i + 1;
-	  if (j >= argc)
-	    {
-	      opts.missing_operand = true;
-	      opts.wrong_option = argv[i];
-	      return true;
-	    }
-	  opts.kernel_abi_whitelist_paths.push_back(argv[j]);
-	  ++i;
-	}
-      else if (!strcmp(argv[i], "--stat"))
+       else if (!strcmp(argv[i], "--stat"))
 	opts.show_stats_only = true;
       else if (!strcmp(argv[i], "--symtabs"))
 	opts.show_symtabs = true;
-      else if (!strcmp(argv[i], "--help")
-	       || !strcmp(argv[i], "-h"))
-	{
-	  opts.display_usage = true;
-	  return true;
-	}
       else if (!strcmp(argv[i], "--drop-private-types"))
 	opts.drop_private_types = true;
       else if (!strcmp(argv[i], "--exported-interfaces-only"))
@@ -464,7 +394,8 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--allow-non-exported-interfaces"))
 	opts.exported_interfaces_only = false;
       else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
-	opts.linux_kernel_mode = false;
+	opts.reader_opts.linux_kernel_mode
+	  = opts.reader_opts2.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -516,7 +447,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--non-reachable-types")
 	       || !strcmp(argv[i], "-t"))
-	  opts.show_all_types = true;
+	  opts.reader_opts.show_all_types = opts.reader_opts2.show_all_types
+	    = true;
       else if (!strcmp(argv[i], "--no-added-syms"))
 	{
 	  opts.show_added_syms = false;
@@ -559,19 +491,6 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_hexadecimal_values = false;
       else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))
 	opts.show_relative_offset_changes = false;
-      else if (!strcmp(argv[i], "--suppressions")
-	       || !strcmp(argv[i], "--suppr"))
-	{
-	  int j = i + 1;
-	  if (j >= argc)
-	    {
-	      opts.missing_operand = true;
-	      opts.wrong_option = argv[i];
-	      return true;
-	    }
-	  opts.suppression_paths.push_back(argv[j]);
-	  ++i;
-	}
       else if (!strcmp(argv[i], "--drop"))
 	{
 	  int j = i + 1;
@@ -579,7 +498,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.drop_fn_regex_patterns.push_back(argv[j]);
 	  opts.drop_var_regex_patterns.push_back(argv[j]);
@@ -592,7 +511,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.drop_fn_regex_patterns.push_back(argv[j]);
 	  ++i;
@@ -604,7 +523,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.drop_var_regex_patterns.push_back(argv[j]);
 	  ++i;
@@ -616,7 +535,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
@@ -629,7 +548,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
 	}
@@ -640,7 +559,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    {
 	      opts.missing_operand = true;
 	      opts.wrong_option = argv[i];
-	      return true;
+	      return false;
 	    }
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
 	}
@@ -663,33 +582,38 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--dump-diff-tree"))
 	opts.dump_diff_tree = true;
-      else if (!strcmp(argv[i], "--stats"))
-	opts.show_stats = true;
-      else if (!strcmp(argv[i], "--verbose"))
-	opts.do_log = true;
-#ifdef WITH_CTF
-      else if (!strcmp(argv[i], "--ctf"))
-        opts.use_ctf = true;
-#endif
-#ifdef WITH_BTF
-      else if (!strcmp(argv[i], "--btf"))
-        opts.use_btf = true;
-#endif
 #ifdef WITH_DEBUG_SELF_COMPARISON
+      // Can't be factored with abidw option name is different
       else if (!strcmp(argv[i], "--debug-self-comparison"))
-	opts.do_debug_self_comparison = true;
+	opts.debug_abidiff = true;
 #endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-      else if (!strcmp(argv[i], "--debug-tc"))
-	opts.do_debug_type_canonicalization = true;
-#endif
-      else
+      else // some unknown option
 	{
 	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
 	    opts.wrong_option = argv[i];
 	  return false;
 	}
-    }
+   }
+
+  // final things
+  if(!opts.complete_parse( argv[0]))
+    // implicitly checks pathname 1
+    return false;
+  if (opts.reader_opts2.elf_file_path.empty())
+    // explictly check pathname 2
+    return false;
+
+  if (!check_file(opts.reader_opts.elf_file_path, cerr)
+      || !check_file(opts.reader_opts2.elf_file_path, cerr))
+    exit (abigail::tools_utils::ABIDIFF_ERROR);
+
+  opts.reader_opts2.requested_fe_kind = opts.reader_opts.requested_fe_kind;
+  tools_utils::
+    convert_char_stars_to_char_star_stars(opts.di_root_paths2,
+					  opts.reader_opts2.debug_info_root_paths);
+
+  if (opts.exported_interfaces_only.has_value())
+    opts.env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
 
   return true;
 }
@@ -733,31 +657,6 @@ display_symtabs(const corpus_sptr c1, const corpus_sptr c2, ostream& o)
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
 
-/// Check that the suppression specification files supplied are
-/// present.  If not, emit an error on stderr.
-///
-/// @param opts the options instance to use.
-///
-/// @return true if all suppression specification files are present,
-/// false otherwise.
-static bool
-maybe_check_suppression_files(const options& opts)
-{
-  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-       i != opts.suppression_paths.end();
-       ++i)
-    if (!check_file(*i, cerr, "abidiff"))
-      return false;
-
-  for (vector<string>::const_iterator i =
-	 opts.kernel_abi_whitelist_paths.begin();
-       i != opts.kernel_abi_whitelist_paths.end();
-       ++i)
-    if (!check_file(*i, cerr, "abidiff"))
-      return false;
-
-  return true;
-}
 
 /// Update the diff context from the @ref options data structure.
 ///
@@ -803,7 +702,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     (opts.show_symbols_not_referenced_by_debug_info);
   ctxt->show_added_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info && opts.show_added_syms);
-  ctxt->show_unreachable_types(opts.show_all_types);
+  ctxt->show_unreachable_types(opts.reader_opts.show_all_types);
   ctxt->show_impacted_interfaces(opts.show_impacted_interfaces);
 
   if (!opts.show_harmless_changes)
@@ -895,7 +794,7 @@ set_suppressions(abigail::fe_iface& reader, const options& opts)
        ++i)
     read_suppressions(*i, supprs);
 
-  if (reader.corpus_path() == opts.file1
+  if (reader.corpus_path() == opts.reader_opts.elf_file_path
       && (!opts.headers_dirs1.empty() || !opts.header_files1.empty()))
     {
       // Generate suppression specification to avoid showing ABI
@@ -915,7 +814,7 @@ set_suppressions(abigail::fe_iface& reader, const options& opts)
 	}
     }
 
-  if (reader.corpus_path() == opts.file2
+  if (reader.corpus_path() == opts.reader_opts2.elf_file_path
       && (!opts.headers_dirs2.empty() || !opts.header_files2.empty()))
     {
       // Generate suppression specification to avoid showing ABI
@@ -937,7 +836,7 @@ set_suppressions(abigail::fe_iface& reader, const options& opts)
 
   const suppressions_type& wl_suppr =
       gen_suppr_spec_from_kernel_abi_whitelists(
-	  opts.kernel_abi_whitelist_paths);
+	  opts.kabi_whitelist_paths);
 
   supprs.insert(supprs.end(), wl_suppr.begin(), wl_suppr.end());
 
@@ -954,8 +853,9 @@ static void
 set_native_xml_reader_options(abigail::fe_iface& rdr,
 			      const options& opts)
 {
-  abixml::consider_types_not_reachable_from_public_interfaces(rdr,
-							      opts.show_all_types);
+  abixml::
+    consider_types_not_reachable_from_public_interfaces(rdr,
+							opts.reader_opts.show_all_types);
   rdr.options().do_log = opts.do_log;
 
 }
@@ -1048,14 +948,14 @@ handle_error(abigail::fe_iface::status status_code,
       || status_code & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
     {
       emit_prefix(prog_name, cerr)
-	<< "failed to read input file " << opts.file1 << "\n";
+	<< "failed to read input file " << opts.reader_opts.elf_file_path << "\n";
 
       if (status_code & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
 	  emit_prefix(prog_name, cerr) <<
 	    "could not find the debug info\n";
 	  {
-	    if (opts.prepared_di_root_paths1.empty() == 0)
+	    if (opts.reader_opts.debug_info_root_paths.empty() == 0)
 	      emit_prefix(prog_name, cerr)
 		<< "Maybe you should consider using the "
 		"--debug-info-dir1 option to tell me about the "
@@ -1066,11 +966,11 @@ handle_error(abigail::fe_iface::status status_code,
 		emit_prefix(prog_name, cerr)
 		  << "Maybe the root path to the debug information '";
 		for (vector<char**>::const_iterator i
-		       = opts.prepared_di_root_paths1.begin();
-		     i != opts.prepared_di_root_paths1.end();
+		       = opts.reader_opts.debug_info_root_paths.begin();
+		     i != opts.reader_opts.debug_info_root_paths.end();
 		     ++i)
 		  {
-		    if (i != opts.prepared_di_root_paths1.end())
+		    if (i != opts.reader_opts.debug_info_root_paths.end())
 		      cerr << ", ";
 		    cerr << **i;
 		  }
@@ -1079,7 +979,7 @@ handle_error(abigail::fe_iface::status status_code,
 	  }
 
 	  {
-	    if (opts.prepared_di_root_paths2.empty())
+	    if (opts.reader_opts2.debug_info_root_paths.empty())
 	      emit_prefix(prog_name, cerr)
 		<< "Maybe you should consider using the "
 		"--debug-info-dir2 option to tell me about the "
@@ -1090,11 +990,11 @@ handle_error(abigail::fe_iface::status status_code,
 		emit_prefix(prog_name, cerr)
 		  << "Maybe the root path to the debug information '";
 		for (vector<char**>::const_iterator i
-		       = opts.prepared_di_root_paths2.begin();
-		     i != opts.prepared_di_root_paths2.end();
+		       = opts.reader_opts2.debug_info_root_paths.begin();
+		     i != opts.reader_opts2.debug_info_root_paths.end();
 		     ++i)
 		  {
-		    if (i != opts.prepared_di_root_paths2.end())
+		    if (i != opts.reader_opts2.debug_info_root_paths.end())
 		      cerr << ", ";
 		    cerr << **i;
 		  }
@@ -1117,7 +1017,7 @@ handle_error(abigail::fe_iface::status status_code,
       if (status_code & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	emit_prefix(prog_name, cerr)
 	  << "could not find the ELF symbols in the file '"
-	  << opts.file1
+	  << opts.reader_opts.elf_file_path
 	  << "'\n";
 
       return abigail::tools_utils::ABIDIFF_ERROR;
@@ -1158,506 +1058,443 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
-      if (!opts.wrong_option.empty())
-	emit_prefix(argv[0], cerr)
-	  << "unrecognized option: " << opts.wrong_option << "\n"
-	  << "try the --help option for more information\n";
+      if (opts.missing_operand || !opts.wrong_option.empty())
+	{
+	  if (!opts.wrong_option.empty())
+	    emit_prefix(argv[0], cerr)
+	      << "unrecognized option: " << opts.wrong_option << "\n";
+	  else if (opts.missing_operand)
+	    emit_prefix(argv[0], cerr)
+	      << "missing operand to option: " << opts.wrong_option <<"\n";
+	  cerr << "try the --help option for more information\n";
+	}
+      else
+	display_usage(argv[0], cerr);
+
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
-  if (opts.missing_operand)
-    {
-      emit_prefix(argv[0], cerr)
-	<< "missing operand to option: " << opts.wrong_option <<"\n"
-	<< "try the --help option for more information\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
-    }
+  diff_context_sptr ctxt(new diff_context);
+  set_diff_context_from_opts(ctxt, opts);
+  suppressions_type& supprs = ctxt->suppressions();
+  bool files_suppressed = (file_is_suppressed(opts.reader_opts.elf_file_path,
+					 supprs)
+		      || file_is_suppressed(opts.reader_opts2.elf_file_path,
+					    supprs));
 
-  if (opts.display_usage)
-    {
-      display_usage(argv[0], cout);
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
-    }
-
-  if (opts.display_version)
-    {
-      emit_prefix(argv[0], cout)
-	<< abigail::tools_utils::get_library_version_string()
-	<< "\n";
-      return 0;
-    }
-
-  opts.prepare_di_root_paths();
-
-  if (!maybe_check_suppression_files(opts))
-    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	    | abigail::tools_utils::ABIDIFF_ERROR);
+  if (files_suppressed)
+    // We don't have to compare anything because a user
+    // suppression specification file instructs us to avoid
+    // loading either one of the input files.
+    return abigail::tools_utils::ABIDIFF_OK;
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
-  if (!opts.file1.empty() && !opts.file2.empty())
+  abigail::tools_utils::file_type t1_type, t2_type;
+  t1_type = guess_file_type(opts.reader_opts.elf_file_path);
+  t2_type = guess_file_type(opts.reader_opts2.elf_file_path);
+
+  translation_unit_sptr t1, t2;
+  abigail::fe_iface::status c1_status = abigail::fe_iface::STATUS_OK,
+    c2_status = abigail::fe_iface::STATUS_OK;
+  corpus_sptr c1, c2;
+  corpus_group_sptr g1, g2;
+
+  switch (t1_type)
     {
-      if (!check_file(opts.file1, cerr))
-	return abigail::tools_utils::ABIDIFF_ERROR;
+    case abigail::tools_utils::FILE_TYPE_UNKNOWN:
+      emit_prefix(argv[0], cerr)
+	<< "Unknown content type for file "
+	<< opts.reader_opts.elf_file_path << "\n";
+      return abigail::tools_utils::ABIDIFF_ERROR;
+      break;
+    case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+      t1 = abixml::
+	read_translation_unit_from_file(opts.reader_opts.elf_file_path,
+					opts.env);
+      break;
+    case abigail::tools_utils::FILE_TYPE_ELF: // fall through
+    case abigail::tools_utils::FILE_TYPE_AR:
+      {
+	abigail::elf_based_reader_sptr rdr =
+	  create_best_elf_based_reader(opts.get_reader_opts());
+	ABG_ASSERT(rdr);
+	set_generic_options(*rdr, opts);
+	set_suppressions(*rdr, opts);
+	c1 = rdr->read_corpus(c1_status);
 
-      if (!check_file(opts.file2, cerr))
-	return abigail::tools_utils::ABIDIFF_ERROR;
+	if (!c1
+	    || (opts.fail_no_debug_info
+		&& (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		&& (c1_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
+	  return handle_error(c1_status, rdr.get(),
+			      argv[0], opts);
 
-      abigail::tools_utils::file_type t1_type, t2_type;
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
+      {
+	abigail::fe_iface_sptr rdr =
+	  abixml::create_reader(opts.reader_opts.elf_file_path, opts.env);
+	assert(rdr);
+	set_suppressions(*rdr, opts);
+	set_native_xml_reader_options(*rdr, opts);
+	c1 = rdr->read_corpus(c1_status);
+	if (!c1)
+	  return handle_error(c1_status, /*ctxt=*/0, argv[0], opts);
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+      {
+	abigail::fe_iface_sptr rdr =
+	  abixml::create_reader(opts.reader_opts.elf_file_path,
+				opts.env);
+	assert(rdr);
+	set_suppressions(*rdr, opts);
+	set_native_xml_reader_options(*rdr, opts);
+	g1 = abixml::read_corpus_group_from_input(*rdr);
+	if (!g1)
+	  return handle_error(c1_status, /*ctxt=*/0,
+			      argv[0], opts);
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_RPM:
+    case abigail::tools_utils::FILE_TYPE_SRPM:
+    case abigail::tools_utils::FILE_TYPE_DEB:
+    case abigail::tools_utils::FILE_TYPE_DIR:
+    case abigail::tools_utils::FILE_TYPE_TAR:
+      break;
+    }
 
-      t1_type = guess_file_type(opts.file1);
-      t2_type = guess_file_type(opts.file2);
+  switch (t2_type)
+    {
+    case abigail::tools_utils::FILE_TYPE_UNKNOWN:
+      emit_prefix(argv[0], cerr)
+	<< "Unknown content type for file "
+	<< opts.reader_opts2.elf_file_path << "\n";
+      return abigail::tools_utils::ABIDIFF_ERROR;
+      break;
+    case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+      t2 = abixml::
+	read_translation_unit_from_file(opts.reader_opts2.elf_file_path,
+					opts.env);
+      break;
+    case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
+    case abigail::tools_utils::FILE_TYPE_AR:
+      {
+	abigail::elf_based_reader_sptr rdr =
+	  create_best_elf_based_reader(opts.get_reader_opts2());
+	ABG_ASSERT(rdr);
 
-      environment env;
-      if (opts.exported_interfaces_only.has_value())
-	env.analyze_exported_interfaces_only(*opts.exported_interfaces_only);
+	set_generic_options(*rdr, opts);
+	set_suppressions(*rdr, opts);
 
-#ifdef WITH_DEBUG_SELF_COMPARISON
-	    if (opts.do_debug_self_comparison)
-	      env.self_comparison_debug_is_on(true);
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-	    if (opts.do_debug_type_canonicalization)
-	      env.debug_type_canonicalization_is_on(true);
-#endif
-      translation_unit_sptr t1, t2;
-      abigail::fe_iface::status c1_status =
-	abigail::fe_iface::STATUS_OK,
-	c2_status = abigail::fe_iface::STATUS_OK;
-      corpus_sptr c1, c2;
-      corpus_group_sptr g1, g2;
-      bool files_suppressed = false;
+	c2 = rdr->read_corpus(c2_status);
 
-      diff_context_sptr ctxt(new diff_context);
-      set_diff_context_from_opts(ctxt, opts);
-      suppressions_type& supprs = ctxt->suppressions();
-      files_suppressed = (file_is_suppressed(opts.file1, supprs)
-			  || file_is_suppressed(opts.file2, supprs));
+	if (!c2
+	    || (opts.fail_no_debug_info
+		&& (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
+		&& (c2_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
+	  return handle_error(c2_status, rdr.get(), argv[0], opts);
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
+      {
+	abigail::fe_iface_sptr rdr =
+	  abixml::create_reader(opts.reader_opts2.elf_file_path, opts.env);
+	assert(rdr);
+	set_suppressions(*rdr, opts);
+	set_native_xml_reader_options(*rdr, opts);
+	c2 = rdr->read_corpus(c2_status);
+	if (!c2)
+	  return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
 
-      if (files_suppressed)
-	// We don't have to compare anything because a user
-	// suppression specification file instructs us to avoid
-	// loading either one of the input files.
-	return abigail::tools_utils::ABIDIFF_OK;
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
+      {
+	abigail::fe_iface_sptr rdr =
+	  abixml::create_reader(opts.reader_opts2.elf_file_path, opts.env);
+	assert(rdr);
+	set_suppressions(*rdr, opts);
+	set_native_xml_reader_options(*rdr, opts);
+	g2 = abixml::read_corpus_group_from_input(*rdr);
+	if (!g2)
+	  return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
+      }
+      break;
+    case abigail::tools_utils::FILE_TYPE_RPM:
+    case abigail::tools_utils::FILE_TYPE_SRPM:
+    case abigail::tools_utils::FILE_TYPE_DEB:
+    case abigail::tools_utils::FILE_TYPE_DIR:
+    case abigail::tools_utils::FILE_TYPE_TAR:
+      break;
+    }
 
-      switch (t1_type)
+  if (!!c1 != !!c2
+      || !!t1 != !!t2
+      || !!g1 != !!g2)
+    {
+      emit_prefix(argv[0], cerr)
+	<< "the two input should be of the same kind\n";
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
+
+  if (opts.no_arch)
+    {
+      if (c1)
+	c1->set_architecture_name("");
+      if (c2)
+	c2->set_architecture_name("");
+    }
+  if (opts.no_corpus)
+    {
+      if (c1)
+	c1->set_path("");
+      if (c2)
+	c2->set_path("");
+    }
+
+  if (t1)
+    {
+      tools_utils::timer t;
+      if (opts.do_log)
 	{
-	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file1 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	  break;
-	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t1 = abixml::read_translation_unit_from_file(opts.file1,
-								       env);
-	  break;
-	case abigail::tools_utils::FILE_TYPE_ELF: // fall through
-	case abigail::tools_utils::FILE_TYPE_AR:
-	  {
-	    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
-#ifdef WITH_CTF
-	    if (opts.use_ctf)
-	      requested_fe_kind = corpus::CTF_ORIGIN;
-#endif
-#ifdef WITH_BTF
-	    if (opts.use_btf)
-	      requested_fe_kind = corpus::BTF_ORIGIN;
-#endif
-	    abigail::elf_based_reader_sptr rdr =
-	      create_best_elf_based_reader(opts.file1,
-					   opts.prepared_di_root_paths1,
-					   env, requested_fe_kind,
-					   opts.show_all_types,
-					   opts.linux_kernel_mode);
-            ABG_ASSERT(rdr);
-	    set_generic_options(*rdr, opts);
-	    set_suppressions(*rdr, opts);
-	    c1 = rdr->read_corpus(c1_status);
-
-	    if (!c1
-		|| (opts.fail_no_debug_info
-		    && (c1_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-		    && (c1_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
-	      return handle_error(c1_status, rdr.get(),
-				  argv[0], opts);
-
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  {
-	    abigail::fe_iface_sptr rdr =
-	      abixml::create_reader(opts.file1, env);
-	    assert(rdr);
-	    set_suppressions(*rdr, opts);
-	    set_native_xml_reader_options(*rdr, opts);
-	    c1 = rdr->read_corpus(c1_status);
-	    if (!c1)
-	      return handle_error(c1_status, /*ctxt=*/0, argv[0], opts);
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
-	  {
-	    abigail::fe_iface_sptr rdr =
-	      abixml::create_reader(opts.file1,
-							   env);
-	    assert(rdr);
-	    set_suppressions(*rdr, opts);
-	    set_native_xml_reader_options(*rdr, opts);
-	    g1 = abixml::read_corpus_group_from_input(*rdr);
-	    if (!g1)
-	      return handle_error(c1_status, /*ctxt=*/0,
-				  argv[0], opts);
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_RPM:
-	case abigail::tools_utils::FILE_TYPE_SRPM:
-	case abigail::tools_utils::FILE_TYPE_DEB:
-	case abigail::tools_utils::FILE_TYPE_DIR:
-	case abigail::tools_utils::FILE_TYPE_TAR:
-	  break;
+	  t.start();
+	  std::cerr << "Compute diff ...\n";
 	}
 
-      switch (t2_type)
+      translation_unit_diff_sptr diff = compute_diff(t1, t2, ctxt);
+
+      if (opts.do_log)
 	{
-	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
-	  emit_prefix(argv[0], cerr)
-	    << "Unknown content type for file " << opts.file2 << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	  break;
-	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t2 = abixml::read_translation_unit_from_file(opts.file2,
-								       env);
-	  break;
-	case abigail::tools_utils::FILE_TYPE_ELF: // Fall through
-	case abigail::tools_utils::FILE_TYPE_AR:
-	  {
-	    corpus::origin requested_fe_kind = corpus::DWARF_ORIGIN;
-#ifdef WITH_CTF
-	    if (opts.use_ctf)
-	      requested_fe_kind = corpus::CTF_ORIGIN;
-#endif
-#ifdef WITH_BTF
-	    if (opts.use_btf)
-	      requested_fe_kind = corpus::BTF_ORIGIN;
-#endif
-            abigail::elf_based_reader_sptr rdr =
-	      create_best_elf_based_reader(opts.file2,
-					   opts.prepared_di_root_paths2,
-					   env, requested_fe_kind,
-					   opts.show_all_types,
-					   opts.linux_kernel_mode);
-            ABG_ASSERT(rdr);
-
-	    set_generic_options(*rdr, opts);
-	    set_suppressions(*rdr, opts);
-
-	    c2 = rdr->read_corpus(c2_status);
-
-	    if (!c2
-		|| (opts.fail_no_debug_info
-		    && (c2_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
-		    && (c2_status & abigail::fe_iface::STATUS_DEBUG_INFO_NOT_FOUND)))
-	      return handle_error(c2_status, rdr.get(), argv[0], opts);
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  {
-	    abigail::fe_iface_sptr rdr = abixml::create_reader(opts.file2, env);
-	    assert(rdr);
-	    set_suppressions(*rdr, opts);
-	    set_native_xml_reader_options(*rdr, opts);
-	    c2 = rdr->read_corpus(c2_status);
-	    if (!c2)
-	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
-
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP:
-	  {
-	    abigail::fe_iface_sptr rdr = abixml::create_reader(opts.file2, env);
-	    assert(rdr);
-	    set_suppressions(*rdr, opts);
-	    set_native_xml_reader_options(*rdr, opts);
-	    g2 = abixml::read_corpus_group_from_input(*rdr);
-	    if (!g2)
-	      return handle_error(c2_status, /*ctxt=*/0, argv[0], opts);
-	  }
-	  break;
-	case abigail::tools_utils::FILE_TYPE_RPM:
-	case abigail::tools_utils::FILE_TYPE_SRPM:
-	case abigail::tools_utils::FILE_TYPE_DEB:
-	case abigail::tools_utils::FILE_TYPE_DIR:
-	case abigail::tools_utils::FILE_TYPE_TAR:
-	  break;
+	  t.stop();
+	  std::cerr << "diff computed!:" << t << "\n";
 	}
 
-      if (!!c1 != !!c2
-	  || !!t1 != !!t2
-	  || !!g1 != !!g2)
-	{
-	  emit_prefix(argv[0], cerr)
-	    << "the two input should be of the same kind\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
-	}
-
-      if (opts.no_arch)
-	{
-	  if (c1)
-	    c1->set_architecture_name("");
-	  if (c2)
-	    c2->set_architecture_name("");
-	}
-      if (opts.no_corpus)
-	{
-	  if (c1)
-	    c1->set_path("");
-	  if (c2)
-	    c2->set_path("");
-	}
-
-      if (t1)
+      if (diff->has_changes())
 	{
 	  tools_utils::timer t;
 	  if (opts.do_log)
 	    {
 	      t.start();
-	      std::cerr << "Compute diff ...\n";
+	      std::cerr << "Computing the report ...\n";
 	    }
 
-	  translation_unit_diff_sptr diff = compute_diff(t1, t2, ctxt);
+	  diff->report(cout);
 
 	  if (opts.do_log)
 	    {
 	      t.stop();
-	      std::cerr << "diff computed!:" << t << "\n";
-	    }
-
-	  if (diff->has_changes())
-	    {
-	      tools_utils::timer t;
-	      if (opts.do_log)
-		{
-		  t.start();
-		  std::cerr << "Computing the report ...\n";
-		}
-
-	      diff->report(cout);
-
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "Report computed!:" << t << "\n";
-		}
+	      std::cerr << "Report computed!:" << t << "\n";
 	    }
 	}
-      else if (c1)
+    }
+  else if (c1)
+    {
+      if (opts.show_symtabs)
 	{
-	  if (opts.show_symtabs)
-	    {
-	      display_symtabs(c1, c2, cout);
-	      return abigail::tools_utils::ABIDIFF_OK;
-	    }
-
-	  const auto c1_version = c1->get_format_major_version_number();
-	  const auto c2_version = c2->get_format_major_version_number();
-	  if (c1_version != c2_version)
-	    {
-	      emit_incompatible_format_version_error_message(opts.file1,
-							     c1_version,
-							     opts.file2,
-							     c2_version,
-							     argv[0]);
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
-
-	  set_corpus_keep_drop_regex_patterns(opts, c1);
-	  set_corpus_keep_drop_regex_patterns(opts, c2);
-
-	  tools_utils::timer t;
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Compute diff ...\n";
-	    }
-
-	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
-
-	  if (opts.do_log)
-	    {
-	      t.stop();
-	      std::cerr << "diff computed!:" << t << "\n";
-	    }
-
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Computing net changes ...\n";
-	    }
-
-	  if (diff->has_net_changes())
-	    {
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "net changes computed!: "<< t << "\n";
-		}
-	      status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
-	    }
-
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Computing incompatible changes ...\n";
-	    }
-
-	  if (diff->has_incompatible_changes())
-	    {
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "incompatible changes computed!: "<< t << "\n";
-		}
-	      status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
-	    }
-
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Computing changes ...\n";
-	    }
-
-	  if (diff->has_changes())
-	    {
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "changes computed!: "<< t << "\n";
-		}
-
-	      if (opts.do_log)
-		{
-		  t.start();
-		  std::cerr << "Computing report ...\n";
-		}
-
-	      diff->report(cout);
-
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "Report computed!:" << t << "\n";
-		}
-	    }
+	  display_symtabs(c1, c2, cout);
+	  return abigail::tools_utils::ABIDIFF_OK;
 	}
-      else if (g1)
+
+      const auto c1_version = c1->get_format_major_version_number();
+      const auto c2_version = c2->get_format_major_version_number();
+      if (c1_version != c2_version)
 	{
-	  if (opts.show_symtabs)
-	    {
-	      display_symtabs(c1, c2, cout);
-	      return abigail::tools_utils::ABIDIFF_OK;
-	    }
+	  emit_incompatible_format_version_error_message(opts.reader_opts.elf_file_path,
+							 c1_version,
+							 opts.reader_opts2.elf_file_path,
+							 c2_version,
+							 argv[0]);
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
 
-	  const auto g1_version = g1->get_format_major_version_number();
-	  const auto g2_version = g2->get_format_major_version_number();
-	  if (g1_version != g2_version)
-	    {
-	      emit_incompatible_format_version_error_message(opts.file1,
-							     g1_version,
-							     opts.file2,
-							     g2_version,
-							     argv[0]);
-	      return abigail::tools_utils::ABIDIFF_ERROR;
-	    }
+      set_corpus_keep_drop_regex_patterns(opts, c1);
+      set_corpus_keep_drop_regex_patterns(opts, c2);
 
-	  adjust_diff_context_for_kmidiff(*ctxt);
-	  tools_utils::timer t;
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Compute diff ...\n";
-	    }
+      tools_utils::timer t;
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Compute diff ...\n";
+	}
 
-	  corpus_diff_sptr diff = compute_diff(g1, g2, ctxt);
+      corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
 
-	  if (opts.do_log)
-	    {
-	      t.stop();
-	      diff->do_log(true);
-	      std::cerr << "diff computed!:" << t << "\n";
-	    }
+      if (opts.do_log)
+	{
+	  t.stop();
+	  std::cerr << "diff computed!:" << t << "\n";
+	}
 
-	  if (opts.do_log)
-	    {
-	      std::cerr << "Computing net changes ...\n";
-	      t.start();
-	    }
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Computing net changes ...\n";
+	}
 
-	  if (diff->has_net_changes())
-	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+      if (diff->has_net_changes())
+	{
 	  if (opts.do_log)
 	    {
 	      t.stop();
 	      std::cerr << "net changes computed!: "<< t << "\n";
 	    }
+	  status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	}
 
-	  if (opts.do_log)
-	    {
-	      t.start();
-	      std::cerr << "Computing incompatible changes ...\n";
-	    }
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Computing incompatible changes ...\n";
+	}
 
-	  if (diff->has_incompatible_changes())
-	    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
-
+      if (diff->has_incompatible_changes())
+	{
 	  if (opts.do_log)
 	    {
 	      t.stop();
 	      std::cerr << "incompatible changes computed!: "<< t << "\n";
 	    }
+	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	}
+
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Computing changes ...\n";
+	}
+
+      if (diff->has_changes())
+	{
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "changes computed!: "<< t << "\n";
+	    }
 
 	  if (opts.do_log)
 	    {
 	      t.start();
-	      std::cerr << "Computing changes ...\n";
+	      std::cerr << "Computing report ...\n";
 	    }
 
-	  if (diff->has_changes())
+	  diff->report(cout);
+
+	  if (opts.do_log)
 	    {
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "changes computed!: "<< t << "\n";
-		}
-
-	      if (opts.do_log)
-		{
-		  t.start();
-		  std::cerr << "Computing report ...\n";
-		}
-
-	      diff->report(cout);
-
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "Report computed!:" << t << "\n";
-		}
+	      t.stop();
+	      std::cerr << "Report computed!:" << t << "\n";
 	    }
-	  else
+	}
+    }
+  else if (g1)
+    {
+      if (opts.show_symtabs)
+	{
+	  display_symtabs(c1, c2, cout);
+	  return abigail::tools_utils::ABIDIFF_OK;
+	}
+
+      const auto g1_version = g1->get_format_major_version_number();
+      const auto g2_version = g2->get_format_major_version_number();
+      if (g1_version != g2_version)
+	{
+	  emit_incompatible_format_version_error_message(opts.reader_opts.elf_file_path,
+							 g1_version,
+							 opts.reader_opts2.elf_file_path,
+							 g2_version,
+							 argv[0]);
+	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      adjust_diff_context_for_kmidiff(*ctxt);
+      tools_utils::timer t;
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Compute diff ...\n";
+	}
+
+      corpus_diff_sptr diff = compute_diff(g1, g2, ctxt);
+
+      if (opts.do_log)
+	{
+	  t.stop();
+	  diff->do_log(true);
+	  std::cerr << "diff computed!:" << t << "\n";
+	}
+
+      if (opts.do_log)
+	{
+	  std::cerr << "Computing net changes ...\n";
+	  t.start();
+	}
+
+      if (diff->has_net_changes())
+	status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+      if (opts.do_log)
+	{
+	  t.stop();
+	  std::cerr << "net changes computed!: "<< t << "\n";
+	}
+
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Computing incompatible changes ...\n";
+	}
+
+      if (diff->has_incompatible_changes())
+	status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+      if (opts.do_log)
+	{
+	  t.stop();
+	  std::cerr << "incompatible changes computed!: "<< t << "\n";
+	}
+
+      if (opts.do_log)
+	{
+	  t.start();
+	  std::cerr << "Computing changes ...\n";
+	}
+
+      if (diff->has_changes())
+	{
+	  if (opts.do_log)
 	    {
-	      if (opts.do_log)
-		{
-		  t.stop();
-		  std::cerr << "changes computed!: "<< t << "\n";
-		}
+	      t.stop();
+	      std::cerr << "changes computed!: "<< t << "\n";
 	    }
 
+	  if (opts.do_log)
+	    {
+	      t.start();
+	      std::cerr << "Computing report ...\n";
+	    }
+
+	  diff->report(cout);
+
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "Report computed!:" << t << "\n";
+	    }
 	}
       else
-	status = abigail::tools_utils::ABIDIFF_ERROR;
+	{
+	  if (opts.do_log)
+	    {
+	      t.stop();
+	      std::cerr << "changes computed!: "<< t << "\n";
+	    }
+	}
+
     }
+  else
+    status = abigail::tools_utils::ABIDIFF_ERROR;
 
   return status;
 }

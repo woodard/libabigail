@@ -53,6 +53,7 @@ using abigail::tools_utils::build_corpus_group_from_kernel_dist_under;
 using abigail::tools_utils::timer;
 using abigail::tools_utils::best_elf_based_reader_opts;
 using abigail::tools_utils::create_best_elf_based_reader;
+using abigail::tools_utils::options_base;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -76,16 +77,12 @@ using abigail::abixml::read_corpus_from_abixml_file;
 
 using namespace abigail;
 
-struct options
+struct options: public options_base
 {
-  string		wrong_option;
   string		out_file_path;
-  vector<char*>	di_root_paths;
   vector<string>	headers_dirs;
   vector<string>	header_files;
   string		vmlinux;
-  vector<string>	suppression_paths;
-  vector<string>	kabi_whitelist_paths;
   suppressions_type	kabi_whitelist_supprs;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
@@ -99,23 +96,9 @@ struct options
   bool			corpus_group_for_linux;
   bool			show_stats;
   bool			noout;
-#ifdef WITH_CTF
-  bool			use_ctf;
-#endif
-#ifdef WITH_BTF
-  bool			use_btf;
-#endif
   bool			show_locs;
   bool			abidiff;
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  bool			debug_abidiff;
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-  bool			debug_type_canonicalization;
-  bool			debug_die_canonicalization;
-#endif
   bool			annotate;
-  bool			do_log;
   bool			drop_private_types;
   bool			drop_undefined_syms;
   bool			assume_odr_for_cplusplus;
@@ -125,8 +108,6 @@ struct options
 #ifdef WITH_DEBUG_SELF_COMPARISON
   string		type_id_file_path;
 #endif
-  environment env;
-  best_elf_based_reader_opts reader_opts;
 
   options()
     : check_alt_debug_info_path(),
@@ -139,40 +120,16 @@ struct options
       short_locs(false),
       default_sizes(true),
       corpus_group_for_linux(false),
-      show_stats(),
-      noout(),
-#ifdef WITH_CTF
-      use_ctf(false),
-#endif
-#ifdef WITH_BTF
-      use_btf(false),
-#endif
+       noout(),
       show_locs(true),
       abidiff(),
-#ifdef WITH_DEBUG_SELF_COMPARISON
-      debug_abidiff(),
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-      debug_type_canonicalization(),
-      debug_die_canonicalization(),
-#endif
       annotate(),
-      do_log(),
       drop_private_types(false),
       drop_undefined_syms(false),
       assume_odr_for_cplusplus(true),
       leverage_dwarf_factorization(true),
-      type_id_style(SEQUENCE_TYPE_ID_STYLE),
-      reader_opts(env)
+      type_id_style(SEQUENCE_TYPE_ID_STYLE)
   {}
-
-  ~options()
-  {
-    for (vector<char*>::iterator i = di_root_paths.begin();
-	 i != di_root_paths.end();
-	 ++i)
-      free(*i);
-  }
 
   /// Do the final preparation of the reader_opts structure before handing it
   /// off to create_best_elf_based_reader()
@@ -180,55 +137,7 @@ struct options
   /// @return reader_opts
   best_elf_based_reader_opts &get_reader_opts()
   {
-    tools_utils::convert_char_stars_to_char_star_stars(di_root_paths,
-						       reader_opts.debug_info_root_paths);
-  reader_opts.requested_fe_kind = corpus::DWARF_ORIGIN;
-
-#ifdef WITH_DEBUG_SELF_COMPARISON
-  if (debug_abidiff)
-    env.self_comparison_debug_is_on(true);
-#endif
-
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-  if (debug_type_canonicalization)
-    env.debug_type_canonicalization_is_on(true);
-  if (debug_die_canonicalization)
-    env.debug_die_canonicalization_is_on(true);
-#endif
-
-#ifdef WITH_CTF
-    if (use_ctf)
-      reader_opts.requested_fe_kind = corpus::CTF_ORIGIN;
-#endif
-#ifdef WITH_BTF
-    if (use_btf)
-      reader_opts.requested_fe_kind = corpus::BTF_ORIGIN;
-#endif
     return reader_opts;
-  }
-
-  /// Check that the suppression specification files supplied are
-  /// present.  If not, emit an error on stderr.
-  ///
-  /// @return true if all suppression specification files are present,
-  /// false otherwise.
-  bool
-  maybe_check_suppression_files()
-  {
-    for (vector<string>::const_iterator i = suppression_paths.begin();
-	 i != suppression_paths.end();
-	 ++i)
-      if (!check_file(*i, cerr, "abidw"))
-	return false;
-
-    for (vector<string>::const_iterator i =
-	   kabi_whitelist_paths.begin();
-	 i != kabi_whitelist_paths.end();
-	 ++i)
-      if (!check_file(*i, cerr, "abidw"))
-	return false;
-
-    return true;
   }
 
   /// Check that the header files supplied are present.
@@ -248,73 +157,74 @@ struct options
   }
 };
 
-static void
+static const char usage[]= " [options] [<path-to-elf-file>]\n"
+  " where options can be: \n"
+  "  --help|-h  display this message\n"
+  "  --version|-v  display program version information and exit\n"
+  "  --abixml-version  display the version of the ABIXML ABI format\n"
+  "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
+  "  --headers-dir|--hd <path> the path to headers of the elf file\n"
+  "  --header-file|--hf <path> the path one header of the elf file\n"
+  "  --out-file <file-path>  write the output to 'file-path'\n"
+  "  --noout  do not emit anything after reading the binary\n"
+  "  --suppressions|--suppr <path> specify a suppression file\n"
+  "  --no-architecture  do not emit architecture info in the output\n"
+  "  --no-corpus-path  do not take the path to the corpora into account\n"
+  "  --no-show-locs  do not show location information\n"
+  "  --short-locs  only print filenames rather than paths\n"
+  "  --drop-private-types  drop private types from representation\n"
+  "  --drop-undefined-syms  drop undefined symbols from representation\n"
+  "  --exported-interfaces-only  analyze exported interfaces only\n"
+  "  --allow-non-exported-interfaces  analyze interfaces that "
+  "might not be exported\n"
+  "  --no-comp-dir-path  do not show compilation path information\n"
+  "  --no-elf-needed  do not show the DT_NEEDED information\n"
+  "  --no-write-default-sizes  do not emit pointer size when it equals"
+  " the default address size of the translation unit\n"
+  "  --no-parameter-names  do not show names of function parameters\n"
+  "  --type-id-style <sequence|hash>  type id style (sequence(default): "
+  "\"type-id-\" + number; hash: hex-digits)\n"
+  "  --check-alternate-debug-info <elf-path>  check alternate debug info "
+  "of <elf-path>\n"
+  "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
+  "debug info of <elf-path>, and show its base name\n"
+  "  --load-all-types  read all types including those not reachable from "
+  "exported declarations\n"
+  "  --no-linux-kernel-mode  don't consider the input binary as "
+  "a Linux Kernel binary\n"
+  "  --kmi-whitelist|-w  path to a linux kernel "
+  "abi whitelist\n"
+  "  --linux-tree|--lt  emit the ABI for the union of a "
+  "vmlinux and its modules\n"
+  "  --vmlinux <path>  the path to the vmlinux binary to consider to emit "
+  "the ABI of the union of vmlinux and its modules\n"
+  "  --abidiff  compare the loaded ABI against itself\n"
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  "  --debug-abidiff  debug the process of comparing the loaded ABI against itself\n"
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  "  --debug-tc  debug the type canonicalization process\n"
+  "  --debug-dc  debug the DIE canonicalization process\n"
+#endif
+#ifdef WITH_CTF
+  "  --ctf use CTF instead of DWARF in ELF files\n"
+#endif
+  "  --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
+  "speed-up the analysis of the binary\n"
+  "  --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
+  "analysis of the binary\n"
+#ifdef WITH_BTF
+  "  --btf use BTF instead of DWARF in ELF files\n"
+#endif
+  "  --annotate  annotate the ABI artifacts emitted in the output\n"
+  "  --stats  show statistics about various internal stuff\n"
+  "  --verbose show verbose messages about internal stuff\n";
+
+void
 display_usage(const string& prog_name, ostream& out)
 {
   emit_prefix(prog_name, out)
-    << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
-    << " where options can be: \n"
-    << "  --help|-h  display this message\n"
-    << "  --version|-v  display program version information and exit\n"
-    << "  --abixml-version  display the version of the ABIXML ABI format\n"
-    << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
-    << "  --headers-dir|--hd <path> the path to headers of the elf file\n"
-    << "  --header-file|--hf <path> the path one header of the elf file\n"
-    << "  --out-file <file-path>  write the output to 'file-path'\n"
-    << "  --noout  do not emit anything after reading the binary\n"
-    << "  --suppressions|--suppr <path> specify a suppression file\n"
-    << "  --no-architecture  do not emit architecture info in the output\n"
-    << "  --no-corpus-path  do not take the path to the corpora into account\n"
-    << "  --no-show-locs  do not show location information\n"
-    << "  --short-locs  only print filenames rather than paths\n"
-    << "  --drop-private-types  drop private types from representation\n"
-    << "  --drop-undefined-syms  drop undefined symbols from representation\n"
-    << "  --exported-interfaces-only  analyze exported interfaces only\n"
-    << "  --allow-non-exported-interfaces  analyze interfaces that "
-    "might not be exported\n"
-    << "  --no-comp-dir-path  do not show compilation path information\n"
-    << "  --no-elf-needed  do not show the DT_NEEDED information\n"
-    << "  --no-write-default-sizes  do not emit pointer size when it equals"
-    " the default address size of the translation unit\n"
-    << "  --no-parameter-names  do not show names of function parameters\n"
-    << "  --type-id-style <sequence|hash>  type id style (sequence(default): "
-       "\"type-id-\" + number; hash: hex-digits)\n"
-    << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
-    "of <elf-path>\n"
-    << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
-    "debug info of <elf-path>, and show its base name\n"
-    << "  --load-all-types  read all types including those not reachable from "
-    "exported declarations\n"
-    << "  --no-linux-kernel-mode  don't consider the input binary as "
-       "a Linux Kernel binary\n"
-    << "  --kmi-whitelist|-w  path to a linux kernel "
-    "abi whitelist\n"
-    << "  --linux-tree|--lt  emit the ABI for the union of a "
-    "vmlinux and its modules\n"
-    << "  --vmlinux <path>  the path to the vmlinux binary to consider to emit "
-       "the ABI of the union of vmlinux and its modules\n"
-    << "  --abidiff  compare the loaded ABI against itself\n"
-#ifdef WITH_DEBUG_SELF_COMPARISON
-    << "  --debug-abidiff  debug the process of comparing the loaded ABI against itself\n"
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-    << "  --debug-tc  debug the type canonicalization process\n"
-    << "  --debug-dc  debug the DIE canonicalization process\n"
-#endif
-#ifdef WITH_CTF
-    << "  --ctf use CTF instead of DWARF in ELF files\n"
-#endif
-    << "  --no-leverage-dwarf-factorization  do not use DWZ optimisations to "
-    "speed-up the analysis of the binary\n"
-    << "  --no-assume-odr-for-cplusplus  do not assume the ODR to speed-up the "
-    "analysis of the binary\n"
-#ifdef WITH_BTF
-    << "  --btf use BTF instead of DWARF in ELF files\n"
-#endif
-    << "  --annotate  annotate the ABI artifacts emitted in the output\n"
-    << "  --stats  show statistics about various internal stuff\n"
-    << "  --verbose show verbose messages about internal stuff\n";
-  ;
+    << "usage: " << prog_name << usage;
 }
 
 static bool
@@ -332,28 +242,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
-      else if (!strcmp(argv[i], "--version")
-	       || !strcmp(argv[i], "-v"))
-	{
-	  emit_prefix(argv[0], cout)
-	    << abigail::tools_utils::get_library_version_string()
-	    << "\n";
-	  exit(0);
-	}
-      else if (!strcmp(argv[i], "--abixml-version")
-	       || !strcmp(argv[i], "-v"))
-	{
-	  emit_prefix(argv[0], cout)
-	    << abigail::tools_utils::get_abixml_version_string()
-	    << "\n";
-	  exit(0);
-	}
-      else if (!strcmp(argv[i], "--help")
-	       || !strcmp(argv[i], "-h"))
-	{
-	  display_usage(argv[0], cout);
-	  exit(0);
-	}
+      else if (opts.common_options(argc, argv, i, usage))
+	continue; // we handled this option
+      else if( opts.missing_operand)
+	return false;
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
 	{
@@ -394,24 +286,6 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.out_file_path = argv[i + 1];
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--suppressions")
-	       || !strcmp(argv[i], "--suppr"))
-	{
-	  int j = i + 1;
-	  if (j >= argc)
-	    return false;
-	  opts.suppression_paths.push_back(argv[j]);
-	  ++i;
-	}
-      else if (!strcmp(argv[i], "--kmi-whitelist")
-	       || !strcmp(argv[i], "-w"))
-	{
-	  int j = i + 1;
-	  if (j >= argc)
-	    return false;
-	  opts.kabi_whitelist_paths.push_back(argv[j]);
-	  ++i;
-	}
       else if (!strcmp(argv[i], "--linux-tree")
 	       || !strcmp(argv[i], "--lt"))
 	opts.corpus_group_for_linux = true;
@@ -425,14 +299,6 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--noout"))
 	opts.noout = true;
-#ifdef WITH_CTF
-        else if (!strcmp(argv[i], "--ctf"))
-          opts.use_ctf = true;
-#endif
-#ifdef WITH_BTF
-        else if (!strcmp(argv[i], "--btf"))
-          opts.use_btf = true;
-#endif
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
       else if (!strcmp(argv[i], "--no-corpus-path"))
@@ -489,19 +355,13 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--abidiff"))
 	opts.abidiff = true;
 #ifdef WITH_DEBUG_SELF_COMPARISON
+      // Can't be factored with abidiff option name is different and behavior
+      // is different
       else if (!strcmp(argv[i], "--debug-abidiff"))
 	{
 	  opts.abidiff = true;
 	  opts.debug_abidiff = true;
 	}
-#endif
-#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
-      else if (!strcmp(argv[i], "--debug-tc")
-	       || !strcmp(argv[i], "debug-type-canonicalization"))
-	opts.debug_type_canonicalization = true;
-      else if (!strcmp(argv[i], "--debug-dc")
-	       || !strcmp(argv[i], "debug-die-canonicalization"))
-	opts.debug_die_canonicalization = true;
 #endif
       else if (!strcmp (argv[i], "--no-assume-odr-for-cplusplus"))
 	opts.assume_odr_for_cplusplus = false;
@@ -509,23 +369,24 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.leverage_dwarf_factorization = false;
       else if (!strcmp(argv[i], "--annotate"))
 	opts.annotate = true;
-      else if (!strcmp(argv[i], "--stats"))
-	opts.show_stats = true;
-      else if (!strcmp(argv[i], "--verbose"))
-	opts.do_log = true;
-      else if (!strcmp(argv[i], "--help")
-	       || !strcmp(argv[i], "--h"))
-	return false;
       else
 	{
 	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
 	    opts.wrong_option = argv[i];
 	  return false;
 	}
+      if(opts.missing_operand)
+	return true;
     }
 
   // final checks
-  ABG_ASSERT(!opts.reader_opts.elf_file_path.empty());
+  if (!opts.complete_parse( argv[0]))
+    return false;
+
+  // these only exists in abidw
+  if (!opts.maybe_check_header_files())
+    return false;
+
   if (opts.corpus_group_for_linux)
     {
       if (!abigail::tools_utils::check_dir(opts.reader_opts.elf_file_path,
@@ -536,13 +397,6 @@ parse_command_line(int argc, char* argv[], options& opts)
     if (!abigail::tools_utils::check_file(opts.reader_opts.elf_file_path,
 					  cerr, argv[0]))
       return false;
-
-
-  if (!opts.maybe_check_suppression_files())
-    return false;
-
-  if (!opts.maybe_check_header_files())
-    return false;
 
   return true;
 }
@@ -988,15 +842,21 @@ int
 main(int argc, char* argv[])
 {
   options opts;
-
   if (!parse_command_line(argc, argv, opts))
     {
-      if (!opts.wrong_option.empty())
-	emit_prefix(argv[0], cerr)
-	  << "unrecognized option: " << opts.wrong_option << "\n"
-	  << "try the --help option for more information\n";
+      if (opts.missing_operand || !opts.wrong_option.empty())
+	{
+	  if (!opts.wrong_option.empty())
+	    emit_prefix(argv[0], cerr)
+	      << "unrecognized option: " << opts.wrong_option << "\n";
+	  else if (opts.missing_operand)
+	    emit_prefix(argv[0], cerr)
+	      << "missing operand to option: " << opts.wrong_option <<"\n";
+	  cerr << "try the --help option for more information\n";
+	}
       else
 	display_usage(argv[0], cerr);
+
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }

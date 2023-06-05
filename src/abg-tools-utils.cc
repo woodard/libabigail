@@ -64,6 +64,7 @@ ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
 using std::string;
+using std::cout;
 
 namespace abigail
 {
@@ -3004,6 +3005,160 @@ create_best_elf_based_reader(const string& elf_file_path,
     }
 
   return result;
+}
+
+/// Check that the suppression specification files supplied are
+/// present.  If not, emit an error on stderr.
+///
+/// @return true if all suppression specification files are present,
+/// false otherwise.
+bool
+options_base::
+maybe_check_suppression_files( const char *progname)
+{
+  for (auto i = suppression_paths.begin(); i != suppression_paths.end();
+       ++i)
+    if (!check_file(*i, std::cerr, progname))
+      return false;
+
+  for (auto i = kabi_whitelist_paths.begin();
+       i != kabi_whitelist_paths.end(); ++i)
+    if (!check_file(*i, std::cerr, progname))
+      return false;
+
+  return true;
+}
+
+/// parse the command line options that are shared between the tools
+/// that make use of the options_base class.
+///
+/// @param argc the number of agrs passed to the program
+///
+/// @param argv the array of args passed to the program
+///
+/// @param i the index of the option being worked on
+///
+/// @return true if the option was handled, false if the option wasn't handled
+/// or if it was handled and there was an error. Currently the only error is
+/// a missing operand
+bool
+options_base::common_options( int argc, char* argv[], int &i, const char usage[])
+{
+  if (!strcmp(argv[i], "--version")
+      || !strcmp(argv[i], "-v"))
+    {
+      emit_prefix(argv[0], cout)
+	<< abigail::tools_utils::get_library_version_string()
+	<< "\n";
+      exit(0);
+    }
+  else if (!strcmp(argv[i], "--abixml-version")
+	   || !strcmp(argv[i], "-v"))
+    {
+      emit_prefix(argv[0], cout)
+	<< abigail::tools_utils::get_abixml_version_string()
+	<< "\n";
+      exit(0);
+    }
+  else if (!strcmp(argv[i], "--help")
+	   || !strcmp(argv[i], "-h"))
+    {
+      emit_prefix(argv[0], cout)
+	<< "usage: " << argv[0] << usage;
+      exit(0);
+    }
+  else if (!strcmp(argv[i], "--stats"))
+    show_stats = true;
+  else if (!strcmp(argv[i], "--verbose"))
+    do_log = true;
+#ifdef WITH_CTF
+  else if (!strcmp(argv[i], "--ctf"))
+    use_ctf = true;
+#endif
+#ifdef WITH_BTF
+  else if (!strcmp(argv[i], "--btf"))
+    use_btf = true;
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  else if (!strcmp(argv[i], "--debug-tc")
+	   || !strcmp(argv[i], "debug-type-canonicalization"))
+    debug_type_canonicalization = true;
+  else if (!strcmp(argv[i], "--debug-dc")
+	   || !strcmp(argv[i], "debug-die-canonicalization"))
+    debug_die_canonicalization = true;
+#endif
+  else if (!strcmp(argv[i], "--suppressions")
+	   || !strcmp(argv[i], "--suppr"))
+    {
+      int j = i + 1;
+      if (j >= argc)
+	{
+	  missing_operand = true;
+	  wrong_option = argv[i];
+	  return false;
+	}
+      suppression_paths.push_back(argv[j]);
+      ++i;
+    }
+  else if (!strcmp(argv[i], "--kmi-whitelist")
+	   || !strcmp(argv[i], "-w"))
+    {
+      int j = i + 1;
+      if (j >= argc)
+	{
+	  missing_operand = true;
+	  wrong_option = argv[i];
+	  return false;
+	}
+      kabi_whitelist_paths.push_back(argv[j]);
+      ++i;
+    }
+  else
+    return false;
+
+  return true;
+}
+
+/// complete some tests and fixups with data collected from the
+/// options after initial parsing has been done. This code has been
+/// factored out of the tools that use the option_base class.
+///
+/// @param progname the program name
+///
+/// @return true if all checks succeed false otherwise
+bool
+options_base::complete_parse(const char *progname)
+{
+  if (reader_opts.elf_file_path.empty()
+      || !maybe_check_suppression_files( progname))
+    return false;
+
+  tools_utils::
+    convert_char_stars_to_char_star_stars(di_root_paths,
+					  reader_opts.debug_info_root_paths);
+
+  reader_opts.requested_fe_kind = corpus::DWARF_ORIGIN;
+#ifdef WITH_CTF
+  if (use_ctf)
+    reader_opts.requested_fe_kind = corpus::CTF_ORIGIN;
+#endif
+#ifdef WITH_BTF
+  if (use_btf)
+    reader_opts.requested_fe_kind = corpus::BTF_ORIGIN;
+#endif
+
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  if (debug_abidiff)
+    env.self_comparison_debug_is_on(true);
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  if (debug_type_canonicalization)
+    env.debug_type_canonicalization_is_on(true);
+  if (debug_die_canonicalization)
+    env.debug_die_canonicalization_is_on(true);
+#endif
+
+  return true;
 }
 
 }//end namespace tools_utils

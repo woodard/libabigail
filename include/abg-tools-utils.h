@@ -329,15 +329,19 @@ build_corpus_group_from_kernel_dist_under(const string&	root,
 class best_elf_based_reader_opts
 {
 public:
+  bool show_all_types;
+  bool linux_kernel_mode;
   string elf_file_path;
   vector<char**> debug_info_root_paths;
   environment &env;
   corpus::origin requested_fe_kind;
-  bool show_all_types;
-  bool linux_kernel_mode = true;
 
   best_elf_based_reader_opts( environment &e):
-    env(e) {}
+    show_all_types(false),
+    linux_kernel_mode(true),
+    env(e)
+  {}
+
   ~best_elf_based_reader_opts()
   {
     debug_info_root_paths.clear();
@@ -361,6 +365,71 @@ create_best_elf_based_reader( best_elf_based_reader_opts& reader_opts){
 				      reader_opts.show_all_types,
 				      reader_opts.linux_kernel_mode);
 }
+
+class options_base
+{
+  /// Check that the suppression specification files supplied are
+  /// present.  If not, emit an error on stderr.
+  ///
+  /// @param progname the program name
+  ///
+  /// @return true if all suppression specification files are present,
+  /// false otherwise.
+  bool maybe_check_suppression_files(const char *progname);
+public:
+  vector<string>	     suppression_paths;
+  vector<string>	     kabi_whitelist_paths;
+  string		     wrong_option;
+  bool                       missing_operand;
+  bool			     show_stats;
+  bool			     do_log;
+#ifdef WITH_CTF
+  bool			     use_ctf;
+#endif
+#ifdef WITH_BTF
+  bool			     use_btf;
+#endif
+#ifdef WITH_DEBUG_SELF_COMPARISON
+  bool			     debug_abidiff;
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+  bool			     debug_type_canonicalization;
+  bool			     debug_die_canonicalization;
+#endif
+  vector<char*>	             di_root_paths;
+  environment                env;
+  best_elf_based_reader_opts reader_opts;
+
+  options_base()
+    : missing_operand(false),
+      show_stats(false),
+      do_log(false),
+#ifdef WITH_CTF
+      use_ctf(false),
+#endif
+#ifdef WITH_BTF
+      use_btf(false),
+#endif
+#ifdef WITH_DEBUG_SELF_COMPARISON
+      debug_abidiff(false),
+#endif
+#ifdef WITH_DEBUG_TYPE_CANONICALIZATION
+      debug_type_canonicalization(false),
+      debug_die_canonicalization(false),
+#endif
+      reader_opts(env)
+  {}
+  ~options_base()
+  {
+    for (vector<char*>::iterator i = di_root_paths.begin();
+	 i != di_root_paths.end();
+	 ++i)
+      free(*i);
+  }
+
+  bool common_options( int argc, char* argv[], int &i, const char usage[]);
+  bool complete_parse(const char *progname);
+};
 
 }// end namespace tools_utils
 
