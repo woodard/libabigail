@@ -1053,6 +1053,7 @@ struct environment::priv
     // tentative canonical type that might be later canceled.
     t->priv_->set_does_not_depend_on_recursive_type();
     env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+    env.priv_->clear_type_comparison_results_cache();
   }
 
   /// Clear the propagated canonical type of a given type.
