@@ -63,8 +63,6 @@
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-7'/>
     <!-- first_type* -->
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-5'/>
-    <!-- void -->
-    <type-decl name='void' id='type-id-6'/>
     <!-- namespace a -->
     <namespace-decl name='a'>
       <!-- first_type* a::build_first_type() -->
@@ -73,6 +71,8 @@
         <return type-id='type-id-5'/>
       </function-decl>
     </namespace-decl>
+    <!-- void -->
+    <type-decl name='void' id='type-id-6'/>
   </abi-instr>
   <abi-instr address-size='64' path='test2-1.cc' comp-dir-path='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf' language='LANG_C_plus_plus'>
     <!-- struct second_type -->

@@ -62,7 +62,15 @@ process_ctf_base_type(reader *rdr,
 
 static decl_base_sptr
 build_ir_node_for_variadic_parameter_type(reader &rdr,
-                                          translation_unit_sptr tunit);
+                                          const translation_unit_sptr& tunit);
+
+static decl_base_sptr
+build_ir_node_for_void_type(reader& rdr,
+			    const translation_unit_sptr& tunit);
+
+static type_or_decl_base_sptr
+build_ir_node_for_void_pointer_type(reader& rdr,
+				    const translation_unit_sptr& tunit);
 
 static function_type_sptr
 process_ctf_function_type(reader *rdr,
@@ -800,8 +808,9 @@ process_ctf_base_type(reader *rdr,
       && type_encoding.cte_format == CTF_INT_SIGNED)
     {
       /* This is the `void' type.  */
-      type_base_sptr void_type = rdr->env().get_void_type();
-      decl_base_sptr type_declaration = get_type_declaration(void_type);
+      decl_base_sptr type_declaration = build_ir_node_for_void_type(*rdr,
+								    tunit);
+      type_base_sptr void_type = is_type(type_declaration);
       result = is_type_decl(type_declaration);
       canonicalize(result);
     }
@@ -841,19 +850,63 @@ process_ctf_base_type(reader *rdr,
 ///
 /// @param rdr the read context to use.
 ///
+/// @param tunit the translation unit it should belong to.
+///
 /// @return the variadic parameter type.
 static decl_base_sptr
 build_ir_node_for_variadic_parameter_type(reader &rdr,
-                                          translation_unit_sptr tunit)
+                                          const translation_unit_sptr& tunit)
 {
 
   const ir::environment& env = rdr.env();
   type_base_sptr t = env.get_variadic_parameter_type();
   decl_base_sptr type_declaration = get_type_declaration(t);
-  if (!has_scope(type_declaration))
-    add_decl_to_scope(type_declaration, tunit->get_global_scope());
+  add_decl_to_scope(type_declaration, tunit->get_global_scope());
   canonicalize(t);
   return type_declaration;
+}
+
+/// Build the IR node for a void type.
+///
+/// Note that this returns the unique pointer
+/// environment::get_void_type(), which is added to the current
+/// translation unit if it's the first it's being used.
+///
+/// @param rdr the read context to use.
+///
+/// @param tunit the translation unit it should belong to.
+///
+/// @return the void type type.
+static decl_base_sptr
+build_ir_node_for_void_type(reader& rdr, const translation_unit_sptr& tunit)
+{
+  const environment& env = rdr.env();
+  type_base_sptr t = env.get_void_type();
+  add_decl_to_scope(is_decl(t), tunit->get_global_scope());
+  canonicalize(t);
+  return is_decl(t);
+}
+
+/// Build the IR node for a void pointer type.
+///
+/// Note that this returns the unique pointer
+/// environment::get_void_pointer_type(), which is added to the
+/// current translation unit if it's the first it's being used.
+///
+/// @param rdr the read context to use.
+///
+/// @param tunit the translation unit it should belong to.
+///
+/// @return the void pointer type.
+static type_or_decl_base_sptr
+build_ir_node_for_void_pointer_type(reader& rdr,
+				    const translation_unit_sptr& tunit)
+{
+    const environment& env = rdr.env();
+  type_base_sptr t = env.get_void_pointer_type();
+  add_decl_to_scope(is_decl(t), tunit->get_global_scope());
+  canonicalize(t);
+  return is_decl(t);
 }
 
 /// Build and return a function type libabigail IR.
@@ -1439,10 +1492,15 @@ process_ctf_pointer_type(reader *rdr,
   if (result)
     return result;
 
-  result.reset(new pointer_type_def(target_type,
-                                      ctf_type_size(ctf_dictionary, ctf_type) * 8,
-                                      ctf_type_align(ctf_dictionary, ctf_type) * 8,
-                                      location()));
+  if (rdr->env().is_void_type(target_type))
+    result = is_pointer_type(build_ir_node_for_void_pointer_type(*rdr, tunit));
+  else
+    result.reset(new pointer_type_def(target_type,
+				      ctf_type_size(ctf_dictionary,
+						    ctf_type) * 8,
+				      ctf_type_align(ctf_dictionary,
+						     ctf_type) * 8,
+				      location()));
   if (result)
     {
       add_decl_to_scope(result, tunit->get_global_scope());

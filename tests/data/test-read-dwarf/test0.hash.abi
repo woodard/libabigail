@@ -34,8 +34,6 @@
     <reference-type-def kind='lvalue' type-id='95e97e5e' size-in-bits='64' id='769216e8'/>
     <reference-type-def kind='lvalue' type-id='383eb5fc' size-in-bits='64' id='b176607d'/>
     <qualified-type-def type-id='2448a866' volatile='yes' id='be00d327'/>
-    <type-decl name='variadic parameter type' id='2c1145c5'/>
-    <type-decl name='void' id='48b5725f'/>
     <var-decl name='global' type-id='95e97e5e' mangled-name='global' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='3' column='1' elf-symbol-id='global'/>
     <namespace-decl name='ns0'>
       <enum-decl name='E' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='19' column='1' id='383eb5fc'>
@@ -70,5 +68,7 @@
     <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='49' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='main'>
       <return type-id='95e97e5e'/>
     </function-decl>
+    <type-decl name='variadic parameter type' id='2c1145c5'/>
+    <type-decl name='void' id='48b5725f'/>
   </abi-instr>
 </abi-corpus>

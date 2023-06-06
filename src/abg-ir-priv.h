@@ -391,6 +391,7 @@ struct environment::priv
   canonical_types_map_type		canonical_types_;
   mutable vector<type_base_sptr>	sorted_canonical_types_;
   type_base_sptr			void_type_;
+  type_base_sptr			void_pointer_type_;
   type_base_sptr			variadic_marker_type_;
   // The set of pairs of class types being currently compared.  It's
   // used to avoid endless loops while recursively comparing types.
@@ -1052,6 +1053,7 @@ struct environment::priv
     // tentative canonical type that might be later canceled.
     t->priv_->set_does_not_depend_on_recursive_type();
     env.priv_->remove_from_types_with_non_confirmed_propagated_ct(t);
+    env.priv_->clear_type_comparison_results_cache();
   }
 
   /// Clear the propagated canonical type of a given type.

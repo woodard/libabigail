@@ -5786,6 +5786,12 @@ build_ir_node_from_die(reader&	rdr,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
+static decl_base_sptr
+build_ir_node_for_void_type(reader& rdr);
+
+static type_or_decl_base_sptr
+build_ir_node_for_void_pointer_type(reader& rdr);
+
 static class_decl_sptr
 add_or_update_class_type(reader&	 rdr,
 			 Dwarf_Die*	 die,
@@ -13898,6 +13904,9 @@ build_pointer_type_def(reader&	rdr,
   result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
   ABG_ASSERT(result->get_pointed_to_type());
 
+  if (is_void_pointer_type(result))
+    result = is_pointer_type(build_ir_node_for_void_pointer_type(rdr));
+
   rdr.associate_die_to_type(die, result, where_offset);
   return result;
 }
@@ -15978,10 +15987,31 @@ build_ir_node_for_void_type(reader& rdr)
   const environment& env = rdr.env();
 
   type_base_sptr t = env.get_void_type();
+  add_decl_to_scope(is_decl(t), rdr.cur_transl_unit()->get_global_scope());
   decl_base_sptr type_declaration = get_type_declaration(t);
-  if (!has_scope(type_declaration))
-    add_decl_to_scope(type_declaration,
-		      rdr.cur_transl_unit()->get_global_scope());
+  canonicalize(t);
+  return type_declaration;
+}
+
+/// Build the IR node for a "pointer to void type".
+///
+/// That IR node is shared across the ABI corpus.
+///
+/// Note that this function just gets that IR node from the
+/// environment and, if it's not added to any scope yet, adds it to
+/// the global scope associated to the current translation unit.
+///
+/// @param rdr the DWARF reader to consider.
+///
+/// @return the IR node.
+static type_or_decl_base_sptr
+build_ir_node_for_void_pointer_type(reader& rdr)
+{
+  const environment& env = rdr.env();
+
+  type_base_sptr t = env.get_void_pointer_type();
+  add_decl_to_scope(is_decl(t), rdr.cur_transl_unit()->get_global_scope());
+  decl_base_sptr type_declaration = get_type_declaration(t);
   canonicalize(t);
   return type_declaration;
 }
@@ -15998,10 +16028,8 @@ build_ir_node_for_variadic_parameter_type(reader &rdr)
   const environment& env = rdr.env();
 
   type_base_sptr t = env.get_variadic_parameter_type();
+  add_decl_to_scope(is_decl(t), rdr.cur_transl_unit()->get_global_scope());
   decl_base_sptr type_declaration = get_type_declaration(t);
-  if (!has_scope(type_declaration))
-    add_decl_to_scope(type_declaration,
-		      rdr.cur_transl_unit()->get_global_scope());
   canonicalize(t);
   return type_declaration;
 }

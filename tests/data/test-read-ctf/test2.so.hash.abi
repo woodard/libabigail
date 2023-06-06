@@ -31,6 +31,6 @@
     </function-decl>
     <typedef-decl name='POINTER' type-id='6e97a70c' id='8a34a235'/>
     <type-decl name='void' id='48b5725f'/>
-    <pointer-type-def type-id='48b5725f' size-in-bits='64' alignment-in-bits='64' id='eaa32e2f'/>
+    <pointer-type-def type-id='48b5725f' id='eaa32e2f'/>
   </abi-instr>
 </abi-corpus>

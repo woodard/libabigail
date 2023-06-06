@@ -6533,6 +6533,13 @@ scope_diff::ensure_lookup_tables_populated()
 	  if (klass_decl && klass_decl->get_is_declaration_only())
 	    continue;
 
+	  // Unique types are artifically put in a scope because they
+	  // have to belong somewhere, but they should not be
+	  // considered added/removed from any scope because they are
+	  // artificial and always present in the system.
+	  if (is_unique_type(is_type(decl)))
+	    continue;
+
 	  ABG_ASSERT(priv_->deleted_types_.find(qname)
 		 == priv_->deleted_types_.end());
 	  priv_->deleted_types_[qname] = decl;
@@ -6540,7 +6547,7 @@ scope_diff::ensure_lookup_tables_populated()
       else
 	{
 	  ABG_ASSERT(priv_->deleted_decls_.find(qname)
-		 == priv_->deleted_decls_.end());
+		     == priv_->deleted_decls_.end());
 	  priv_->deleted_decls_[qname] = decl;
 	}
     }
@@ -6562,6 +6569,13 @@ scope_diff::ensure_lookup_tables_populated()
 	      class_decl_sptr klass_decl =
 		dynamic_pointer_cast<class_decl>(decl);
 	      if (klass_decl && klass_decl->get_is_declaration_only())
+		continue;
+
+	      // Unique types are artifically put in a scope because they
+	      // have to belong somewhere, but they should not be
+	      // considered added/removed from any scope because they are
+	      // artificial and always present in the system.
+	      if (is_unique_type(is_type(decl)))
 		continue;
 
 	      ABG_ASSERT(priv_->inserted_types_.find(qname)

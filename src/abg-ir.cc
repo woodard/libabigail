@@ -3281,6 +3281,14 @@ struct decl_topo_comp
     if (!f)
       return false;
 
+    // Unique types that are artificially created in the environment
+    // don't have locations.  They ought to be compared on the basis
+    // of their pretty representation before we start looking at IR
+    // nodes' locations down the road.
+    if (is_unique_type(is_type(f)) || is_unique_type(is_type(s)))
+      return (get_pretty_representation(f, /*internal=*/false)
+	      < get_pretty_representation(s, /*internal=*/false));
+
     // If both decls come from an abixml file, keep the order they
     // have from that abixml file.
     if ((!f->get_corpus() && !s->get_corpus())
@@ -3515,8 +3523,13 @@ sort_types(const canonical_type_sptr_set_type& types,
   std::stable_sort(result.begin(), result.end(), comp);
 }
 
-/// Get a @ref type_decl that represents a "void" type for the current
-/// environment.
+/// Get the unique @ref type_decl that represents a "void" type for
+/// the current environment.  This node must be the only one
+/// representing a void type in the system.
+///
+/// Note that upon first use of this IR node (by the relevant
+/// front-end, for instance) it must be added to a scope using e.g,
+/// the @ref add_decl_to_scope() function.
 ///
 /// @return the @ref type_decl that represents a "void" type.
 const type_base_sptr&
@@ -3529,8 +3542,31 @@ environment::get_void_type() const
   return priv_->void_type_;
 }
 
+/// Getter of the "pointer-to-void" IR node that is shared across the
+/// ABI corpus.  This node must be the only one representing a void
+/// pointer type in the system.
+///
+/// Note that upon first use of this IR node (by the relevant
+/// front-end, for instance) it must be added to a scope using e.g,
+/// the @ref add_decl_to_scope() function.
+///
+/// @return the "pointer-to-void" IR node.
+const type_base_sptr&
+environment::get_void_pointer_type() const
+{
+  if (!priv_->void_pointer_type_)
+    priv_->void_pointer_type_.reset(new pointer_type_def(get_void_type(),
+							 0, 0, location()));
+  return priv_->void_pointer_type_;
+}
+
 /// Get a @ref type_decl instance that represents a the type of a
-/// variadic function parameter.
+/// variadic function parameter. This node must be the only one
+/// representing a variadic parameter type in the system.
+///
+/// Note that upon first use of this IR node (by the relevant
+/// front-end, for instance) it must be added to a scope using e.g,
+/// the @ref add_decl_to_scope() function.
 ///
 /// @return the Get a @ref type_decl instance that represents a the
 /// type of a variadic function parameter.
@@ -3656,7 +3692,7 @@ environment::is_void_type(const type_base_sptr& t) const
 {
   if (!t)
     return false;
-  return t.get() == get_void_type().get();
+  return is_void_type(t.get());
 }
 
 /// Test if a given type is a void type as defined in the current
@@ -3671,7 +3707,40 @@ environment::is_void_type(const type_base* t) const
 {
   if (!t)
     return false;
-  return t == get_void_type().get();
+  return (t == get_void_type().get()
+	  || (is_type_decl(t) && is_type_decl(t)->get_name() == "void"));
+}
+
+/// Test if a given type is the same as the void pointer type of the
+/// environment.
+///
+/// @param t the IR type to test.
+///
+/// @return true iff @p t is the void pointer returned by
+/// environment::get_void_pointer_type().
+bool
+environment::is_void_pointer_type(const type_base_sptr& t) const
+{
+  if (!t)
+    return false;
+
+  return t.get() == get_void_pointer_type().get();
+}
+
+/// Test if a given type is the same as the void pointer type of the
+/// environment.
+///
+/// @param t the IR type to test.
+///
+/// @return true iff @p t is the void pointer returned by
+/// environment::get_void_pointer_type().
+bool
+environment::is_void_pointer_type(const type_base* t) const
+{
+  if (!t)
+    return false;
+
+  return t == get_void_pointer_type().get();
 }
 
 /// Test if a type is a variadic parameter type as defined in the
@@ -8284,7 +8353,8 @@ scope_decl::~scope_decl()
 {}
 
 /// Appends a declaration to a given scope, if the declaration
-/// doesn't already belong to one.
+/// doesn't already belong to one and if the declaration is not for a
+/// type that is supposed to be unique.
 ///
 /// @param decl the declaration to add to the scope
 ///
@@ -10356,6 +10426,15 @@ typedef_decl*
 is_typedef(type_base* t)
 {return dynamic_cast<typedef_decl*>(t);}
 
+/// Test whether a type is a typedef.
+///
+/// @param t the declaration of the type to test for.
+///
+/// @return the typedef declaration of the @p t, or NULL if it's not a
+/// typedef.
+const typedef_decl*
+is_typedef(const type_or_decl_base* t)
+{return dynamic_cast<const typedef_decl*>(t);}
 /// Test if a type is an enum. This function looks through typedefs.
 ///
 /// @parm t the type to consider.
@@ -10481,12 +10560,21 @@ is_class_type(const type_or_decl_base_sptr& d)
 ///
 /// @param t the type to considier.
 ///
+/// @param look_through_decl_only if true, then look through the
+/// decl-only class to see if it actually has a class definition in
+/// the same ABI corpus.
+///
 /// @return true iff @p t is a declaration-only class.
 bool
-is_declaration_only_class_or_union_type(const type_base *t)
+is_declaration_only_class_or_union_type(const type_base *t,
+					bool look_through_decl_only)
 {
-  if (const class_or_union *klass = is_class_or_union_type(t))
-    return klass->get_is_declaration_only();
+  if (class_or_union *klass = is_class_or_union_type(t))
+    {
+      if (look_through_decl_only)
+	klass = look_through_decl_only_class(klass);
+      return klass->get_is_declaration_only();
+    }
   return false;
 }
 
@@ -10494,10 +10582,15 @@ is_declaration_only_class_or_union_type(const type_base *t)
 ///
 /// @param t the type to considier.
 ///
+/// @param look_through_decl_only if true, then look through the
+/// decl-only class to see if it actually has a class definition in
+/// the same ABI corpus.
+///
 /// @return true iff @p t is a declaration-only class.
 bool
-is_declaration_only_class_type(const type_base_sptr& t)
-{return is_declaration_only_class_or_union_type(t.get());}
+is_declaration_only_class_type(const type_base_sptr& t,
+			       bool look_through_decl_only)
+{return is_declaration_only_class_or_union_type(t.get(), look_through_decl_only);}
 
 /// Test if a type is a @ref class_or_union.
 ///
@@ -10589,6 +10682,72 @@ pointer_type_def_sptr
 is_pointer_type(const type_or_decl_base_sptr &t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
 
+/// Test if a type is a pointer to a decl-only class/union.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is a pointer to a decl-only class/union.
+bool
+is_pointer_to_decl_only_class_or_union_type(const type_or_decl_base* t)
+{
+  const pointer_type_def* ptr = is_pointer_type(t);
+  if (!ptr)
+    return false;
+
+  const type_base* type = peel_pointer_type(ptr);
+
+  type = peel_typedef_type(type);
+
+  if (is_declaration_only_class_or_union_type(type,
+					      /*look_through_decl_only=*/true))
+    return true;
+
+  return false;
+}
+
+/// Test if a type is a reference to a decl-only class/union.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is a reference to a decl-only class/union.
+bool
+is_reference_to_decl_only_class_or_union_type(const type_or_decl_base* t)
+{
+    const reference_type_def* ref = is_reference_type(t);
+  if (!ref)
+    return false;
+
+  const type_base* type = peel_reference_type(ref);
+
+  type = peel_typedef_type(type);
+
+  if (is_declaration_only_class_or_union_type(type,
+					      /*look_through_decl_only=*/true))
+    return true;
+
+  return false;
+}
+
+/// Test if a type is a typedef to a decl-only class/union.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is a typedef to a decl-only class/union.
+bool
+is_typedef_to_decl_only_class_or_union_type(const type_or_decl_base* t)
+{
+  const typedef_decl* typdef = is_typedef(t);
+  if (!typdef)
+    return false;
+
+  const type_base* type = peel_typedef_type(typdef);
+  if (is_declaration_only_class_or_union_type(type,
+					      /*look_through_decl_only=*/true))
+    return true;
+
+  return false;
+}
+
 /// Test whether a type is a reference_type_def.
 ///
 /// @param t the type to test.
@@ -10619,17 +10778,17 @@ reference_type_def_sptr
 is_reference_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<reference_type_def>(t);}
 
-/// Test if a type is a pointer to void type.
+/// Test if a type is equivalent to a pointer to void type.
 ///
 /// Note that this looks trough typedefs or CV qualifiers to look for
 /// the void pointer.
 ///
 /// @param type the type to consider.
 ///
-/// @return the actual void pointer if @p is a void pointer or NULL if
-/// it's not.
+/// @return the actual void pointer if @p is eqivalent to a void
+/// pointer or NULL if it's not.
 const type_base*
-is_void_pointer_type(const type_base* type)
+is_void_pointer_type_equivalent(const type_base* type)
 {
   type = peel_qualified_or_typedef_type(type);
 
@@ -10640,24 +10799,75 @@ is_void_pointer_type(const type_base* type)
   // Look through typedefs in the pointed-to type as well.
   type_base * ty = t->get_pointed_to_type().get();
   ty = peel_qualified_or_typedef_type(ty);
-  if (ty->get_environment().is_void_type(ty))
+  if (ty && ty->get_environment().is_void_type(ty))
     return ty;
 
   return 0;
 }
 
-/// Test if a type is a pointer to void type.
+/// Test if a type is equivalent to a pointer to void type.
 ///
 /// Note that this looks trough typedefs or CV qualifiers to look for
 /// the void pointer.
 ///
 /// @param type the type to consider.
 ///
+/// @return the actual void pointer if @p is eqivalent to a void
+/// pointer or NULL if it's not.
+const type_base*
+is_void_pointer_type_equivalent(const type_base& type)
+{return is_void_pointer_type_equivalent(&type);}
+
+/// Test if a type is a pointer to void type.
+///
+/// @param type the type to consider.
+///
 /// @return the actual void pointer if @p is a void pointer or NULL if
 /// it's not.
 const type_base*
-is_void_pointer_type(const type_base& type)
-{return is_void_pointer_type(&type);}
+is_void_pointer_type(const type_base* t)
+{
+  if (!t)
+    return nullptr;
+
+  if (t->get_environment().get_void_pointer_type().get() == t)
+    return t;
+
+  const pointer_type_def* ptr = is_pointer_type(t);
+  if (!ptr)
+    return nullptr;
+
+  if (t->get_environment().is_void_type(ptr->get_pointed_to_type()))
+    return t;
+
+  return nullptr;
+}
+
+/// Test if a type is a pointer to void type.
+///
+/// @param type the type to consider.
+///
+/// @return the actual void pointer if @p is a void pointer or NULL if
+/// it's not.
+const type_base_sptr
+is_void_pointer_type(const type_base_sptr& t)
+{
+  type_base_sptr nil;
+  if (!t)
+    return nil;
+
+  if (t->get_environment().get_void_pointer_type().get() == t.get())
+    return t;
+
+  pointer_type_def* ptr = is_pointer_type(t.get());
+  if (!ptr)
+    return nil;
+
+  if (t->get_environment().is_void_type(ptr->get_pointed_to_type()))
+    return t;
+
+  return nil;
+}
 
 /// Test whether a type is a reference_type_def.
 ///
@@ -11052,7 +11262,7 @@ is_subrange_type(const type_or_decl_base_sptr &type)
 /// @return true iff decl is a function template, class template, or
 /// template template parameter.
 bool
-is_template_decl(const shared_ptr<decl_base> decl)
+is_template_decl(const decl_base_sptr& decl)
 {return decl && dynamic_pointer_cast<template_decl>(decl);}
 
 /// This enum describe the kind of entity to lookup, while using the
@@ -16700,7 +16910,8 @@ equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
       && r.get_translation_unit()
       && is_c_language(l.get_translation_unit()->get_language())
       && is_c_language(r.get_translation_unit()->get_language())
-      && (is_void_pointer_type(l) || is_void_pointer_type(r)))
+      && (is_void_pointer_type_equivalent(&l)
+	  || is_void_pointer_type_equivalent(&r)))
     return true;
 
   bool result = l.get_pointed_to_type() == r.get_pointed_to_type();
@@ -26440,8 +26651,8 @@ hash_type_or_decl(const type_or_decl_base_sptr& tod)
 /// This is a subroutine of hash_as_canonical_type_or_constant.
 ///
 /// For now, the only types allowed to be non canonicalized in the
-/// system are decl-only class/union, the void type and variadic
-/// parameter types.
+/// system are (typedefs & pointers to) decl-only class/union, the
+/// void type and variadic parameter types.
 ///
 /// @return true iff @p t is a one of the only types allowed to be
 /// non-canonicalized in the system.
@@ -26451,10 +26662,59 @@ is_non_canonicalized_type(const type_base *t)
   if (!t)
     return true;
 
+  return (// The IR nodes for the types below are unique across the
+	  // entire ABI corpus.  Thus, no need to canonicalize them.
+	  // Maybe we could say otherwise and canonicalize them once
+	  // for all so that they can be removed from here.
+	  is_unique_type(t)
+
+	  // An IR node for the types below can be equal to several
+	  // other types (i.e, a decl-only type t equals a fully
+	  // defined type of the same name in ODR-supported
+	  // languages). Hence, they can't be given a canonical type.
+	  //
+	  // TODO: Maybe add a mode that would detect ODR violations
+	  // that would make a decl-only type co-exists with several
+	  // different definitions of the type in the ABI corpus.
+	  || is_void_pointer_type_equivalent(t)
+	  || is_declaration_only_class_or_union_type(t)
+	  || is_typedef_to_decl_only_class_or_union_type(t)
+	  || is_pointer_to_decl_only_class_or_union_type(t)
+	  || is_reference_to_decl_only_class_or_union_type(t));
+
+}
+
+/// Test if a type is unique in the entire environment.
+///
+/// Examples of unique types are void, void* and variadic parameter
+/// types.
+///
+/// @param t the type to test for.
+///
+/// @return true iff the type @p t is unique in the entire
+/// environment.
+bool
+is_unique_type(const type_base_sptr& t)
+{return is_unique_type(t.get());}
+
+/// Test if a type is unique in the entire environment.
+///
+/// Examples of unique types are void, void* and variadic parameter
+/// types.
+///
+/// @param t the type to test for.
+///
+/// @return true iff the type @p t is unique in the entire
+/// environment.
+bool
+is_unique_type(const type_base* t)
+{
+  if (!t)
+    return false;
+
   const environment& env = t->get_environment();
-  return (is_declaration_only_class_or_union_type(t)
-	  || is_void_pointer_type(t)
-	  || env.is_void_type(t)
+  return (env.is_void_type(t)
+	  || env.is_void_pointer_type(t)
 	  || env.is_variadic_parameter_type(t));
 }
 
