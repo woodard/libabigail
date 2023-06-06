@@ -54,6 +54,9 @@ using abigail::tools_utils::timer;
 using abigail::tools_utils::best_elf_based_reader_opts;
 using abigail::tools_utils::create_best_elf_based_reader;
 using abigail::tools_utils::options_base;
+// Whern we switch to C++20 which has P1099R5 this can be uncommented and
+// all the namespace qualifiers for the enum abidiff_status can be dropped.
+// using abigail::tools_utils::abidiff_status;
 using abigail::ir::environment_sptr;
 using abigail::ir::environment;
 using abigail::corpus;
@@ -486,11 +489,11 @@ set_generic_options(abigail::elf_based_reader& rdr, options& opts)
 ///
 /// @return the exit code: 0 if everything went fine, non-zero
 /// otherwise.
-static int
+static  abigail::tools_utils::abidiff_status
 load_corpus_and_write_abixml(char* argv[],
 			     options& opts)
 {
-  int exit_code = 0;
+  auto exit_code = abigail::tools_utils::ABITOOL_OK;
   timer t;
   fe_iface::status s = fe_iface::STATUS_UNKNOWN;
   corpus_sptr corp;
@@ -521,13 +524,13 @@ load_corpus_and_write_abixml(char* argv[],
 	      cout << " '" << alt_di_path << "'";
 	    }
 	  cout << "\n";
-	  return 0;
+	  return abigail::tools_utils::ABITOOL_OK;
 	}
       else
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not find alternate debug info file\n";
-	  return 1;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
     }
 
@@ -600,7 +603,7 @@ load_corpus_and_write_abixml(char* argv[],
 	    "additional needed debug info\n";
 	}
 
-      return 1;
+      return  abigail::tools_utils::ABITOOL_ERROR;
     }
 
   // Clear some resources to gain back some space.
@@ -658,7 +661,7 @@ load_corpus_and_write_abixml(char* argv[],
           emit_prefix(argv[0], cerr)
             << "Could not read temporary XML representation of "
             "elf file back\n";
-          return 1;
+          return  abigail::tools_utils::ABITOOL_ERROR;
         }
 
       diff_context_sptr ctxt(new diff_context);
@@ -680,9 +683,9 @@ load_corpus_and_write_abixml(char* argv[],
           if (opts.do_log)
             emit_prefix(argv[0], cerr)
               << "emitted report in: " << t << "\n";
-          return 1;
+          return  abigail::tools_utils::ABITOOL_ERROR;
         }
-      return 0;
+      return abigail::tools_utils::ABITOOL_OK;
     }
 
 #ifdef WITH_DEBUG_SELF_COMPARISON
@@ -692,7 +695,7 @@ load_corpus_and_write_abixml(char* argv[],
 #endif
 
   if (opts.noout)
-    return 0;
+    return abigail::tools_utils::ABITOOL_OK;
 
   if (!opts.out_file_path.empty())
     {
@@ -702,7 +705,7 @@ load_corpus_and_write_abixml(char* argv[],
           emit_prefix(argv[0], cerr)
             << "could not open output file '"
             << opts.out_file_path << "'\n";
-          return 1;
+          return abigail::tools_utils::ABITOOL_ERROR;
         }
       set_ostream(*write_ctxt, of);
       t.start();
@@ -712,12 +715,13 @@ load_corpus_and_write_abixml(char* argv[],
         emit_prefix(argv[0], cerr)
           << "emitted abixml output in: " << t << "\n";
       of.close();
-      return 0;
+      return abigail::tools_utils::ABITOOL_OK;
     }
   else
     {
       t.start();
-      exit_code = !write_corpus(*write_ctxt, corp, 0);
+      exit_code = write_corpus(*write_ctxt, corp, 0)
+	? abigail::tools_utils::ABITOOL_OK:abigail::tools_utils::ABITOOL_ERROR;
       t.stop();
       if (opts.do_log)
         emit_prefix(argv[0], cerr)
@@ -737,19 +741,19 @@ load_corpus_and_write_abixml(char* argv[],
 ///
 /// @return the exit code.  Zero if everything went well, non-zero
 /// otherwise.
-static int
+static abigail::tools_utils::abidiff_status
 load_kernel_corpus_group_and_write_abixml(char* argv[],
 					  options& opts)
 {
   if (!(tools_utils::is_dir(opts.reader_opts.elf_file_path)
 	&& opts.corpus_group_for_linux))
-    return 1;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
-  int exit_code = 0;
+  auto exit_code =  abigail::tools_utils::ABITOOL_OK;
 
   if (!opts.vmlinux.empty())
     if (!abigail::tools_utils::check_file(opts.vmlinux, cerr, argv[0]))
-      return 1;
+      return abigail::tools_utils::ABITOOL_ERROR;
 
   timer t, global_timer;
   suppressions_type supprs;
@@ -787,7 +791,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
     }
 
   if (!group)
-    return 1;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   if (!opts.noout)
     {
@@ -803,7 +807,7 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 	      emit_prefix(argv[0], cerr)
 		<< "could not open output file '"
 		<< opts.out_file_path << "'\n";
-	      return 1;
+	      return abigail::tools_utils::ABITOOL_ERROR;
 	    }
 
 	  if (opts.do_log)
@@ -811,7 +815,9 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 	      << "emitting the abixml output ...\n";
 	  set_ostream(*ctxt, of);
 	  t.start();
-	  exit_code = !write_corpus_group(*ctxt, group, 0);
+	  exit_code = write_corpus_group(*ctxt, group, 0)
+	    ? abigail::tools_utils::ABITOOL_OK
+	    : abigail::tools_utils::ABITOOL_ERROR;
 	  t.stop();
 	  if (opts.do_log)
 	    emit_prefix(argv[0], cerr)
@@ -823,7 +829,9 @@ load_kernel_corpus_group_and_write_abixml(char* argv[],
 	    emit_prefix(argv[0], cerr)
 	      << "emitting the abixml output ...\n";
 	  t.start();
-	  exit_code = !write_corpus_group(*ctxt, group, 0);
+	  exit_code = write_corpus_group(*ctxt, group, 0)
+	    ? abigail::tools_utils::ABITOOL_OK
+	    : abigail::tools_utils::ABITOOL_ERROR;
 	  t.stop();
 	  if (opts.do_log)
 	    emit_prefix(argv[0], cerr)
@@ -857,11 +865,11 @@ main(int argc, char* argv[])
       else
 	display_usage(argv[0], cerr);
 
-      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
-	      | abigail::tools_utils::ABITOOL_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR |
+	      abigail::tools_utils::ABITOOL_ERROR);
     }
 
-  int exit_code = 0;
+  auto exit_code = abigail::tools_utils::ABITOOL_OK;
 
   switch(abigail::tools_utils::guess_file_type(opts.reader_opts.elf_file_path))
     {
