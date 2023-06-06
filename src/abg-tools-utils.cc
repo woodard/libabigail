@@ -1475,7 +1475,7 @@ operator<<(ostream& output,
     case FILE_TYPE_UNKNOWN:
       repr = "unknown file type";
       break;
-    case FILE_TYPE_NATIVE_BI:
+    case FILE_TYPE_XML_TU:
       repr = "native binary instrumentation file type";
       break;
     case FILE_TYPE_ELF:
@@ -1563,7 +1563,7 @@ guess_file_type(istream& in)
       && buf[8] == 't'
       && buf[9] == 'r'
       && buf[10] == ' ')
-    return FILE_TYPE_NATIVE_BI;
+    return FILE_TYPE_XML_TU;
 
   if (buf[0]     == '<'
       && buf[1]  == 'a'

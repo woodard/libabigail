@@ -762,7 +762,7 @@ main(int argc, char* argv[])
 	    << "Unknown file type given in input: " << opts.file_path
 	    << "\n";
 	  return 1;
-	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+	case abigail::tools_utils::FILE_TYPE_XML_TU:
 	  {
 	    abigail::fe_iface_sptr rdr =
 	      abigail::abixml::create_reader(opts.file_path,
@@ -890,7 +890,7 @@ main(int argc, char* argv[])
       if (!is_ok)
 	{
 	  string output =
-	    (type == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
+	    (type == abigail::tools_utils::FILE_TYPE_XML_TU)
 	    ? "translation unit"
 	    : "ABI corpus";
 	  emit_prefix(argv[0], cerr)
@@ -902,7 +902,7 @@ main(int argc, char* argv[])
 	  && opts.diff
 	  && ((type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	      ||type == abigail::tools_utils::FILE_TYPE_XML_CORPUS_GROUP
-	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI))
+	      || type == abigail::tools_utils::FILE_TYPE_XML_TU))
 	{
 	  string cmd = "diff -u " + opts.file_path + " " + tmp_file->get_path();
 	  if (system(cmd.c_str()))

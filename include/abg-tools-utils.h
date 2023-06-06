@@ -169,13 +169,13 @@ get_random_number();
 string
 get_random_number_as_string();
 
-/// The different types of files understood the bi* suite of tools.
+/// The different types of files understood by the abigail suite of tools.
 enum file_type
 {
   /// A file type we don't know about.
   FILE_TYPE_UNKNOWN,
   /// The native xml file format representing a translation unit.
-  FILE_TYPE_NATIVE_BI,
+  FILE_TYPE_XML_TU,
   /// An elf file.  Read this kind of file should yield an
   /// abigail::corpus type.
   FILE_TYPE_ELF,

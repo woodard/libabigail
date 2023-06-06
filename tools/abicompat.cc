@@ -701,7 +701,7 @@ read_corpus(options			opts,
     case abigail::tools_utils::FILE_TYPE_DEB:
     case abigail::tools_utils::FILE_TYPE_DIR:
     case abigail::tools_utils::FILE_TYPE_TAR:
-    case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+    case abigail::tools_utils::FILE_TYPE_XML_TU:
       break;
     }
 

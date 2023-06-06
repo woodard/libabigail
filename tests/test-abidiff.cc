@@ -215,7 +215,7 @@ main(int, char*[])
       corpus_sptr corpus1, corpus2;
       corpus_group_sptr corpus_group1, corpus_group2;
       file_type t = guess_file_type(first_in_path);
-      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
+      if (t == abigail::tools_utils::FILE_TYPE_XML_TU)
 	tu1 = abixml::read_translation_unit_from_file(first_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	corpus1 = abixml::read_corpus_from_abixml_file(first_in_path, env);
@@ -232,7 +232,7 @@ main(int, char*[])
 	}
 
       t = guess_file_type(second_in_path);
-      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
+      if (t == abigail::tools_utils::FILE_TYPE_XML_TU)
 	tu2 = abixml::read_translation_unit_from_file(second_in_path, env);
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	corpus2 = abixml::read_corpus_from_abixml_file(second_in_path, env);

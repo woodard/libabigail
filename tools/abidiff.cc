@@ -1108,7 +1108,7 @@ main(int argc, char* argv[])
 	<< opts.reader_opts.elf_file_path << "\n";
       return abigail::tools_utils::ABITOOL_ERROR;
       break;
-    case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+    case abigail::tools_utils::FILE_TYPE_XML_TU:
       t1 = abixml::
 	read_translation_unit_from_file(opts.reader_opts.elf_file_path,
 					opts.env);
@@ -1174,7 +1174,7 @@ main(int argc, char* argv[])
 	<< opts.reader_opts2.elf_file_path << "\n";
       return abigail::tools_utils::ABITOOL_ERROR;
       break;
-    case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
+    case abigail::tools_utils::FILE_TYPE_XML_TU:
       t2 = abixml::
 	read_translation_unit_from_file(opts.reader_opts2.elf_file_path,
 					opts.env);
