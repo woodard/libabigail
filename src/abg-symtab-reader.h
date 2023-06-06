@@ -115,6 +115,7 @@ public:
   using pointer = base_iterator::pointer;
   using difference_type = base_iterator::difference_type;
   using iterator_category = std::forward_iterator_tag;
+  using iterator_concept = std::forward_iterator_tag;
 
   /// Construct the iterator based on a pair of underlying iterators and a
   /// symtab_filter object. Immediately fast forward to the next element that
