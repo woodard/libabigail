@@ -99,7 +99,7 @@ private:
 /// Base iterator for our custom iterator based on whatever the const_iterator
 /// is for a vector of symbols.
 /// As of writing this, std::vector<elf_symbol_sptr>::const_iterator.
-typedef elf_symbols::const_iterator base_iterator;
+using base_iterator = elf_symbols::const_iterator;
 
 /// An iterator to walk a vector of elf_symbols filtered by symtab_filter.
 ///
@@ -110,11 +110,11 @@ typedef elf_symbols::const_iterator base_iterator;
 class symtab_iterator : public base_iterator
 {
 public:
-  typedef base_iterator::value_type	 value_type;
-  typedef base_iterator::reference	 reference;
-  typedef base_iterator::pointer	 pointer;
-  typedef base_iterator::difference_type difference_type;
-  typedef std::forward_iterator_tag	 iterator_category;
+  using value_type = base_iterator::value_type;
+  using reference = base_iterator::reference;
+  using pointer = base_iterator::pointer;
+  using difference_type = base_iterator::difference_type;
+  using iterator_category = std::forward_iterator_tag;
 
   /// Construct the iterator based on a pair of underlying iterators and a
   /// symtab_filter object. Immediately fast forward to the next element that
@@ -172,7 +172,7 @@ private:
 
 /// Convenience declaration of a unique_ptr<symtab>
 class symtab;
-typedef std::unique_ptr<symtab> symtab_ptr;
+using symtab_ptr = std::unique_ptr<symtab>;
 
 /// symtab is the actual data container of the symtab_reader implementation.
 ///
@@ -201,7 +201,7 @@ typedef std::unique_ptr<symtab> symtab_ptr;
 class symtab
 {
 public:
-  typedef std::function<bool(const elf_symbol_sptr&)> symbol_predicate;
+  using symbol_predicate = std::function<bool(const elf_symbol_sptr&)>;
 
   /// Indicate whether any (kernel) symbols have been seen at construction.
   ///
@@ -215,7 +215,7 @@ public:
 
   /// The (only) iterator type we offer is a const_iterator implemented by the
   /// symtab_iterator.
-  typedef symtab_iterator const_iterator;
+  using const_iterator = symtab_iterator;
 
   /// Obtain an iterator to the beginning of the symtab according to the filter
   /// criteria. Whenever this iterator advances, it skips elements that do not
@@ -271,12 +271,12 @@ private:
   bool has_ksymtab_entries_;
 
   /// Lookup map name->symbol(s)
-  typedef std::unordered_map<std::string, std::vector<elf_symbol_sptr>>
-		       name_symbol_map_type;
+  using name_symbol_map_type =
+      std::unordered_map<std::string, std::vector<elf_symbol_sptr>>;
   name_symbol_map_type name_symbol_map_;
 
   /// Lookup map addr->symbol
-  typedef std::unordered_map<GElf_Addr, elf_symbol_sptr> addr_symbol_map_type;
+  using addr_symbol_map_type = std::unordered_map<GElf_Addr, elf_symbol_sptr>;
   addr_symbol_map_type addr_symbol_map_;
 
   /// Lookup map function entry address -> symbol
