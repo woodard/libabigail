@@ -857,8 +857,8 @@ main(int argc, char* argv[])
       else
 	display_usage(argv[0], cerr);
 
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   int exit_code = 0;
@@ -876,7 +876,7 @@ main(int argc, char* argv[])
       emit_prefix(argv[0], cerr)
 	<< "files of the kind of "<< opts.reader_opts.elf_file_path
 	<< " are not handled\n";
-      exit_code = abigail::tools_utils::ABIDIFF_ERROR;
+      exit_code = abigail::tools_utils::ABITOOL_ERROR;
     }
 
   return exit_code;

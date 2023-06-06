@@ -505,7 +505,7 @@ main(int argc, char* argv[])
 						     env);
     }
 
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
   if (group1 && group2)
     {
       diff_context_sptr diff_ctxt(new diff_context);
@@ -514,16 +514,16 @@ main(int argc, char* argv[])
       corpus_diff_sptr diff= compute_diff(group1, group2, diff_ctxt);
 
       if (diff->has_net_changes())
-	status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	status = abigail::tools_utils::ABITOOL_ABI_CHANGE;
 
       if (diff->has_incompatible_changes())
-	status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 
       if (diff->has_changes())
 	diff->report(cout);
     }
   else
-    status = abigail::tools_utils::ABIDIFF_ERROR;
+    status = abigail::tools_utils::ABITOOL_ERROR;
 
   return status;
 }

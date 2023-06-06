@@ -1390,7 +1390,7 @@ emit_alt_debug_info_not_found_error(abigail::elf_based_reader&	reader,
 /// @param diff the shared pointer to be set to the result of the comparison.
 ///
 /// @param detailed_error_status is this pointer is non-null and if
-/// the function returns ABIDIFF_ERROR, then the function sets the
+/// the function returns ABITOOL_ERROR, then the function sets the
 /// pointed-to parameter to the abigail::fe_iface::status value
 /// that gives details about the rror.
 ///
@@ -1441,7 +1441,7 @@ compare(const elf_file&		elf1,
 	  << elf1.path << " or " << elf2.path
 	  << " has been suppressed by a suppression specification.\n"
 	  << " Not reading any of them\n";
-      return abigail::tools_utils::ABIDIFF_OK;
+      return abigail::tools_utils::ABITOOL_OK;
     }
 
   // Add the first private type suppressions set to the set of
@@ -1537,7 +1537,7 @@ compare(const elf_file&		elf1,
       }
 
     if (bail_out)
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
   }
 
   if (opts.verbose)
@@ -1626,7 +1626,7 @@ compare(const elf_file&		elf1,
       }
 
     if (bail_out)
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
   }
 
   if (opts.verbose)
@@ -1649,11 +1649,11 @@ compare(const elf_file&		elf1,
       << elf2.path
       << " is DONE\n";
 
-  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status s = abigail::tools_utils::ABITOOL_OK;
   if (diff->has_net_changes())
-    s |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+    s |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
   if (diff->has_incompatible_changes())
-    s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+    s |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 
   return s;
 }
@@ -1739,7 +1739,7 @@ compare_to_self(const elf_file&		elf,
 	if (detailed_error_status)
 	  *detailed_error_status = c_status;
 
-	return abigail::tools_utils::ABIDIFF_ERROR;
+	return abigail::tools_utils::ABITOOL_ERROR;
       }
     else if (c_status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
       {
@@ -1747,7 +1747,7 @@ compare_to_self(const elf_file&		elf,
 					    /*is_old_package=*/true);
 	if (detailed_error_status)
 	  *detailed_error_status = c_status;
-	return abigail::tools_utils::ABIDIFF_ERROR;
+	return abigail::tools_utils::ABITOOL_ERROR;
       }
 
     if (opts.verbose)
@@ -1771,7 +1771,7 @@ compare_to_self(const elf_file&		elf,
 	    << elf.path
 	    << "'\n";
 
-	return abigail::tools_utils::ABIDIFF_ERROR;
+	return abigail::tools_utils::ABITOOL_ERROR;
       }
     ofstream of(abi_file_path.c_str(), std::ios_base::trunc);
 
@@ -1792,7 +1792,7 @@ compare_to_self(const elf_file&		elf,
 	      << "Could not write the ABIXML file to '"
 	      << abi_file_path << "'\n";
 
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       of.flush();
@@ -1814,7 +1814,7 @@ compare_to_self(const elf_file&		elf,
 	      << "Could not create read context for ABIXML file '"
 	      << abi_file_path << "'\n";
 
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       if (opts.verbose)
@@ -1832,7 +1832,7 @@ compare_to_self(const elf_file&		elf,
 	      << "Could not read temporary ABIXML file '"
 	      << abi_file_path << "'\n";
 
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       if (opts.verbose)
@@ -1860,16 +1860,16 @@ compare_to_self(const elf_file&		elf,
       << "   '" << abi_file_path << "':"
       << "DONE\n";
 
-  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status s = abigail::tools_utils::ABITOOL_OK;
   if (diff->has_changes())
-    s |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+    s |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
   if (diff->has_incompatible_changes())
-    s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+    s |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 
   if (opts.verbose)
     emit_prefix("abipkgdfiff", cerr)
       << "Comparison against self "
-      << (s == abigail::tools_utils::ABIDIFF_OK ? "SUCCEEDED" : "FAILED")
+      << (s == abigail::tools_utils::ABITOOL_OK ? "SUCCEEDED" : "FAILED")
       << '\n';
 
   return s;
@@ -2172,12 +2172,12 @@ public:
   string pretty_output;
 
   compare_task()
-    : status(abigail::tools_utils::ABIDIFF_OK)
+    : status(abigail::tools_utils::ABITOOL_OK)
   {}
 
   compare_task(const compare_args_sptr& a)
     : args(a),
-      status(abigail::tools_utils::ABIDIFF_OK)
+      status(abigail::tools_utils::ABITOOL_OK)
   {}
 
   void
@@ -2185,7 +2185,7 @@ public:
 					    abigail::fe_iface::status detailed_status)
   {
     // If there is an ABI change, tell the user about it.
-    if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+    if ((status & abigail::tools_utils::ABITOOL_ABI_CHANGE)
 	||( diff && diff->has_net_changes()))
       {
 	diff->report(out, /*prefix=*/"  ");
@@ -2208,7 +2208,7 @@ public:
 
     // If an error happened while comparing the two binaries, tell the
     // user about it.
-    if (status & abigail::tools_utils::ABIDIFF_ERROR)
+    if (status & abigail::tools_utils::ABITOOL_ERROR)
       {
 	string diagnostic =
 	  abigail::status_to_diagnostic_string(detailed_status);
@@ -2295,7 +2295,7 @@ public:
 			      &detailed_status);
 
     string name = args->elf1.name;
-    if (status == abigail::tools_utils::ABIDIFF_OK)
+    if (status == abigail::tools_utils::ABITOOL_OK)
       pretty_output += "==== SELF CHECK SUCCEEDED for '"+ name + "' ====\n";
     else
       maybe_emit_pretty_error_message_to_output(diff, detailed_status);
@@ -2800,7 +2800,7 @@ public:
 
   comparison_done_notify(abi_diff &d)
     : diff(d),
-      status(abigail::tools_utils::ABIDIFF_OK)
+      status(abigail::tools_utils::ABITOOL_OK)
   {}
 
   /// This operator is invoked by the worker queue whenever a
@@ -2818,11 +2818,11 @@ public:
 
     status |= comp_task->status;
 
-    if (status != abigail::tools_utils::ABIDIFF_OK)
+    if (status != abigail::tools_utils::ABITOOL_OK)
       {
 	string name = comp_task->args->elf1.name;
 
-	if (status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	if (status & abigail::tools_utils::ABITOOL_ABI_CHANGE)
 	  diff.changed_binaries.push_back(name);
       }
   }
@@ -2872,7 +2872,7 @@ compare_prepared_userspace_packages(package& first_package,
 				    package& second_package,
 				    abi_diff& diff, options& opts)
 {
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
   abigail::workers::queue::tasks_type compare_tasks;
   string pkg_name = first_package.base_name();
 
@@ -2930,8 +2930,8 @@ compare_prepared_userspace_packages(package& first_package,
 	      << "Detected removed file:  '"
 	      << it->first << "'\n";
 	  diff.removed_binaries.push_back(it->second);
-	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
-	  status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	  status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
+	  status |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
 	}
     }
 
@@ -3043,7 +3043,7 @@ self_compare_prepared_userspace_package(package&	pkg,
 					abi_diff&	diff,
 					options&	opts)
 {
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
   abigail::workers::queue::tasks_type self_compare_tasks;
   string pkg_name = pkg.base_name();
 
@@ -3085,7 +3085,7 @@ self_compare_prepared_userspace_package(package&	pkg,
   if (self_compare_tasks.empty())
     {
       maybe_erase_temp_dirs(pkg, pkg, opts);
-      return abigail::tools_utils::ABIDIFF_OK;
+      return abigail::tools_utils::ABITOOL_OK;
     }
 
   // Larger elfs are processed first, since it's usually safe to assume
@@ -3156,7 +3156,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 				       package& second_package,
 				       options& opts)
 {
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
   string pkg_name = first_package.base_name();
 
   // Setting debug-info path of binaries
@@ -3180,7 +3180,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 	<< "Could not find vmlinux in debuginfo package '"
 	<< first_package.path()
 	<< "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   if (!get_vmlinux_path_from_kernel_dist(debug_dir2, vmlinux_path2))
@@ -3189,7 +3189,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 	<< "Could not find vmlinux in debuginfo package '"
 	<< second_package.path()
 	<< "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   string dist_root1 = first_package.extracted_dir_path();
@@ -3222,7 +3222,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 						      env, requested_fe_kind);
 
   if (!corpus1)
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   corpus2 = build_corpus_group_from_kernel_dist_under(dist_root2,
 						      debug_dir2,
@@ -3233,7 +3233,7 @@ compare_prepared_linux_kernel_packages(package& first_package,
 						      env, requested_fe_kind);
 
   if (!corpus2)
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   diff_context_sptr diff_ctxt(new diff_context);
   set_diff_context_from_opts(diff_ctxt, opts);
@@ -3241,11 +3241,11 @@ compare_prepared_linux_kernel_packages(package& first_package,
   corpus_diff_sptr diff = compute_diff(corpus1, corpus2, diff_ctxt);
 
   if (diff->has_net_changes())
-    status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+    status |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
   if (diff->has_incompatible_changes())
-    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+    status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 
-  if (status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+  if (status & abigail::tools_utils::ABITOOL_ABI_CHANGE)
     {
       cout << "== Kernel ABI changes between packages '"
 	   << first_package.path() << "' and '"
@@ -3282,7 +3282,7 @@ static abidiff_status
 compare_prepared_package(package& first_package, package& second_package,
 			 abi_diff& diff, options& opts)
 {
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
 
   if (abigail::tools_utils::file_is_kernel_package(first_package.path(),
 						   first_package.type()))
@@ -3316,7 +3316,7 @@ self_compare_prepared_package(package& pkg,
 			      abi_diff& diff,
 			      options& opts)
 {
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
 
   status = self_compare_prepared_userspace_package(pkg, diff, opts);
 
@@ -3349,7 +3349,7 @@ compare(package_sptr& first_package, package_sptr& second_package,
   if (!prepare_packages(first_package, second_package, opts))
     {
       maybe_erase_temp_dirs(*first_package, *second_package, opts);
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   return compare_prepared_package(*first_package, *second_package, diff, opts);
@@ -3367,7 +3367,7 @@ static abidiff_status
 compare_to_self(package_sptr& pkg, options& opts)
 {
   if (!prepare_package(pkg, opts))
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   abi_diff diff;
   return self_compare_prepared_package(*pkg, diff, opts);
@@ -3644,8 +3644,8 @@ main(int argc, char* argv[])
 	emit_prefix("abipkgdiff", cerr)
 	  << "unrecognized argument: " << opts.wrong_arg
 	  << "\ntry the --help option for more information\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.missing_operand)
@@ -3653,8 +3653,8 @@ main(int argc, char* argv[])
       emit_prefix("abipkgdiff", cerr)
 	<< "missing operand\n"
         "try the --help option for more information\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.nonexistent_file)
@@ -3664,23 +3664,23 @@ main(int argc, char* argv[])
       emit_prefix("abipkgdiff", cerr)
 	<< "The input file " << input_file << " doesn't exist\n"
 	"try the --help option for more information\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.kabi_whitelist_packages.size() > 2)
     {
       emit_prefix("abipkgdiff", cerr)
 	<< "no more than 2 Linux kernel white list packages can be provided\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.display_usage)
     {
       display_usage(argv[0], cout);
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.display_version)
@@ -3706,8 +3706,8 @@ main(int argc, char* argv[])
     }
 
   if (!maybe_check_suppression_files(opts))
-    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	    | abigail::tools_utils::ABIDIFF_ERROR);
+    return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	    | abigail::tools_utils::ABITOOL_ERROR);
 
   bool need_just_one_input_package = opts.self_check;
 
@@ -3726,16 +3726,16 @@ main(int argc, char* argv[])
 	  emit_prefix("abipkgdiff", cerr)
 	    << "missing input package\n";
 	  if (bail_out)
-	    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		    | abigail::tools_utils::ABIDIFF_ERROR);
+	    return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		    | abigail::tools_utils::ABITOOL_ERROR);
 	}
     }
   else if(opts.package1.empty() || opts.package2.empty())
     {
       emit_prefix("abipkgdiff", cerr)
 	<< "please enter two packages to compare" << "\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   package_sptr first_package(new package(opts.package1, "package1"));
@@ -3798,8 +3798,8 @@ main(int argc, char* argv[])
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
 	    << package_name << " should be an RPM file\n";
-	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	  return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
 	}
 
       if (file_is_kernel_package(first_package->path(),
@@ -3815,8 +3815,8 @@ main(int argc, char* argv[])
 	      emit_prefix("abipkgdiff", cerr)
 		<< "a Linux kernel package can only be compared to another "
 		"Linux kernel package\n";
-	      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		      | abigail::tools_utils::ABIDIFF_ERROR);
+	      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		      | abigail::tools_utils::ABITOOL_ERROR);
 	    }
 
 	  if (first_package->debug_info_packages().empty()
@@ -3826,8 +3826,8 @@ main(int argc, char* argv[])
 	      emit_prefix("abipkgdiff", cerr)
 		<< "a Linux Kernel package must be accompanied with its "
 		"debug info package\n";
-	      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		      | abigail::tools_utils::ABIDIFF_ERROR);
+	      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		      | abigail::tools_utils::ABITOOL_ERROR);
 	    }
 	  // We are looking at kernel packages.  If the user provided
 	  // the --full-impact option then it means we want to display
@@ -3850,8 +3850,8 @@ main(int argc, char* argv[])
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
 	    << package_name << " should be a DEB file\n";
-	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	  return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
 	}
       break;
 
@@ -3862,8 +3862,8 @@ main(int argc, char* argv[])
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
 	    << package_name << " should be a directory\n";
-	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	  return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
 	}
       break;
 
@@ -3874,8 +3874,8 @@ main(int argc, char* argv[])
 	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
 	    << package_name << " should be a GNU tar archive\n";
-	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	  return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
 	}
       break;
 
@@ -3883,8 +3883,8 @@ main(int argc, char* argv[])
       base_name(opts.package1, package_name);
       emit_prefix("abipkgdiff", cerr)
 	<< package_name << " should be a valid package file \n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.self_check)

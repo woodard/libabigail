@@ -209,29 +209,29 @@ enum abidiff_status
   /// This is for when the compared ABIs are equal.
   ///
   /// Its numerical value is 0.
-  ABIDIFF_OK = 0,
+  ABITOOL_OK = 0,
 
   /// This bit is set if there is an application error.
   ///
   /// Its numerical value is 1.
-  ABIDIFF_ERROR = 1,
+  ABITOOL_ERROR = 1,
 
   /// This bit is set if the tool is invoked in an non appropriate
   /// manner.
   ///
   /// Its numerical value is 2.
-  ABIDIFF_USAGE_ERROR = 1 << 1,
+  ABITOOL_USAGE_ERROR = 1 << 1,
 
   /// This bit is set if the ABIs being compared are different.
   ///
   /// Its numerical value is 4.
-  ABIDIFF_ABI_CHANGE = 1 << 2,
+  ABITOOL_ABI_CHANGE = 1 << 2,
 
   /// This bit is set if the ABIs being compared are different *and*
   /// are incompatible.
   ///
   /// Its numerical value is 8.
-  ABIDIFF_ABI_INCOMPATIBLE_CHANGE = 1 << 3
+  ABITOOL_ABI_INCOMPATIBLE_CHANGE = 1 << 3
 };
 
 abidiff_status

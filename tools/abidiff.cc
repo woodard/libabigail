@@ -605,7 +605,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 
   if (!check_file(opts.reader_opts.elf_file_path, cerr)
       || !check_file(opts.reader_opts2.elf_file_path, cerr))
-    exit (abigail::tools_utils::ABIDIFF_ERROR);
+    exit (abigail::tools_utils::ABITOOL_ERROR);
 
   opts.reader_opts2.requested_fe_kind = opts.reader_opts.requested_fe_kind;
   tools_utils::
@@ -935,8 +935,8 @@ adjust_diff_context_for_kmidiff(diff_context &ctxt)
 /// the root debug info directory of the second binary that we are
 /// trying to load..  If nil, then it's ignored.
 ///
-/// @return abigail::tools_utils::ABIDIFF_ERROR if an error was
-/// detected, abigail::tools_utils::ABIDIFF_OK otherwise.
+/// @return abigail::tools_utils::ABITOOL_ERROR if an error was
+/// detected, abigail::tools_utils::ABITOOL_OK otherwise.
 static abigail::tools_utils::abidiff_status
 handle_error(abigail::fe_iface::status status_code,
 	     const abigail::elf_based_reader* rdr,
@@ -1020,10 +1020,10 @@ handle_error(abigail::fe_iface::status status_code,
 	  << opts.reader_opts.elf_file_path
 	  << "'\n";
 
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
-  return abigail::tools_utils::ABIDIFF_OK;
+  return abigail::tools_utils::ABITOOL_OK;
 }
 
 /// Emit an error message saying that the two files have incompatible
@@ -1071,8 +1071,8 @@ main(int argc, char* argv[])
       else
 	display_usage(argv[0], cerr);
 
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   diff_context_sptr ctxt(new diff_context);
@@ -1087,9 +1087,9 @@ main(int argc, char* argv[])
     // We don't have to compare anything because a user
     // suppression specification file instructs us to avoid
     // loading either one of the input files.
-    return abigail::tools_utils::ABIDIFF_OK;
+    return abigail::tools_utils::ABITOOL_OK;
 
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
   abigail::tools_utils::file_type t1_type, t2_type;
   t1_type = guess_file_type(opts.reader_opts.elf_file_path);
   t2_type = guess_file_type(opts.reader_opts2.elf_file_path);
@@ -1106,7 +1106,7 @@ main(int argc, char* argv[])
       emit_prefix(argv[0], cerr)
 	<< "Unknown content type for file "
 	<< opts.reader_opts.elf_file_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
       break;
     case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
       t1 = abixml::
@@ -1172,7 +1172,7 @@ main(int argc, char* argv[])
       emit_prefix(argv[0], cerr)
 	<< "Unknown content type for file "
 	<< opts.reader_opts2.elf_file_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
       break;
     case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
       t2 = abixml::
@@ -1237,7 +1237,7 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr)
 	<< "the two input should be of the same kind\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   if (opts.no_arch)
@@ -1295,7 +1295,7 @@ main(int argc, char* argv[])
       if (opts.show_symtabs)
 	{
 	  display_symtabs(c1, c2, cout);
-	  return abigail::tools_utils::ABIDIFF_OK;
+	  return abigail::tools_utils::ABITOOL_OK;
 	}
 
       const auto c1_version = c1->get_format_major_version_number();
@@ -1307,7 +1307,7 @@ main(int argc, char* argv[])
 							 opts.reader_opts2.elf_file_path,
 							 c2_version,
 							 argv[0]);
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       set_corpus_keep_drop_regex_patterns(opts, c1);
@@ -1341,7 +1341,7 @@ main(int argc, char* argv[])
 	      t.stop();
 	      std::cerr << "net changes computed!: "<< t << "\n";
 	    }
-	  status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	  status = abigail::tools_utils::ABITOOL_ABI_CHANGE;
 	}
 
       if (opts.do_log)
@@ -1357,7 +1357,7 @@ main(int argc, char* argv[])
 	      t.stop();
 	      std::cerr << "incompatible changes computed!: "<< t << "\n";
 	    }
-	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	  status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 	}
 
       if (opts.do_log)
@@ -1394,7 +1394,7 @@ main(int argc, char* argv[])
       if (opts.show_symtabs)
 	{
 	  display_symtabs(c1, c2, cout);
-	  return abigail::tools_utils::ABIDIFF_OK;
+	  return abigail::tools_utils::ABITOOL_OK;
 	}
 
       const auto g1_version = g1->get_format_major_version_number();
@@ -1406,7 +1406,7 @@ main(int argc, char* argv[])
 							 opts.reader_opts2.elf_file_path,
 							 g2_version,
 							 argv[0]);
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       adjust_diff_context_for_kmidiff(*ctxt);
@@ -1433,7 +1433,7 @@ main(int argc, char* argv[])
 	}
 
       if (diff->has_net_changes())
-	status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	status = abigail::tools_utils::ABITOOL_ABI_CHANGE;
       if (opts.do_log)
 	{
 	  t.stop();
@@ -1447,7 +1447,7 @@ main(int argc, char* argv[])
 	}
 
       if (diff->has_incompatible_changes())
-	status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 
       if (opts.do_log)
 	{
@@ -1494,7 +1494,7 @@ main(int argc, char* argv[])
 
     }
   else
-    status = abigail::tools_utils::ABIDIFF_ERROR;
+    status = abigail::tools_utils::ABITOOL_ERROR;
 
   return status;
 }

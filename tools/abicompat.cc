@@ -361,7 +361,7 @@ perform_compat_check_in_normal_mode(options& opts,
   ABG_ASSERT(lib2_corpus);
   ABG_ASSERT(app_corpus);
 
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
 
   // compare lib1 and lib2 only by looking at the functions and
   // variables which symbols are those undefined in the app.
@@ -408,7 +408,7 @@ perform_compat_check_in_normal_mode(options& opts,
 	  base_name(opts.lib2_path, lib2_path);
 	}
 
-      status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+      status |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
 
       bool abi_broke_for_sure = changes->has_incompatible_changes();
 
@@ -416,7 +416,7 @@ perform_compat_check_in_normal_mode(options& opts,
       if (abi_broke_for_sure)
 	{
 	  cout << " is not ";
-	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	  status |= abigail::tools_utils::ABITOOL_ABI_INCOMPATIBLE_CHANGE;
 	}
       else
 	  cout << " might not be ";
@@ -493,7 +493,7 @@ perform_compat_check_in_weak_mode(options& opts,
   ABG_ASSERT(lib_corpus);
   ABG_ASSERT(app_corpus);
 
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status status = abigail::tools_utils::ABITOOL_OK;
 
   // Functions and variables defined and exported by lib_corpus which
   // symbols are undefined in app_corpus are the artifacts we are
@@ -594,7 +594,7 @@ perform_compat_check_in_weak_mode(options& opts,
       }
 
     if (!fn_changes.empty())
-      status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+      status |= abigail::tools_utils::ABITOOL_ABI_CHANGE;
 
     // OK now, let's do something similar for *variables* changes.
     //
@@ -720,22 +720,22 @@ main(int argc, char* argv[])
 	  emit_prefix(argv[0], cerr)
 	    << "unrecognized option: " << opts.unknow_option << "\n"
 	    << "try the --help option for more information\n";
-	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+	  return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
 	}
 
       emit_prefix(argv[0], cerr)
 	<< "wrong invocation\n"
 	<< "try the --help option for more information\n";
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-	      | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+	      | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.display_help)
     {
       display_usage(argv[0], cout);
-      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
-		  | abigail::tools_utils::ABIDIFF_ERROR);
+      return (abigail::tools_utils::ABITOOL_USAGE_ERROR
+		  | abigail::tools_utils::ABITOOL_ERROR);
     }
 
   if (opts.display_version)
@@ -763,7 +763,7 @@ main(int argc, char* argv[])
 
   ABG_ASSERT(!opts.app_path.empty());
   if (!abigail::tools_utils::check_file(opts.app_path, cerr, opts.prog_name))
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   // Create the context of the diff
   diff_context_sptr ctxt = create_diff_context(opts);
@@ -779,7 +779,7 @@ main(int argc, char* argv[])
     // We don't have to compare anything because a user
     // suppression specification file instructs us to avoid
     // loading either one of the input files.
-    return abigail::tools_utils::ABIDIFF_OK;
+    return abigail::tools_utils::ABITOOL_OK;
 
   // Read the application ELF file.
   char * app_di_root = opts.app_di_root_path.get();
@@ -795,7 +795,7 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr) << opts.app_path
 				 << " is not a supported file\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   if (opts.fail_no_debug_info
@@ -804,19 +804,19 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr) << opts.app_path
 				 << " does not have debug symbols\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
   if (status & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read symbols from " << opts.app_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
   if (!(status & abigail::fe_iface::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.app_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   if (opts.list_undefined_symbols_only)
@@ -834,13 +834,13 @@ main(int argc, char* argv[])
 	  else
 	    cout << id << "\n";
 	}
-      return abigail::tools_utils::ABIDIFF_OK;
+      return abigail::tools_utils::ABITOOL_OK;
     }
 
   // Read the first version of the library.
   ABG_ASSERT(!opts.lib1_path.empty());
   if (!abigail::tools_utils::check_file(opts.lib1_path, cerr, opts.prog_name))
-    return abigail::tools_utils::ABIDIFF_ERROR;
+    return abigail::tools_utils::ABITOOL_ERROR;
 
   char * lib1_di_root = opts.lib1_di_root_path.get();
   vector<char**> lib1_di_roots;
@@ -852,7 +852,7 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr) << opts.lib1_path
 				 << " is not a supported file\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
   if (opts.fail_no_debug_info
       && (status & abigail::fe_iface::STATUS_ALT_DEBUG_INFO_NOT_FOUND)
@@ -863,13 +863,13 @@ main(int argc, char* argv[])
     {
       emit_prefix(argv[0], cerr) << "could not read symbols from "
 				 << opts.lib1_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
   if (!(status & abigail::fe_iface::STATUS_OK))
     {
       emit_prefix(argv[0], cerr)
 	<< "could not read file " << opts.lib1_path << "\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
+      return abigail::tools_utils::ABITOOL_ERROR;
     }
 
   // Read the second version of the library.
@@ -887,7 +887,7 @@ main(int argc, char* argv[])
 	{
 	  emit_prefix(argv[0], cerr) << opts.lib2_path
 				     << " is not a supported file\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
 
       if (opts.fail_no_debug_info
@@ -896,23 +896,23 @@ main(int argc, char* argv[])
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read debug info for " << opts.lib2_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
       if (status & abigail::fe_iface::STATUS_NO_SYMBOLS_FOUND)
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read symbols from " << opts.lib2_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
       if (!(status & abigail::fe_iface::STATUS_OK))
 	{
 	  emit_prefix(argv[0], cerr)
 	    << "could not read file " << opts.lib2_path << "\n";
-	  return abigail::tools_utils::ABIDIFF_ERROR;
+	  return abigail::tools_utils::ABITOOL_ERROR;
 	}
     }
 
-  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
+  abidiff_status s = abigail::tools_utils::ABITOOL_OK;
 
   if (opts.weak_mode)
     s = perform_compat_check_in_weak_mode(opts, ctxt,

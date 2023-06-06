@@ -499,7 +499,7 @@ Options
     active.
 
     Note that the non-zero exit code returned by the program as a
-    result of this option is the constant ``ABIDIFF_ERROR``.  To know
+    result of this option is the constant ``ABITOOL_ERROR``.  To know
     the numerical value of that constant, please refer to the
     :ref:`exit code documentation <abidiff_return_value_label>`.
 

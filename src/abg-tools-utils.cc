@@ -136,43 +136,43 @@ operator|=(abidiff_status&l, abidiff_status r)
 /// Test if an instance of @param abidiff_status bits mask represents
 /// an error.
 ///
-/// This functions tests if the @ref ABIDIFF_ERROR bit is set in the
+/// This functions tests if the @ref ABITOOL_ERROR bit is set in the
 /// given bits mask.
 ///
 /// @param s the bit mask to consider.
 ///
-/// @return true iff @p s has its ABIDIFF_ERROR bit set.
+/// @return true iff @p s has its ABITOOL_ERROR bit set.
 bool
 abidiff_status_has_error(abidiff_status s)
-{return s & (ABIDIFF_ERROR | ABIDIFF_USAGE_ERROR);}
+{return s & (ABITOOL_ERROR | ABITOOL_USAGE_ERROR);}
 
 /// Test if an instance of @param abidiff_status bits mask represents
 /// an abi change.
 ///
-/// This functions tests if the @ref ABIDIFF_ABI_CHANGE bit is set in the
+/// This functions tests if the @ref ABITOOL_ABI_CHANGE bit is set in the
 /// given bits mask.
 ///
 /// @param s the bit mask to consider.
 ///
-/// @return true iff @p s has its @ref ABIDIFF_ABI_CHANGE bit set.
+/// @return true iff @p s has its @ref ABITOOL_ABI_CHANGE bit set.
 bool
 abidiff_status_has_abi_change(abidiff_status s)
-{return s & ABIDIFF_ABI_CHANGE;}
+{return s & ABITOOL_ABI_CHANGE;}
 
 /// Test if an instance of @param abidiff_status bits mask represents
 /// an incompatible abi change.
 ///
-/// This functions tests if the @ref ABIDIFF_INCOMPATIBLE_ABI_CHANGE
+/// This functions tests if the @ref ABITOOL_INCOMPATIBLE_ABI_CHANGE
 /// bit is set in the given bits mask.  Note that the this bit is set
-/// then the bit @ref ABIDIFF_ABI_CHANGE must be set as well.
+/// then the bit @ref ABITOOL_ABI_CHANGE must be set as well.
 ///
 /// @param s the bit mask to consider.
 ///
-/// @return true iff @p s has its @ref ABIDIFF_INCOMPATIBLE ABI_CHANGE
+/// @return true iff @p s has its @ref ABITOOL_INCOMPATIBLE ABI_CHANGE
 /// set.
 bool
 abidiff_status_has_incompatible_abi_change(abidiff_status s)
-{return s & ABIDIFF_ABI_INCOMPATIBLE_CHANGE;}
+{return s & ABITOOL_ABI_INCOMPATIBLE_CHANGE;}
 
 #define DECLARE_STAT(st) \
   struct stat st; \
