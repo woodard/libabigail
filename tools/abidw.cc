@@ -502,7 +502,6 @@ load_corpus_and_write_abixml(char* argv[],
   // specfied in opts ...
   abigail::elf_based_reader_sptr reader =
     create_best_elf_based_reader(opts.get_reader_opts());
-  ABG_ASSERT(reader);
 
   // ... then tune a bunch of "buttons" on the newly created reader
   // ...
