@@ -321,6 +321,11 @@ test-abidiff-exit/PR30329/old-image/usr/lib/debug/dwz/components/sqlite.bst/x86_
 test-abidiff-exit/PR30329/old-image/usr/lib/debug/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6.debug \
 test-abidiff-exit/PR30329/old-image/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6 \
 test-abidiff-exit/PR30329/PR30329-report-1.txt \
+test-abidiff-exit/PR30503/libsdl/1.2.60/lib64/libSDL-1.2.so.1.2.60 \
+test-abidiff-exit/PR30503/libsdl/1.2.60/lib64/libSDL-1.2.so.1.2.60.debug \
+test-abidiff-exit/PR30503/libsdl/1.2.64/lib64/libSDL-1.2.so.1.2.64 \
+test-abidiff-exit/PR30503/libsdl/1.2.64/lib64/libSDL-1.2.so.1.2.64.debug \
+test-abidiff-exit/PR30503/libsdl/libsdl-1.2.60-1.2.64-report.txt \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

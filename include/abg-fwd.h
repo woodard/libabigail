@@ -758,9 +758,6 @@ anonymous_data_member_exists_in_class(const var_decl& anon_dm,
 				      const class_or_union& clazz);
 
 bool
-scope_anonymous_or_typedef_named(const decl_base&);
-
-bool
 is_anonymous_or_typedef_named(const decl_base&);
 
 const class_or_union_sptr

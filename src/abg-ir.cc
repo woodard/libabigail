@@ -5239,7 +5239,7 @@ get_decl_name_for_comparison(const decl_base &d)
     }
 
   interned_string n = (is_anonymous_or_typedef_named(d)
-		       || scope_anonymous_or_typedef_named(d))
+		       || d.get_has_anonymous_parent())
     ? d.get_name()
     : d.get_qualified_name(/*internal=*/true);
   return n;
@@ -6176,22 +6176,6 @@ anonymous_data_member_exists_in_class(const var_decl& anon_dm,
     }
 
   return true;
-}
-
-/// Test if the scope of a given decl is anonymous or anonymous with a
-/// naming typedef.
-///
-/// @param d the decl consider.
-///
-/// @return true iff the scope of @p d is anonymous or anonymous with
-/// a naming typedef.
-bool
-scope_anonymous_or_typedef_named(const decl_base& d)
-{
-  if (d.get_has_anonymous_parent()
-      || (d.get_scope() && d.get_scope()->get_naming_typedef()))
-    return true;
-  return false;
 }
 
 /// Test if a given decl is anonymous or has a naming typedef.
