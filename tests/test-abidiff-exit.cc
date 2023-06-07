@@ -861,6 +861,19 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/PR30329/PR30329-report-1.txt",
     "output/test-abidiff-exit/PR30329/PR30329-report-1.txt"
   },
+  {
+    "data/test-abidiff-exit/PR30503/libsdl/1.2.60/lib64/libSDL-1.2.so.1.2.60",
+    "data/test-abidiff-exit/PR30503/libsdl/1.2.64/lib64/libSDL-1.2.so.1.2.64",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "--no-default-suppression",
+    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    "data/test-abidiff-exit/PR30503/libsdl/libsdl-1.2.60-1.2.64-report.txt",
+    "output/test-abidiff-exit/PR30503/libsdl/libsdl-1.2.60-1.2.64-report.txt"
+  },
 #ifdef WITH_BTF
   {
     "data/test-abidiff-exit/btf/test0-v0.o",
