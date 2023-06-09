@@ -870,7 +870,7 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "--no-default-suppression",
-    abigail::tools_utils::ABIDIFF_ABI_CHANGE,
+    abigail::tools_utils::ABITOOL_ABI_CHANGE,
     "data/test-abidiff-exit/PR30503/libsdl/libsdl-1.2.60-1.2.64-report.txt",
     "output/test-abidiff-exit/PR30503/libsdl/libsdl-1.2.60-1.2.64-report.txt"
   },
