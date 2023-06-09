@@ -368,6 +368,34 @@ Options
     Emit verbose logs about the progress of miscellaneous internal
     things.
 
+.. _abidiff_return_value_label:
+
+Return values
+=============
+
+The exit code of the ``abidw`` command is either 0 if the command was
+able to emit a representation of the ABI or non-zero if the tool
+encountered an error. When abidw is invoked with the ``--abidiff``
+option, the return values match those retrn codes for the ``abidiff``
+command.
+
+In the later case, the exit code is a 8-bits-wide bit field in which
+each bit has a specific meaning.
+
+The first bit, of value 1, named ``ABITOOL_ERROR`` means there was an
+error.
+
+The second bit, of value 2, named ``ABITOOL_USAGE_ERROR`` means there
+was an error in the way the user invoked the tool.  It might be set,
+for instance, if the user invoked the tool with an unknown command
+line switch, with a wrong number or argument, etc.  If this bit is
+set, then the ``ABITOOL_ERROR`` bit must be set as well.
+
+If the 8th bit is set, then it indicates that the program was killed
+by a signal such as ``SIGSEGV`` or ``SIGABRT``.
+
+The remaining bits are not used for the moment.
+
 Notes
 =====
 
@@ -376,12 +404,13 @@ Notes
 Alternate debug info files
 --------------------------
 
-As of the version 4 of the DWARF specification, `Alternate debug
-information <http://www.dwarfstd.org/ShowIssue.php?issue=120604.1>`_
-is a `GNU`_ extension to the DWARF specification.  It has however been
-proposed for inclusion into the upcoming version 5 of the DWARF
-standard.  You can read more about the GNU extensions to the DWARF
-standard `here
+Version 4 of the DWARF specification, `Alternate debug information
+<http://www.dwarfstd.org/ShowIssue.php?issue=120604.1>`_ is a `GNU`_
+extension to the DWARF specification. DWARF 5 ended up implemnting
+alternative DWARF locations differently see Appendix F of the `DWARF
+standard version 5 <https://dwarfstd.org/doc/DWARF5.pdf>`_. Both of
+these variants are supported. You can read more about the GNU
+extensions to the DWARF standard `here
 <https://fedorahosted.org/elfutils/wiki/DwarfExtensions>`_.
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
